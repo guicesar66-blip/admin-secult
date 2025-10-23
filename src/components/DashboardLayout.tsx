@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import logoHorizontal from "@/assets/logo-horizontal.png";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -57,10 +58,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         )}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border">
-          {sidebarOpen && (
-            <h2 className="text-lg font-bold text-sidebar-foreground">
-              SECULT
-            </h2>
+          {sidebarOpen ? (
+            <div className="flex items-center gap-2">
+              <img 
+                src={logoHorizontal} 
+                alt="Computadores fazem Arte" 
+                className="h-8 w-auto"
+              />
+            </div>
+          ) : (
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
+              CFA
+            </div>
           )}
           <Button
             variant="ghost"
@@ -137,13 +146,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       >
         {/* Header */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
-          <div>
-            <h1 className="text-xl font-bold text-foreground">
-              Computadores fazem Arte
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Painel Administrativo SECULT
-            </p>
+          <div className="flex items-center gap-3">
+            <img 
+              src={logoHorizontal} 
+              alt="Computadores fazem Arte" 
+              className="h-10 w-auto"
+            />
+            <div className="border-l border-border pl-3">
+              <p className="text-xs text-muted-foreground font-medium">
+                Painel Administrativo SECULT
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">

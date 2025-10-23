@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Music } from "lucide-react";
+import logoMain from "@/assets/logo-main.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -22,14 +22,13 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo e Título */}
         <div className="mb-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <div className="rounded-full gradient-primary p-4">
-              <Music className="h-10 w-10 text-white" />
-            </div>
+          <div className="mb-6 flex justify-center">
+            <img 
+              src={logoMain} 
+              alt="Recife Música - Computadores fazem Arte" 
+              className="h-48 w-auto"
+            />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Computadores fazem Arte
-          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Plataforma de Gestão Cultural - Recife
           </p>
