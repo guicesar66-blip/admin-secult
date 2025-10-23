@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
 import Incubacoes from "./pages/Incubacoes";
 import AnaliseFinanceira from "./pages/AnaliseFinanceira";
+import AnaliseTerritorial from "./pages/AnaliseTerritorial";
+import AnaliseArtistas from "./pages/AnaliseArtistas";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
@@ -25,42 +27,8 @@ const App = () => (
           <Route path="/oportunidades" element={<Oportunidades />} />
           <Route path="/incubacoes" element={<Incubacoes />} />
           <Route path="/analise-financeira" element={<AnaliseFinanceira />} />
-          <Route
-            path="/analise-territorial"
-            element={
-              <PlaceholderPage
-                title="Análise Territorial"
-                description="Mapa ZEIS/CIS e distribuição de artistas por região"
-              />
-            }
-          />
-          <Route
-            path="/analise-artistas"
-            element={
-              <PlaceholderPage
-                title="Análise de Artistas"
-                description="Perfil demográfico e engajamento dos artistas"
-              />
-            }
-          />
-          <Route
-            path="/analise-carreiras"
-            element={
-              <PlaceholderPage
-                title="Análise de Carreiras"
-                description="Progressão e dados pós-incubação"
-              />
-            }
-          />
-          <Route
-            path="/aprovacoes"
-            element={
-              <PlaceholderPage
-                title="Aprovações Individuais"
-                description="Recursos aguardando decisão da SECULT"
-              />
-            }
-          />
+          <Route path="/analise-territorial" element={<AnaliseTerritorial />} />
+          <Route path="/analise-artistas" element={<AnaliseArtistas />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

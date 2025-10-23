@@ -1,7 +1,12 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { BadgeStatus } from "@/components/ui/badge-status";
-import { Plus, FileText, Music, Users } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Plus, FileText, Users, Calendar, TrendingUp, Eye } from "lucide-react";
+import { useState } from "react";
+import { ReportPreviewDialog } from "@/components/ReportPreviewDialog";
+import { ApprovalDialog } from "@/components/ApprovalDialog";
 
 const programas = [
   {
@@ -51,6 +56,10 @@ const programas = [
 ];
 
 export default function Incubacoes() {
+  const [reportOpen, setReportOpen] = useState(false);
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<any>(null);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -69,9 +78,9 @@ export default function Incubacoes() {
               <FileText className="mr-2 h-4 w-4" />
               Modelos
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setReportOpen(true)}>
               <FileText className="mr-2 h-4 w-4" />
-              Relatório Geral
+              Relatório
             </Button>
             <Button size="sm">
               <Plus className="mr-2 h-4 w-4" />
@@ -137,7 +146,7 @@ export default function Incubacoes() {
             >
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <Music className="h-5 w-5 text-primary" />
+                  <Users className="h-5 w-5 text-primary" />
                   <h3 className="font-semibold text-card-foreground">
                     {programa.nome}
                   </h3>
@@ -214,8 +223,17 @@ export default function Incubacoes() {
               <div className="mt-4 flex gap-2">
                 {programa.status === "active" ? (
                   <>
-                    <Button size="sm" variant="outline" className="flex-1">
-                      Gerenciar
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedProgram(programa);
+                        setApprovalOpen(true);
+                      }}
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      Ver Detalhes
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1">
                       Relatório
@@ -273,6 +291,23 @@ export default function Incubacoes() {
           </div>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <ReportPreviewDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        title="Relatório de Incubações"
+        type="incubacoes"
+      />
+      
+      {selectedProgram && (
+        <ApprovalDialog
+          open={approvalOpen}
+          onOpenChange={setApprovalOpen}
+          type="incubacao"
+          item={selectedProgram}
+        />
+      )}
     </DashboardLayout>
   );
 }

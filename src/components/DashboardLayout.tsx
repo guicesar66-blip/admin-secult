@@ -30,7 +30,6 @@ const menuItems = [
       { icon: LineChart, label: "Financeira", path: "/analise-financeira" },
       { icon: MapPin, label: "Territorial", path: "/analise-territorial" },
       { icon: Users, label: "Artistas", path: "/analise-artistas" },
-      { icon: TrendingUp, label: "Carreiras", path: "/analise-carreiras" },
     ],
   },
   {
@@ -39,7 +38,6 @@ const menuItems = [
     submenu: [
       { icon: Target, label: "Oportunidades", path: "/oportunidades" },
       { icon: Building2, label: "Incubações", path: "/incubacoes" },
-      { icon: ClipboardCheck, label: "Aprovações", path: "/aprovacoes" },
     ],
   },
 ];

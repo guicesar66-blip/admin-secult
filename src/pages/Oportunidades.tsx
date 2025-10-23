@@ -9,8 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Download, Upload, Edit, Eye, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Plus, Search, Download, Upload, Edit, Eye, Trash2, FileText } from "lucide-react";
+import { useState } from "react";
+import { ReportPreviewDialog } from "@/components/ReportPreviewDialog";
+import { ApprovalDialog } from "@/components/ApprovalDialog";
 
 const oportunidades = [
   {
@@ -56,6 +58,10 @@ const oportunidades = [
 ];
 
 export default function Oportunidades() {
+  const [reportOpen, setReportOpen] = useState(false);
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -73,6 +79,10 @@ export default function Oportunidades() {
             <Button variant="outline" size="sm">
               <Upload className="mr-2 h-4 w-4" />
               Importar CSV
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setReportOpen(true)}>
+              <FileText className="mr-2 h-4 w-4" />
+              Relatório
             </Button>
             <Button variant="outline" size="sm">
               <Download className="mr-2 h-4 w-4" />
@@ -197,7 +207,14 @@ export default function Oportunidades() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedItem(item);
+                            setApprovalOpen(true);
+                          }}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="sm">
@@ -242,6 +259,23 @@ export default function Oportunidades() {
           </div>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <ReportPreviewDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        title="Relatório de Oportunidades"
+        type="oportunidades"
+      />
+      
+      {selectedItem && (
+        <ApprovalDialog
+          open={approvalOpen}
+          onOpenChange={setApprovalOpen}
+          type="oportunidade"
+          item={selectedItem}
+        />
+      )}
     </DashboardLayout>
   );
 }
