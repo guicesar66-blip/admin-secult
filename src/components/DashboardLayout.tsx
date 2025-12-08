@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   Settings,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -40,7 +41,14 @@ const menuItems = [
       { icon: Building2, label: "Incubações", path: "/incubacoes" },
     ],
   },
-  { icon: Settings, label: "Configurações", path: "/configuracoes" },
+  {
+    icon: Settings,
+    label: "Configurações",
+    submenu: [
+      { icon: Settings, label: "White Label", path: "/configuracoes" },
+      { icon: CreditCard, label: "Pagamento", path: "/gestao-pagamento" },
+    ],
+  },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
