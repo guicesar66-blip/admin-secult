@@ -60,13 +60,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center gap-2">
               <img 
                 src={logoHorizontal} 
-                alt="Computadores fazem Arte" 
+                alt="Cenna" 
                 className="h-8 w-auto"
               />
             </div>
           ) : (
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
-              CFA
+              C
             </div>
           )}
           <Button
@@ -147,19 +147,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center gap-3">
             <img 
               src={logoHorizontal} 
-              alt="Computadores fazem Arte" 
+              alt="Cenna" 
               className="h-10 w-auto"
             />
             <div className="border-l border-border pl-3">
               <p className="text-xs text-muted-foreground font-medium">
-                Painel Administrativo SECULT
+                Painel Administrativo
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">João Silva</p>
-              <p className="text-xs text-muted-foreground">SECULT</p>
+              <p className="text-xs text-muted-foreground">Administrador</p>
             </div>
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
               JS

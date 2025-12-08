@@ -25,19 +25,19 @@ export default function Login() {
           <div className="mb-6 flex justify-center">
             <img 
               src={logoMain} 
-              alt="Recife Música - Computadores fazem Arte" 
+              alt="Cenna" 
               className="h-48 w-auto"
             />
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Plataforma de Gestão Cultural - Recife
+            Plataforma de Gestão Cultural
           </p>
         </div>
 
         {/* Card de Login */}
         <div className="rounded-lg border border-border bg-card p-8 shadow-elevated">
           <h2 className="mb-6 text-xl font-semibold text-card-foreground">
-            Acesso Administrativo SECULT
+            Acesso Administrativo
           </h2>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -46,7 +46,7 @@ export default function Login() {
               <Input
                 id="email"
                 type="email"
-                placeholder="nome@secult.recife.pe.gov.br"
+                placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -94,11 +94,9 @@ export default function Login() {
 
         {/* Footer */}
         <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <span>Prefeitura do Recife</span>
+          <span>© 2025 Cenna</span>
           <span>•</span>
-          <span>SECULT</span>
-          <span>•</span>
-          <span>UFPE</span>
+          <span>Todos os direitos reservados</span>
         </div>
       </div>
     </div>
