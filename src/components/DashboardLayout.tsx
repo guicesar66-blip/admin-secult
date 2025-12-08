@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -8,14 +8,14 @@ import {
   LineChart,
   Target,
   Building2,
-  ClipboardCheck,
   LogOut,
   Menu,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import logoHorizontal from "@/assets/logo-horizontal.png";
+import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
+import logoHorizontalDefault from "@/assets/logo-horizontal.png";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -40,11 +40,16 @@ const menuItems = [
       { icon: Building2, label: "Incubações", path: "/incubacoes" },
     ],
   },
+  { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { config } = useWhiteLabel();
+  
+  const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
+  const clientName = config.clientName || 'Cenna';
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -60,13 +65,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center gap-2">
               <img 
                 src={logoHorizontal} 
-                alt="Cenna" 
+                alt={clientName} 
                 className="h-8 w-auto"
               />
             </div>
           ) : (
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
-              C
+              {clientName.charAt(0).toUpperCase()}
             </div>
           )}
           <Button
@@ -147,7 +152,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center gap-3">
             <img 
               src={logoHorizontal} 
-              alt="Cenna" 
+              alt={clientName} 
               className="h-10 w-auto"
             />
             <div className="border-l border-border pl-3">
