@@ -11,7 +11,6 @@ import {
   LogOut,
   Menu,
   Settings,
-  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -23,32 +22,12 @@ interface DashboardLayoutProps {
 }
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  {
-    icon: TrendingUp,
-    label: "Análises",
-    submenu: [
-      { icon: LineChart, label: "Financeira", path: "/analise-financeira" },
-      { icon: MapPin, label: "Territorial", path: "/analise-territorial" },
-      { icon: Users, label: "Artistas", path: "/analise-artistas" },
-    ],
-  },
-  {
-    icon: Building2,
-    label: "Gestão",
-    submenu: [
-      { icon: Target, label: "Oportunidades", path: "/oportunidades" },
-      { icon: Building2, label: "Incubações", path: "/incubacoes" },
-    ],
-  },
-  {
-    icon: Settings,
-    label: "Configurações",
-    submenu: [
-      { icon: Settings, label: "White Label", path: "/configuracoes" },
-      { icon: CreditCard, label: "Pagamento", path: "/gestao-pagamento" },
-    ],
-  },
+  { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
+  { icon: LineChart, label: "Análise Financeira", path: "/analise-financeira" },
+  { icon: MapPin, label: "Análise Territorial", path: "/analise-territorial" },
+  { icon: Users, label: "Análise de Pessoas", path: "/analise-artistas" },
+  { icon: Target, label: "Oportunidades", path: "/oportunidades" },
+  { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -94,48 +73,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         <nav className="flex flex-col gap-2 p-3">
           {menuItems.map((item) => (
-            <div key={item.label}>
-              {item.submenu ? (
-                <div>
-                  <div className="flex items-center gap-2 px-3 py-2 text-sm text-sidebar-foreground/70">
-                    <item.icon className="h-4 w-4" />
-                    {sidebarOpen && <span>{item.label}</span>}
-                  </div>
-                  {sidebarOpen && (
-                    <div className="ml-4 space-y-1">
-                      {item.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          className={cn(
-                            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
-                            location.pathname === subItem.path
-                              ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                              : "text-sidebar-foreground hover:bg-sidebar-accent"
-                          )}
-                        >
-                          <subItem.icon className="h-4 w-4" />
-                          <span>{subItem.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to={item.path!}
-                  className={cn(
-                    "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
-                    location.pathname === item.path
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  {sidebarOpen && <span>{item.label}</span>}
-                </Link>
+            <Link
+              key={item.label}
+              to={item.path!}
+              className={cn(
+                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
+                location.pathname === item.path
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent"
               )}
-            </div>
+            >
+              <item.icon className="h-4 w-4" />
+              {sidebarOpen && <span>{item.label}</span>}
+            </Link>
           ))}
 
           <button

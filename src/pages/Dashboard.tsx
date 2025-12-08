@@ -25,7 +25,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <StatCard
             icon={Users}
-            label="Artistas Cadastrados"
+            label="Pessoas Cadastradas"
             value="2.847"
             change={{ value: "+12%", trend: "up" }}
           />
@@ -150,7 +150,7 @@ export default function Dashboard() {
               >
                 <Users className="h-8 w-8 text-primary mb-3" />
                 <h4 className="font-semibold text-card-foreground mb-1">
-                  Análise de Artistas
+                  Análise de Pessoas
                 </h4>
                 <p className="text-xs text-muted-foreground">
                   Perfil demográfico, Engajamento
@@ -183,18 +183,6 @@ export default function Dashboard() {
                 </p>
               </Link>
 
-              <Link
-                to="/incubacoes"
-                className="group rounded-lg border border-border bg-card p-6 shadow-card transition-smooth hover:shadow-elevated hover:border-primary/50"
-              >
-                <Building2 className="h-8 w-8 text-primary mb-3" />
-                <h4 className="font-semibold text-card-foreground mb-1">
-                  Gestão de Incubações
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  Programas, Turmas, Mentores
-                </p>
-              </Link>
             </div>
 
             {/* Atividades Recentes */}
@@ -207,12 +195,6 @@ export default function Dashboard() {
                   <Target className="h-4 w-4 text-primary" />
                   <span className="text-foreground">
                     <strong>Oportunidades:</strong> 3 criadas | 7 inscrições
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <Music className="h-4 w-4 text-secondary" />
-                  <span className="text-foreground">
-                    <strong>Incubações:</strong> 2 iniciadas | 15 formandos
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">

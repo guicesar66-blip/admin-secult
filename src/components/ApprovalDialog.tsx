@@ -128,7 +128,7 @@ export function ApprovalDialog({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Vagas:</span>
-                    <span className="font-medium">100 artistas</span>
+                    <span className="font-medium">100 pessoas</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Orçamento:</span>
@@ -148,7 +148,7 @@ export function ApprovalDialog({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Vagas:</span>
-                    <span className="font-medium">30 artistas</span>
+                    <span className="font-medium">30 pessoas</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Modalidade:</span>

@@ -6,17 +6,17 @@ import { Download, MapPin } from "lucide-react";
 import { useState } from "react";
 
 const regioes = [
-  { nome: "Várzea", zeis: true, artistas: 340, oportunidades: 12, incubacoes: 3, lat: -8.047, lng: -34.95 },
-  { nome: "Centro", zeis: false, artistas: 180, oportunidades: 8, incubacoes: 2, lat: -8.063, lng: -34.871 },
-  { nome: "Boa Viagem", zeis: false, artistas: 65, oportunidades: 3, incubacoes: 1, lat: -8.113, lng: -34.893 },
-  { nome: "Casa Amarela", zeis: true, artistas: 210, oportunidades: 9, incubacoes: 2, lat: -8.021, lng: -34.909 },
-  { nome: "Cajueiro", zeis: true, artistas: 156, oportunidades: 6, incubacoes: 1, lat: -8.030, lng: -34.924 },
-  { nome: "Santo Amaro", zeis: false, artistas: 98, oportunidades: 5, incubacoes: 1, lat: -8.045, lng: -34.880 },
+  { nome: "Várzea", zeis: true, pessoas: 340, oportunidades: 12, incubacoes: 3, lat: -8.047, lng: -34.95 },
+  { nome: "Centro", zeis: false, pessoas: 180, oportunidades: 8, incubacoes: 2, lat: -8.063, lng: -34.871 },
+  { nome: "Boa Viagem", zeis: false, pessoas: 65, oportunidades: 3, incubacoes: 1, lat: -8.113, lng: -34.893 },
+  { nome: "Casa Amarela", zeis: true, pessoas: 210, oportunidades: 9, incubacoes: 2, lat: -8.021, lng: -34.909 },
+  { nome: "Cajueiro", zeis: true, pessoas: 156, oportunidades: 6, incubacoes: 1, lat: -8.030, lng: -34.924 },
+  { nome: "Santo Amaro", zeis: false, pessoas: 98, oportunidades: 5, incubacoes: 1, lat: -8.045, lng: -34.880 },
 ];
 
 export default function AnaliseTerritorial() {
   const [periodo, setPeriodo] = useState("mes");
-  const [tipoMapa, setTipoMapa] = useState("artistas");
+  const [tipoMapa, setTipoMapa] = useState("pessoas");
 
   const getIntensidade = (valor: number, max: number) => {
     const percent = (valor / max) * 100;
@@ -25,7 +25,7 @@ export default function AnaliseTerritorial() {
     return "bg-success";
   };
 
-  const maxArtistas = Math.max(...regioes.map(r => r.artistas));
+  const maxPessoas = Math.max(...regioes.map(r => r.pessoas));
 
   return (
     <DashboardLayout>
@@ -37,7 +37,7 @@ export default function AnaliseTerritorial() {
               Análise Territorial
             </h2>
             <p className="text-sm text-muted-foreground">
-              Distribuição geográfica de artistas, oportunidades e incubações
+              Distribuição geográfica de pessoas, oportunidades e incubações
             </p>
           </div>
           <Button variant="outline" size="sm">
@@ -58,7 +58,7 @@ export default function AnaliseTerritorial() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="artistas">Artistas Cadastrados</SelectItem>
+                  <SelectItem value="pessoas">Pessoas Cadastradas</SelectItem>
                   <SelectItem value="oportunidades">Oportunidades</SelectItem>
                   <SelectItem value="incubacoes">Incubações</SelectItem>
                 </SelectContent>
@@ -102,10 +102,10 @@ export default function AnaliseTerritorial() {
             {/* Pontos de calor representativos */}
             <div className="relative z-10 grid grid-cols-3 gap-4 h-full">
               {regioes.map((regiao, idx) => {
-                const valor = tipoMapa === "artistas" ? regiao.artistas :
+                const valor = tipoMapa === "pessoas" ? regiao.pessoas :
                              tipoMapa === "oportunidades" ? regiao.oportunidades :
                              regiao.incubacoes;
-                const max = tipoMapa === "artistas" ? maxArtistas :
+                const max = tipoMapa === "pessoas" ? maxPessoas :
                            tipoMapa === "oportunidades" ? 12 : 3;
                 
                 return (
@@ -128,7 +128,7 @@ export default function AnaliseTerritorial() {
                     <div className="mt-3">
                       <p className="text-2xl font-bold text-foreground">{valor}</p>
                       <p className="text-xs text-muted-foreground">
-                        {tipoMapa === "artistas" && "artistas"}
+                        {tipoMapa === "pessoas" && "pessoas"}
                         {tipoMapa === "oportunidades" && "oportunidades"}
                         {tipoMapa === "incubacoes" && "incubações"}
                       </p>
@@ -169,7 +169,7 @@ export default function AnaliseTerritorial() {
                     ZEIS/CIS
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                    Artistas
+                    Pessoas
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                     Oportunidades
@@ -184,8 +184,8 @@ export default function AnaliseTerritorial() {
               </thead>
               <tbody className="divide-y divide-border">
                 {regioes.map((regiao) => {
-                  const totalArtistas = regioes.reduce((sum, r) => sum + r.artistas, 0);
-                  const percentual = ((regiao.artistas / totalArtistas) * 100).toFixed(1);
+                  const totalPessoas = regioes.reduce((sum, r) => sum + r.pessoas, 0);
+                  const percentual = ((regiao.pessoas / totalPessoas) * 100).toFixed(1);
                   
                   return (
                     <tr key={regiao.nome} className="hover:bg-muted/30 transition-smooth">
@@ -200,7 +200,7 @@ export default function AnaliseTerritorial() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-medium text-foreground">{regiao.artistas}</span>
+                        <span className="text-sm font-medium text-foreground">{regiao.pessoas}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-muted-foreground">{regiao.oportunidades}</span>
@@ -225,8 +225,8 @@ export default function AnaliseTerritorial() {
             Insights Territoriais
           </h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• <strong className="text-foreground">67% dos artistas</strong> estão em regiões ZEIS/CIS</li>
-            <li>• <strong className="text-foreground">Várzea</strong> concentra a maior comunidade artística (340 artistas)</li>
+            <li>• <strong className="text-foreground">67% das pessoas</strong> estão em regiões ZEIS/CIS</li>
+            <li>• <strong className="text-foreground">Várzea</strong> concentra a maior comunidade (340 pessoas)</li>
             <li>• <strong className="text-foreground">Boa Viagem</strong> tem baixa participação apesar da infraestrutura</li>
             <li>• Recomendação: expandir programas em <strong className="text-foreground">Casa Amarela e Cajueiro</strong></li>
           </ul>

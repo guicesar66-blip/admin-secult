@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 const dadosSociais = {
-  totalArtistas: 2847,
+  totalPessoas: 2847,
   emIncubacao: 214,
   posIncubacao: 567,
   semIncubacao: 2066,
@@ -52,7 +52,7 @@ export default function AnaliseArtistas() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-foreground">
-              Análise de Artistas
+              Análise de Pessoas
             </h2>
             <p className="text-sm text-muted-foreground">
               Impacto social e desenvolvimento do capital humano musical
@@ -76,7 +76,7 @@ export default function AnaliseArtistas() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos os artistas</SelectItem>
+                  <SelectItem value="todos">Todas as pessoas</SelectItem>
                   <SelectItem value="em-incubacao">Em incubação</SelectItem>
                   <SelectItem value="pos-incubacao">Pós-incubação</SelectItem>
                   <SelectItem value="sem-incubacao">Sem incubação</SelectItem>
@@ -107,9 +107,9 @@ export default function AnaliseArtistas() {
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total de Artistas</p>
+                <p className="text-sm text-muted-foreground">Total de Pessoas</p>
                 <p className="text-2xl font-bold text-foreground mt-1">
-                  {dadosSociais.totalArtistas.toLocaleString()}
+                  {dadosSociais.totalPessoas.toLocaleString()}
                 </p>
               </div>
               <Users className="h-8 w-8 text-primary" />
@@ -197,7 +197,7 @@ export default function AnaliseArtistas() {
                   </span>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-muted-foreground">
-                      {etapa.quantidade.toLocaleString()} artistas
+                      {etapa.quantidade.toLocaleString()} pessoas
                     </span>
                     <span className="text-sm font-semibold text-primary">
                       {etapa.percentual}%

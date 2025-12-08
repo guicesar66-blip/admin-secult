@@ -12,7 +12,7 @@ interface ReportPreviewDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  type: "oportunidades" | "incubacoes" | "financeiro" | "territorial" | "artistas";
+  type: "oportunidades" | "incubacoes" | "financeiro" | "territorial" | "pessoas";
 }
 
 export function ReportPreviewDialog({
@@ -171,23 +171,23 @@ export function ReportPreviewDialog({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between p-2 bg-error/10 rounded">
                   <span className="font-medium">Várzea (ZEIS)</span>
-                  <span>340 artistas</span>
+                  <span>340 pessoas</span>
                 </div>
                 <div className="flex justify-between p-2 bg-warning/10 rounded">
                   <span className="font-medium">Casa Amarela (ZEIS)</span>
-                  <span>210 artistas</span>
+                  <span>210 pessoas</span>
                 </div>
                 <div className="flex justify-between p-2 bg-warning/10 rounded">
                   <span>Centro</span>
-                  <span>180 artistas</span>
+                  <span>180 pessoas</span>
                 </div>
                 <div className="flex justify-between p-2 bg-success/10 rounded">
                   <span className="font-medium">Cajueiro (ZEIS)</span>
-                  <span>156 artistas</span>
+                  <span>156 pessoas</span>
                 </div>
                 <div className="flex justify-between p-2 bg-success/10 rounded">
                   <span>Santo Amaro</span>
-                  <span>98 artistas</span>
+                  <span>98 pessoas</span>
                 </div>
               </div>
             </div>
@@ -196,23 +196,23 @@ export function ReportPreviewDialog({
               <p className="text-sm font-medium">Concentração ZEIS/CIS</p>
               <p className="text-2xl font-bold text-primary mt-1">67%</p>
               <p className="text-xs text-muted-foreground mt-1">
-                706 artistas em regiões prioritárias
+                706 pessoas em regiões prioritárias
               </p>
             </div>
           </div>
         );
 
-      case "artistas":
+      case "pessoas":
         return (
           <div className="space-y-6">
             <div className="border-b pb-4">
-              <h3 className="font-semibold text-lg">Relatório de Artistas</h3>
+              <h3 className="font-semibold text-lg">Relatório de Pessoas</h3>
               <p className="text-sm text-muted-foreground">Impacto Social e Desenvolvimento</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-muted/30 p-4 rounded-lg">
-                <p className="text-xs text-muted-foreground">Total Artistas</p>
+                <p className="text-xs text-muted-foreground">Total Pessoas</p>
                 <p className="text-2xl font-bold">2.847</p>
               </div>
               <div className="bg-success/10 p-4 rounded-lg">

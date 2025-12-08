@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { toast } from "@/hooks/use-toast";
-import { Upload, RotateCcw, Palette, Image, Building2 } from "lucide-react";
+import { Upload, RotateCcw, Palette, Image, Building2, CreditCard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const colorPresets = [
   { name: "Cenna (Padrão)", primary: "0 66% 48%", secondary: "24 77% 57%", sidebar: "215 30% 12%" },
@@ -18,6 +19,7 @@ const colorPresets = [
 ];
 
 export default function Configuracoes() {
+  const navigate = useNavigate();
   const { config, updateConfig, resetConfig } = useWhiteLabel();
   const [clientName, setClientName] = useState(config.clientName);
   const [primaryColor, setPrimaryColor] = useState(config.primaryColor);
@@ -148,11 +150,21 @@ export default function Configuracoes() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Configurações White Label</h1>
-          <p className="text-muted-foreground">
-            Personalize a plataforma com as cores e identidade visual do seu cliente.
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Configurações White Label</h1>
+            <p className="text-muted-foreground">
+              Personalize a plataforma com as cores e identidade visual do seu cliente.
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/gestao-pagamento")}
+            className="gap-2"
+          >
+            <CreditCard className="h-4 w-4" />
+            Gestão de Pagamento
+          </Button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

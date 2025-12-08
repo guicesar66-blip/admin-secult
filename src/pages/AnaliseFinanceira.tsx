@@ -16,10 +16,10 @@ const investimentoPorCategoria = [
 ];
 
 const programas = [
-  { nome: "Rock Básico", participantes: 28, investido: 15200, custoPorArtista: 543 },
-  { nome: "MPB Avançado", participantes: 15, investido: 12800, custoPorArtista: 853 },
-  { nome: "Rap Iniciantes", participantes: 35, investido: 10500, custoPorArtista: 300 },
-  { nome: "Festival Rock", participantes: 100, investido: 50000, custoPorArtista: 500 },
+  { nome: "Rock Básico", participantes: 28, investido: 15200, custoPorPessoa: 543 },
+  { nome: "MPB Avançado", participantes: 15, investido: 12800, custoPorPessoa: 853 },
+  { nome: "Rap Iniciantes", participantes: 35, investido: 10500, custoPorPessoa: 300 },
+  { nome: "Festival Rock", participantes: 100, investido: 50000, custoPorPessoa: 500 },
 ];
 
 export default function AnaliseFinanceira() {
@@ -172,7 +172,7 @@ export default function AnaliseFinanceira() {
                     Investido
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Custo/Artista
+                    Custo/Pessoa
                   </th>
                 </tr>
               </thead>
@@ -196,7 +196,7 @@ export default function AnaliseFinanceira() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-foreground">
-                        R$ {programa.custoPorArtista}
+                        R$ {programa.custoPorPessoa}
                       </span>
                     </td>
                   </tr>
@@ -231,7 +231,7 @@ export default function AnaliseFinanceira() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">
-                Artistas com portfólio
+                Pessoas com portfólio
               </p>
               <p className="mt-1 text-2xl font-bold text-foreground">+89</p>
               <p className="text-xs text-muted-foreground">projeção</p>
