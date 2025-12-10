@@ -347,10 +347,7 @@ const SistemaTrocados = () => {
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div>
-                    <CardTitle>Transações por Oportunidade</CardTitle>
-                    <CardDescription>Clique em uma oportunidade para ver os detalhes de pagamento</CardDescription>
-                  </div>
+                  <CardTitle>Histórico de transações</CardTitle>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1 sm:flex-none">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
