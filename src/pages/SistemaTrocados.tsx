@@ -40,10 +40,10 @@ const recompensasData = [
 ];
 
 const pacotesTrocados = [
-  { id: 1, trocados: 500, preco: 25, popular: false },
-  { id: 2, trocados: 1000, preco: 45, popular: true },
-  { id: 3, trocados: 2500, preco: 100, popular: false },
-  { id: 4, trocados: 5000, preco: 180, popular: false },
+  { id: 1, trocados: 500, preco: 2.50, popular: false },
+  { id: 2, trocados: 1000, preco: 5.00, popular: true },
+  { id: 3, trocados: 2500, preco: 12.50, popular: false },
+  { id: 4, trocados: 5000, preco: 25.00, popular: false },
 ];
 
 const SistemaTrocados = () => {
