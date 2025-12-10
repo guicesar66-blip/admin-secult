@@ -14,6 +14,7 @@ import {
   GraduationCap,
   UserCog,
   Coins,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -126,7 +127,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <Link 
+              to="/trocados" 
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+            >
+              <Coins className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold text-primary">1.250</span>
+              <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                <Plus className="h-3 w-3 text-primary-foreground" />
+              </div>
+            </Link>
             <NotificationBell />
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">João Silva</p>
