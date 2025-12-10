@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Search, FileText, Users, Calendar, Clock, BookOpen, GraduationCap, Video, CheckCircle2, Eye, Edit, Trash2, UserPlus, Award, BarChart3 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ReportPreviewDialog } from "@/components/ReportPreviewDialog";
 
 // Dados mockados de incubações
@@ -138,6 +139,7 @@ export default function Incubacoes() {
   const [reportOpen, setReportOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("minhas");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const navigate = useNavigate();
   return <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
@@ -305,7 +307,11 @@ export default function Incubacoes() {
                 </Card>
 
                 <div className="space-y-4">
-                  {incubacoes.map(item => <Card key={item.id}>
+                  {incubacoes.map(item => <Card 
+                      key={item.id} 
+                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => navigate(`/incubacoes/${item.id}`)}
+                    >
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -338,8 +344,12 @@ export default function Incubacoes() {
                                 </span>}
                             </div>
                           </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
+                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => navigate(`/incubacoes/${item.id}`)}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
