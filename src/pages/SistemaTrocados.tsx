@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/contexts/NotificationContext";
 
@@ -122,6 +122,10 @@ const SistemaTrocados = () => {
             <h1 className="text-2xl font-bold text-foreground">Sistema de Trocados</h1>
             <p className="text-muted-foreground">Gerencie a moeda virtual e recompensas da plataforma</p>
           </div>
+          <Button className="gap-2">
+            <ShoppingCart className="h-4 w-4" />
+            Comprar Trocados
+          </Button>
         </div>
 
         {/* Stats Cards */}
