@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
+import { NotificationBell } from "@/components/NotificationBell";
 import logoHorizontalDefault from "@/assets/logo-horizontal.png";
 
 interface DashboardLayoutProps {
@@ -126,6 +127,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">João Silva</p>
               <p className="text-xs text-muted-foreground">Administrador</p>

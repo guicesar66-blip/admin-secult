@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 const transacoesData = [
   { id: 1, usuario: "Maria Silva", tipo: "credito", valor: 500, descricao: "Conclusão de curso", data: "2024-01-15", saldo: 1500 },
@@ -40,6 +41,7 @@ const recompensasData = [
 
 const SistemaTrocados = () => {
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [recompensaDialogOpen, setRecompensaDialogOpen] = useState(false);
@@ -66,10 +68,19 @@ const SistemaTrocados = () => {
       return;
     }
 
+    const usuario = usuariosData.find(u => u.id.toString() === novaTransacao.usuario);
+    
     toast({
       title: "Transação registrada",
       description: `${novaTransacao.tipo === "credito" ? "Crédito" : "Débito"} de ${novaTransacao.valor} trocados registrado com sucesso`
     });
+
+    addNotification({
+      type: 'balance',
+      title: novaTransacao.tipo === "credito" ? 'Crédito Recebido' : 'Débito Registrado',
+      message: `${usuario?.nome || 'Usuário'} ${novaTransacao.tipo === "credito" ? 'recebeu' : 'teve debitado'} ${novaTransacao.valor} trocados: ${novaTransacao.descricao}`
+    });
+
     setDialogOpen(false);
     setNovaTransacao({ usuario: "", tipo: "credito", valor: "", descricao: "" });
   };
@@ -88,6 +99,13 @@ const SistemaTrocados = () => {
       title: "Recompensa criada",
       description: `"${novaRecompensa.nome}" adicionada ao catálogo`
     });
+
+    addNotification({
+      type: 'reward',
+      title: 'Nova Recompensa Disponível',
+      message: `"${novaRecompensa.nome}" foi adicionada ao catálogo por ${novaRecompensa.custo} trocados!`
+    });
+
     setRecompensaDialogOpen(false);
     setNovaRecompensa({ nome: "", custo: "", disponivel: "", categoria: "" });
   };
