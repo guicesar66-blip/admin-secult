@@ -15,7 +15,11 @@ import GestaoUsuarios from "./pages/GestaoUsuarios";
 import AnaliseFinanceira from "./pages/AnaliseFinanceira";
 import AnaliseTerritorial from "./pages/AnaliseTerritorial";
 import AnaliseArtistas from "./pages/AnaliseArtistas";
+import Analytics from "./pages/Analytics";
+import Investimentos from "./pages/Investimentos";
 import Configuracoes from "./pages/Configuracoes";
+import ConfiguracoesEquipe from "./pages/ConfiguracoesEquipe";
+import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
 import SistemaTrocados from "./pages/SistemaTrocados";
 import NotFound from "./pages/NotFound";
 
@@ -37,10 +41,14 @@ const App = () => (
             <Route path="/incubacoes" element={<Incubacoes />} />
             <Route path="/incubacoes/:id" element={<IncubacaoDetalhes />} />
             <Route path="/usuarios" element={<GestaoUsuarios />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="/analise-financeira" element={<AnaliseFinanceira />} />
             <Route path="/analise-territorial" element={<AnaliseTerritorial />} />
             <Route path="/analise-artistas" element={<AnaliseArtistas />} />
+            <Route path="/investimentos" element={<Investimentos />} />
             <Route path="/configuracoes" element={<Configuracoes />} />
+            <Route path="/configuracoes/equipe" element={<ConfiguracoesEquipe />} />
+            <Route path="/configuracoes/integracoes" element={<ConfiguracoesIntegracoes />} />
             <Route path="/trocados" element={<SistemaTrocados />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

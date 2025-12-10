@@ -7,7 +7,6 @@ import {
   Users,
   LineChart,
   Target,
-  Building2,
   LogOut,
   Menu,
   Settings,
@@ -15,6 +14,13 @@ import {
   UserCog,
   Coins,
   Plus,
+  ChevronDown,
+  ChevronRight,
+  BarChart3,
+  Store,
+  Wallet,
+  UsersRound,
+  Plug,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -26,32 +32,110 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const menuItems = [
-  { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
-  { icon: LineChart, label: "Análise Financeira", path: "/analise-financeira" },
-  { icon: MapPin, label: "Análise Territorial", path: "/analise-territorial" },
-  { icon: Users, label: "Análise de Pessoas", path: "/analise-artistas" },
-  { icon: Target, label: "Oportunidades", path: "/oportunidades" },
-  { icon: GraduationCap, label: "Incubações", path: "/incubacoes" },
-  { icon: UserCog, label: "Usuários", path: "/usuarios" },
-  { icon: Coins, label: "Trocados", path: "/trocados" },
-  { icon: Settings, label: "Configurações", path: "/configuracoes" },
+interface MenuItem {
+  icon: React.ElementType;
+  label: string;
+  path?: string;
+  children?: { label: string; path: string }[];
+}
+
+interface MenuSection {
+  title: string;
+  items: MenuItem[];
+}
+
+const menuSections: MenuSection[] = [
+  {
+    title: "Principal",
+    items: [
+      { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
+    ],
+  },
+  {
+    title: "Gestão",
+    items: [
+      { icon: Target, label: "Oportunidades", path: "/oportunidades" },
+      { icon: GraduationCap, label: "Incubações", path: "/incubacoes" },
+    ],
+  },
+  {
+    title: "Marketplace",
+    items: [
+      { 
+        icon: Store, 
+        label: "Marketplace",
+        children: [
+          { label: "Explorar", path: "/oportunidades?tab=marketplace" },
+          { label: "Meus Investimentos", path: "/investimentos" },
+        ]
+      },
+    ],
+  },
+  {
+    title: "Analytics",
+    items: [
+      { 
+        icon: BarChart3, 
+        label: "Analytics",
+        children: [
+          { label: "Visão Geral", path: "/analytics" },
+          { label: "Financeira", path: "/analise-financeira" },
+          { label: "Territorial", path: "/analise-territorial" },
+          { label: "Pessoas", path: "/analise-artistas" },
+        ]
+      },
+    ],
+  },
+  {
+    title: "Administração",
+    items: [
+      { icon: UserCog, label: "Usuários", path: "/usuarios" },
+      { icon: Coins, label: "Trocados", path: "/trocados" },
+      { 
+        icon: Settings, 
+        label: "Configurações",
+        children: [
+          { label: "White Label", path: "/configuracoes?tab=whitelabel" },
+          { label: "Pagamento", path: "/configuracoes?tab=pagamento" },
+          { label: "Equipe", path: "/configuracoes/equipe" },
+          { label: "Integrações", path: "/configuracoes/integracoes" },
+        ]
+      },
+    ],
+  },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [expandedMenus, setExpandedMenus] = useState<string[]>(["Analytics", "Configurações"]);
   const { config } = useWhiteLabel();
   
   const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
   const clientName = config.clientName || 'Cenna';
+
+  const toggleMenu = (label: string) => {
+    setExpandedMenus(prev => 
+      prev.includes(label) 
+        ? prev.filter(l => l !== label)
+        : [...prev, label]
+    );
+  };
+
+  const isPathActive = (path?: string, children?: { path: string }[]) => {
+    if (path && location.pathname === path.split('?')[0]) return true;
+    if (children) {
+      return children.some(child => location.pathname === child.path.split('?')[0]);
+    }
+    return false;
+  };
 
   return (
     <div className="flex min-h-screen w-full bg-background">
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300",
+          "fixed left-0 top-0 z-40 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden",
           sidebarOpen ? "w-64" : "w-16"
         )}
       >
@@ -79,21 +163,73 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Button>
         </div>
 
-        <nav className="flex flex-col gap-2 p-3">
-          {menuItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.path!}
-              className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
-                location.pathname === item.path
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent"
+        <nav className="flex flex-col gap-1 p-3 overflow-y-auto h-[calc(100vh-4rem)]">
+          {menuSections.map((section) => (
+            <div key={section.title} className="mb-2">
+              {sidebarOpen && (
+                <p className="px-3 py-1 text-[10px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+                  {section.title}
+                </p>
               )}
-            >
-              <item.icon className="h-4 w-4" />
-              {sidebarOpen && <span>{item.label}</span>}
-            </Link>
+              {section.items.map((item) => (
+                <div key={item.label}>
+                  {item.children ? (
+                    <>
+                      <button
+                        onClick={() => toggleMenu(item.label)}
+                        className={cn(
+                          "w-full flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
+                          isPathActive(undefined, item.children)
+                            ? "bg-sidebar-primary/50 text-sidebar-primary-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent"
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4" />
+                          {sidebarOpen && <span>{item.label}</span>}
+                        </div>
+                        {sidebarOpen && (
+                          expandedMenus.includes(item.label) 
+                            ? <ChevronDown className="h-4 w-4" />
+                            : <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                      {sidebarOpen && expandedMenus.includes(item.label) && (
+                        <div className="ml-4 mt-1 space-y-1 border-l border-sidebar-border pl-3">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.path}
+                              to={child.path}
+                              className={cn(
+                                "block rounded-md px-3 py-1.5 text-xs transition-smooth",
+                                location.pathname === child.path.split('?')[0]
+                                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                                  : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                              )}
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      to={item.path!}
+                      className={cn(
+                        "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-smooth",
+                        location.pathname === item.path
+                          ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent"
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {sidebarOpen && <span>{item.label}</span>}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
           ))}
 
           <button
