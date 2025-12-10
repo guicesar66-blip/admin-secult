@@ -8,6 +8,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
+import OportunidadeDetalhes from "./pages/OportunidadeDetalhes";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/oportunidades" element={<Oportunidades />} />
+            <Route path="/oportunidades/:id" element={<OportunidadeDetalhes />} />
             <Route path="/incubacoes" element={<Incubacoes />} />
             <Route path="/incubacoes/:id" element={<IncubacaoDetalhes />} />
             <Route path="/usuarios" element={<GestaoUsuarios />} />
