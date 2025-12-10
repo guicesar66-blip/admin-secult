@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
+import GestaoUsuarios from "./pages/GestaoUsuarios";
 import AnaliseFinanceira from "./pages/AnaliseFinanceira";
 import AnaliseTerritorial from "./pages/AnaliseTerritorial";
 import AnaliseArtistas from "./pages/AnaliseArtistas";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/oportunidades" element={<Oportunidades />} />
             <Route path="/incubacoes" element={<Incubacoes />} />
             <Route path="/incubacoes/:id" element={<IncubacaoDetalhes />} />
+            <Route path="/usuarios" element={<GestaoUsuarios />} />
             <Route path="/analise-financeira" element={<AnaliseFinanceira />} />
             <Route path="/analise-territorial" element={<AnaliseTerritorial />} />
             <Route path="/analise-artistas" element={<AnaliseArtistas />} />

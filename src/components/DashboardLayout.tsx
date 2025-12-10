@@ -12,6 +12,7 @@ import {
   Menu,
   Settings,
   GraduationCap,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -29,6 +30,7 @@ const menuItems = [
   { icon: Users, label: "Análise de Pessoas", path: "/analise-artistas" },
   { icon: Target, label: "Oportunidades", path: "/oportunidades" },
   { icon: GraduationCap, label: "Incubações", path: "/incubacoes" },
+  { icon: UserCog, label: "Usuários", path: "/usuarios" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
