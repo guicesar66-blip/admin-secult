@@ -15,6 +15,7 @@ import AnaliseTerritorial from "./pages/AnaliseTerritorial";
 import AnaliseArtistas from "./pages/AnaliseArtistas";
 import Configuracoes from "./pages/Configuracoes";
 import GestaoPagamento from "./pages/GestaoPagamento";
+import SistemaTrocados from "./pages/SistemaTrocados";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/analise-artistas" element={<AnaliseArtistas />} />
             <Route path="/configuracoes" element={<Configuracoes />} />
             <Route path="/gestao-pagamento" element={<GestaoPagamento />} />
+            <Route path="/trocados" element={<SistemaTrocados />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
