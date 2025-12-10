@@ -11,6 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   Plus, 
   Search, 
@@ -27,11 +30,16 @@ import {
   Handshake,
   Sparkles,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  XCircle,
+  Clock,
+  MoreHorizontal,
+  Check
 } from "lucide-react";
 import { useState } from "react";
 import { ReportPreviewDialog } from "@/components/ReportPreviewDialog";
 import { ApprovalDialog } from "@/components/ApprovalDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const oportunidades = [
   {
@@ -106,12 +114,37 @@ const oportunidades = [
   },
 ];
 
+const candidaturas = [
+  { id: 1, candidato: "Maria Silva", oportunidade: "Festival Rock Recife 2025", data: "2024-11-15", status: "pendente", portfolio: "Cantora MPB, 5 anos de experiência" },
+  { id: 2, candidato: "João Santos", oportunidade: "Festival Rock Recife 2025", data: "2024-11-14", status: "aprovado", portfolio: "Guitarrista de rock, banda local" },
+  { id: 3, candidato: "Ana Costa", oportunidade: "Workshop Produção Musical", data: "2024-11-13", status: "pendente", portfolio: "Produtora iniciante, interesse em eletrônica" },
+  { id: 4, candidato: "Pedro Lima", oportunidade: "Festival Rock Recife 2025", data: "2024-11-12", status: "rejeitado", portfolio: "Baterista, 3 anos de experiência" },
+  { id: 5, candidato: "Carla Mendes", oportunidade: "Show na Praça do Marco Zero", data: "2024-11-11", status: "pendente", portfolio: "Cantora sertaneja, 2 álbuns lançados" },
+  { id: 6, candidato: "Lucas Oliveira", oportunidade: "Workshop Produção Musical", data: "2024-11-10", status: "aprovado", portfolio: "DJ e produtor, 4 anos de experiência" },
+];
+
 export default function Oportunidades() {
+  const { toast } = useToast();
   const [reportOpen, setReportOpen] = useState(false);
   const [approvalOpen, setApprovalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("marketplace");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [selectedCandidaturas, setSelectedCandidaturas] = useState<number[]>([]);
+
+  const handleAcaoEmLote = (acao: "aprovar" | "rejeitar") => {
+    toast({
+      title: acao === "aprovar" ? "Candidaturas aprovadas" : "Candidaturas rejeitadas",
+      description: `${selectedCandidaturas.length} candidatura(s) ${acao === "aprovar" ? "aprovada(s)" : "rejeitada(s)"} com sucesso.`
+    });
+    setSelectedCandidaturas([]);
+  };
+
+  const toggleCandidatura = (id: number) => {
+    setSelectedCandidaturas(prev => 
+      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    );
+  };
 
   return (
     <DashboardLayout>
@@ -138,11 +171,12 @@ export default function Oportunidades() {
           </div>
         </div>
 
-        {/* Tabs para Marketplace e Minhas Oportunidades */}
+        {/* Tabs para Marketplace, Minhas Oportunidades e Candidaturas */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
             <TabsTrigger value="minhas">Minhas Oportunidades</TabsTrigger>
+            <TabsTrigger value="candidaturas">Candidaturas</TabsTrigger>
           </TabsList>
 
           {/* Tab Marketplace */}
@@ -448,6 +482,118 @@ export default function Oportunidades() {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* Tab Candidaturas Recebidas */}
+          <TabsContent value="candidaturas" className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground">Total Candidaturas</p>
+                  <p className="mt-1 text-2xl font-bold text-foreground">{candidaturas.length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground">Pendentes</p>
+                  <p className="mt-1 text-2xl font-bold text-yellow-600">{candidaturas.filter(c => c.status === "pendente").length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground">Aprovadas</p>
+                  <p className="mt-1 text-2xl font-bold text-green-600">{candidaturas.filter(c => c.status === "aprovado").length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground">Rejeitadas</p>
+                  <p className="mt-1 text-2xl font-bold text-red-600">{candidaturas.filter(c => c.status === "rejeitado").length}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {selectedCandidaturas.length > 0 && (
+              <Card className="border-primary">
+                <CardContent className="pt-4 flex items-center justify-between">
+                  <span className="text-sm font-medium">{selectedCandidaturas.length} candidatura(s) selecionada(s)</span>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => handleAcaoEmLote("rejeitar")} className="text-destructive">
+                      <XCircle className="h-4 w-4 mr-1" /> Rejeitar
+                    </Button>
+                    <Button size="sm" onClick={() => handleAcaoEmLote("aprovar")}>
+                      <Check className="h-4 w-4 mr-1" /> Aprovar
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Candidaturas Recebidas</CardTitle>
+                <CardDescription>Gerencie as candidaturas às suas oportunidades</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-10"></TableHead>
+                      <TableHead>Candidato</TableHead>
+                      <TableHead>Oportunidade</TableHead>
+                      <TableHead>Data</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {candidaturas.map((c) => (
+                      <TableRow key={c.id}>
+                        <TableCell>
+                          <Checkbox 
+                            checked={selectedCandidaturas.includes(c.id)}
+                            onCheckedChange={() => toggleCandidatura(c.id)}
+                            disabled={c.status !== "pendente"}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar>
+                              <AvatarFallback className="bg-primary/10 text-primary">
+                                {c.candidato.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">{c.candidato}</p>
+                              <p className="text-xs text-muted-foreground">{c.portfolio}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{c.oportunidade}</TableCell>
+                        <TableCell>{new Date(c.data).toLocaleDateString("pt-BR")}</TableCell>
+                        <TableCell>
+                          <BadgeStatus variant={c.status === "aprovado" ? "success" : c.status === "rejeitado" ? "error" : "warning"}>
+                            {c.status === "aprovado" ? "Aprovado" : c.status === "rejeitado" ? "Rejeitado" : "Pendente"}
+                          </BadgeStatus>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {c.status === "pendente" && (
+                            <div className="flex justify-end gap-1">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600">
+                                <CheckCircle2 className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
