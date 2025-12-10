@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, ShoppingCart } from "lucide-react";
+import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, ShoppingCart, QrCode, FileText, Check, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/contexts/NotificationContext";
 
@@ -39,12 +39,23 @@ const recompensasData = [
   { id: 5, nome: "Kit Estúdio Básico", custo: 1500, disponivel: 5, categoria: "Produto" },
 ];
 
+const pacotesTrocados = [
+  { id: 1, trocados: 500, preco: 25, popular: false },
+  { id: 2, trocados: 1000, preco: 45, popular: true },
+  { id: 3, trocados: 2500, preco: 100, popular: false },
+  { id: 4, trocados: 5000, preco: 180, popular: false },
+];
+
 const SistemaTrocados = () => {
   const { toast } = useToast();
   const { addNotification } = useNotifications();
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [recompensaDialogOpen, setRecompensaDialogOpen] = useState(false);
+  const [compraDialogOpen, setCompraDialogOpen] = useState(false);
+  const [compraStep, setCompraStep] = useState<'pacote' | 'pagamento' | 'confirmacao'>('pacote');
+  const [pacoteSelecionado, setPacoteSelecionado] = useState<number | null>(null);
+  const [metodoPagamento, setMetodoPagamento] = useState<'pix' | 'boleto' | null>(null);
   const [novaTransacao, setNovaTransacao] = useState({
     usuario: "",
     tipo: "credito",
@@ -110,6 +121,30 @@ const SistemaTrocados = () => {
     setNovaRecompensa({ nome: "", custo: "", disponivel: "", categoria: "" });
   };
 
+  const handleConfirmarCompra = () => {
+    const pacote = pacotesTrocados.find(p => p.id === pacoteSelecionado);
+    toast({
+      title: "Pedido realizado!",
+      description: `Compra de ${pacote?.trocados.toLocaleString()} trocados via ${metodoPagamento === 'pix' ? 'PIX' : 'Boleto'} registrada. Aguardando confirmação de pagamento.`
+    });
+    addNotification({
+      type: 'balance',
+      title: 'Compra de Trocados',
+      message: `Pedido de ${pacote?.trocados.toLocaleString()} trocados por R$ ${pacote?.preco.toFixed(2)} aguardando pagamento via ${metodoPagamento === 'pix' ? 'PIX' : 'Boleto'}`
+    });
+    setCompraDialogOpen(false);
+    setCompraStep('pacote');
+    setPacoteSelecionado(null);
+    setMetodoPagamento(null);
+  };
+
+  const resetCompraDialog = () => {
+    setCompraDialogOpen(false);
+    setCompraStep('pacote');
+    setPacoteSelecionado(null);
+    setMetodoPagamento(null);
+  };
+
   const totalEmCirculacao = usuariosData.reduce((acc, u) => acc + u.saldo, 0);
   const totalDistribuido = usuariosData.reduce((acc, u) => acc + u.totalGanho, 0);
   const totalResgatado = usuariosData.reduce((acc, u) => acc + u.totalGasto, 0);
@@ -122,10 +157,132 @@ const SistemaTrocados = () => {
             <h1 className="text-2xl font-bold text-foreground">Sistema de Trocados</h1>
             <p className="text-muted-foreground">Gerencie a moeda virtual e recompensas da plataforma</p>
           </div>
-          <Button className="gap-2">
-            <ShoppingCart className="h-4 w-4" />
-            Comprar Trocados
-          </Button>
+          <Dialog open={compraDialogOpen} onOpenChange={(open) => open ? setCompraDialogOpen(true) : resetCompraDialog()}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                Comprar Trocados
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>
+                  {compraStep === 'pacote' && 'Escolha um pacote'}
+                  {compraStep === 'pagamento' && 'Método de pagamento'}
+                  {compraStep === 'confirmacao' && 'Confirmar compra'}
+                </DialogTitle>
+                <DialogDescription>
+                  {compraStep === 'pacote' && 'Selecione a quantidade de trocados que deseja comprar'}
+                  {compraStep === 'pagamento' && 'Como você prefere pagar?'}
+                  {compraStep === 'confirmacao' && 'Revise os detalhes da sua compra'}
+                </DialogDescription>
+              </DialogHeader>
+
+              {compraStep === 'pacote' && (
+                <div className="grid grid-cols-2 gap-3 py-4">
+                  {pacotesTrocados.map((pacote) => (
+                    <div
+                      key={pacote.id}
+                      onClick={() => setPacoteSelecionado(pacote.id)}
+                      className={`relative p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                        pacoteSelecionado === pacote.id ? 'border-primary bg-primary/5 ring-2 ring-primary' : 'border-border'
+                      }`}
+                    >
+                      {pacote.popular && (
+                        <Badge className="absolute -top-2 right-2 bg-primary">Popular</Badge>
+                      )}
+                      <div className="flex items-center gap-2 mb-2">
+                        <Coins className="h-5 w-5 text-primary" />
+                        <span className="font-bold text-lg">{pacote.trocados.toLocaleString()}</span>
+                      </div>
+                      <p className="text-xl font-bold text-foreground">R$ {pacote.preco.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        R$ {(pacote.preco / pacote.trocados * 100).toFixed(2)} / 100 trocados
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {compraStep === 'pagamento' && (
+                <div className="grid grid-cols-2 gap-4 py-4">
+                  <div
+                    onClick={() => setMetodoPagamento('pix')}
+                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary flex flex-col items-center gap-3 ${
+                      metodoPagamento === 'pix' ? 'border-primary bg-primary/5 ring-2 ring-primary' : 'border-border'
+                    }`}
+                  >
+                    <QrCode className="h-10 w-10 text-primary" />
+                    <span className="font-medium">PIX</span>
+                    <span className="text-xs text-muted-foreground text-center">Aprovação instantânea</span>
+                  </div>
+                  <div
+                    onClick={() => setMetodoPagamento('boleto')}
+                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary flex flex-col items-center gap-3 ${
+                      metodoPagamento === 'boleto' ? 'border-primary bg-primary/5 ring-2 ring-primary' : 'border-border'
+                    }`}
+                  >
+                    <FileText className="h-10 w-10 text-primary" />
+                    <span className="font-medium">Boleto</span>
+                    <span className="text-xs text-muted-foreground text-center">Até 3 dias úteis</span>
+                  </div>
+                </div>
+              )}
+
+              {compraStep === 'confirmacao' && (
+                <div className="py-4 space-y-4">
+                  <Card>
+                    <CardContent className="pt-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Pacote</span>
+                        <span className="font-medium flex items-center gap-1">
+                          <Coins className="h-4 w-4 text-primary" />
+                          {pacotesTrocados.find(p => p.id === pacoteSelecionado)?.trocados.toLocaleString()} trocados
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Pagamento</span>
+                        <span className="font-medium flex items-center gap-1">
+                          {metodoPagamento === 'pix' ? <QrCode className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
+                          {metodoPagamento === 'pix' ? 'PIX' : 'Boleto'}
+                        </span>
+                      </div>
+                      <div className="border-t pt-3 flex justify-between items-center">
+                        <span className="font-medium">Total</span>
+                        <span className="text-xl font-bold text-primary">
+                          R$ {pacotesTrocados.find(p => p.id === pacoteSelecionado)?.preco.toFixed(2)}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              <DialogFooter className="gap-2">
+                {compraStep !== 'pacote' && (
+                  <Button variant="outline" onClick={() => setCompraStep(compraStep === 'confirmacao' ? 'pagamento' : 'pacote')}>
+                    Voltar
+                  </Button>
+                )}
+                {compraStep === 'pacote' && (
+                  <Button onClick={() => setCompraStep('pagamento')} disabled={!pacoteSelecionado}>
+                    Continuar
+                  </Button>
+                )}
+                {compraStep === 'pagamento' && (
+                  <Button onClick={() => setCompraStep('confirmacao')} disabled={!metodoPagamento}>
+                    Continuar
+                  </Button>
+                )}
+                {compraStep === 'confirmacao' && (
+                  <Button onClick={handleConfirmarCompra} className="gap-2">
+                    <Check className="h-4 w-4" />
+                    Confirmar Compra
+                  </Button>
+                )}
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Stats Cards */}
