@@ -340,10 +340,6 @@ export default function Incubacoes() {
                           </div>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm">
-                              <BarChart3 className="mr-2 h-4 w-4" />
-                              Métricas
-                            </Button>
-                            <Button variant="outline" size="sm">
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
