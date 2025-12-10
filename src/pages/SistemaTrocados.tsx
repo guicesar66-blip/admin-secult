@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,17 +11,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, ShoppingCart, QrCode, FileText, Check, Package } from "lucide-react";
+import { Coins, TrendingUp, TrendingDown, Gift, ShoppingBag, Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, ShoppingCart, QrCode, FileText, Check, Package, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/contexts/NotificationContext";
 
-const transacoesData = [
-  { id: 1, usuario: "Maria Silva", tipo: "credito", valor: 500, descricao: "Conclusão de curso", data: "2024-01-15", saldo: 1500 },
-  { id: 2, usuario: "João Santos", tipo: "debito", valor: 200, descricao: "Resgate - Vale compras", data: "2024-01-14", saldo: 800 },
-  { id: 3, usuario: "Ana Costa", tipo: "credito", valor: 300, descricao: "Participação em evento", data: "2024-01-13", saldo: 2100 },
-  { id: 4, usuario: "Pedro Lima", tipo: "credito", valor: 1000, descricao: "Projeto finalizado", data: "2024-01-12", saldo: 3500 },
-  { id: 5, usuario: "Carla Mendes", tipo: "debito", valor: 500, descricao: "Resgate - Equipamento", data: "2024-01-11", saldo: 450 },
-  { id: 6, usuario: "Lucas Oliveira", tipo: "credito", valor: 250, descricao: "Mentoria concluída", data: "2024-01-10", saldo: 1250 },
+const oportunidadesTransacoesData = [
+  { id: 1, titulo: "Curso de Produção Musical", responsavel: "Maria Silva", valorTotal: 2500, valorPago: 2500, status: "pago", metodoPagamento: "pix", data: "2024-01-15", parcelas: 1 },
+  { id: 2, titulo: "Workshop de Mixagem", responsavel: "João Santos", valorTotal: 1200, valorPago: 600, status: "parcial", metodoPagamento: "boleto", data: "2024-01-14", parcelas: 2 },
+  { id: 3, titulo: "Mentoria Carreira Artística", responsavel: "Ana Costa", valorTotal: 3000, valorPago: 0, status: "pendente", metodoPagamento: null, data: "2024-01-13", parcelas: 0 },
+  { id: 4, titulo: "Gravação de EP", responsavel: "Pedro Lima", valorTotal: 5000, valorPago: 5000, status: "pago", metodoPagamento: "pix", data: "2024-01-12", parcelas: 1 },
+  { id: 5, titulo: "Consultoria de Marketing", responsavel: "Carla Mendes", valorTotal: 1800, valorPago: 900, status: "parcial", metodoPagamento: "boleto", data: "2024-01-11", parcelas: 3 },
+  { id: 6, titulo: "Produção de Videoclipe", responsavel: "Lucas Oliveira", valorTotal: 4500, valorPago: 4500, status: "pago", metodoPagamento: "boleto", data: "2024-01-10", parcelas: 2 },
 ];
 
 const usuariosData = [
@@ -49,6 +50,7 @@ const pacotesTrocados = [
 const SistemaTrocados = () => {
   const { toast } = useToast();
   const { addNotification } = useNotifications();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [recompensaDialogOpen, setRecompensaDialogOpen] = useState(false);
@@ -340,14 +342,14 @@ const SistemaTrocados = () => {
             <TabsTrigger value="recompensas">Recompensas</TabsTrigger>
           </TabsList>
 
-          {/* Transações Tab */}
+          {/* Transações por Oportunidade Tab */}
           <TabsContent value="transacoes" className="space-y-4">
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <CardTitle>Histórico de Transações</CardTitle>
-                    <CardDescription>Todas as movimentações de trocados</CardDescription>
+                    <CardTitle>Transações por Oportunidade</CardTitle>
+                    <CardDescription>Clique em uma oportunidade para ver os detalhes de pagamento</CardDescription>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1 sm:flex-none">
@@ -369,44 +371,61 @@ const SistemaTrocados = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Usuário</TableHead>
-                      <TableHead>Tipo</TableHead>
-                      <TableHead>Valor</TableHead>
-                      <TableHead className="hidden md:table-cell">Descrição</TableHead>
-                      <TableHead className="hidden sm:table-cell">Data</TableHead>
-                      <TableHead className="text-right">Saldo</TableHead>
+                      <TableHead>Oportunidade</TableHead>
+                      <TableHead className="hidden md:table-cell">Responsável</TableHead>
+                      <TableHead>Valor Total</TableHead>
+                      <TableHead className="hidden sm:table-cell">Valor Pago</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden lg:table-cell">Pagamento</TableHead>
+                      <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {transacoesData
-                      .filter(t => t.usuario.toLowerCase().includes(searchTerm.toLowerCase()))
-                      .map((transacao) => (
-                        <TableRow key={transacao.id}>
-                          <TableCell className="font-medium">{transacao.usuario}</TableCell>
+                    {oportunidadesTransacoesData
+                      .filter(t => t.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || t.responsavel.toLowerCase().includes(searchTerm.toLowerCase()))
+                      .map((oportunidade) => (
+                        <TableRow 
+                          key={oportunidade.id} 
+                          className="cursor-pointer hover:bg-muted/50"
+                          onClick={() => navigate(`/oportunidades/${oportunidade.id}`)}
+                        >
+                          <TableCell className="font-medium">{oportunidade.titulo}</TableCell>
+                          <TableCell className="hidden md:table-cell text-muted-foreground">{oportunidade.responsavel}</TableCell>
+                          <TableCell>R$ {oportunidade.valorTotal.toLocaleString()}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <span className={oportunidade.valorPago === oportunidade.valorTotal ? "text-green-600" : oportunidade.valorPago > 0 ? "text-orange-600" : "text-muted-foreground"}>
+                              R$ {oportunidade.valorPago.toLocaleString()}
+                            </span>
+                          </TableCell>
                           <TableCell>
                             <Badge 
-                              variant={transacao.tipo === "credito" ? "default" : "secondary"}
-                              className={transacao.tipo === "credito" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"}
+                              variant="secondary"
+                              className={
+                                oportunidade.status === "pago" 
+                                  ? "bg-green-100 text-green-700" 
+                                  : oportunidade.status === "parcial" 
+                                    ? "bg-orange-100 text-orange-700" 
+                                    : "bg-gray-100 text-gray-700"
+                              }
                             >
-                              {transacao.tipo === "credito" ? (
-                                <ArrowDownLeft className="h-3 w-3 mr-1" />
-                              ) : (
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
-                              )}
-                              {transacao.tipo === "credito" ? "Crédito" : "Débito"}
+                              {oportunidade.status === "pago" ? "Pago" : oportunidade.status === "parcial" ? "Parcial" : "Pendente"}
                             </Badge>
                           </TableCell>
-                          <TableCell className={transacao.tipo === "credito" ? "text-green-600" : "text-orange-600"}>
-                            {transacao.tipo === "credito" ? "+" : "-"}{transacao.valor}
+                          <TableCell className="hidden lg:table-cell">
+                            {oportunidade.metodoPagamento ? (
+                              <div className="flex items-center gap-1.5 text-muted-foreground">
+                                {oportunidade.metodoPagamento === "pix" ? (
+                                  <><QrCode className="h-4 w-4" /> PIX</>
+                                ) : (
+                                  <><FileText className="h-4 w-4" /> Boleto</>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
                           </TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {transacao.descricao}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell text-muted-foreground">
-                            {new Date(transacao.data).toLocaleDateString("pt-BR")}
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            {transacao.saldo.toLocaleString()}
+                          <TableCell>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
                           </TableCell>
                         </TableRow>
                       ))}
