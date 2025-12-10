@@ -136,7 +136,7 @@ const modalidadeLabels: Record<string, string> = {
 };
 export default function Incubacoes() {
   const [reportOpen, setReportOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("explorar");
+  const [activeTab, setActiveTab] = useState("minhas");
   const [showCreateForm, setShowCreateForm] = useState(false);
   return <DashboardLayout>
       <div className="space-y-6">
@@ -167,184 +167,11 @@ export default function Incubacoes() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-3">
-            <TabsTrigger value="explorar">Explorar</TabsTrigger>
+          <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="minhas">Minhas Incubações</TabsTrigger>
             <TabsTrigger value="matriculas">Matrículas</TabsTrigger>
           </TabsList>
 
-          {/* Tab Explorar */}
-          <TabsContent value="explorar" className="space-y-6">
-            {/* Estatísticas */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <BookOpen className="h-8 w-8 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Disponíveis</p>
-                      <p className="text-2xl font-bold text-foreground">12</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <GraduationCap className="h-8 w-8 text-success" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Em Andamento</p>
-                      <p className="text-2xl font-bold text-foreground">5</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <Users className="h-8 w-8 text-warning" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Participantes</p>
-                      <p className="text-2xl font-bold text-foreground">248</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <Award className="h-8 w-8 text-info" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Taxa Conclusão</p>
-                      <p className="text-2xl font-bold text-foreground">87%</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Filtros */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
-                      <SelectItem value="formacao">Formação</SelectItem>
-                      <SelectItem value="mentoria">Mentoria</SelectItem>
-                      <SelectItem value="workshop">Workshop</SelectItem>
-                      <SelectItem value="consultoria">Consultoria</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Modalidade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
-                      <SelectItem value="presencial">Presencial</SelectItem>
-                      <SelectItem value="online">Online</SelectItem>
-                      <SelectItem value="hibrido">Híbrido</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="publicado">Inscrições Abertas</SelectItem>
-                      <SelectItem value="andamento">Em Andamento</SelectItem>
-                      <SelectItem value="concluido">Concluído</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input placeholder="Buscar incubação..." className="pl-9" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Grid de Cards */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {incubacoes.filter(inc => inc.status !== "RASCUNHO").map(item => <Card key={item.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">
-                            {categoriaLabels[item.categoria]}
-                          </span>
-                          <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                            {modalidadeLabels[item.modalidade]}
-                          </span>
-                        </div>
-                        <CardTitle className="text-lg mb-2">{item.titulo}</CardTitle>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{item.descricao}</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{item.cargaHoraria}h de carga horária</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>{item.dataInicio} - {item.dataFim}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        <span>{item.vagasPreenchidas}/{item.vagas} vagas</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <BookOpen className="h-4 w-4" />
-                        <span>{item.modulos} módulos</span>
-                      </div>
-                    </div>
-
-                    {/* Barra de vagas */}
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">Vagas preenchidas</span>
-                        <span className="font-medium">{Math.round(item.vagasPreenchidas / item.vagas * 100)}%</span>
-                      </div>
-                      <Progress value={item.vagasPreenchidas / item.vagas * 100} className="h-2" />
-                    </div>
-
-                    {item.avaliacaoMedia && <div className="flex items-center gap-1 text-sm">
-                        <span className="text-warning">★</span>
-                        <span className="font-medium">{item.avaliacaoMedia}</span>
-                        <span className="text-muted-foreground">• {item.taxaConclusao}% conclusão</span>
-                      </div>}
-                    
-                    <div className="pt-4 border-t border-border">
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Por: <span className="font-medium text-foreground">{item.criador}</span>
-                      </p>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <Eye className="mr-2 h-4 w-4" />
-                          Detalhes
-                        </Button>
-                        <Button size="sm" className="flex-1">
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          Inscrever
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>)}
-            </div>
-          </TabsContent>
 
           {/* Tab Minhas Incubações */}
           <TabsContent value="minhas" className="space-y-6">
