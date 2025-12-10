@@ -67,7 +67,7 @@ const incubacoesData: Record<number, {
     dataFim: "2026-03-15",
     facilitadores: ["Carlos Mentor"],
     avaliacaoMedia: null,
-    taxaConclusao: null,
+    taxaConclusao: 50,
     modulos: 4,
     criador: "Coletivo Artístico PE"
   },
