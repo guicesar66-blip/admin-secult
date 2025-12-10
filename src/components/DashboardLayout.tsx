@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   Settings,
+  GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -27,6 +28,7 @@ const menuItems = [
   { icon: MapPin, label: "Análise Territorial", path: "/analise-territorial" },
   { icon: Users, label: "Análise de Pessoas", path: "/analise-artistas" },
   { icon: Target, label: "Oportunidades", path: "/oportunidades" },
+  { icon: GraduationCap, label: "Incubações", path: "/incubacoes" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
