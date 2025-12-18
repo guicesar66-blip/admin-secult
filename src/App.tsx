@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
 import ProjetoDetalhes from "./pages/ProjetoDetalhes";
+import NovoProjetoConstrucao from "./pages/NovoProjetoConstrucao";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/oportunidades" element={<Oportunidades />} />
+            <Route path="/oportunidades/novo" element={<NovoProjetoConstrucao />} />
             <Route path="/oportunidades/:id" element={<ProjetoDetalhes />} />
             <Route path="/incubacoes" element={<Incubacoes />} />
             <Route path="/incubacoes/:id" element={<IncubacaoDetalhes />} />
