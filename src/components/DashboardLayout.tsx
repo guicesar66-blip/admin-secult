@@ -54,16 +54,15 @@ const menuSections: MenuSection[] = [
   {
     title: "Gestão",
     items: [
-      { icon: Target, label: "Oportunidades", path: "/oportunidades" },
-      { icon: GraduationCap, label: "Incubações", path: "/incubacoes" },
+      { icon: Target, label: "Projetos", path: "/oportunidades" },
     ],
   },
   {
-    title: "Marketplace",
+    title: "Oportunidades",
     items: [
       { 
         icon: Store, 
-        label: "Marketplace",
+        label: "Oportunidades",
         children: [
           { label: "Explorar", path: "/oportunidades?tab=marketplace" },
           { label: "Meus Investimentos", path: "/investimentos" },
