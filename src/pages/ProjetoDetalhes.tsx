@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
   Lightbulb,
@@ -106,18 +103,9 @@ const ProjetoDetalhes = () => {
   
   // Verifica se é um novo projeto vindo do fluxo de criação
   const novoProjetoData = state?.novoProjeto;
-  const faseInicial = state?.faseInicial;
   
   // Usa o projeto do state se disponível, senão busca dos dados existentes
   const projeto = novoProjetoData || projetosData[id || ""];
-  const [activeTab, setActiveTab] = useState<FaseType>(faseInicial || projeto?.fase || "construcao");
-
-  // Atualiza a tab ativa se vier do fluxo de criação
-  useEffect(() => {
-    if (faseInicial) {
-      setActiveTab(faseInicial);
-    }
-  }, [faseInicial]);
 
   if (!projeto) {
     return (
@@ -175,7 +163,7 @@ const ProjetoDetalhes = () => {
           
           <div className="relative">
             <div className="flex justify-between mb-2">
-              {fases.map((fase, index) => {
+              {fases.map((fase) => {
                 const config = faseConfig[fase];
                 const isCompleted = config.step < currentStep;
                 const isCurrent = config.step === currentStep;
@@ -183,10 +171,9 @@ const ProjetoDetalhes = () => {
                 return (
                   <div
                     key={fase}
-                    className={`flex flex-col items-center z-10 cursor-pointer transition-opacity ${
+                    className={`flex flex-col items-center z-10 ${
                       isCompleted || isCurrent ? "opacity-100" : "opacity-50"
                     }`}
-                    onClick={() => setActiveTab(fase)}
                   >
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
@@ -230,33 +217,13 @@ const ProjetoDetalhes = () => {
           </div>
         </div>
 
-        {/* Tabs de Fases */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as FaseType)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            {fases.map((fase) => (
-              <TabsTrigger key={fase} value={fase} className="gap-2">
-                {faseConfig[fase].icon}
-                <span className="hidden sm:inline">{faseConfig[fase].label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value="construcao">
-            <FaseConstrucao projeto={projeto} />
-          </TabsContent>
-
-          <TabsContent value="divulgacao">
-            <FaseDivulgacao projeto={projeto} />
-          </TabsContent>
-
-          <TabsContent value="execucao">
-            <FaseExecucao projeto={projeto} />
-          </TabsContent>
-
-          <TabsContent value="resultados">
-            <FaseResultados projeto={projeto} />
-          </TabsContent>
-        </Tabs>
+        {/* Conteúdo da Fase Atual */}
+        <div className="space-y-6">
+          {projeto.fase === "construcao" && <FaseConstrucao projeto={projeto} />}
+          {projeto.fase === "divulgacao" && <FaseDivulgacao projeto={projeto} />}
+          {projeto.fase === "execucao" && <FaseExecucao projeto={projeto} />}
+          {projeto.fase === "resultados" && <FaseResultados projeto={projeto} />}
+        </div>
       </div>
     </DashboardLayout>
   );
