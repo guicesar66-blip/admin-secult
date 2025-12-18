@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BadgeStatus } from "@/components/ui/badge-status";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -10,610 +10,224 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  Plus, 
-  Search, 
-  Download, 
-  Upload, 
-  Edit, 
-  Eye, 
-  Trash2, 
-  FileText,
-  Users,
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Plus,
+  Search,
+  Filter,
+  Lightbulb,
+  Megaphone,
+  Play,
+  Trophy,
   Calendar,
-  MapPin,
-  DollarSign,
-  Handshake,
-  Sparkles,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  MoreHorizontal,
-  Check
+  Users,
+  Music,
+  Film,
+  Palette,
+  Theater,
 } from "lucide-react";
-import { useState } from "react";
-import { ReportPreviewDialog } from "@/components/ReportPreviewDialog";
-import { ApprovalDialog } from "@/components/ApprovalDialog";
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
-const oportunidades = [
-  {
-    id: 1,
-    titulo: "Festival Rock Recife 2025",
-    tipo: "Show",
-    status: "Ativa",
-    statusVariant: "success" as const,
-    inscricoes: "45/100",
-    descricao: "Festival de rock com múltiplas bandas locais",
-    local: "Marco Zero, Recife",
-    data: "15/12/2025",
-    orcamento: "R$ 50.000",
-    criador: "Secretaria de Cultura",
-    interessados: 23,
-  },
-  {
-    id: 2,
-    titulo: "Workshop Produção Musical",
-    tipo: "Curso",
-    status: "Ativa",
-    statusVariant: "success" as const,
-    inscricoes: "23/30",
-    descricao: "Workshop prático de produção musical para iniciantes",
-    local: "Online",
-    data: "20/11/2025",
-    orcamento: "R$ 15.000",
-    criador: "Escola de Música Recife",
-    interessados: 18,
-  },
-  {
-    id: 3,
-    titulo: "Edital Carnaval 2025",
-    tipo: "Fomento",
-    status: "Finalizada",
-    statusVariant: "info" as const,
-    inscricoes: "156/200",
-    descricao: "Edital para apoio a projetos culturais no carnaval",
-    local: "Recife",
-    data: "10/02/2025",
-    orcamento: "R$ 200.000",
-    criador: "Prefeitura do Recife",
-    interessados: 89,
-  },
-  {
-    id: 4,
-    titulo: "Show na Praça do Marco Zero",
-    tipo: "Show",
-    status: "Ativa",
-    statusVariant: "success" as const,
-    inscricoes: "67/80",
-    descricao: "Show acústico ao ar livre",
-    local: "Praça do Marco Zero",
-    data: "05/12/2025",
-    orcamento: "R$ 25.000",
-    criador: "Associação Cultural",
-    interessados: 34,
-  },
-  {
-    id: 5,
-    titulo: "Curso de Violão Básico",
-    tipo: "Curso",
-    status: "Aguardando Aprovação",
-    statusVariant: "error" as const,
-    inscricoes: "12/25",
-    descricao: "Curso básico de violão para iniciantes",
-    local: "Centro Cultural",
-    data: "01/12/2025",
-    orcamento: "R$ 8.000",
-    criador: "Professor João Silva",
-    interessados: 5,
-  },
+type FaseType = "construcao" | "divulgacao" | "execucao" | "resultados";
+type TipoProjeto = "evento" | "ep" | "filme" | "festival" | "exposicao" | "teatro";
+
+interface Projeto {
+  id: string;
+  titulo: string;
+  tipo: TipoProjeto;
+  fase: FaseType;
+  dataInicio: string;
+  prazo: string;
+  membros: number;
+  progresso: number;
+  responsavel: string;
+}
+
+const projetos: Projeto[] = [
+  { id: "1", titulo: "Festival de Jazz da Praça", tipo: "festival", fase: "execucao", dataInicio: "2024-01-15", prazo: "2024-06-20", membros: 12, progresso: 65, responsavel: "Maria Silva" },
+  { id: "2", titulo: "EP Raízes Urbanas", tipo: "ep", fase: "construcao", dataInicio: "2024-02-01", prazo: "2024-08-15", membros: 4, progresso: 20, responsavel: "João Santos" },
+  { id: "3", titulo: "Documentário Vozes da Periferia", tipo: "filme", fase: "divulgacao", dataInicio: "2023-09-10", prazo: "2024-04-30", membros: 8, progresso: 45, responsavel: "Ana Costa" },
+  { id: "4", titulo: "Exposição Arte Digital", tipo: "exposicao", fase: "resultados", dataInicio: "2023-06-01", prazo: "2024-02-28", membros: 6, progresso: 100, responsavel: "Pedro Lima" },
+  { id: "5", titulo: "Peça Teatral Memórias", tipo: "teatro", fase: "execucao", dataInicio: "2024-01-20", prazo: "2024-07-10", membros: 15, progresso: 40, responsavel: "Carla Mendes" },
+  { id: "6", titulo: "Show Acústico Coletivo", tipo: "evento", fase: "construcao", dataInicio: "2024-03-01", prazo: "2024-05-15", membros: 3, progresso: 10, responsavel: "Lucas Alves" },
 ];
 
-const candidaturas = [
-  { id: 1, candidato: "Maria Silva", oportunidade: "Festival Rock Recife 2025", data: "2024-11-15", status: "pendente", portfolio: "Cantora MPB, 5 anos de experiência" },
-  { id: 2, candidato: "João Santos", oportunidade: "Festival Rock Recife 2025", data: "2024-11-14", status: "aprovado", portfolio: "Guitarrista de rock, banda local" },
-  { id: 3, candidato: "Ana Costa", oportunidade: "Workshop Produção Musical", data: "2024-11-13", status: "pendente", portfolio: "Produtora iniciante, interesse em eletrônica" },
-  { id: 4, candidato: "Pedro Lima", oportunidade: "Festival Rock Recife 2025", data: "2024-11-12", status: "rejeitado", portfolio: "Baterista, 3 anos de experiência" },
-  { id: 5, candidato: "Carla Mendes", oportunidade: "Show na Praça do Marco Zero", data: "2024-11-11", status: "pendente", portfolio: "Cantora sertaneja, 2 álbuns lançados" },
-  { id: 6, candidato: "Lucas Oliveira", oportunidade: "Workshop Produção Musical", data: "2024-11-10", status: "aprovado", portfolio: "DJ e produtor, 4 anos de experiência" },
-];
+const faseConfig: Record<FaseType, { label: string; icon: React.ReactNode; color: string }> = {
+  construcao: { label: "Construção", icon: <Lightbulb className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600 border-amber-500/30" },
+  divulgacao: { label: "Divulgação", icon: <Megaphone className="h-4 w-4" />, color: "bg-blue-500/20 text-blue-600 border-blue-500/30" },
+  execucao: { label: "Execução", icon: <Play className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30" },
+  resultados: { label: "Resultados", icon: <Trophy className="h-4 w-4" />, color: "bg-purple-500/20 text-purple-600 border-purple-500/30" },
+};
 
-export default function Oportunidades() {
-  const { toast } = useToast();
-  const [reportOpen, setReportOpen] = useState(false);
-  const [approvalOpen, setApprovalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("marketplace");
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedCandidaturas, setSelectedCandidaturas] = useState<number[]>([]);
+const tipoConfig: Record<TipoProjeto, { label: string; icon: React.ReactNode }> = {
+  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" /> },
+  ep: { label: "EP/Álbum", icon: <Music className="h-4 w-4" /> },
+  filme: { label: "Filme/Doc", icon: <Film className="h-4 w-4" /> },
+  festival: { label: "Festival", icon: <Users className="h-4 w-4" /> },
+  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" /> },
+  teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" /> },
+};
 
-  const handleAcaoEmLote = (acao: "aprovar" | "rejeitar") => {
-    toast({
-      title: acao === "aprovar" ? "Candidaturas aprovadas" : "Candidaturas rejeitadas",
-      description: `${selectedCandidaturas.length} candidatura(s) ${acao === "aprovar" ? "aprovada(s)" : "rejeitada(s)"} com sucesso.`
-    });
-    setSelectedCandidaturas([]);
-  };
+const Oportunidades = () => {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filtroFase, setFiltroFase] = useState<string>("todas");
+  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
 
-  const toggleCandidatura = (id: number) => {
-    setSelectedCandidaturas(prev => 
-      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-    );
+  const projetosFiltrados = projetos.filter((projeto) => {
+    const matchSearch = projeto.titulo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchFase = filtroFase === "todas" || projeto.fase === filtroFase;
+    const matchTipo = filtroTipo === "todos" || projeto.tipo === filtroTipo;
+    return matchSearch && matchFase && matchTipo;
+  });
+
+  const estatisticas = {
+    total: projetos.length,
+    construcao: projetos.filter((p) => p.fase === "construcao").length,
+    divulgacao: projetos.filter((p) => p.fase === "divulgacao").length,
+    execucao: projetos.filter((p) => p.fase === "execucao").length,
+    resultados: projetos.filter((p) => p.fase === "resultados").length,
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">
-              Marketplace de Oportunidades
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Explore oportunidades e crie conexões de parceria
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight">Meus Projetos</h1>
+            <p className="text-muted-foreground mt-1">Gerencie seus projetos culturais em todas as fases</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setReportOpen(true)}>
-              <FileText className="mr-2 h-4 w-4" />
-              Relatório
-            </Button>
-            <Button size="sm" onClick={() => setShowCreateForm(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Criar Oportunidade
-            </Button>
-          </div>
+          <Button onClick={() => navigate("/oportunidades/novo")} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Novo Projeto
+          </Button>
         </div>
 
-        {/* Tabs para Marketplace, Minhas Oportunidades e Candidaturas */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-3">
-            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
-            <TabsTrigger value="minhas">Minhas Oportunidades</TabsTrigger>
-            <TabsTrigger value="candidaturas">Candidaturas</TabsTrigger>
-          </TabsList>
-
-          {/* Tab Marketplace */}
-          <TabsContent value="marketplace" className="space-y-6">
-            {/* Estatísticas */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Oportunidades Disponíveis</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">24</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Conexões Realizadas</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">156</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Parceiros Ativos</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">89</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Filtros */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todos os tipos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="show">Show</SelectItem>
-                      <SelectItem value="curso">Curso</SelectItem>
-                      <SelectItem value="fomento">Fomento</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todas as status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
-                      <SelectItem value="active">Ativas</SelectItem>
-                      <SelectItem value="pending">Aguardando</SelectItem>
-                      <SelectItem value="finished">Finalizadas</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Este mês" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="month">Este mês</SelectItem>
-                      <SelectItem value="quarter">Último trimestre</SelectItem>
-                      <SelectItem value="year">Este ano</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input placeholder="Buscar oportunidade..." className="pl-9" />
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <Card className="bg-card/50">
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">{estatisticas.total}</div>
+              <div className="text-sm text-muted-foreground">Total</div>
+            </CardContent>
+          </Card>
+          {(Object.keys(faseConfig) as FaseType[]).map((fase) => (
+            <Card key={fase} className="bg-card/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <div className={`p-1.5 rounded ${faseConfig[fase].color}`}>{faseConfig[fase].icon}</div>
+                  <div>
+                    <div className="text-xl font-bold">{estatisticas[fase]}</div>
+                    <div className="text-xs text-muted-foreground">{faseConfig[fase].label}</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          ))}
+        </div>
 
-            {/* Grid de Cards de Oportunidades */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {oportunidades.filter(op => op.status === "Ativa").map((item) => (
-                <Card key={item.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg mb-2">{item.titulo}</CardTitle>
-                        <BadgeStatus variant={item.statusVariant} className="mb-2">
-                          {item.status}
-                        </BadgeStatus>
-                        <p className="text-sm text-muted-foreground">{item.descricao}</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{item.local}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>{item.data}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <DollarSign className="h-4 w-4" />
-                        <span>{item.orcamento}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        <span>{item.interessados} interessados</span>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-4 border-t border-border">
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Criado por: <span className="font-medium text-foreground">{item.criador}</span>
-                      </p>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={() => {
-                            setSelectedItem(item);
-                            setApprovalOpen(true);
-                          }}
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Ver Detalhes
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          className="flex-1"
-                        >
-                          <Handshake className="mr-2 h-4 w-4" />
-                          Conectar
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Tab Minhas Oportunidades */}
-          <TabsContent value="minhas" className="space-y-6">
-            {/* Estatísticas Pessoais */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Minhas Oportunidades</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">5</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Em Andamento</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">3</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Conexões Feitas</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">12</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Botão Criar Nova Oportunidade */}
-            {!showCreateForm && (
-              <Card className="border-dashed">
-                <CardContent className="pt-6">
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <Sparkles className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Crie sua primeira oportunidade</h3>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-md">
-                      Divulgue seus projetos, eventos ou oportunidades e encontre parceiros ideais
-                    </p>
-                    <Button onClick={() => setShowCreateForm(true)}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Criar Oportunidade
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Formulário de Criação */}
-            {showCreateForm && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5" />
-                    Criar Nova Oportunidade
-                  </CardTitle>
-                  <CardDescription>
-                    Preencha os dados abaixo para criar e divulgar sua oportunidade
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Título da Oportunidade</label>
-                    <Input placeholder="Ex: Festival de Música 2025" />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Tipo</label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="show">Show</SelectItem>
-                          <SelectItem value="curso">Curso</SelectItem>
-                          <SelectItem value="fomento">Fomento</SelectItem>
-                          <SelectItem value="workshop">Workshop</SelectItem>
-                          <SelectItem value="outro">Outro</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Data</label>
-                      <Input type="date" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Local</label>
-                    <Input placeholder="Ex: Marco Zero, Recife" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Descrição</label>
-                    <textarea 
-                      className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      placeholder="Descreva sua oportunidade em detalhes..."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Orçamento (opcional)</label>
-                      <Input placeholder="R$ 0,00" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Vagas Disponíveis</label>
-                      <Input type="number" placeholder="0" />
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-4">
-                    <Button variant="outline" onClick={() => setShowCreateForm(false)}>
-                      Cancelar
-                    </Button>
-                    <Button className="flex-1">
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Publicar Oportunidade
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Lista de Minhas Oportunidades */}
-            {!showCreateForm && (
-              <div className="space-y-4">
-                {oportunidades.filter(op => op.criador === "Professor João Silva").map((item) => (
-                  <Card key={item.id}>
-                    <CardContent className="pt-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-lg">{item.titulo}</h3>
-                            <BadgeStatus variant={item.statusVariant}>
-                              {item.status}
-                            </BadgeStatus>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-3">{item.descricao}</p>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Users className="h-4 w-4" />
-                              {item.interessados} interessados
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {item.data}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Buscar projetos..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
               </div>
-            )}
-          </TabsContent>
-
-          {/* Tab Candidaturas Recebidas */}
-          <TabsContent value="candidaturas" className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Total Candidaturas</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">{candidaturas.length}</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Pendentes</p>
-                  <p className="mt-1 text-2xl font-bold text-yellow-600">{candidaturas.filter(c => c.status === "pendente").length}</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Aprovadas</p>
-                  <p className="mt-1 text-2xl font-bold text-green-600">{candidaturas.filter(c => c.status === "aprovado").length}</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground">Rejeitadas</p>
-                  <p className="mt-1 text-2xl font-bold text-red-600">{candidaturas.filter(c => c.status === "rejeitado").length}</p>
-                </CardContent>
-              </Card>
+              <Select value={filtroFase} onValueChange={setFiltroFase}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Fase" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas as fases</SelectItem>
+                  <SelectItem value="construcao">Construção</SelectItem>
+                  <SelectItem value="divulgacao">Divulgação</SelectItem>
+                  <SelectItem value="execucao">Execução</SelectItem>
+                  <SelectItem value="resultados">Resultados</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os tipos</SelectItem>
+                  <SelectItem value="evento">Evento</SelectItem>
+                  <SelectItem value="ep">EP/Álbum</SelectItem>
+                  <SelectItem value="filme">Filme/Doc</SelectItem>
+                  <SelectItem value="festival">Festival</SelectItem>
+                  <SelectItem value="exposicao">Exposição</SelectItem>
+                  <SelectItem value="teatro">Teatro</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </CardContent>
+        </Card>
 
-            {selectedCandidaturas.length > 0 && (
-              <Card className="border-primary">
-                <CardContent className="pt-4 flex items-center justify-between">
-                  <span className="text-sm font-medium">{selectedCandidaturas.length} candidatura(s) selecionada(s)</span>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleAcaoEmLote("rejeitar")} className="text-destructive">
-                      <XCircle className="h-4 w-4 mr-1" /> Rejeitar
-                    </Button>
-                    <Button size="sm" onClick={() => handleAcaoEmLote("aprovar")}>
-                      <Check className="h-4 w-4 mr-1" /> Aprovar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Candidaturas Recebidas</CardTitle>
-                <CardDescription>Gerencie as candidaturas às suas oportunidades</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-10"></TableHead>
-                      <TableHead>Candidato</TableHead>
-                      <TableHead>Oportunidade</TableHead>
-                      <TableHead>Data</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {candidaturas.map((c) => (
-                      <TableRow key={c.id}>
-                        <TableCell>
-                          <Checkbox 
-                            checked={selectedCandidaturas.includes(c.id)}
-                            onCheckedChange={() => toggleCandidatura(c.id)}
-                            disabled={c.status !== "pendente"}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarFallback className="bg-primary/10 text-primary">
-                                {c.candidato.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{c.candidato}</p>
-                              <p className="text-xs text-muted-foreground">{c.portfolio}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{c.oportunidade}</TableCell>
-                        <TableCell>{new Date(c.data).toLocaleDateString("pt-BR")}</TableCell>
-                        <TableCell>
-                          <BadgeStatus variant={c.status === "aprovado" ? "success" : c.status === "rejeitado" ? "error" : "warning"}>
-                            {c.status === "aprovado" ? "Aprovado" : c.status === "rejeitado" ? "Rejeitado" : "Pendente"}
-                          </BadgeStatus>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {c.status === "pendente" && (
-                            <div className="flex justify-end gap-1">
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600">
-                                <CheckCircle2 className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        <Card>
+          <CardHeader>
+            <CardTitle>Projetos ({projetosFiltrados.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Projeto</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Fase</TableHead>
+                  <TableHead>Responsável</TableHead>
+                  <TableHead>Prazo</TableHead>
+                  <TableHead>Progresso</TableHead>
+                  <TableHead className="text-right">Equipe</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {projetosFiltrados.map((projeto) => (
+                  <TableRow key={projeto.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/oportunidades/${projeto.id}`)}>
+                    <TableCell><div className="font-medium">{projeto.titulo}</div></TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        {tipoConfig[projeto.tipo].icon}
+                        <span className="text-sm">{tipoConfig[projeto.tipo].label}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={faseConfig[projeto.fase].color}>
+                        <span className="flex items-center gap-1.5">{faseConfig[projeto.fase].icon}{faseConfig[projeto.fase].label}</span>
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{projeto.responsavel}</TableCell>
+                    <TableCell className="text-muted-foreground">{new Date(projeto.prazo).toLocaleDateString("pt-BR")}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${projeto.progresso}%` }} />
+                        </div>
+                        <span className="text-sm text-muted-foreground">{projeto.progresso}%</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1 text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>{projeto.membros}</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
-
-      {/* Dialogs */}
-      <ReportPreviewDialog
-        open={reportOpen}
-        onOpenChange={setReportOpen}
-        title="Relatório de Oportunidades"
-        type="oportunidades"
-      />
-      
-      {selectedItem && (
-        <ApprovalDialog
-          open={approvalOpen}
-          onOpenChange={setApprovalOpen}
-          type="oportunidade"
-          item={selectedItem}
-        />
-      )}
     </DashboardLayout>
   );
-}
+};
+
+export default Oportunidades;
