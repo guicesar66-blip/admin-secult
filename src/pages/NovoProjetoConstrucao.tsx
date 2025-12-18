@@ -203,8 +203,30 @@ const NovoProjetoConstrucao = () => {
   };
 
   const finalizarProjeto = () => {
-    // Aqui seria salvo o projeto e navegaria para a próxima fase
-    navigate("/oportunidades");
+    // Navegar para a página de detalhes com a fase de divulgação ativa
+    const novoProjetoId = `novo-${Date.now()}`;
+    navigate(`/oportunidades/${novoProjetoId}`, {
+      state: {
+        novoProjeto: {
+          id: novoProjetoId,
+          titulo: projetoInfo.titulo || "Novo Projeto",
+          descricao: projetoInfo.descricao || "",
+          tipo: projetoInfo.tipo || "outro",
+          fase: "divulgacao" as const,
+          dataInicio: new Date().toISOString().split("T")[0],
+          prazo: projetoInfo.prazoEstimado || "",
+          membros: [],
+          progresso: 25,
+          responsavel: "Você",
+          orcamentoEstimado: projetoInfo.orcamentoEstimado,
+          profissionais: projetoInfo.profissionais,
+          objetivo: projetoInfo.objetivo,
+          publicoAlvo: projetoInfo.publicoAlvo,
+          retornoEsperado: projetoInfo.retornoEsperado,
+        },
+        faseInicial: "divulgacao",
+      },
+    });
   };
 
   const projetoCompleto = etapaAtual >= perguntasIA.length - 1;

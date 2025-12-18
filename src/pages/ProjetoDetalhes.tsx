@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +33,11 @@ interface Projeto {
   membros: { id: string; nome: string; papel: string; avatar?: string }[];
   progresso: number;
   responsavel: string;
+}
+
+interface LocationState {
+  novoProjeto?: Projeto;
+  faseInicial?: FaseType;
 }
 
 const projetosData: Record<string, Projeto> = {
@@ -96,8 +101,23 @@ const fases: FaseType[] = ["construcao", "divulgacao", "execucao", "resultados"]
 const ProjetoDetalhes = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const projeto = projetosData[id || ""];
-  const [activeTab, setActiveTab] = useState<FaseType>(projeto?.fase || "construcao");
+  const location = useLocation();
+  const state = location.state as LocationState | null;
+  
+  // Verifica se é um novo projeto vindo do fluxo de criação
+  const novoProjetoData = state?.novoProjeto;
+  const faseInicial = state?.faseInicial;
+  
+  // Usa o projeto do state se disponível, senão busca dos dados existentes
+  const projeto = novoProjetoData || projetosData[id || ""];
+  const [activeTab, setActiveTab] = useState<FaseType>(faseInicial || projeto?.fase || "construcao");
+
+  // Atualiza a tab ativa se vier do fluxo de criação
+  useEffect(() => {
+    if (faseInicial) {
+      setActiveTab(faseInicial);
+    }
+  }, [faseInicial]);
 
   if (!projeto) {
     return (
