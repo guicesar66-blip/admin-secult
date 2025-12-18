@@ -64,7 +64,7 @@ const menuSections: MenuSection[] = [
         icon: Store, 
         label: "Oportunidades",
         children: [
-          { label: "Explorar", path: "/oportunidades?tab=marketplace" },
+          { label: "Explorar", path: "/marketplace" },
           { label: "Meus Investimentos", path: "/investimentos" },
         ]
       },
