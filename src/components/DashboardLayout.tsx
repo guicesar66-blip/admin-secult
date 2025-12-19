@@ -71,11 +71,11 @@ const menuSections: MenuSection[] = [
     ],
   },
   {
-    title: "Analytics",
+    title: "Dados",
     items: [
       { 
         icon: BarChart3, 
-        label: "Analytics",
+        label: "Dados",
         children: [
           { label: "Financeira", path: "/analise-financeira" },
           { label: "Territorial", path: "/analise-territorial" },
