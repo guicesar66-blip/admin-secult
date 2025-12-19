@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,9 @@ const trocadosStats = {
 };
 
 export default function Configuracoes() {
+  const [searchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get('tab') || 'geral';
+  
   const { config, updateConfig, resetConfig } = useWhiteLabel();
   const [clientName, setClientName] = useState(config.clientName);
   const [primaryColor, setPrimaryColor] = useState(config.primaryColor);
@@ -288,7 +292,7 @@ export default function Configuracoes() {
           </p>
         </div>
 
-        <Tabs defaultValue="whitelabel" className="space-y-6">
+        <Tabs defaultValue={tabFromUrl} className="space-y-6">
           <TabsList className="grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="whitelabel" className="gap-2">
               <Palette className="h-4 w-4" />
