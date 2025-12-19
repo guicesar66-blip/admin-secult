@@ -20,6 +20,7 @@ import AnaliseTerritorial from "./pages/AnaliseTerritorial";
 import AnaliseArtistas from "./pages/AnaliseArtistas";
 import Analytics from "./pages/Analytics";
 import Investimentos from "./pages/Investimentos";
+import InvestimentoDetalhes from "./pages/InvestimentoDetalhes";
 import Configuracoes from "./pages/Configuracoes";
 import ConfiguracoesEquipe from "./pages/ConfiguracoesEquipe";
 import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/analise-territorial" element={<AnaliseTerritorial />} />
             <Route path="/analise-artistas" element={<AnaliseArtistas />} />
             <Route path="/investimentos" element={<Investimentos />} />
+            <Route path="/investimentos/:id" element={<InvestimentoDetalhes />} />
             <Route path="/configuracoes" element={<Configuracoes />} />
             <Route path="/configuracoes/equipe" element={<ConfiguracoesEquipe />} />
             <Route path="/configuracoes/integracoes" element={<ConfiguracoesIntegracoes />} />

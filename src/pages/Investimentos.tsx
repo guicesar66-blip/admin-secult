@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,7 @@ const oportunidadesInvestimento = [
 
 export default function Investimentos() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [investirDialogOpen, setInvestirDialogOpen] = useState(false);
   const [selectedOportunidade, setSelectedOportunidade] = useState<typeof oportunidadesInvestimento[0] | null>(null);
@@ -215,7 +217,7 @@ export default function Investimentos() {
                           <Progress value={investimento.progresso} className="h-2" />
                         </div>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => navigate(`/investimentos/${investimento.id}`)}>
                         <Eye className="h-4 w-4 mr-2" />
                         Detalhes
                       </Button>
