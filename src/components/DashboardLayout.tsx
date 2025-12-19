@@ -234,19 +234,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         )}
       >
         {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
-          <div className="flex items-center gap-3">
-            <img 
-              src={logoHorizontal} 
-              alt={clientName} 
-              className="h-10 w-auto"
-            />
-            <div className="border-l border-border pl-3">
-              <p className="text-xs text-muted-foreground font-medium">
-                Painel Administrativo
-              </p>
-            </div>
-          </div>
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-end border-b border-border bg-card px-6 shadow-card">
           <div className="flex items-center gap-4">
             <Link 
               to="/trocados" 
