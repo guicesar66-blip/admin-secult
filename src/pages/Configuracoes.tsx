@@ -292,7 +292,7 @@ export default function Configuracoes() {
           <TabsList className="grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="whitelabel" className="gap-2">
               <Palette className="h-4 w-4" />
-              White Label
+              Tema
             </TabsTrigger>
             <TabsTrigger value="pagamento" className="gap-2">
               <CreditCard className="h-4 w-4" />
