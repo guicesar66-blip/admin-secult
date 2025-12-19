@@ -183,11 +183,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                           <item.icon className="h-4 w-4" />
                           {sidebarOpen && <span>{item.label}</span>}
                         </div>
-                        {sidebarOpen && (
-                          expandedMenus.includes(item.label) 
-                            ? <ChevronDown className="h-4 w-4" />
-                            : <ChevronRight className="h-4 w-4" />
-                        )}
                       </button>
                       {sidebarOpen && expandedMenus.includes(item.label) && (
                         <div className="ml-4 mt-1 space-y-1 border-l border-sidebar-border pl-3">
