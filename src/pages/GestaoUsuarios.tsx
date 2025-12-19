@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { BadgeStatus } from "@/components/ui/badge-status";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -238,279 +238,110 @@ export default function GestaoUsuarios() {
           </Card>
         </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="todos" className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-4">
-            <TabsTrigger value="todos">Todos</TabsTrigger>
-            <TabsTrigger value="artistas">Artistas</TabsTrigger>
-            <TabsTrigger value="organizacoes">Organizações</TabsTrigger>
-            <TabsTrigger value="admins">Admins</TabsTrigger>
-          </TabsList>
+        {/* Filtros */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+              <Select value={filterTipo} onValueChange={setFilterTipo}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tipo de Usuário" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os tipos</SelectItem>
+                  <SelectItem value="ARTISTA">Artista</SelectItem>
+                  <SelectItem value="ORGANIZACAO">Organização</SelectItem>
+                  <SelectItem value="ADMINISTRADOR">Administrador</SelectItem>
+                </SelectContent>
+              </Select>
 
-          {/* Tab Todos */}
-          <TabsContent value="todos" className="space-y-6">
-            {/* Filtros */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-                  <Select value={filterTipo} onValueChange={setFilterTipo}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tipo de Usuário" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os tipos</SelectItem>
-                      <SelectItem value="ARTISTA">Artista</SelectItem>
-                      <SelectItem value="ORGANIZACAO">Organização</SelectItem>
-                      <SelectItem value="ADMINISTRADOR">Administrador</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="ATIVO">Ativo</SelectItem>
+                  <SelectItem value="PENDENTE">Pendente</SelectItem>
+                  <SelectItem value="INATIVO">Inativo</SelectItem>
+                </SelectContent>
+              </Select>
 
-                  <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="ATIVO">Ativo</SelectItem>
-                      <SelectItem value="PENDENTE">Pendente</SelectItem>
-                      <SelectItem value="INATIVO">Inativo</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <div className="relative sm:col-span-2">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input 
-                      placeholder="Buscar por nome ou email..." 
-                      className="pl-9" 
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tabela de Usuários */}
-            <Card>
-              <CardContent className="pt-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Usuário</TableHead>
-                      <TableHead>Tipo</TableHead>
-                      <TableHead>Cidade</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Cadastro</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredUsers.map((user) => (
-                      <TableRow key={user.id} className="cursor-pointer hover:bg-muted/50" onClick={() => openDetails(user)}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={user.avatar || undefined} />
-                              <AvatarFallback className="bg-primary/10 text-primary">
-                                {user.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{user.nome}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                            user.tipo === "ARTISTA" ? "bg-success/10 text-success" :
-                            user.tipo === "ORGANIZACAO" ? "bg-warning/10 text-warning" :
-                            "bg-info/10 text-info"
-                          }`}>
-                            {tipoLabels[user.tipo]}
-                          </span>
-                        </TableCell>
-                        <TableCell>{user.cidade}</TableCell>
-                        <TableCell>
-                          <BadgeStatus variant={user.statusVariant}>
-                            {statusLabels[user.status]}
-                          </BadgeStatus>
-                        </TableCell>
-                        <TableCell>{user.dataCadastro}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-                            <Button variant="outline" size="sm" onClick={() => openDetails(user)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Tab Artistas */}
-          <TabsContent value="artistas" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {artistas.map((artista) => (
-                <Card key={artista.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => openDetails(artista)}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarImage src={artista.avatar || undefined} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                          {artista.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{artista.nome}</h3>
-                          <BadgeStatus variant={artista.statusVariant}>
-                            {statusLabels[artista.status]}
-                          </BadgeStatus>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{artista.generoMusical}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {artista.cidade}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {artista.seguidores?.toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-border grid grid-cols-2 gap-4 text-center">
-                      <div>
-                        <p className="text-lg font-bold text-foreground">{artista.oportunidades}</p>
-                        <p className="text-xs text-muted-foreground">Oportunidades</p>
-                      </div>
-                      <div>
-                        <p className="text-lg font-bold text-foreground">{artista.incubacoes}</p>
-                        <p className="text-xs text-muted-foreground">Incubações</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              <div className="relative sm:col-span-2">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  placeholder="Buscar por nome ou email..." 
+                  className="pl-9" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
-          </TabsContent>
+          </CardContent>
+        </Card>
 
-          {/* Tab Organizações */}
-          <TabsContent value="organizacoes" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {organizacoes.map((org) => (
-                <Card key={org.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => openDetails(org)}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="h-16 w-16 rounded-lg bg-warning/10 flex items-center justify-center">
-                        <Building2 className="h-8 w-8 text-warning" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{org.nome}</h3>
-                          <BadgeStatus variant={org.statusVariant}>
-                            {statusLabels[org.status]}
-                          </BadgeStatus>
+        {/* Tabela de Usuários */}
+        <Card>
+          <CardContent className="pt-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Usuário</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Cidade</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Cadastro</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id} className="cursor-pointer hover:bg-muted/50" onClick={() => openDetails(user)}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={user.avatar || undefined} />
+                          <AvatarFallback className="bg-primary/10 text-primary">
+                            {user.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{user.nome}</p>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-2">{org.cnpj}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {org.cidade}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Mail className="h-3 w-3" />
-                            {org.email}
-                          </span>
-                        </div>
                       </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-border grid grid-cols-2 gap-4 text-center">
-                      <div>
-                        <p className="text-lg font-bold text-foreground">{org.oportunidadesCriadas}</p>
-                        <p className="text-xs text-muted-foreground">Oportunidades Criadas</p>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        user.tipo === "ARTISTA" ? "bg-success/10 text-success" :
+                        user.tipo === "ORGANIZACAO" ? "bg-warning/10 text-warning" :
+                        "bg-info/10 text-info"
+                      }`}>
+                        {tipoLabels[user.tipo]}
+                      </span>
+                    </TableCell>
+                    <TableCell>{user.cidade}</TableCell>
+                    <TableCell>
+                      <BadgeStatus variant={user.statusVariant}>
+                        {statusLabels[user.status]}
+                      </BadgeStatus>
+                    </TableCell>
+                    <TableCell>{user.dataCadastro}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                        <Button variant="outline" size="sm" onClick={() => openDetails(user)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <div>
-                        <p className="text-lg font-bold text-foreground">{org.incubacoesCriadas}</p>
-                        <p className="text-xs text-muted-foreground">Incubações Criadas</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Tab Admins */}
-          <TabsContent value="admins" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Administradores do Sistema</CardTitle>
-                <CardDescription>Usuários com acesso administrativo à plataforma</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Administrador</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Permissões</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {admins.map((admin) => (
-                      <TableRow key={admin.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarFallback className="bg-info/10 text-info">
-                                {admin.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">{admin.nome}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{admin.email}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {admin.permissoes?.map((perm) => (
-                              <span key={perm} className="text-xs px-2 py-0.5 rounded-full bg-muted">
-                                {perm}
-                              </span>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <BadgeStatus variant={admin.statusVariant}>
-                            {statusLabels[admin.status]}
-                          </BadgeStatus>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
         {/* Dialog de Detalhes */}
         <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
