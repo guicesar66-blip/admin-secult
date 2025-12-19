@@ -30,6 +30,16 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+// Imagens das oportunidades
+import festivalJazzImg from "@/assets/oportunidades/festival-jazz.jpg";
+import documentarioVozesImg from "@/assets/oportunidades/documentario-vozes.jpg";
+import epRaizesUrbanasImg from "@/assets/oportunidades/ep-raizes-urbanas.jpg";
+import exposicaoDigitalImg from "@/assets/oportunidades/exposicao-digital.jpg";
+import teatroMemoriasImg from "@/assets/oportunidades/teatro-memorias.jpg";
+import showAcusticoImg from "@/assets/oportunidades/show-acustico.jpg";
+import festivalLgbtqImg from "@/assets/oportunidades/festival-lgbtq.jpg";
+import albumSertaoImg from "@/assets/oportunidades/album-sertao.jpg";
+
 type TipoOportunidade = "evento" | "ep" | "filme" | "festival" | "exposicao" | "teatro";
 type CategoriaFiltro = "todos" | "cultura" | "musica" | "audiovisual" | "artes";
 
@@ -63,6 +73,7 @@ const oportunidadesData: Oportunidade[] = [
     emAlta: true,
     tags: ["Jazz", "Música", "Festival"],
     responsavel: "Maria Silva",
+    imagemCapa: festivalJazzImg,
   },
   {
     id: "2",
@@ -77,6 +88,7 @@ const oportunidadesData: Oportunidade[] = [
     emAlta: true,
     tags: ["Documentário", "Social", "Cultura"],
     responsavel: "Ana Costa",
+    imagemCapa: documentarioVozesImg,
   },
   {
     id: "3",
@@ -91,6 +103,7 @@ const oportunidadesData: Oportunidade[] = [
     emAlta: true,
     tags: ["Hip-hop", "Música", "Regional"],
     responsavel: "João Santos",
+    imagemCapa: epRaizesUrbanasImg,
   },
   {
     id: "4",
@@ -104,6 +117,7 @@ const oportunidadesData: Oportunidade[] = [
     apoiadores: 42,
     tags: ["Arte Digital", "Exposição", "Tecnologia"],
     responsavel: "Pedro Lima",
+    imagemCapa: exposicaoDigitalImg,
   },
   {
     id: "5",
@@ -117,6 +131,7 @@ const oportunidadesData: Oportunidade[] = [
     apoiadores: 67,
     tags: ["Teatro", "Drama", "Familiar"],
     responsavel: "Carla Mendes",
+    imagemCapa: teatroMemoriasImg,
   },
   {
     id: "6",
@@ -130,6 +145,7 @@ const oportunidadesData: Oportunidade[] = [
     apoiadores: 34,
     tags: ["Acústico", "Música", "Coletivo"],
     responsavel: "Lucas Alves",
+    imagemCapa: showAcusticoImg,
   },
   {
     id: "7",
@@ -144,6 +160,7 @@ const oportunidadesData: Oportunidade[] = [
     emAlta: true,
     tags: ["Cinema", "Diversidade", "Festival"],
     responsavel: "Rafael Souza",
+    imagemCapa: festivalLgbtqImg,
   },
   {
     id: "8",
@@ -157,6 +174,7 @@ const oportunidadesData: Oportunidade[] = [
     apoiadores: 56,
     tags: ["MPB", "Nordeste", "Música"],
     responsavel: "Fernanda Oliveira",
+    imagemCapa: albumSertaoImg,
   },
 ];
 
@@ -213,12 +231,12 @@ const MarketplaceExplorar = () => {
         onClick={() => navigate(`/marketplace/${oportunidade.id}`)}
       >
         {/* Imagem de capa */}
-        <div className="relative h-40 bg-gradient-to-br from-primary/20 to-secondary/20">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className={`p-4 rounded-full ${tipoConfig[oportunidade.tipo].color}`}>
-              {tipoConfig[oportunidade.tipo].icon}
-            </div>
-          </div>
+        <div className="relative h-40 overflow-hidden">
+          <img 
+            src={oportunidade.imagemCapa} 
+            alt={oportunidade.titulo}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
           {oportunidade.emAlta && (
             <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500 text-white text-xs font-medium">
               <Flame className="h-3 w-3" />
