@@ -88,7 +88,6 @@ const menuSections: MenuSection[] = [
     title: "Administração",
     items: [
       { icon: UserCog, label: "Usuários", path: "/usuarios" },
-      { icon: Coins, label: "Trocados", path: "/trocados" },
       { 
         icon: Settings, 
         label: "Configurações",
