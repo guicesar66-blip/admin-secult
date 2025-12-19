@@ -129,12 +129,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       >
         <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border">
           {sidebarOpen ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <img 
                 src={logoHorizontal} 
                 alt={clientName} 
                 className="h-8 w-auto"
               />
+              <span className="text-xl font-bold text-sidebar-foreground">CENA</span>
             </div>
           ) : (
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
