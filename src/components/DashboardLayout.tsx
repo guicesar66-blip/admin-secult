@@ -94,7 +94,6 @@ const menuSections: MenuSection[] = [
         children: [
           { label: "Tema", path: "/configuracoes?tab=whitelabel" },
           { label: "Pagamento", path: "/configuracoes?tab=pagamento" },
-          { label: "Equipe", path: "/configuracoes/equipe" },
         ]
       },
     ],
