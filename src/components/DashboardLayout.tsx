@@ -88,15 +88,7 @@ const menuSections: MenuSection[] = [
     title: "Administração",
     items: [
       { icon: UserCog, label: "Usuários", path: "/usuarios" },
-      { 
-        icon: Settings, 
-        label: "Configurações",
-        children: [
-          { label: "Geral", path: "/configuracoes?tab=geral" },
-          { label: "Tema", path: "/configuracoes?tab=whitelabel" },
-          { label: "Pagamento", path: "/configuracoes?tab=pagamento" },
-        ]
-      },
+      { icon: Settings, label: "Configurações", path: "/configuracoes" },
     ],
   },
 ];
