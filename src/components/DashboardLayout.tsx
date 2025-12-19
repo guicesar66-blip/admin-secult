@@ -93,7 +93,7 @@ const menuSections: MenuSection[] = [
         icon: Settings, 
         label: "Configurações",
         children: [
-          { label: "White Label", path: "/configuracoes?tab=whitelabel" },
+          { label: "Tema", path: "/configuracoes?tab=whitelabel" },
           { label: "Pagamento", path: "/configuracoes?tab=pagamento" },
           { label: "Equipe", path: "/configuracoes/equipe" },
           { label: "Integrações", path: "/configuracoes/integracoes" },
