@@ -1,111 +1,152 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ArrowLeft,
-  Lightbulb,
-  Megaphone,
-  Play,
-  Trophy,
-  Settings,
-  Users,
+  Edit,
+  Trash2,
+  MoreVertical,
   Calendar,
+  MapPin,
+  Users,
+  DollarSign,
+  Clock,
+  User,
+  Phone,
+  FileText,
+  BarChart3,
+  Wallet,
+  XCircle,
+  Loader2,
+  Briefcase,
+  GraduationCap,
 } from "lucide-react";
-import { FaseConstrucao } from "@/components/projeto/FaseConstrucao";
-import { FaseDivulgacao } from "@/components/projeto/FaseDivulgacao";
-import { FaseExecucao } from "@/components/projeto/FaseExecucao";
-import { FaseResultados } from "@/components/projeto/FaseResultados";
+import { useOportunidade, useDeleteOportunidade } from "@/hooks/useOportunidades";
+import { useOficina, useDeleteOficina } from "@/hooks/useOficinas";
+import { useCandidaturasByOportunidade, useUpdateCandidaturaStatus } from "@/hooks/useCandidaturas";
+import { useUpdateOportunidade, useUpdateOficina } from "@/hooks/useUpdateOportunidade";
+import { DeleteProjectDialog } from "@/components/projeto/DeleteProjectDialog";
+import { EditProjectDialog } from "@/components/projeto/EditProjectDialog";
+import { CandidatosTab } from "@/components/projeto/CandidatosTab";
+import { FinanceiroTab } from "@/components/projeto/FinanceiroTab";
 
-type FaseType = "construcao" | "divulgacao" | "execucao" | "resultados";
-
-interface Projeto {
-  id: string;
-  titulo: string;
-  descricao: string;
-  tipo: string;
-  fase: FaseType;
-  dataInicio: string;
-  prazo: string;
-  membros: { id: string; nome: string; papel: string; avatar?: string }[];
-  progresso: number;
-  responsavel: string;
-}
-
-interface LocationState {
-  novoProjeto?: Projeto;
-  faseInicial?: FaseType;
-}
-
-const projetosData: Record<string, Projeto> = {
-  "1": {
-    id: "1",
-    titulo: "Festival de Jazz da Praça",
-    descricao: "Festival de música jazz ao ar livre com artistas locais e nacionais",
-    tipo: "festival",
-    fase: "execucao",
-    dataInicio: "2024-01-15",
-    prazo: "2024-06-20",
-    membros: [
-      { id: "1", nome: "Maria Silva", papel: "Produtora" },
-      { id: "2", nome: "João Santos", papel: "Diretor Artístico" },
-      { id: "3", nome: "Ana Costa", papel: "Marketing" },
-    ],
-    progresso: 65,
-    responsavel: "Maria Silva",
-  },
-  "2": {
-    id: "2",
-    titulo: "EP Raízes Urbanas",
-    descricao: "EP com 5 faixas misturando hip-hop com elementos regionais",
-    tipo: "ep",
-    fase: "construcao",
-    dataInicio: "2024-02-01",
-    prazo: "2024-08-15",
-    membros: [
-      { id: "1", nome: "João Santos", papel: "Artista" },
-      { id: "2", nome: "Pedro Lima", papel: "Produtor Musical" },
-    ],
-    progresso: 20,
-    responsavel: "João Santos",
-  },
-  "3": {
-    id: "3",
-    titulo: "Documentário Vozes da Periferia",
-    descricao: "Documentário sobre artistas independentes das periferias",
-    tipo: "filme",
-    fase: "divulgacao",
-    dataInicio: "2023-09-10",
-    prazo: "2024-04-30",
-    membros: [
-      { id: "1", nome: "Ana Costa", papel: "Diretora" },
-      { id: "2", nome: "Lucas Alves", papel: "Cinegrafista" },
-    ],
-    progresso: 45,
-    responsavel: "Ana Costa",
-  },
+const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500" },
+  vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-emerald-500" },
+  oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-amber-500" },
+  projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-purple-500" },
 };
 
-const faseConfig: Record<FaseType, { label: string; icon: React.ReactNode; color: string; step: number }> = {
-  construcao: { label: "Construção", icon: <Lightbulb className="h-4 w-4" />, color: "bg-amber-500", step: 1 },
-  divulgacao: { label: "Divulgação", icon: <Megaphone className="h-4 w-4" />, color: "bg-blue-500", step: 2 },
-  execucao: { label: "Execução", icon: <Play className="h-4 w-4" />, color: "bg-emerald-500", step: 3 },
-  resultados: { label: "Resultados", icon: <Trophy className="h-4 w-4" />, color: "bg-purple-500", step: 4 },
+const statusConfig: Record<string, { label: string; color: string }> = {
+  ativa: { label: "Ativa", color: "bg-green-500/20 text-green-600" },
+  encerrada: { label: "Encerrada", color: "bg-gray-500/20 text-gray-600" },
+  cancelada: { label: "Cancelada", color: "bg-red-500/20 text-red-600" },
+  inscricoes_abertas: { label: "Inscrições Abertas", color: "bg-green-500/20 text-green-600" },
 };
-
-const fases: FaseType[] = ["construcao", "divulgacao", "execucao", "resultados"];
 
 const ProjetoDetalhes = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const state = location.state as LocationState | null;
   
-  // Verifica se é um novo projeto vindo do fluxo de criação
-  const novoProjetoData = state?.novoProjeto;
+  // States
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("info");
+
+  // Hooks - tenta buscar como oportunidade primeiro, depois como oficina
+  const { data: oportunidade, isLoading: loadingOportunidade } = useOportunidade(id || "");
+  const { data: oficina, isLoading: loadingOficina } = useOficina(id || "");
   
-  // Usa o projeto do state se disponível, senão busca dos dados existentes
-  const projeto = novoProjetoData || projetosData[id || ""];
+  const deleteOportunidade = useDeleteOportunidade();
+  const deleteOficina = useDeleteOficina();
+  const updateOportunidade = useUpdateOportunidade();
+  const updateOficina = useUpdateOficina();
+
+  // Candidaturas (apenas para oportunidades)
+  const { 
+    data: candidaturas = [], 
+    isLoading: loadingCandidaturas 
+  } = useCandidaturasByOportunidade(oportunidade?.id || "");
+  
+  const updateCandidaturaStatus = useUpdateCandidaturaStatus();
+
+  const isLoading = loadingOportunidade && loadingOficina;
+  const projeto = oportunidade || oficina;
+  const isOficina = !oportunidade && !!oficina;
+
+  // Handlers
+  const handleDelete = async () => {
+    if (!id) return;
+    
+    try {
+      if (isOficina) {
+        await deleteOficina.mutateAsync(id);
+      } else {
+        await deleteOportunidade.mutateAsync(id);
+      }
+      navigate("/oportunidades");
+    } catch (error) {
+      console.error("Error deleting:", error);
+    }
+  };
+
+  const handleSaveEdit = async (data: Record<string, unknown>) => {
+    if (!id) return;
+    
+    try {
+      if (isOficina) {
+        await updateOficina.mutateAsync({ id, data });
+      } else {
+        await updateOportunidade.mutateAsync({ id, data: data as Parameters<typeof updateOportunidade.mutateAsync>[0]["data"] });
+      }
+      setEditDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating:", error);
+    }
+  };
+
+  const handleCancelarProjeto = async () => {
+    if (!id) return;
+    
+    try {
+      if (isOficina) {
+        await updateOficina.mutateAsync({ id, data: { status: "cancelada" } });
+      } else {
+        await updateOportunidade.mutateAsync({ id, data: { status: "cancelada" } });
+      }
+    } catch (error) {
+      console.error("Error canceling:", error);
+    }
+  };
+
+  const handleAprovarCandidato = (candidaturaId: string) => {
+    updateCandidaturaStatus.mutate({ id: candidaturaId, status: "aprovada" });
+  };
+
+  const handleReprovarCandidato = (candidaturaId: string, motivo: string) => {
+    updateCandidaturaStatus.mutate({ id: candidaturaId, status: "reprovada", motivo_reprovacao: motivo });
+  };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   if (!projeto) {
     return (
@@ -121,7 +162,24 @@ const ProjetoDetalhes = () => {
     );
   }
 
-  const currentStep = faseConfig[projeto.fase].step;
+  const tipo = isOficina ? "oficina" : (oportunidade?.tipo || "evento");
+  const tipoInfo = tipoConfig[tipo] || tipoConfig.evento;
+  const statusInfo = statusConfig[projeto.status] || statusConfig.ativa;
+
+  // Dados comuns
+  const titulo = projeto.titulo;
+  const descricao = "descricao" in projeto ? projeto.descricao : null;
+  const status = projeto.status;
+  const local = "local" in projeto ? projeto.local : null;
+  const dataEvento = "data_evento" in projeto ? projeto.data_evento : ("data_inicio" in projeto ? projeto.data_inicio : null);
+  const horario = "horario" in projeto ? projeto.horario : null;
+  const vagas = "vagas" in projeto ? projeto.vagas : ("vagas_total" in projeto ? projeto.vagas_total : 0);
+  const remuneracao = "remuneracao" in projeto ? (projeto.remuneracao || 0) : 0;
+  const cenaCoins = "cena_coins" in projeto ? (projeto.cena_coins || 0) : 0;
+  const criadorNome = "criador_nome" in projeto ? projeto.criador_nome : ("facilitador_nome" in projeto ? projeto.facilitador_nome : null);
+  const criadorContato = "criador_contato" in projeto ? projeto.criador_contato : null;
+  const requisitos = "requisitos" in projeto ? projeto.requisitos : ("prerequisitos" in projeto ? projeto.prerequisitos : null);
+  const municipio = "municipio" in projeto ? projeto.municipio : null;
 
   return (
     <DashboardLayout>
@@ -139,92 +197,270 @@ const ProjetoDetalhes = () => {
 
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold tracking-tight">{projeto.titulo}</h1>
-                <Badge variant="outline" className={`${faseConfig[projeto.fase].color} text-white border-0`}>
-                  {faseConfig[projeto.fase].label}
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-3xl font-bold tracking-tight">{titulo}</h1>
+                <Badge variant="outline" className={`${tipoInfo.color} text-white border-0`}>
+                  <span className="flex items-center gap-1.5">{tipoInfo.icon} {tipoInfo.label}</span>
+                </Badge>
+                <Badge variant="outline" className={statusInfo.color}>
+                  {statusInfo.label}
                 </Badge>
               </div>
-              <p className="text-muted-foreground mt-2">{projeto.descricao}</p>
+              {descricao && (
+                <p className="text-muted-foreground mt-2 max-w-2xl">{descricao}</p>
+              )}
             </div>
-            <Button variant="outline" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Configurações
-            </Button>
-          </div>
-        </div>
 
-        {/* Progress Timeline */}
-        <div className="bg-card rounded-lg p-6 border">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Progresso do Projeto</h3>
-            <span className="text-sm text-muted-foreground">{projeto.progresso}% concluído</span>
-          </div>
-          
-          <div className="relative">
-            <div className="flex justify-between mb-2">
-              {fases.map((fase) => {
-                const config = faseConfig[fase];
-                const isCompleted = config.step < currentStep;
-                const isCurrent = config.step === currentStep;
-                
-                return (
-                  <div
-                    key={fase}
-                    className={`flex flex-col items-center z-10 ${
-                      isCompleted || isCurrent ? "opacity-100" : "opacity-50"
-                    }`}
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="gap-2" onClick={() => setEditDialogOpen(true)}>
+                <Edit className="h-4 w-4" />
+                Editar
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem 
+                    onClick={handleCancelarProjeto}
+                    disabled={status === "cancelada"}
                   >
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                        isCompleted
-                          ? config.color + " text-white"
-                          : isCurrent
-                          ? config.color + " text-white ring-4 ring-offset-2 ring-offset-background " + config.color + "/30"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {config.icon}
-                    </div>
-                    <span className={`text-xs mt-2 font-medium ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
-                      {config.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="absolute top-5 left-0 right-0 h-0.5 bg-muted -z-0">
-              <div
-                className="h-full bg-primary transition-all"
-                style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-              />
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Cancelar Projeto
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setDeleteDialogOpen(true)}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Excluir Projeto
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-6 mt-6 pt-4 border-t text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>Início: {new Date(projeto.dataInicio).toLocaleDateString("pt-BR")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>Prazo: {new Date(projeto.prazo).toLocaleDateString("pt-BR")}</span>
-            </div>
-            <div className="flex items-center gap-2">
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="info" className="gap-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Informações</span>
+            </TabsTrigger>
+            <TabsTrigger value="candidatos" className="gap-2">
               <Users className="h-4 w-4" />
-              <span>{projeto.membros.length} membros</span>
-            </div>
-          </div>
-        </div>
+              <span className="hidden sm:inline">Candidatos</span>
+              {candidaturas.length > 0 && (
+                <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
+                  {candidaturas.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="estatisticas" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              <span className="hidden sm:inline">Estatísticas</span>
+            </TabsTrigger>
+            <TabsTrigger value="financeiro" className="gap-2">
+              <Wallet className="h-4 w-4" />
+              <span className="hidden sm:inline">Financeiro</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Conteúdo da Fase Atual */}
-        <div className="space-y-6">
-          {projeto.fase === "construcao" && <FaseConstrucao projeto={projeto} />}
-          {projeto.fase === "divulgacao" && <FaseDivulgacao projeto={projeto} />}
-          {projeto.fase === "execucao" && <FaseExecucao projeto={projeto} />}
-          {projeto.fase === "resultados" && <FaseResultados projeto={projeto} />}
-        </div>
+          {/* Tab: Informações */}
+          <TabsContent value="info" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Detalhes do Projeto */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Detalhes do Projeto</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {dataEvento && (
+                    <div className="flex items-start gap-3">
+                      <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Data</div>
+                        <div className="text-muted-foreground">
+                          {new Date(dataEvento).toLocaleDateString("pt-BR", {
+                            weekday: "long",
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {horario && (
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Horário</div>
+                        <div className="text-muted-foreground">{horario}</div>
+                      </div>
+                    </div>
+                  )}
+                  {(local || municipio) && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Local</div>
+                        <div className="text-muted-foreground">
+                          {local}{municipio && local ? `, ${municipio}` : municipio}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex items-start gap-3">
+                    <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                      <div className="font-medium">Vagas</div>
+                      <div className="text-muted-foreground">{vagas || 0} vaga(s)</div>
+                    </div>
+                  </div>
+                  {remuneracao > 0 && (
+                    <div className="flex items-start gap-3">
+                      <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Remuneração</div>
+                        <div className="text-muted-foreground">
+                          R$ {remuneracao.toLocaleString("pt-BR")}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Responsável e Requisitos */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Responsável & Requisitos</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {criadorNome && (
+                    <div className="flex items-start gap-3">
+                      <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Responsável</div>
+                        <div className="text-muted-foreground">{criadorNome}</div>
+                      </div>
+                    </div>
+                  )}
+                  {criadorContato && (
+                    <div className="flex items-start gap-3">
+                      <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Contato</div>
+                        <div className="text-muted-foreground">{criadorContato}</div>
+                      </div>
+                    </div>
+                  )}
+                  {requisitos && (
+                    <div className="flex items-start gap-3">
+                      <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <div className="font-medium">Requisitos</div>
+                        <div className="text-muted-foreground whitespace-pre-wrap">{requisitos}</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Tab: Candidatos */}
+          <TabsContent value="candidatos">
+            <CandidatosTab
+              candidaturas={candidaturas}
+              isLoading={loadingCandidaturas}
+              onAprovar={handleAprovarCandidato}
+              onReprovar={handleReprovarCandidato}
+              isUpdating={updateCandidaturaStatus.isPending}
+            />
+          </TabsContent>
+
+          {/* Tab: Estatísticas */}
+          <TabsContent value="estatisticas">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-100 rounded-full">
+                      <Users className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">{candidaturas.length}</div>
+                      <div className="text-sm text-muted-foreground">Candidaturas</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-green-100 rounded-full">
+                      <Users className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">
+                        {candidaturas.filter(c => c.status === "aprovada").length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Aprovados</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-amber-100 rounded-full">
+                      <DollarSign className="h-6 w-6 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">{cenaCoins}</div>
+                      <div className="text-sm text-muted-foreground">Cena Coins</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Tab: Financeiro */}
+          <TabsContent value="financeiro">
+            <FinanceiroTab
+              remuneracao={remuneracao}
+              vagas={vagas || 0}
+              cenaCoins={cenaCoins}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
+
+      {/* Dialogs */}
+      <DeleteProjectDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        projectTitle={titulo}
+        onConfirm={handleDelete}
+        isDeleting={deleteOportunidade.isPending || deleteOficina.isPending}
+      />
+
+      {!isOficina && oportunidade && (
+        <EditProjectDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          project={oportunidade}
+          onSave={handleSaveEdit}
+          isSaving={updateOportunidade.isPending}
+        />
+      )}
     </DashboardLayout>
   );
 };
