@@ -48,9 +48,9 @@ export interface CreateOportunidadeData {
   imagem?: string;
 }
 
-export function useOportunidades(tipo?: string) {
+export function useOportunidades(tipo?: string, criadorId?: string) {
   return useQuery({
-    queryKey: ["oportunidades", tipo],
+    queryKey: ["oportunidades", tipo ?? null, criadorId ?? null],
     queryFn: async () => {
       let query = supabase
         .from("oportunidades")
@@ -59,6 +59,10 @@ export function useOportunidades(tipo?: string) {
 
       if (tipo) {
         query = query.eq("tipo", tipo);
+      }
+
+      if (criadorId) {
+        query = query.eq("criador_id", criadorId);
       }
 
       const { data, error } = await query;
@@ -99,9 +103,18 @@ export function useCreateOportunidade() {
 
   return useMutation({
     mutationFn: async (data: CreateOportunidadeData) => {
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("Usuário não autenticado");
+
+      const payload: CreateOportunidadeData = {
+        ...data,
+        criador_id: authData.user.id,
+      };
+
       const { data: result, error } = await supabase
         .from("oportunidades")
-        .insert([data])
+        .insert([payload])
         .select()
         .single();
 
