@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -18,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Store, Eye, Target } from "lucide-react";
 import type { Oportunidade } from "@/hooks/useOportunidades";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EditProjectDialogProps {
   open: boolean;
@@ -49,6 +51,10 @@ export function EditProjectDialog({
     requisitos: "",
     criador_nome: "",
     criador_contato: "",
+    // Campos de vitrine
+    exibir_vitrine: false,
+    meta_captacao: 0,
+    mostrar_progresso: true,
   });
 
   useEffect(() => {
@@ -66,13 +72,17 @@ export function EditProjectDialog({
         requisitos: project.requisitos || "",
         criador_nome: project.criador_nome || "",
         criador_contato: project.criador_contato || "",
+        // Campos de vitrine (podem não existir em projetos antigos)
+        exibir_vitrine: (project as any).exibir_vitrine || false,
+        meta_captacao: (project as any).meta_captacao || 0,
+        mostrar_progresso: (project as any).mostrar_progresso ?? true,
       });
     }
   }, [project]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    onSave(formData as any);
   };
 
   return (
@@ -84,7 +94,8 @@ export function EditProjectDialog({
             Atualize as informações do projeto. Clique em salvar quando terminar.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Informações Básicas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="titulo">Título</Label>
@@ -210,6 +221,75 @@ export function EditProjectDialog({
               />
             </div>
           </div>
+
+          {/* Seção de Vitrine de Investimentos */}
+          <Card className="border-dashed">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Store className="h-5 w-5 text-primary" />
+                <CardTitle className="text-lg">Vitrine de Investimentos</CardTitle>
+              </div>
+              <CardDescription>
+                Habilite para receber propostas de investimento, patrocínio e parcerias
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="exibir_vitrine" className="font-medium">
+                    Exibir na Vitrine
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Seu projeto aparecerá para investidores e patrocinadores
+                  </p>
+                </div>
+                <Switch
+                  id="exibir_vitrine"
+                  checked={formData.exibir_vitrine}
+                  onCheckedChange={(checked) => setFormData({ ...formData, exibir_vitrine: checked })}
+                />
+              </div>
+
+              {formData.exibir_vitrine && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="meta_captacao" className="flex items-center gap-2">
+                      <Target className="h-4 w-4" />
+                      Meta de Captação (R$)
+                    </Label>
+                    <Input
+                      id="meta_captacao"
+                      type="number"
+                      step="0.01"
+                      value={formData.meta_captacao}
+                      onChange={(e) => setFormData({ ...formData, meta_captacao: parseFloat(e.target.value) || 0 })}
+                      placeholder="Deixe 0 para não exibir meta"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Defina uma meta de captação. Deixe em 0 para apenas receber propostas sem meta.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="mostrar_progresso" className="font-medium flex items-center gap-2">
+                        <Eye className="h-4 w-4" />
+                        Mostrar Progresso
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Exibe o quanto já foi captado publicamente
+                      </p>
+                    </div>
+                    <Switch
+                      id="mostrar_progresso"
+                      checked={formData.mostrar_progresso}
+                      onCheckedChange={(checked) => setFormData({ ...formData, mostrar_progresso: checked })}
+                    />
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

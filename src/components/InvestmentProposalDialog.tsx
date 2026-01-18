@@ -26,8 +26,11 @@ import {
   ArrowRight,
   ArrowLeft,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCreateProposta, TipoApoio } from "@/hooks/usePropostasInvestimento";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface InvestmentProposalDialogProps {
   open: boolean;
@@ -37,11 +40,13 @@ interface InvestmentProposalDialogProps {
     titulo: string;
     metaFinanciamento: number;
     arrecadado: number;
+    criadorId: string;
+    isOficina?: boolean;
   };
 }
 
 type TipoInvestidor = "pessoa_fisica" | "empresa" | "instituicao";
-type TipoApoio = "financeiro" | "servico" | "misto";
+type TipoApoioUI = "financeiro" | "servico" | "patrocinio" | "misto";
 
 interface PropostaData {
   tipoInvestidor: TipoInvestidor;
@@ -49,7 +54,7 @@ interface PropostaData {
   email: string;
   telefone: string;
   empresa?: string;
-  tipoApoio: TipoApoio;
+  tipoApoio: TipoApoioUI;
   valorFinanceiro: string;
   descricaoServico: string;
   contrapartidas: string[];
@@ -71,8 +76,9 @@ export const InvestmentProposalDialog = ({
   onOpenChange,
   projeto,
 }: InvestmentProposalDialogProps) => {
+  const { user } = useAuth();
+  const createProposta = useCreateProposta();
   const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [proposta, setProposta] = useState<PropostaData>({
     tipoInvestidor: "pessoa_fisica",
     nome: "",
@@ -119,27 +125,50 @@ export const InvestmentProposalDialog = ({
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    // Simula envio
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    toast.success("Proposta enviada com sucesso! O responsável pelo projeto entrará em contato.");
-    onOpenChange(false);
-    // Reset form
-    setStep(1);
-    setProposta({
-      tipoInvestidor: "pessoa_fisica",
-      nome: "",
-      email: "",
-      telefone: "",
-      empresa: "",
-      tipoApoio: "financeiro",
-      valorFinanceiro: "",
-      descricaoServico: "",
-      contrapartidas: [],
-      mensagem: "",
-      aceitaTermos: false,
-    });
+    if (!user) {
+      toast.error("Você precisa estar logado para enviar uma proposta.");
+      return;
+    }
+
+    // Parse valor financeiro
+    const valorNumerico = proposta.valorFinanceiro 
+      ? parseFloat(proposta.valorFinanceiro.replace(/\./g, "").replace(",", "."))
+      : undefined;
+
+    // Map tipoApoio: "misto" -> "patrocinio" (since misto is a mix of financial + service)
+    const tipoApoioDb: TipoApoio = proposta.tipoApoio === "misto" ? "patrocinio" : proposta.tipoApoio;
+
+    try {
+      await createProposta.mutateAsync({
+        oportunidade_id: projeto.isOficina ? undefined : projeto.id,
+        oficina_id: projeto.isOficina ? projeto.id : undefined,
+        criador_id: projeto.criadorId,
+        tipo_apoio: tipoApoioDb,
+        valor_financeiro: valorNumerico,
+        descricao_servico: proposta.descricaoServico || undefined,
+        contrapartidas_desejadas: proposta.contrapartidas,
+        mensagem: proposta.mensagem || undefined,
+      });
+
+      onOpenChange(false);
+      // Reset form
+      setStep(1);
+      setProposta({
+        tipoInvestidor: "pessoa_fisica",
+        nome: "",
+        email: "",
+        telefone: "",
+        empresa: "",
+        tipoApoio: "financeiro",
+        valorFinanceiro: "",
+        descricaoServico: "",
+        contrapartidas: [],
+        mensagem: "",
+        aceitaTermos: false,
+      });
+    } catch (error) {
+      // Error is handled in the mutation
+    }
   };
 
   const renderStep = () => {
@@ -481,8 +510,8 @@ export const InvestmentProposalDialog = ({
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={!canAdvance() || isSubmitting}>
-              {isSubmitting ? (
+            <Button onClick={handleSubmit} disabled={!canAdvance() || createProposta.isPending}>
+              {createProposta.isPending ? (
                 "Enviando..."
               ) : (
                 <>
