@@ -20,6 +20,12 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Plus,
   Search,
   Filter,
@@ -33,6 +39,10 @@ import {
   Film,
   Palette,
   Theater,
+  GraduationCap,
+  Briefcase,
+  MapPin,
+  ChevronDown,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -105,10 +115,57 @@ const Oportunidades = () => {
             <h1 className="text-3xl font-bold tracking-tight">Meus Projetos</h1>
             <p className="text-muted-foreground mt-1">Gerencie seus projetos culturais em todas as fases</p>
           </div>
-          <Button onClick={() => navigate("/oportunidades/novo")} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Novo Projeto
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Novo Projeto
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-popover z-50">
+              <DropdownMenuItem 
+                onClick={() => navigate("/oportunidades/novo/evento")}
+                className="gap-3 cursor-pointer"
+              >
+                <Calendar className="h-4 w-4 text-blue-500" />
+                <div>
+                  <p className="font-medium">Eventos</p>
+                  <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => navigate("/oportunidades/novo/vaga")}
+                className="gap-3 cursor-pointer"
+              >
+                <Briefcase className="h-4 w-4 text-emerald-500" />
+                <div>
+                  <p className="font-medium">Vaga de Trabalho</p>
+                  <p className="text-xs text-muted-foreground">Oportunidades profissionais</p>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => navigate("/oportunidades/novo/oficina")}
+                className="gap-3 cursor-pointer"
+              >
+                <GraduationCap className="h-4 w-4 text-amber-500" />
+                <div>
+                  <p className="font-medium">Oficinas</p>
+                  <p className="text-xs text-muted-foreground">Cursos, workshops, formações</p>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => navigate("/oportunidades/novo/bairro")}
+                className="gap-3 cursor-pointer"
+              >
+                <MapPin className="h-4 w-4 text-purple-500" />
+                <div>
+                  <p className="font-medium">Projetos de Bairro</p>
+                  <p className="text-xs text-muted-foreground">Iniciativas comunitárias</p>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
