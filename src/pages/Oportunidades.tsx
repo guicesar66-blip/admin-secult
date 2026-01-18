@@ -40,6 +40,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useOportunidades } from "@/hooks/useOportunidades";
 import { useOficinas } from "@/hooks/useOficinas";
+import { useAuth } from "@/contexts/AuthContext";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500/20 text-blue-600" },
@@ -50,11 +51,12 @@ const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: 
 
 const Oportunidades = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");
 
-  const { data: oportunidades = [], isLoading: loadingOportunidades } = useOportunidades();
-  const { data: oficinas = [], isLoading: loadingOficinas } = useOficinas();
+  const { data: oportunidades = [], isLoading: loadingOportunidades } = useOportunidades(undefined, user?.id);
+  const { data: oficinas = [], isLoading: loadingOficinas } = useOficinas(user?.id);
 
   const isLoading = loadingOportunidades || loadingOficinas;
 

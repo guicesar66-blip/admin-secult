@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 export interface Oficina {
   id: string;
+  criador_id: string | null;
   titulo: string;
   descricao: string | null;
   imagem: string | null;
@@ -56,16 +57,23 @@ export interface CreateOficinaData {
   organizacao: string;
   emite_certificado?: boolean;
   imagem?: string;
+  criador_id?: string;
 }
 
-export function useOficinas() {
+export function useOficinas(criadorId?: string) {
   return useQuery({
-    queryKey: ["oficinas"],
+    queryKey: ["oficinas", criadorId ?? null],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("oficinas")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (criadorId) {
+        query = query.eq("criador_id", criadorId);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error("Error fetching oficinas:", error);
@@ -103,9 +111,18 @@ export function useCreateOficina() {
 
   return useMutation({
     mutationFn: async (data: CreateOficinaData) => {
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("Usuário não autenticado");
+
+      const payload: CreateOficinaData = {
+        ...data,
+        criador_id: authData.user.id,
+      };
+
       const { data: result, error } = await supabase
         .from("oficinas")
-        .insert([data])
+        .insert([payload])
         .select()
         .single();
 
