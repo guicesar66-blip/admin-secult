@@ -457,6 +457,7 @@ const OportunidadePublica = () => {
             titulo: oportunidade.titulo,
             metaFinanciamento: oportunidade.metaFinanciamento,
             arrecadado: oportunidade.arrecadado,
+            criadorId: oportunidade.id, // Using oportunidade.id as fallback since this is mock data
           }}
         />
       </div>
