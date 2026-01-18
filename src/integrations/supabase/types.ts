@@ -101,6 +101,7 @@ export type Database = {
           carga_horaria: number
           categoria: string
           created_at: string
+          criador_id: string | null
           data_fim: string
           data_inicio: string
           descricao: string | null
@@ -130,6 +131,7 @@ export type Database = {
           carga_horaria: number
           categoria: string
           created_at?: string
+          criador_id?: string | null
           data_fim: string
           data_inicio: string
           descricao?: string | null
@@ -159,6 +161,7 @@ export type Database = {
           carga_horaria?: number
           categoria?: string
           created_at?: string
+          criador_id?: string | null
           data_fim?: string
           data_inicio?: string
           descricao?: string | null
