@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WhiteLabelProvider } from "@/contexts/WhiteLabelContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
@@ -33,42 +35,48 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <WhiteLabelProvider>
-      <NotificationProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/oportunidades" element={<Oportunidades />} />
-            <Route path="/oportunidades/novo" element={<NovoProjetoConstrucao />} />
-            <Route path="/oportunidades/novo/evento" element={<NovoProjetoConstrucao />} />
-            <Route path="/oportunidades/novo/vaga" element={<NovoProjetoConstrucao />} />
-            <Route path="/oportunidades/novo/oficina" element={<NovoProjetoOficina />} />
-            <Route path="/oportunidades/novo/bairro" element={<NovoProjetoConstrucao />} />
-            <Route path="/oportunidades/:id" element={<ProjetoDetalhes />} />
-            <Route path="/marketplace" element={<MarketplaceExplorar />} />
-            <Route path="/marketplace/:id" element={<OportunidadePublica />} />
-            <Route path="/incubacoes" element={<Incubacoes />} />
-            <Route path="/incubacoes/:id" element={<IncubacaoDetalhes />} />
-            <Route path="/usuarios" element={<GestaoUsuarios />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/analise-financeira" element={<AnaliseFinanceira />} />
-            <Route path="/analise-territorial" element={<AnaliseTerritorial />} />
-            <Route path="/analise-artistas" element={<AnaliseArtistas />} />
-            <Route path="/investimentos" element={<Investimentos />} />
-            <Route path="/investimentos/:id" element={<InvestimentoDetalhes />} />
-            <Route path="/configuracoes" element={<Configuracoes />} />
-            <Route path="/configuracoes/equipe" element={<ConfiguracoesEquipe />} />
-            <Route path="/configuracoes/integracoes" element={<ConfiguracoesIntegracoes />} />
-            <Route path="/trocados" element={<SistemaTrocados />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </NotificationProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                {/* Public route */}
+                <Route path="/" element={<Login />} />
+                
+                {/* Protected routes - require admin */}
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/oportunidades" element={<ProtectedRoute><Oportunidades /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/evento" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/vaga" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/oficina" element={<ProtectedRoute><NovoProjetoOficina /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/bairro" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/:id" element={<ProtectedRoute><ProjetoDetalhes /></ProtectedRoute>} />
+                <Route path="/marketplace" element={<ProtectedRoute><MarketplaceExplorar /></ProtectedRoute>} />
+                <Route path="/marketplace/:id" element={<ProtectedRoute><OportunidadePublica /></ProtectedRoute>} />
+                <Route path="/incubacoes" element={<ProtectedRoute><Incubacoes /></ProtectedRoute>} />
+                <Route path="/incubacoes/:id" element={<ProtectedRoute><IncubacaoDetalhes /></ProtectedRoute>} />
+                <Route path="/usuarios" element={<ProtectedRoute><GestaoUsuarios /></ProtectedRoute>} />
+                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+                <Route path="/analise-financeira" element={<ProtectedRoute><AnaliseFinanceira /></ProtectedRoute>} />
+                <Route path="/analise-territorial" element={<ProtectedRoute><AnaliseTerritorial /></ProtectedRoute>} />
+                <Route path="/analise-artistas" element={<ProtectedRoute><AnaliseArtistas /></ProtectedRoute>} />
+                <Route path="/investimentos" element={<ProtectedRoute><Investimentos /></ProtectedRoute>} />
+                <Route path="/investimentos/:id" element={<ProtectedRoute><InvestimentoDetalhes /></ProtectedRoute>} />
+                <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
+                <Route path="/configuracoes/equipe" element={<ProtectedRoute><ConfiguracoesEquipe /></ProtectedRoute>} />
+                <Route path="/configuracoes/integracoes" element={<ProtectedRoute><ConfiguracoesIntegracoes /></ProtectedRoute>} />
+                <Route path="/trocados" element={<ProtectedRoute><SistemaTrocados /></ProtectedRoute>} />
+                
+                {/* Catch-all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </NotificationProvider>
+      </AuthProvider>
     </WhiteLabelProvider>
   </QueryClientProvider>
 );
