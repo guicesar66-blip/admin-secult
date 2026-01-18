@@ -12,6 +12,7 @@ import MarketplaceExplorar from "./pages/MarketplaceExplorar";
 import OportunidadePublica from "./pages/OportunidadePublica";
 import ProjetoDetalhes from "./pages/ProjetoDetalhes";
 import NovoProjetoConstrucao from "./pages/NovoProjetoConstrucao";
+import NovoProjetoOficina from "./pages/NovoProjetoOficina";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
@@ -42,6 +43,10 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/oportunidades" element={<Oportunidades />} />
             <Route path="/oportunidades/novo" element={<NovoProjetoConstrucao />} />
+            <Route path="/oportunidades/novo/evento" element={<NovoProjetoConstrucao />} />
+            <Route path="/oportunidades/novo/vaga" element={<NovoProjetoConstrucao />} />
+            <Route path="/oportunidades/novo/oficina" element={<NovoProjetoOficina />} />
+            <Route path="/oportunidades/novo/bairro" element={<NovoProjetoConstrucao />} />
             <Route path="/oportunidades/:id" element={<ProjetoDetalhes />} />
             <Route path="/marketplace" element={<MarketplaceExplorar />} />
             <Route path="/marketplace/:id" element={<OportunidadePublica />} />
