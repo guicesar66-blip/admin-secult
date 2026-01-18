@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +24,11 @@ import {
   Calendar,
   DollarSign,
   Trophy,
+  Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCreateOficina } from "@/hooks/useOficinas";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Message {
   id: string;
@@ -128,11 +130,14 @@ const perguntasOficina = [
 
 const NovoProjetoOficina = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const createOficina = useCreateOficina();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [etapaAtual, setEtapaAtual] = useState(0);
   const [oficinaInfo, setOficinaInfo] = useState<OficinaInfo>({});
   const [isTyping, setIsTyping] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -259,30 +264,65 @@ const NovoProjetoOficina = () => {
     return oficinaInfo.custos?.reduce((acc, item) => acc + item.total, 0) || 0;
   };
 
-  const finalizarProjeto = () => {
-    const novoProjetoId = `oficina-${Date.now()}`;
-    navigate(`/oportunidades/${novoProjetoId}`, {
-      state: {
-        novoProjeto: {
-          id: novoProjetoId,
-          titulo: oficinaInfo.titulo || "Nova Oficina",
-          descricao: oficinaInfo.justificativa || "",
-          tipo: "oficina",
-          fase: "divulgacao" as const,
-          dataInicio: new Date().toISOString().split("T")[0],
-          prazo: oficinaInfo.cronograma || "",
-          membros: [],
-          progresso: 25,
-          responsavel: "Você",
-          orcamentoEstimado: calcularOrcamentoTotal(),
-          objetivo: oficinaInfo.objetivoGeral,
-          publicoAlvo: oficinaInfo.publicoQuantidade,
-          // Dados específicos de oficina
-          oficinaInfo: oficinaInfo,
+  const finalizarProjeto = async () => {
+    if (!user) {
+      return;
+    }
+
+    setIsSaving(true);
+    
+    try {
+      // Prepare data for the oficinas table
+      const hoje = new Date();
+      const dataInicio = new Date(hoje.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+      const dataFim = new Date(dataInicio.getTime() + 60 * 24 * 60 * 60 * 1000); // 60 days after start
+      const inscricaoFim = new Date(dataInicio.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days before start
+
+      const oficinaData = {
+        titulo: oficinaInfo.titulo || "Nova Oficina",
+        descricao: [
+          oficinaInfo.justificativa,
+          oficinaInfo.objetivoGeral && `**Objetivo:** ${oficinaInfo.objetivoGeral}`,
+          oficinaInfo.metodologia && `**Metodologia:** ${oficinaInfo.metodologia}`,
+          oficinaInfo.acessibilidade && `**Acessibilidade:** ${oficinaInfo.acessibilidade}`,
+          oficinaInfo.equipamentos && `**Equipamentos:** ${oficinaInfo.equipamentos}`,
+        ].filter(Boolean).join("\n\n"),
+        area_artistica: "Formação Cultural",
+        categoria: "oficina",
+        nivel: "iniciante",
+        modalidade: "presencial",
+        dias_semana: ["Sábado"],
+        horario: "14:00 - 17:00",
+        local: "A definir",
+        data_inicio: dataInicio.toISOString().split("T")[0],
+        data_fim: dataFim.toISOString().split("T")[0],
+        inscricao_fim: inscricaoFim.toISOString().split("T")[0],
+        carga_horaria: 12,
+        num_encontros: 4,
+        vagas_total: 30,
+        publico_alvo: oficinaInfo.publicoQuantidade || "Público geral",
+        prerequisitos: "",
+        facilitador_nome: user.user_metadata?.nome_completo || user.email || "Facilitador",
+        facilitador_bio: "",
+        organizacao: user.user_metadata?.nome_coletivo || user.user_metadata?.nome_completo || "Organização",
+        emite_certificado: true,
+        criador_id: user.id,
+      };
+
+      const result = await createOficina.mutateAsync(oficinaData);
+      
+      // Navigate to the project details page
+      navigate(`/oportunidades/${result.id}`, {
+        state: {
+          novoProjeto: result,
+          faseInicial: "divulgacao",
         },
-        faseInicial: "divulgacao",
-      },
-    });
+      });
+    } catch (error) {
+      console.error("Erro ao salvar oficina:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const projetoCompleto = etapaAtual >= perguntasOficina.length - 1;
@@ -393,10 +433,20 @@ const NovoProjetoOficina = () => {
                 ) : (
                   <Button
                     onClick={finalizarProjeto}
+                    disabled={isSaving}
                     className="w-full gap-2 bg-amber-600 hover:bg-amber-700"
                   >
-                    Finalizar e ir para Divulgação
-                    <ArrowRight className="h-4 w-4" />
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        Finalizar e ir para Divulgação
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 )}
               </div>
