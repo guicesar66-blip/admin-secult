@@ -93,11 +93,19 @@ export type Database = {
             referencedRelation: "oficinas_com_vagas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "oficina_inscricoes_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       oficinas: {
         Row: {
           area_artistica: string
+          captacao_atual: number | null
           carga_horaria: number
           categoria: string
           created_at: string
@@ -107,6 +115,7 @@ export type Database = {
           descricao: string | null
           dias_semana: string[]
           emite_certificado: boolean | null
+          exibir_vitrine: boolean | null
           facilitador_avatar: string | null
           facilitador_bio: string | null
           facilitador_nome: string
@@ -115,7 +124,9 @@ export type Database = {
           imagem: string | null
           inscricao_fim: string
           local: string | null
+          meta_captacao: number | null
           modalidade: string
+          mostrar_progresso: boolean | null
           nivel: string
           num_encontros: number
           organizacao: string
@@ -128,6 +139,7 @@ export type Database = {
         }
         Insert: {
           area_artistica: string
+          captacao_atual?: number | null
           carga_horaria: number
           categoria: string
           created_at?: string
@@ -137,6 +149,7 @@ export type Database = {
           descricao?: string | null
           dias_semana: string[]
           emite_certificado?: boolean | null
+          exibir_vitrine?: boolean | null
           facilitador_avatar?: string | null
           facilitador_bio?: string | null
           facilitador_nome: string
@@ -145,7 +158,9 @@ export type Database = {
           imagem?: string | null
           inscricao_fim: string
           local?: string | null
+          meta_captacao?: number | null
           modalidade: string
+          mostrar_progresso?: boolean | null
           nivel: string
           num_encontros: number
           organizacao: string
@@ -158,6 +173,7 @@ export type Database = {
         }
         Update: {
           area_artistica?: string
+          captacao_atual?: number | null
           carga_horaria?: number
           categoria?: string
           created_at?: string
@@ -167,6 +183,7 @@ export type Database = {
           descricao?: string | null
           dias_semana?: string[]
           emite_certificado?: boolean | null
+          exibir_vitrine?: boolean | null
           facilitador_avatar?: string | null
           facilitador_bio?: string | null
           facilitador_nome?: string
@@ -175,7 +192,9 @@ export type Database = {
           imagem?: string | null
           inscricao_fim?: string
           local?: string | null
+          meta_captacao?: number | null
           modalidade?: string
+          mostrar_progresso?: boolean | null
           nivel?: string
           num_encontros?: number
           organizacao?: string
@@ -234,11 +253,19 @@ export type Database = {
             referencedRelation: "oportunidades_com_interesse"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "oportunidade_interessados_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       oportunidades: {
         Row: {
           area_cultural: string | null
+          captacao_atual: number | null
           cena_coins: number | null
           created_at: string
           criador_contato: string | null
@@ -247,10 +274,13 @@ export type Database = {
           data_evento: string | null
           descricao: string | null
           duracao: string
+          exibir_vitrine: boolean | null
           horario: string | null
           id: string
           imagem: string | null
           local: string | null
+          meta_captacao: number | null
+          mostrar_progresso: boolean | null
           municipio: string | null
           prazo_inscricao: string | null
           remuneracao: number | null
@@ -263,6 +293,7 @@ export type Database = {
         }
         Insert: {
           area_cultural?: string | null
+          captacao_atual?: number | null
           cena_coins?: number | null
           created_at?: string
           criador_contato?: string | null
@@ -271,10 +302,13 @@ export type Database = {
           data_evento?: string | null
           descricao?: string | null
           duracao: string
+          exibir_vitrine?: boolean | null
           horario?: string | null
           id?: string
           imagem?: string | null
           local?: string | null
+          meta_captacao?: number | null
+          mostrar_progresso?: boolean | null
           municipio?: string | null
           prazo_inscricao?: string | null
           remuneracao?: number | null
@@ -287,6 +321,7 @@ export type Database = {
         }
         Update: {
           area_cultural?: string | null
+          captacao_atual?: number | null
           cena_coins?: number | null
           created_at?: string
           criador_contato?: string | null
@@ -295,10 +330,13 @@ export type Database = {
           data_evento?: string | null
           descricao?: string | null
           duracao?: string
+          exibir_vitrine?: boolean | null
           horario?: string | null
           id?: string
           imagem?: string | null
           local?: string | null
+          meta_captacao?: number | null
+          mostrar_progresso?: boolean | null
           municipio?: string | null
           prazo_inscricao?: string | null
           remuneracao?: number | null
@@ -392,6 +430,110 @@ export type Database = {
         }
         Relationships: []
       }
+      propostas_investimento: {
+        Row: {
+          contrapartidas_desejadas: string[] | null
+          created_at: string | null
+          criador_id: string
+          descricao_servico: string | null
+          id: string
+          investidor_id: string
+          mensagem: string | null
+          motivo_rejeicao: string | null
+          oficina_id: string | null
+          oportunidade_id: string | null
+          proposta_pai_id: string | null
+          status: Database["public"]["Enums"]["status_proposta"] | null
+          tipo_apoio: Database["public"]["Enums"]["tipo_apoio"]
+          updated_at: string | null
+          valor_financeiro: number | null
+        }
+        Insert: {
+          contrapartidas_desejadas?: string[] | null
+          created_at?: string | null
+          criador_id: string
+          descricao_servico?: string | null
+          id?: string
+          investidor_id: string
+          mensagem?: string | null
+          motivo_rejeicao?: string | null
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          proposta_pai_id?: string | null
+          status?: Database["public"]["Enums"]["status_proposta"] | null
+          tipo_apoio: Database["public"]["Enums"]["tipo_apoio"]
+          updated_at?: string | null
+          valor_financeiro?: number | null
+        }
+        Update: {
+          contrapartidas_desejadas?: string[] | null
+          created_at?: string | null
+          criador_id?: string
+          descricao_servico?: string | null
+          id?: string
+          investidor_id?: string
+          mensagem?: string | null
+          motivo_rejeicao?: string | null
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          proposta_pai_id?: string | null
+          status?: Database["public"]["Enums"]["status_proposta"] | null
+          tipo_apoio?: Database["public"]["Enums"]["tipo_apoio"]
+          updated_at?: string | null
+          valor_financeiro?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "propostas_investimento_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_com_vagas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_com_interesse"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_investimento_proposta_pai_id_fkey"
+            columns: ["proposta_pai_id"]
+            isOneToOne: false
+            referencedRelation: "propostas_investimento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -456,6 +598,13 @@ export type Database = {
             columns: ["oportunidade_id"]
             isOneToOne: false
             referencedRelation: "oportunidades_com_interesse"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "oportunidade_interessados_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_vitrine"
             referencedColumns: ["id"]
           },
         ]
@@ -553,6 +702,117 @@ export type Database = {
         }
         Relationships: []
       }
+      oficinas_vitrine: {
+        Row: {
+          area_artistica: string | null
+          captacao_atual: number | null
+          carga_horaria: number | null
+          categoria: string | null
+          created_at: string | null
+          criador_id: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          dias_semana: string[] | null
+          emite_certificado: boolean | null
+          exibir_vitrine: boolean | null
+          facilitador_avatar: string | null
+          facilitador_bio: string | null
+          facilitador_nome: string | null
+          horario: string | null
+          id: string | null
+          imagem: string | null
+          inscricao_fim: string | null
+          local: string | null
+          meta_captacao: number | null
+          modalidade: string | null
+          mostrar_progresso: boolean | null
+          nivel: string | null
+          num_encontros: number | null
+          organizacao: string | null
+          prerequisitos: string | null
+          publico_alvo: string | null
+          status: string | null
+          titulo: string | null
+          total_propostas: number | null
+          updated_at: string | null
+          vagas_total: number | null
+          valor_captado: number | null
+        }
+        Insert: {
+          area_artistica?: string | null
+          captacao_atual?: number | null
+          carga_horaria?: number | null
+          categoria?: string | null
+          created_at?: string | null
+          criador_id?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          dias_semana?: string[] | null
+          emite_certificado?: boolean | null
+          exibir_vitrine?: boolean | null
+          facilitador_avatar?: string | null
+          facilitador_bio?: string | null
+          facilitador_nome?: string | null
+          horario?: string | null
+          id?: string | null
+          imagem?: string | null
+          inscricao_fim?: string | null
+          local?: string | null
+          meta_captacao?: number | null
+          modalidade?: string | null
+          mostrar_progresso?: boolean | null
+          nivel?: string | null
+          num_encontros?: number | null
+          organizacao?: string | null
+          prerequisitos?: string | null
+          publico_alvo?: string | null
+          status?: string | null
+          titulo?: string | null
+          total_propostas?: never
+          updated_at?: string | null
+          vagas_total?: number | null
+          valor_captado?: never
+        }
+        Update: {
+          area_artistica?: string | null
+          captacao_atual?: number | null
+          carga_horaria?: number | null
+          categoria?: string | null
+          created_at?: string | null
+          criador_id?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          dias_semana?: string[] | null
+          emite_certificado?: boolean | null
+          exibir_vitrine?: boolean | null
+          facilitador_avatar?: string | null
+          facilitador_bio?: string | null
+          facilitador_nome?: string | null
+          horario?: string | null
+          id?: string | null
+          imagem?: string | null
+          inscricao_fim?: string | null
+          local?: string | null
+          meta_captacao?: number | null
+          modalidade?: string | null
+          mostrar_progresso?: boolean | null
+          nivel?: string | null
+          num_encontros?: number | null
+          organizacao?: string | null
+          prerequisitos?: string | null
+          publico_alvo?: string | null
+          status?: string | null
+          titulo?: string | null
+          total_propostas?: never
+          updated_at?: string | null
+          vagas_total?: number | null
+          valor_captado?: never
+        }
+        Relationships: []
+      }
       oportunidades_com_interesse: {
         Row: {
           area_cultural: string | null
@@ -634,6 +894,41 @@ export type Database = {
         }
         Relationships: []
       }
+      oportunidades_vitrine: {
+        Row: {
+          area_cultural: string | null
+          captacao_atual: number | null
+          cena_coins: number | null
+          created_at: string | null
+          criador_contato: string | null
+          criador_id: string | null
+          criador_nome: string | null
+          criador_nome_artistico: string | null
+          criador_nome_completo: string | null
+          data_evento: string | null
+          descricao: string | null
+          duracao: string | null
+          exibir_vitrine: boolean | null
+          horario: string | null
+          id: string | null
+          imagem: string | null
+          local: string | null
+          meta_captacao: number | null
+          mostrar_progresso: boolean | null
+          municipio: string | null
+          prazo_inscricao: string | null
+          remuneracao: number | null
+          requisitos: string | null
+          status: string | null
+          tipo: string | null
+          titulo: string | null
+          total_propostas: number | null
+          updated_at: string | null
+          vagas: number | null
+          valor_captado: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_user_role: {
@@ -650,6 +945,13 @@ export type Database = {
     }
     Enums: {
       app_role: "app" | "admin"
+      status_proposta:
+        | "pendente"
+        | "aprovada"
+        | "rejeitada"
+        | "contraproposta"
+        | "cancelada"
+      tipo_apoio: "financeiro" | "servico" | "patrocinio"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -778,6 +1080,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["app", "admin"],
+      status_proposta: [
+        "pendente",
+        "aprovada",
+        "rejeitada",
+        "contraproposta",
+        "cancelada",
+      ],
+      tipo_apoio: ["financeiro", "servico", "patrocinio"],
     },
   },
 } as const
