@@ -15,6 +15,9 @@ import OportunidadePublica from "./pages/OportunidadePublica";
 import ProjetoDetalhes from "./pages/ProjetoDetalhes";
 import NovoProjetoConstrucao from "./pages/NovoProjetoConstrucao";
 import NovoProjetoOficina from "./pages/NovoProjetoOficina";
+import NovoProjetoEvento from "./pages/NovoProjetoEvento";
+import NovoProjetoVaga from "./pages/NovoProjetoVaga";
+import NovoProjetoBairro from "./pages/NovoProjetoBairro";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
@@ -49,10 +52,10 @@ const App = () => (
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/oportunidades" element={<ProtectedRoute><Oportunidades /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
-                <Route path="/oportunidades/novo/evento" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
-                <Route path="/oportunidades/novo/vaga" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/evento" element={<ProtectedRoute><NovoProjetoEvento /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/vaga" element={<ProtectedRoute><NovoProjetoVaga /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo/oficina" element={<ProtectedRoute><NovoProjetoOficina /></ProtectedRoute>} />
-                <Route path="/oportunidades/novo/bairro" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/bairro" element={<ProtectedRoute><NovoProjetoBairro /></ProtectedRoute>} />
                 <Route path="/oportunidades/:id" element={<ProtectedRoute><ProjetoDetalhes /></ProtectedRoute>} />
                 <Route path="/marketplace" element={<ProtectedRoute><MarketplaceExplorar /></ProtectedRoute>} />
                 <Route path="/marketplace/:id" element={<ProtectedRoute><OportunidadePublica /></ProtectedRoute>} />
