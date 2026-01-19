@@ -435,6 +435,8 @@ const ProjetoDetalhes = () => {
           {/* Tab: Financeiro */}
           <TabsContent value="financeiro">
             <FinanceiroTab
+              projetoId={id || ""}
+              tipoEntidade={isOficina ? "oficina" : "oportunidade"}
               remuneracao={remuneracao}
               vagas={vagas || 0}
               cenaCoins={cenaCoins}

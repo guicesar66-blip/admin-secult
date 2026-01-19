@@ -56,6 +56,94 @@ export type Database = {
           },
         ]
       }
+      lancamentos_financeiros: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          criador_id: string
+          data: string
+          descricao: string
+          id: string
+          oficina_id: string | null
+          oportunidade_id: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          criador_id: string
+          data: string
+          descricao: string
+          id?: string
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          criador_id?: string
+          data?: string
+          descricao?: string
+          id?: string
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_financeiros_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_com_vagas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_com_interesse"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       oficina_inscricoes: {
         Row: {
           created_at: string
@@ -647,6 +735,91 @@ export type Database = {
             columns: ["proposta_pai_id"]
             isOneToOne: false
             referencedRelation: "propostas_investimento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repasses_colaboradores: {
+        Row: {
+          colaborador_id: string | null
+          colaborador_nome: string
+          created_at: string
+          criador_id: string
+          data_pagamento: string | null
+          id: string
+          oficina_id: string | null
+          oportunidade_id: string | null
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          colaborador_id?: string | null
+          colaborador_nome: string
+          created_at?: string
+          criador_id: string
+          data_pagamento?: string | null
+          id?: string
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          status?: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          colaborador_id?: string | null
+          colaborador_nome?: string
+          created_at?: string
+          criador_id?: string
+          data_pagamento?: string | null
+          id?: string
+          oficina_id?: string | null
+          oportunidade_id?: string | null
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repasses_colaboradores_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_colaboradores_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_com_vagas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_colaboradores_oficina_id_fkey"
+            columns: ["oficina_id"]
+            isOneToOne: false
+            referencedRelation: "oficinas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_colaboradores_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_colaboradores_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_com_interesse"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_colaboradores_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades_vitrine"
             referencedColumns: ["id"]
           },
         ]
