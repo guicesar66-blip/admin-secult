@@ -30,6 +30,8 @@ import {
   Plus,
   Trash2,
   Loader2,
+  Sparkles,
+  Handshake,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -42,6 +44,9 @@ import {
   useUpdateLancamento,
   useUpdateRepasse,
 } from "@/hooks/useFinanceiro";
+import { usePropostasByOportunidade } from "@/hooks/usePropostasInvestimento";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FinanceiroTabProps {
   projetoId: string;
@@ -49,6 +54,16 @@ interface FinanceiroTabProps {
   remuneracao: number;
   vagas: number;
   cenaCoins: number;
+}
+
+interface ItemCusto {
+  id: string;
+  item: string;
+  categoria: string;
+  quantidade: number;
+  valor_unitario: number;
+  total: number;
+  fonte: "automatico" | "manual";
 }
 
 const statusLancamentoLabels: Record<string, string> = {
@@ -62,6 +77,12 @@ const statusRepasseLabels: Record<string, string> = {
   pendente: "Pendente",
   pago: "Pago",
   cancelado: "Cancelado",
+};
+
+const tipoApoioLabels: Record<string, string> = {
+  financeiro: "Financeiro",
+  servico: "Serviço/Permuta",
+  patrocinio: "Patrocínio",
 };
 
 export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cenaCoins }: FinanceiroTabProps) {
@@ -85,8 +106,47 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
     status: "pendente" as "pendente" | "pago" | "cancelado",
   });
 
-  // Hooks
-  const { data: lancamentos = [], isLoading: loadingLancamentos } = useLancamentosFinanceiros(projetoId, tipoEntidade);
+  // Buscar dados da oficina para itens_custo
+  const { data: oficina, isLoading: loadingOficina } = useQuery({
+    queryKey: ["oficina-financeiro", projetoId],
+    queryFn: async () => {
+      if (tipoEntidade !== "oficina") return null;
+      const { data, error } = await supabase
+        .from("oficinas")
+        .select("itens_custo, orcamento_total, reserva_tecnica_percentual")
+        .eq("id", projetoId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: tipoEntidade === "oficina" && !!projetoId,
+  });
+
+  // Buscar propostas de investimento
+  const { data: propostasOportunidade = [], isLoading: loadingPropostasOp } = usePropostasByOportunidade(
+    tipoEntidade === "oportunidade" ? projetoId : ""
+  );
+
+  const { data: propostasOficina = [], isLoading: loadingPropostasOf } = useQuery({
+    queryKey: ["propostas-oficina", projetoId],
+    queryFn: async () => {
+      if (tipoEntidade !== "oficina") return [];
+      const { data, error } = await supabase
+        .from("propostas_investimento")
+        .select("*")
+        .eq("oficina_id", projetoId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: tipoEntidade === "oficina" && !!projetoId,
+  });
+
+  const propostas = tipoEntidade === "oportunidade" ? propostasOportunidade : propostasOficina;
+  const propostasAprovadas = propostas.filter(p => p.status === "aprovada");
+
+  // Hooks para lançamentos manuais
+  const { data: lancamentosManuais = [], isLoading: loadingLancamentos } = useLancamentosFinanceiros(projetoId, tipoEntidade);
   const { data: repasses = [], isLoading: loadingRepasses } = useRepassesColaboradores(projetoId, tipoEntidade);
   
   const createLancamento = useCreateLancamento();
@@ -96,11 +156,33 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
   const updateLancamento = useUpdateLancamento();
   const updateRepasse = useUpdateRepasse();
 
-  // Cálculos
-  const receitas = lancamentos.filter(l => l.tipo === "receita");
-  const despesas = lancamentos.filter(l => l.tipo === "despesa");
-  const totalReceitas = receitas.reduce((acc, r) => acc + Number(r.valor), 0);
-  const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0);
+  // Processar itens de custo da oficina como despesas
+  const itensCusto: ItemCusto[] = Array.isArray(oficina?.itens_custo) 
+    ? (oficina.itens_custo as unknown as ItemCusto[]) 
+    : [];
+  const reservaTecnicaPercent = oficina?.reserva_tecnica_percentual || 0;
+  const subtotalCustos = itensCusto.reduce((acc, item) => acc + (item.total || 0), 0);
+  const reservaTecnica = subtotalCustos * (reservaTecnicaPercent / 100);
+  const totalCustosOficina = subtotalCustos + reservaTecnica;
+
+  // Cálculos de receitas
+  const receitasAprovadas = propostasAprovadas
+    .filter(p => p.tipo_apoio === "financeiro" && p.valor_financeiro)
+    .reduce((acc, p) => acc + (p.valor_financeiro || 0), 0);
+
+  const receitasManuais = lancamentosManuais
+    .filter(l => l.tipo === "receita")
+    .reduce((acc, r) => acc + Number(r.valor), 0);
+
+  const totalReceitas = receitasAprovadas + receitasManuais;
+
+  // Cálculos de despesas
+  const despesasManuais = lancamentosManuais
+    .filter(l => l.tipo === "despesa")
+    .reduce((acc, d) => acc + Number(d.valor), 0);
+
+  const totalDespesas = (tipoEntidade === "oficina" ? totalCustosOficina : 0) + despesasManuais;
+
   const balanco = totalReceitas - totalDespesas;
 
   const handleCreateLancamento = async () => {
@@ -176,7 +258,9 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
     });
   };
 
-  if (loadingLancamentos || loadingRepasses) {
+  const isLoading = loadingLancamentos || loadingRepasses || loadingOficina || loadingPropostasOp || loadingPropostasOf;
+
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -196,6 +280,11 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                 <div className="text-2xl font-bold text-green-600">
                   R$ {totalReceitas.toLocaleString("pt-BR")}
                 </div>
+                {receitasAprovadas > 0 && (
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {propostasAprovadas.length} investimento(s) aprovado(s)
+                  </div>
+                )}
               </div>
               <div className="p-2 bg-green-100 rounded-full">
                 <TrendingUp className="h-5 w-5 text-green-600" />
@@ -212,6 +301,11 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                 <div className="text-2xl font-bold text-red-600">
                   R$ {totalDespesas.toLocaleString("pt-BR")}
                 </div>
+                {tipoEntidade === "oficina" && itensCusto.length > 0 && (
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {itensCusto.length} item(ns) de custo
+                  </div>
+                )}
               </div>
               <div className="p-2 bg-red-100 rounded-full">
                 <TrendingDown className="h-5 w-5 text-red-600" />
@@ -253,7 +347,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
         </Card>
       </div>
 
-      {/* Receitas */}
+      {/* Receitas - Investimentos Aprovados */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-green-600">
@@ -329,25 +423,63 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
           </Dialog>
         </CardHeader>
         <CardContent>
-          {receitas.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">Nenhuma receita cadastrada</p>
+          {propostasAprovadas.length === 0 && lancamentosManuais.filter(l => l.tipo === "receita").length === 0 ? (
+            <div className="text-center py-8">
+              <Handshake className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+              <p className="text-muted-foreground">Nenhuma receita ainda</p>
+              <p className="text-sm text-muted-foreground/70 mt-1">
+                As propostas de investimento aprovadas aparecerão aqui automaticamente
+              </p>
+            </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Descrição</TableHead>
-                  <TableHead>Data</TableHead>
+                  <TableHead>Tipo</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Valor</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {receitas.map((receita) => (
+                {/* Propostas aprovadas */}
+                {propostasAprovadas.map((proposta) => (
+                  <TableRow key={proposta.id} className="bg-green-50/50">
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-green-600" />
+                        {proposta.tipo_apoio === "financeiro" 
+                          ? "Investimento Financeiro"
+                          : proposta.tipo_apoio === "servico"
+                            ? proposta.descricao_servico || "Serviço/Permuta"
+                            : "Patrocínio"
+                        }
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
+                        {tipoApoioLabels[proposta.tipo_apoio]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="bg-green-500">Aprovado</Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-green-600 font-medium">
+                      {proposta.tipo_apoio === "financeiro" 
+                        ? `R$ ${(proposta.valor_financeiro || 0).toLocaleString("pt-BR")}`
+                        : "—"
+                      }
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))}
+                {/* Lançamentos manuais */}
+                {lancamentosManuais.filter(l => l.tipo === "receita").map((receita) => (
                   <TableRow key={receita.id}>
                     <TableCell className="font-medium">{receita.descricao}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(receita.data).toLocaleDateString("pt-BR")}
+                    <TableCell>
+                      <Badge variant="outline">Manual</Badge>
                     </TableCell>
                     <TableCell>
                       <Badge 
@@ -379,7 +511,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
         </CardContent>
       </Card>
 
-      {/* Despesas */}
+      {/* Despesas - Itens de Custo + Manuais */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-red-600">
@@ -455,26 +587,68 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
           </Dialog>
         </CardHeader>
         <CardContent>
-          {despesas.length === 0 ? (
+          {itensCusto.length === 0 && lancamentosManuais.filter(l => l.tipo === "despesa").length === 0 ? (
             <p className="text-center text-muted-foreground py-8">Nenhuma despesa cadastrada</p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Descrição</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
+                  <TableHead>Categoria</TableHead>
+                  <TableHead>Qtd</TableHead>
+                  <TableHead className="text-right">Valor Unit.</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {despesas.map((despesa) => (
+                {/* Itens de custo da oficina */}
+                {itensCusto.map((item) => (
+                  <TableRow key={item.id} className="bg-blue-50/50">
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {item.fonte === "automatico" && (
+                          <Sparkles className="h-4 w-4 text-blue-600" />
+                        )}
+                        {item.item}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="capitalize">
+                        {item.categoria}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{item.quantidade}</TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      R$ {item.valor_unitario.toLocaleString("pt-BR")}
+                    </TableCell>
+                    <TableCell className="text-right text-red-600 font-medium">
+                      R$ {item.total.toLocaleString("pt-BR")}
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))}
+                {/* Reserva técnica */}
+                {reservaTecnica > 0 && (
+                  <TableRow className="bg-amber-50/50">
+                    <TableCell className="font-medium">Reserva Técnica ({reservaTecnicaPercent}%)</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">
+                        Reserva
+                      </Badge>
+                    </TableCell>
+                    <TableCell>1</TableCell>
+                    <TableCell className="text-right text-muted-foreground">—</TableCell>
+                    <TableCell className="text-right text-red-600 font-medium">
+                      R$ {reservaTecnica.toLocaleString("pt-BR")}
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                )}
+                {/* Lançamentos manuais */}
+                {lancamentosManuais.filter(l => l.tipo === "despesa").map((despesa) => (
                   <TableRow key={despesa.id}>
                     <TableCell className="font-medium">{despesa.descricao}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(despesa.data).toLocaleDateString("pt-BR")}
-                    </TableCell>
                     <TableCell>
                       <Badge 
                         variant={despesa.status === "pago" ? "default" : "secondary"}
@@ -484,6 +658,8 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                         {statusLancamentoLabels[despesa.status]}
                       </Badge>
                     </TableCell>
+                    <TableCell>1</TableCell>
+                    <TableCell className="text-right text-muted-foreground">—</TableCell>
                     <TableCell className="text-right text-red-600 font-medium">
                       R$ {Number(despesa.valor).toLocaleString("pt-BR")}
                     </TableCell>
