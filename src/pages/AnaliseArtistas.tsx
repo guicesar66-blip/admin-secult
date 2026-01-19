@@ -1,49 +1,213 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, TrendingUp, Users, Briefcase, GraduationCap } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Download, TrendingUp, Users, Briefcase, GraduationCap, UserCheck, Clock, Loader2, Calendar } from "lucide-react";
+import { useMemo } from "react";
 import { Progress } from "@/components/ui/progress";
+import { useOportunidades } from "@/hooks/useOportunidades";
+import { useOficinas } from "@/hooks/useOficinas";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
-const dadosSociais = {
-  totalPessoas: 2847,
-  emIncubacao: 214,
-  posIncubacao: 567,
-  semIncubacao: 2066,
-  meiFormalizados: 189,
-  portfolioCompleto: 1245,
-  mediaIdade: 28,
-  genero: {
-    masculino: 58,
-    feminino: 40,
-    outro: 2
-  },
-  escolaridade: {
-    fundamental: 12,
-    medio: 45,
-    superior: 32,
-    posGrad: 11
-  },
-  rendaMedia: {
-    antes: 850,
-    durante: 1200,
-    depois: 2100
-  }
-};
-
-const progressaoCarreira = [
-  { etapa: "Cadastro Inicial", quantidade: 2847, percentual: 100 },
-  { etapa: "Portfólio Completo", quantidade: 1245, percentual: 44 },
-  { etapa: "Participou Incubação", quantidade: 781, percentual: 27 },
-  { etapa: "Concluiu Incubação", quantidade: 567, percentual: 20 },
-  { etapa: "MEI Formalizado", quantidade: 189, percentual: 7 },
-  { etapa: "Renda Musical >2SM", quantidade: 134, percentual: 5 },
-];
+const COLORS = ['hsl(217, 91%, 60%)', 'hsl(45, 93%, 47%)', 'hsl(142, 76%, 36%)', 'hsl(0, 84%, 60%)', 'hsl(262, 83%, 58%)'];
 
 export default function AnaliseArtistas() {
-  const [periodo, setPeriodo] = useState("ano");
-  const [filtroIncubacao, setFiltroIncubacao] = useState("todos");
+  const { user } = useAuth();
+  const [periodo, setPeriodo] = useState("all");
+
+  const { data: oportunidades = [], isLoading: loadingOportunidades } = useOportunidades(undefined, user?.id);
+  const { data: oficinas = [], isLoading: loadingOficinas } = useOficinas(user?.id);
+
+  // Buscar candidaturas para as oportunidades do usuário
+  const oportunidadeIds = oportunidades.map(o => o.id);
+  const { data: candidaturas = [], isLoading: loadingCandidaturas } = useQuery({
+    queryKey: ["candidaturas-criador", user?.id],
+    queryFn: async () => {
+      if (!user?.id || oportunidadeIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from("oportunidade_interessados")
+        .select("*")
+        .in("oportunidade_id", oportunidadeIds);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id && oportunidadeIds.length > 0,
+  });
+
+  // Buscar inscrições para as oficinas do usuário
+  const oficinaIds = oficinas.map(o => o.id);
+  const { data: inscricoes = [], isLoading: loadingInscricoes } = useQuery({
+    queryKey: ["inscricoes-criador", user?.id],
+    queryFn: async () => {
+      if (!user?.id || oficinaIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from("oficina_inscricoes")
+        .select("*")
+        .in("oficina_id", oficinaIds);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id && oficinaIds.length > 0,
+  });
+
+  const isLoading = loadingOportunidades || loadingOficinas || loadingCandidaturas || loadingInscricoes;
+
+  // Métricas de pessoas
+  const metricas = useMemo(() => {
+    // Total de pessoas interessadas (candidaturas + inscrições)
+    const totalCandidaturas = candidaturas.length;
+    const totalInscricoes = inscricoes.length;
+    const totalPessoas = totalCandidaturas + totalInscricoes;
+
+    // Status das candidaturas
+    const candidaturasAprovadas = candidaturas.filter(c => c.status === "aprovada").length;
+    const candidaturasPendentes = candidaturas.filter(c => c.status === "aguardando" || c.status === "pendente").length;
+    const candidaturasReprovadas = candidaturas.filter(c => c.status === "reprovada").length;
+
+    // Status das inscrições
+    const inscricoesAprovadas = inscricoes.filter(i => i.status === "aprovada" || i.status === "confirmada").length;
+    const inscricoesPendentes = inscricoes.filter(i => i.status === "inscrito" || i.status === "pendente").length;
+
+    // Totais aprovados
+    const totalAprovados = candidaturasAprovadas + inscricoesAprovadas;
+    const totalPendentes = candidaturasPendentes + inscricoesPendentes;
+
+    // Taxa de aprovação
+    const taxaAprovacao = totalPessoas > 0 ? ((totalAprovados / totalPessoas) * 100) : 0;
+
+    // Total de vagas oferecidas
+    const vagasOportunidades = oportunidades.reduce((acc, o) => acc + (o.vagas || 0), 0);
+    const vagasOficinas = oficinas.reduce((acc, o) => acc + (o.vagas_total || 0), 0);
+    const totalVagas = vagasOportunidades + vagasOficinas;
+
+    // Taxa de preenchimento
+    const taxaPreenchimento = totalVagas > 0 ? ((totalAprovados / totalVagas) * 100) : 0;
+
+    // Distribuição por status
+    const distribuicaoStatus = [
+      { name: "Aprovados", value: totalAprovados, color: COLORS[2] },
+      { name: "Pendentes", value: totalPendentes, color: COLORS[1] },
+      { name: "Reprovados", value: candidaturasReprovadas, color: COLORS[3] },
+    ].filter(item => item.value > 0);
+
+    // Distribuição por tipo de projeto
+    const distribuicaoTipo = [
+      { name: "Eventos", value: candidaturas.length, color: COLORS[0] },
+      { name: "Oficinas", value: inscricoes.length, color: COLORS[1] },
+    ].filter(item => item.value > 0);
+
+    // Evolução mensal de candidaturas/inscrições
+    const evolucaoMensal = (() => {
+      const meses: Record<string, { candidaturas: number; inscricoes: number }> = {};
+      const hoje = new Date();
+      
+      for (let i = 5; i >= 0; i--) {
+        const data = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+        const chave = data.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+        meses[chave] = { candidaturas: 0, inscricoes: 0 };
+      }
+      
+      candidaturas.forEach(c => {
+        const dataCriacao = new Date(c.created_at);
+        const chave = dataCriacao.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+        if (meses[chave] !== undefined) {
+          meses[chave].candidaturas += 1;
+        }
+      });
+
+      inscricoes.forEach(i => {
+        const dataCriacao = new Date(i.created_at);
+        const chave = dataCriacao.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+        if (meses[chave] !== undefined) {
+          meses[chave].inscricoes += 1;
+        }
+      });
+
+      let acumulado = 0;
+      return Object.entries(meses).map(([mes, dados]) => {
+        acumulado += dados.candidaturas + dados.inscricoes;
+        return {
+          mes,
+          candidaturas: dados.candidaturas,
+          inscricoes: dados.inscricoes,
+          total: dados.candidaturas + dados.inscricoes,
+          acumulado,
+        };
+      });
+    })();
+
+    // Funil de conversão
+    const funilConversao = [
+      { etapa: "Vagas Disponíveis", quantidade: totalVagas, percentual: 100 },
+      { etapa: "Interessados", quantidade: totalPessoas, percentual: totalVagas > 0 ? Math.round((totalPessoas / totalVagas) * 100) : 0 },
+      { etapa: "Aprovados", quantidade: totalAprovados, percentual: totalVagas > 0 ? Math.round((totalAprovados / totalVagas) * 100) : 0 },
+    ];
+
+    // Top projetos por interesse
+    const projetosPorInteresse = [
+      ...oportunidades.map(o => ({
+        id: o.id,
+        nome: o.titulo,
+        tipo: o.tipo,
+        interessados: candidaturas.filter(c => c.oportunidade_id === o.id).length,
+        aprovados: candidaturas.filter(c => c.oportunidade_id === o.id && c.status === "aprovada").length,
+        vagas: o.vagas || 0,
+      })),
+      ...oficinas.map(o => ({
+        id: o.id,
+        nome: o.titulo,
+        tipo: "oficina",
+        interessados: inscricoes.filter(i => i.oficina_id === o.id).length,
+        aprovados: inscricoes.filter(i => i.oficina_id === o.id && (i.status === "aprovada" || i.status === "confirmada")).length,
+        vagas: o.vagas_total,
+      })),
+    ].sort((a, b) => b.interessados - a.interessados).slice(0, 5);
+
+    return {
+      totalPessoas,
+      totalCandidaturas,
+      totalInscricoes,
+      totalAprovados,
+      totalPendentes,
+      taxaAprovacao,
+      totalVagas,
+      taxaPreenchimento,
+      distribuicaoStatus,
+      distribuicaoTipo,
+      evolucaoMensal,
+      funilConversao,
+      projetosPorInteresse,
+      candidaturasReprovadas,
+    };
+  }, [oportunidades, oficinas, candidaturas, inscricoes]);
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -55,7 +219,7 @@ export default function AnaliseArtistas() {
               Análise de Pessoas
             </h2>
             <p className="text-sm text-muted-foreground">
-              Impacto social e desenvolvimento do capital humano musical
+              Candidaturas, inscrições e engajamento nos seus projetos
             </p>
           </div>
           <Button variant="outline" size="sm">
@@ -64,246 +228,271 @@ export default function AnaliseArtistas() {
           </Button>
         </div>
 
-        {/* Filtros */}
-        <Card className="p-4">
-          <div className="flex gap-4 items-center">
-            <div className="flex-1">
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Status Incubação
-              </label>
-              <Select value={filtroIncubacao} onValueChange={setFiltroIncubacao}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todas as pessoas</SelectItem>
-                  <SelectItem value="em-incubacao">Em incubação</SelectItem>
-                  <SelectItem value="pos-incubacao">Pós-incubação</SelectItem>
-                  <SelectItem value="sem-incubacao">Sem incubação</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex-1">
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Período
-              </label>
-              <Select value={periodo} onValueChange={setPeriodo}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="mes">Este mês</SelectItem>
-                  <SelectItem value="trimestre">Último trimestre</SelectItem>
-                  <SelectItem value="ano">Este ano</SelectItem>
-                  <SelectItem value="total">Total acumulado</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </Card>
-
         {/* KPIs Principais */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total de Pessoas</p>
-                <p className="text-2xl font-bold text-foreground mt-1">
-                  {dadosSociais.totalPessoas.toLocaleString()}
-                </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Interessados</p>
+                  <p className="text-2xl font-bold text-foreground">{metricas.totalPessoas}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
               </div>
-              <Users className="h-8 w-8 text-primary" />
-            </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {metricas.totalCandidaturas} candidaturas • {metricas.totalInscricoes} inscrições
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Em Incubação</p>
-                <p className="text-2xl font-bold text-success mt-1">
-                  {dadosSociais.emIncubacao}
-                </p>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Aprovados</p>
+                  <p className="text-2xl font-bold text-success">{metricas.totalAprovados}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-success/10 flex items-center justify-center">
+                  <UserCheck className="h-6 w-6 text-success" />
+                </div>
               </div>
-              <GraduationCap className="h-8 w-8 text-success" />
-            </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Taxa de aprovação: {metricas.taxaAprovacao.toFixed(0)}%
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">MEIs Formalizados</p>
-                <p className="text-2xl font-bold text-warning mt-1">
-                  {dadosSociais.meiFormalizados}
-                </p>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Pendentes</p>
+                  <p className="text-2xl font-bold text-warning">{metricas.totalPendentes}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-warning/10 flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-warning" />
+                </div>
               </div>
-              <Briefcase className="h-8 w-8 text-warning" />
-            </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Aguardando análise
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Portfólio Completo</p>
-                <p className="text-2xl font-bold text-foreground mt-1">
-                  {dadosSociais.portfolioCompleto}
-                </p>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Vagas Oferecidas</p>
+                  <p className="text-2xl font-bold text-foreground">{metricas.totalVagas}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <Briefcase className="h-6 w-6 text-secondary" />
+                </div>
               </div>
-              <TrendingUp className="h-8 w-8 text-primary" />
-            </div>
+              {metricas.totalVagas > 0 && (
+                <div className="mt-2">
+                  <Progress value={metricas.taxaPreenchimento} className="h-1.5" />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {metricas.taxaPreenchimento.toFixed(0)}% preenchido
+                  </p>
+                </div>
+              )}
+            </CardContent>
           </Card>
         </div>
 
-        {/* Impacto na Renda */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
-            Impacto no Desenvolvimento Econômico
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-muted/30 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Renda Média Antes</p>
-              <p className="text-3xl font-bold text-foreground">
-                R$ {dadosSociais.rendaMedia.antes}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Pré-incubação</p>
-            </div>
-            <div className="text-center p-4 bg-warning/10 rounded-lg border-2 border-warning/30">
-              <p className="text-sm text-muted-foreground mb-2">Renda Média Durante</p>
-              <p className="text-3xl font-bold text-warning">
-                R$ {dadosSociais.rendaMedia.durante}
-              </p>
-              <p className="text-xs text-success mt-1">↗ +41% vs antes</p>
-            </div>
-            <div className="text-center p-4 bg-success/10 rounded-lg border-2 border-success/30">
-              <p className="text-sm text-muted-foreground mb-2">Renda Média Pós</p>
-              <p className="text-3xl font-bold text-success">
-                R$ {dadosSociais.rendaMedia.depois}
-              </p>
-              <p className="text-xs text-success mt-1">↗ +147% vs antes</p>
-            </div>
-          </div>
-        </Card>
+        {/* Gráficos */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Evolução de Interesse */}
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Evolução de Interesse
+              </CardTitle>
+              <CardDescription>Candidaturas e inscrições nos últimos 6 meses</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[250px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={metricas.evolucaoMensal}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="mes" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                    <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="acumulado" 
+                      stroke="hsl(var(--primary))" 
+                      fill="hsl(var(--primary) / 0.2)" 
+                      name="Total Acumulado"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Funil de Progressão de Carreira */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
-            Funil de Progressão de Carreira Musical
-          </h3>
-          <div className="space-y-4">
-            {progressaoCarreira.map((etapa, idx) => (
-              <div key={etapa.etapa}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-foreground">
-                    {etapa.etapa}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground">
-                      {etapa.quantidade.toLocaleString()} pessoas
-                    </span>
-                    <span className="text-sm font-semibold text-primary">
-                      {etapa.percentual}%
-                    </span>
+          {/* Distribuição por Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Por Status
+              </CardTitle>
+              <CardDescription>Situação atual das candidaturas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {metricas.distribuicaoStatus.length > 0 ? (
+                <>
+                  <div className="h-[180px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={metricas.distribuicaoStatus}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={70}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {metricas.distribuicaoStatus.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    {metricas.distribuicaoStatus.map((item) => (
+                      <div key={item.name} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span className="text-muted-foreground">{item.name}</span>
+                        </div>
+                        <span className="font-medium">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-[200px] text-muted-foreground">
+                  <div className="text-center">
+                    <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Nenhuma candidatura</p>
                   </div>
                 </div>
-                <Progress value={etapa.percentual} className="h-3" />
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Perfil Demográfico */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Gênero */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">
-              Distribuição por Gênero
-            </h3>
-            <div className="space-y-3">
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Masculino</span>
-                  <span className="text-sm font-medium">{dadosSociais.genero.masculino}%</span>
-                </div>
-                <Progress value={dadosSociais.genero.masculino} />
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Feminino</span>
-                  <span className="text-sm font-medium">{dadosSociais.genero.feminino}%</span>
-                </div>
-                <Progress value={dadosSociais.genero.feminino} />
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Outro</span>
-                  <span className="text-sm font-medium">{dadosSociais.genero.outro}%</span>
-                </div>
-                <Progress value={dadosSociais.genero.outro} />
-              </div>
-            </div>
-          </Card>
-
-          {/* Escolaridade */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">
-              Nível de Escolaridade
-            </h3>
-            <div className="space-y-3">
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Ensino Fundamental</span>
-                  <span className="text-sm font-medium">{dadosSociais.escolaridade.fundamental}%</span>
-                </div>
-                <Progress value={dadosSociais.escolaridade.fundamental} />
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Ensino Médio</span>
-                  <span className="text-sm font-medium">{dadosSociais.escolaridade.medio}%</span>
-                </div>
-                <Progress value={dadosSociais.escolaridade.medio} />
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Ensino Superior</span>
-                  <span className="text-sm font-medium">{dadosSociais.escolaridade.superior}%</span>
-                </div>
-                <Progress value={dadosSociais.escolaridade.superior} />
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">Pós-Graduação</span>
-                  <span className="text-sm font-medium">{dadosSociais.escolaridade.posGrad}%</span>
-                </div>
-                <Progress value={dadosSociais.escolaridade.posGrad} />
-              </div>
-            </div>
+              )}
+            </CardContent>
           </Card>
         </div>
 
-        {/* Insights Sociais */}
-        <Card className="p-6 bg-success/5 border-success/20">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Principais Indicadores de Impacto Social
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-medium text-foreground mb-2">Desenvolvimento Econômico</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• Aumento médio de <strong className="text-success">147% na renda</strong> pós-incubação</li>
-                <li>• <strong className="text-foreground">189 MEIs</strong> formalizados (33% dos formados)</li>
-                <li>• Geração estimada de <strong className="text-foreground">R$ 2.8M/ano</strong> em renda musical</li>
-              </ul>
+        {/* Funil de Conversão */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Funil de Conversão
+            </CardTitle>
+            <CardDescription>Da disponibilidade de vagas à aprovação</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {metricas.funilConversao.map((etapa, idx) => (
+                <div key={etapa.etapa}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-foreground">
+                      {etapa.etapa}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        {etapa.quantidade}
+                      </span>
+                      <Badge variant={idx === 0 ? "default" : idx === 2 ? "secondary" : "outline"}>
+                        {etapa.percentual}%
+                      </Badge>
+                    </div>
+                  </div>
+                  <Progress value={etapa.percentual} className="h-3" />
+                </div>
+              ))}
             </div>
-            <div>
-              <h4 className="font-medium text-foreground mb-2">Desenvolvimento Profissional</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• <strong className="text-foreground">78% de conclusão</strong> dos programas de incubação</li>
-                <li>• <strong className="text-foreground">89% criam portfólio</strong> profissional completo</li>
-                <li>• Média de <strong className="text-foreground">4.6/5.0</strong> em satisfação dos participantes</li>
-              </ul>
-            </div>
-          </div>
+          </CardContent>
         </Card>
+
+        {/* Top Projetos por Interesse */}
+        {metricas.projetosPorInteresse.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Projetos Mais Procurados</CardTitle>
+              <CardDescription>Ordenado por número de interessados</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {metricas.projetosPorInteresse.map((projeto, idx) => (
+                  <div key={projeto.id} className="flex items-center gap-4 p-3 rounded-lg border border-border">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{projeto.nome}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {projeto.tipo === "oficina" && <GraduationCap className="h-3 w-3 mr-1" />}
+                          {projeto.tipo === "evento" && <Calendar className="h-3 w-3 mr-1" />}
+                          {projeto.tipo}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {projeto.vagas} vagas
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-foreground">{projeto.interessados}</p>
+                      <p className="text-xs text-muted-foreground">interessados</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-success">{projeto.aprovados}</p>
+                      <p className="text-xs text-muted-foreground">aprovados</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Card de Resumo */}
+        {metricas.totalPessoas > 0 && (
+          <Card className="bg-primary/5 border-primary/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground">Resumo de Engajamento</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Seus projetos receberam <strong className="text-foreground">{metricas.totalPessoas} manifestações de interesse</strong>,
+                    com uma taxa de aprovação de <strong className="text-success">{metricas.taxaAprovacao.toFixed(0)}%</strong>.
+                    {metricas.totalPendentes > 0 && ` Ainda há ${metricas.totalPendentes} candidatura${metricas.totalPendentes > 1 ? 's' : ''} pendente${metricas.totalPendentes > 1 ? 's' : ''} de análise.`}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </DashboardLayout>
   );
