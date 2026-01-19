@@ -40,6 +40,9 @@ import {
   validateStep6,
   validateStep7,
   validateStep8,
+  validateStep9,
+  validateStep10,
+  validateStep11,
 } from "@/types/oficina-wizard";
 import { 
   StepJustificativa, 
@@ -50,6 +53,9 @@ import {
   StepPlanoMidia,
   StepAcessibilidade,
   StepEquipamentos,
+  StepPublicoCronograma,
+  StepPlanilhaCustos,
+  StepResultados,
 } from "@/components/oficina-wizard";
 
 const STEP_ICONS: Record<string, React.ReactNode> = {
@@ -91,7 +97,9 @@ const NovoProjetoOficina = () => {
       case 6: return validateStep6(wizardData).isValid;
       case 7: return validateStep7(wizardData).isValid;
       case 8: return validateStep8(wizardData).isValid;
-      // Steps 9-11 serão implementados na próxima fase
+      case 9: return validateStep9(wizardData).isValid;
+      case 10: return validateStep10(wizardData).isValid;
+      case 11: return validateStep11(wizardData).isValid;
       default: return true;
     }
   };
@@ -179,13 +187,14 @@ const NovoProjetoOficina = () => {
         return <StepAcessibilidade data={wizardData} onChange={handleDataChange} />;
       case 8:
         return <StepEquipamentos data={wizardData} onChange={handleDataChange} />;
+      case 9:
+        return <StepPublicoCronograma data={wizardData} onChange={handleDataChange} />;
+      case 10:
+        return <StepPlanilhaCustos data={wizardData} onChange={handleDataChange} />;
+      case 11:
+        return <StepResultados data={wizardData} onChange={handleDataChange} />;
       default:
-        return (
-          <div className="p-8 text-center text-muted-foreground">
-            <p>Steps 9-11 serão implementados na próxima fase.</p>
-            <p className="mt-2">Por enquanto, você pode salvar como rascunho.</p>
-          </div>
-        );
+        return null;
     }
   };
 
