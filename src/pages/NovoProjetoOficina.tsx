@@ -83,6 +83,7 @@ const NovoProjetoOficina = () => {
   
   const [wizardData, setWizardData] = useState<OficinaWizardData>(OFICINA_WIZARD_INITIAL_STATE);
   const [currentStep, setCurrentStep] = useState(1);
+  const [highestStepReached, setHighestStepReached] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [exibirVitrine, setExibirVitrine] = useState(true);
@@ -205,7 +206,9 @@ const NovoProjetoOficina = () => {
 
   const handleNext = () => {
     if (currentStep < WIZARD_STEPS.length && canGoNext) {
-      setCurrentStep(prev => prev + 1);
+      const nextStep = currentStep + 1;
+      setCurrentStep(nextStep);
+      setHighestStepReached(prev => Math.max(prev, nextStep));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -326,30 +329,37 @@ const NovoProjetoOficina = () => {
                 {WIZARD_STEPS.map((step) => {
                   const isCompleted = step.id < currentStep && isStepValid(step.id);
                   const isCurrent = step.id === currentStep;
-                  const isLocked = step.id > currentStep;
+                  const isAccessible = step.id <= highestStepReached;
+                  const hasError = step.id < currentStep && !isStepValid(step.id);
                   
                   return (
                     <button
                       key={step.id}
-                      onClick={() => step.id <= currentStep && setCurrentStep(step.id)}
-                      disabled={isLocked}
+                      onClick={() => isAccessible && setCurrentStep(step.id)}
+                      disabled={!isAccessible}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                         isCurrent 
                           ? "bg-amber-500/10 border border-amber-500/30" 
-                          : isLocked 
+                          : !isAccessible 
                             ? "opacity-50 cursor-not-allowed" 
-                            : "hover:bg-muted"
+                            : hasError
+                              ? "hover:bg-red-500/5 border border-red-500/20"
+                              : "hover:bg-muted"
                       }`}
                     >
                       <div className={`flex items-center justify-center w-8 h-8 rounded-full shrink-0 ${
                         isCompleted 
                           ? "bg-green-500 text-white" 
-                          : isCurrent 
-                            ? "bg-amber-500 text-white" 
-                            : "bg-muted text-muted-foreground"
+                          : hasError
+                            ? "bg-red-500 text-white"
+                            : isCurrent 
+                              ? "bg-amber-500 text-white" 
+                              : "bg-muted text-muted-foreground"
                       }`}>
                         {isCompleted ? (
                           <Check className="h-4 w-4" />
+                        ) : hasError ? (
+                          <span className="text-sm font-medium">!</span>
                         ) : (
                           <span className="text-sm font-medium">{step.id}</span>
                         )}
