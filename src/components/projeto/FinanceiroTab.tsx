@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,7 @@ import {
   CheckCircle,
   XCircle,
   MessageSquare,
+  Target,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -53,6 +54,10 @@ import { usePropostasByOportunidade, PropostaInvestimento } from "@/hooks/usePro
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PropostaActionDialog } from "./PropostaActionDialog";
+import { Progress } from "@/components/ui/progress";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { format, parseISO, startOfMonth, eachMonthOfInterval, subMonths } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface FinanceiroTabProps {
   projetoId: string;
@@ -114,20 +119,36 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
     status: "pendente" as "pendente" | "pago" | "cancelado",
   });
 
-  // Buscar dados da oficina para itens_custo
+  // Buscar dados da oficina para itens_custo e meta_captacao
   const { data: oficina, isLoading: loadingOficina } = useQuery({
     queryKey: ["oficina-financeiro", projetoId],
     queryFn: async () => {
       if (tipoEntidade !== "oficina") return null;
       const { data, error } = await supabase
         .from("oficinas")
-        .select("itens_custo, orcamento_total, reserva_tecnica_percentual")
+        .select("itens_custo, orcamento_total, reserva_tecnica_percentual, meta_captacao")
         .eq("id", projetoId)
         .single();
       if (error) throw error;
       return data;
     },
     enabled: tipoEntidade === "oficina" && !!projetoId,
+  });
+
+  // Buscar meta_captacao da oportunidade
+  const { data: oportunidade } = useQuery({
+    queryKey: ["oportunidade-financeiro", projetoId],
+    queryFn: async () => {
+      if (tipoEntidade !== "oportunidade") return null;
+      const { data, error } = await supabase
+        .from("oportunidades")
+        .select("meta_captacao")
+        .eq("id", projetoId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: tipoEntidade === "oportunidade" && !!projetoId,
   });
 
   // Buscar propostas de investimento
@@ -194,6 +215,61 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
   const totalDespesas = (tipoEntidade === "oficina" ? totalCustosOficina : 0) + despesasManuais;
 
   const balanco = totalReceitas - totalDespesas;
+
+  // Meta de captação
+  const metaCaptacao = tipoEntidade === "oficina" 
+    ? Number(oficina?.meta_captacao || 0)
+    : Number(oportunidade?.meta_captacao || 0);
+
+  const progressoCaptacao = metaCaptacao > 0 
+    ? Math.min((receitasAprovadas / metaCaptacao) * 100, 100) 
+    : 0;
+
+  // Dados para o gráfico de evolução
+  const dadosGraficoCaptacao = useMemo(() => {
+    // Ordenar propostas aprovadas por data
+    const propostasOrdenadas = [...propostasAprovadas]
+      .filter(p => p.tipo_apoio === "financeiro" && p.valor_financeiro && p.created_at)
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+    if (propostasOrdenadas.length === 0) {
+      // Retornar dados vazios com os últimos 6 meses
+      const hoje = new Date();
+      const meses = eachMonthOfInterval({
+        start: subMonths(hoje, 5),
+        end: hoje,
+      });
+      return meses.map(mes => ({
+        mes: format(mes, "MMM/yy", { locale: ptBR }),
+        captado: 0,
+        meta: metaCaptacao,
+      }));
+    }
+
+    // Agrupar por mês
+    const primeiraData = parseISO(propostasOrdenadas[0].created_at);
+    const hoje = new Date();
+    const meses = eachMonthOfInterval({
+      start: startOfMonth(primeiraData),
+      end: hoje,
+    });
+
+    let acumulado = 0;
+    return meses.map(mes => {
+      const mesStr = format(mes, "yyyy-MM");
+      const propostasDoMes = propostasOrdenadas.filter(p => 
+        format(parseISO(p.created_at), "yyyy-MM") === mesStr
+      );
+      const valorMes = propostasDoMes.reduce((acc, p) => acc + (p.valor_financeiro || 0), 0);
+      acumulado += valorMes;
+      
+      return {
+        mes: format(mes, "MMM/yy", { locale: ptBR }),
+        captado: acumulado,
+        meta: metaCaptacao,
+      };
+    });
+  }, [propostasAprovadas, metaCaptacao]);
 
   const handleCreateLancamento = async () => {
     if (!user?.id || !lancamentoForm.descricao || !lancamentoForm.valor || !lancamentoForm.data) return;
@@ -359,6 +435,106 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
           </CardContent>
         </Card>
       </div>
+
+      {/* Gráfico de Evolução de Captação */}
+      {metaCaptacao > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-primary" />
+              Evolução da Captação
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Barra de progresso */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Progresso</span>
+                  <span className="font-medium">
+                    R$ {receitasAprovadas.toLocaleString("pt-BR")} / R$ {metaCaptacao.toLocaleString("pt-BR")}
+                  </span>
+                </div>
+                <Progress value={progressoCaptacao} className="h-3" />
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{progressoCaptacao.toFixed(1)}% captado</span>
+                  <span>
+                    {progressoCaptacao >= 100 
+                      ? "🎉 Meta atingida!" 
+                      : `Faltam R$ ${(metaCaptacao - receitasAprovadas).toLocaleString("pt-BR")}`
+                    }
+                  </span>
+                </div>
+              </div>
+
+              {/* Gráfico */}
+              <div className="h-[250px] mt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={dadosGraficoCaptacao} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorCaptado" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis 
+                      dataKey="mes" 
+                      tick={{ fontSize: 12 }} 
+                      className="text-muted-foreground"
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12 }} 
+                      tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
+                      className="text-muted-foreground"
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => [`R$ ${value.toLocaleString("pt-BR")}`, "Captado"]}
+                      labelFormatter={(label) => `Mês: ${label}`}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        borderColor: "hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <ReferenceLine 
+                      y={metaCaptacao} 
+                      stroke="hsl(var(--destructive))" 
+                      strokeDasharray="5 5"
+                      label={{ 
+                        value: `Meta: R$ ${metaCaptacao.toLocaleString("pt-BR")}`, 
+                        position: "insideTopRight",
+                        fill: "hsl(var(--destructive))",
+                        fontSize: 11,
+                      }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="captado" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                      fillOpacity={1} 
+                      fill="url(#colorCaptado)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Legenda */}
+              <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-primary" />
+                  <span>Valor Captado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-0.5 bg-destructive" style={{ borderStyle: 'dashed' }} />
+                  <span>Meta de Captação</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Receitas - Investimentos Aprovados */}
       <Card>
