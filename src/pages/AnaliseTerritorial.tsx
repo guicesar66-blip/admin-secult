@@ -1,134 +1,31 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, MapPin, Users, Target, Calendar, GraduationCap, Loader2 } from "lucide-react";
-import { useState, useMemo } from "react";
-import { useOportunidades } from "@/hooks/useOportunidades";
-import { useOficinas } from "@/hooks/useOficinas";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { Download, MapPin } from "lucide-react";
+import { useState } from "react";
 
-const COLORS = ['hsl(217, 91%, 60%)', 'hsl(45, 93%, 47%)', 'hsl(142, 76%, 36%)', 'hsl(262, 83%, 58%)', 'hsl(0, 84%, 60%)'];
+const regioes = [
+  { nome: "Várzea", zeis: true, pessoas: 340, oportunidades: 12, incubacoes: 3, lat: -8.047, lng: -34.95 },
+  { nome: "Centro", zeis: false, pessoas: 180, oportunidades: 8, incubacoes: 2, lat: -8.063, lng: -34.871 },
+  { nome: "Boa Viagem", zeis: false, pessoas: 65, oportunidades: 3, incubacoes: 1, lat: -8.113, lng: -34.893 },
+  { nome: "Casa Amarela", zeis: true, pessoas: 210, oportunidades: 9, incubacoes: 2, lat: -8.021, lng: -34.909 },
+  { nome: "Cajueiro", zeis: true, pessoas: 156, oportunidades: 6, incubacoes: 1, lat: -8.030, lng: -34.924 },
+  { nome: "Santo Amaro", zeis: false, pessoas: 98, oportunidades: 5, incubacoes: 1, lat: -8.045, lng: -34.880 },
+];
 
 export default function AnaliseTerritorial() {
-  const { user } = useAuth();
-  const [tipoVisualizacao, setTipoVisualizacao] = useState("projetos");
-  
-  const { data: oportunidades = [], isLoading: loadingOportunidades } = useOportunidades(undefined, user?.id);
-  const { data: oficinas = [], isLoading: loadingOficinas } = useOficinas(user?.id);
-
-  const isLoading = loadingOportunidades || loadingOficinas;
-
-  // Agrupar por município/local
-  const dadosTerritoriais = useMemo(() => {
-    const regioes: Record<string, { 
-      nome: string; 
-      projetos: number; 
-      eventos: number;
-      oficinas: number;
-      vagas: number;
-      totalVagas: number;
-    }> = {};
-
-    // Processar oportunidades
-    oportunidades.forEach(o => {
-      const local = o.municipio || o.local || "Não informado";
-      if (!regioes[local]) {
-        regioes[local] = { nome: local, projetos: 0, eventos: 0, oficinas: 0, vagas: 0, totalVagas: 0 };
-      }
-      regioes[local].projetos += 1;
-      regioes[local].totalVagas += o.vagas || 0;
-      
-      if (o.tipo === "evento") regioes[local].eventos += 1;
-      if (o.tipo === "vaga") regioes[local].vagas += 1;
-    });
-
-    // Processar oficinas
-    oficinas.forEach(o => {
-      const local = o.local || "Não informado";
-      if (!regioes[local]) {
-        regioes[local] = { nome: local, projetos: 0, eventos: 0, oficinas: 0, vagas: 0, totalVagas: 0 };
-      }
-      regioes[local].projetos += 1;
-      regioes[local].oficinas += 1;
-      regioes[local].totalVagas += o.vagas_total || 0;
-    });
-
-    return Object.values(regioes).sort((a, b) => b.projetos - a.projetos);
-  }, [oportunidades, oficinas]);
-
-  // Estatísticas gerais
-  const estatisticas = useMemo(() => {
-    const totalProjetos = oportunidades.length + oficinas.length;
-    const totalEventos = oportunidades.filter(o => o.tipo === "evento").length;
-    const totalOficinas = oficinas.length;
-    const totalVagas = oportunidades.filter(o => o.tipo === "vaga").length;
-    const regioesAtivas = dadosTerritoriais.filter(r => r.nome !== "Não informado").length;
-    const projetosComLocal = dadosTerritoriais.filter(r => r.nome !== "Não informado").reduce((acc, r) => acc + r.projetos, 0);
-    const cobertura = totalProjetos > 0 ? ((projetosComLocal / totalProjetos) * 100) : 0;
-
-    return {
-      totalProjetos,
-      totalEventos,
-      totalOficinas,
-      totalVagas,
-      regioesAtivas,
-      cobertura,
-    };
-  }, [oportunidades, oficinas, dadosTerritoriais]);
-
-  // Dados para gráfico de barras
-  const dadosGrafico = useMemo(() => {
-    return dadosTerritoriais.slice(0, 8).map(r => ({
-      nome: r.nome.length > 15 ? r.nome.substring(0, 15) + '...' : r.nome,
-      nomeCompleto: r.nome,
-      projetos: r.projetos,
-      eventos: r.eventos,
-      oficinas: r.oficinas,
-      vagas: r.vagas,
-    }));
-  }, [dadosTerritoriais]);
-
-  // Dados para gráfico de pizza por tipo
-  const distribuicaoTipo = useMemo(() => {
-    return [
-      { name: "Eventos", value: estatisticas.totalEventos, color: COLORS[0] },
-      { name: "Oficinas", value: estatisticas.totalOficinas, color: COLORS[1] },
-      { name: "Vagas", value: estatisticas.totalVagas, color: COLORS[2] },
-    ].filter(item => item.value > 0);
-  }, [estatisticas]);
+  const [periodo, setPeriodo] = useState("mes");
+  const [tipoMapa, setTipoMapa] = useState("pessoas");
 
   const getIntensidade = (valor: number, max: number) => {
-    const percent = max > 0 ? (valor / max) * 100 : 0;
-    if (percent >= 60) return "bg-primary text-primary-foreground";
-    if (percent >= 30) return "bg-secondary text-secondary-foreground";
-    return "bg-muted text-muted-foreground";
+    const percent = (valor / max) * 100;
+    if (percent >= 70) return "bg-error";
+    if (percent >= 40) return "bg-warning";
+    return "bg-success";
   };
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
-      </DashboardLayout>
-    );
-  }
-
-  const maxProjetos = Math.max(...dadosTerritoriais.map(r => r.projetos), 1);
+  const maxPessoas = Math.max(...regioes.map(r => r.pessoas));
 
   return (
     <DashboardLayout>
@@ -140,315 +37,200 @@ export default function AnaliseTerritorial() {
               Análise Territorial
             </h2>
             <p className="text-sm text-muted-foreground">
-              Distribuição geográfica dos seus projetos culturais
+              Distribuição geográfica de pessoas, oportunidades e incubações
             </p>
           </div>
           <Button variant="outline" size="sm">
             <Download className="mr-2 h-4 w-4" />
-            Exportar Dados
+            Exportar Mapa
           </Button>
         </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total de Projetos</p>
-                  <p className="text-2xl font-bold text-foreground">{estatisticas.totalProjetos}</p>
-                </div>
-                <Target className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Regiões Ativas</p>
-                  <p className="text-2xl font-bold text-foreground">{estatisticas.regioesAtivas}</p>
-                </div>
-                <MapPin className="h-8 w-8 text-secondary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Cobertura</p>
-                  <p className="text-2xl font-bold text-success">{estatisticas.cobertura.toFixed(0)}%</p>
-                </div>
-                <Users className="h-8 w-8 text-success" />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Projetos com local definido</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Tipos de Projeto</p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {distribuicaoTipo.length}
-                  </p>
-                </div>
-                <GraduationCap className="h-8 w-8 text-warning" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Gráficos */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Gráfico de Barras - Projetos por Região */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                Projetos por Região
-              </CardTitle>
-              <CardDescription>Distribuição geográfica dos projetos</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {dadosGrafico.length > 0 ? (
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dadosGrafico} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <YAxis 
-                        type="category" 
-                        dataKey="nome" 
-                        width={100}
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                      />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))', 
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value: number, name: string) => [value, name === 'projetos' ? 'Total' : name]}
-                        labelFormatter={(label) => dadosGrafico.find(d => d.nome === label)?.nomeCompleto || label}
-                      />
-                      <Bar dataKey="projetos" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Total" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
-                  <div className="text-center">
-                    <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Nenhum projeto com localização definida</p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Gráfico de Pizza - Distribuição por Tipo */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Por Tipo
-              </CardTitle>
-              <CardDescription>Distribuição dos tipos de projeto</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {distribuicaoTipo.length > 0 ? (
-                <>
-                  <div className="h-[180px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={distribuicaoTipo}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={50}
-                          outerRadius={70}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {distribuicaoTipo.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="space-y-2 mt-4">
-                    {distribuicaoTipo.map((item) => (
-                      <div key={item.name} className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-muted-foreground">{item.name}</span>
-                        </div>
-                        <span className="font-medium">{item.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-center h-[200px] text-muted-foreground">
-                  Nenhum projeto criado
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Mapa de Calor Visual */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              Mapa de Concentração
-            </CardTitle>
-            <CardDescription>Visualização da distribuição territorial</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {dadosTerritoriais.length > 0 ? (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {dadosTerritoriais.map((regiao) => (
-                    <div
-                      key={regiao.nome}
-                      className={`${getIntensidade(regiao.projetos, maxProjetos)} rounded-lg p-4 transition-all hover:scale-105 cursor-pointer`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold truncate">{regiao.nome}</h4>
-                        </div>
-                        <MapPin className="h-4 w-4 flex-shrink-0" />
-                      </div>
-                      <div className="mt-3">
-                        <p className="text-2xl font-bold">{regiao.projetos}</p>
-                        <p className="text-xs opacity-80">
-                          {regiao.projetos === 1 ? 'projeto' : 'projetos'}
-                        </p>
-                      </div>
-                      <div className="mt-2 flex gap-2 flex-wrap">
-                        {regiao.eventos > 0 && (
-                          <Badge variant="secondary" className="text-xs">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {regiao.eventos}
-                          </Badge>
-                        )}
-                        {regiao.oficinas > 0 && (
-                          <Badge variant="secondary" className="text-xs">
-                            <GraduationCap className="h-3 w-3 mr-1" />
-                            {regiao.oficinas}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Legenda */}
-                <div className="mt-6 flex items-center justify-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-muted rounded"></div>
-                    <span className="text-sm text-muted-foreground">Baixa concentração</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-secondary rounded"></div>
-                    <span className="text-sm text-muted-foreground">Média concentração</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-primary rounded"></div>
-                    <span className="text-sm text-muted-foreground">Alta concentração</span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="flex items-center justify-center py-12 text-muted-foreground">
-                <div className="text-center">
-                  <MapPin className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Nenhum projeto encontrado</p>
-                  <p className="text-sm mt-1">Crie projetos para visualizar a distribuição territorial</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
+        {/* Filtros */}
+        <Card className="p-4">
+          <div className="flex gap-4 items-center">
+            <div className="flex-1">
+              <label className="text-sm text-muted-foreground mb-2 block">
+                Visualização
+              </label>
+              <Select value={tipoMapa} onValueChange={setTipoMapa}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pessoas">Pessoas Cadastradas</SelectItem>
+                  <SelectItem value="oportunidades">Oportunidades</SelectItem>
+                  <SelectItem value="incubacoes">Incubações</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1">
+              <label className="text-sm text-muted-foreground mb-2 block">
+                Período
+              </label>
+              <Select value={periodo} onValueChange={setPeriodo}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mes">Este mês</SelectItem>
+                  <SelectItem value="trimestre">Último trimestre</SelectItem>
+                  <SelectItem value="ano">Este ano</SelectItem>
+                  <SelectItem value="total">Total acumulado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </Card>
 
-        {/* Tabela Detalhada */}
-        {dadosTerritoriais.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Detalhamento por Região</CardTitle>
-              <CardDescription>Dados completos de cada localidade</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-muted/50 border-b border-border">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        Região
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        Total
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        Eventos
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        Oficinas
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        Vagas Oferecidas
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                        % do Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {dadosTerritoriais.map((regiao) => {
-                      const percentual = estatisticas.totalProjetos > 0 
-                        ? ((regiao.projetos / estatisticas.totalProjetos) * 100).toFixed(1) 
-                        : 0;
-                      return (
-                        <tr key={regiao.nome} className="hover:bg-muted/30">
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium text-foreground">{regiao.nome}</span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="font-semibold text-foreground">{regiao.projetos}</span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-muted-foreground">{regiao.eventos}</span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-muted-foreground">{regiao.oficinas}</span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-muted-foreground">{regiao.totalVagas}</span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <Badge variant="outline">{percentual}%</Badge>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+        {/* Mapa de Calor Simplificado */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
+            Mapa de Calor - Recife
+          </h3>
+          <div className="relative bg-muted/30 rounded-lg p-8 min-h-[500px] border-2 border-dashed border-border">
+            {/* Simulação visual do mapa */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <p className="text-sm text-muted-foreground max-w-md">
+                  Mapa interativo de Recife mostrando concentração de {tipoMapa}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+            
+            {/* Pontos de calor representativos */}
+            <div className="relative z-10 grid grid-cols-3 gap-4 h-full">
+              {regioes.map((regiao, idx) => {
+                const valor = tipoMapa === "pessoas" ? regiao.pessoas :
+                             tipoMapa === "oportunidades" ? regiao.oportunidades :
+                             regiao.incubacoes;
+                const max = tipoMapa === "pessoas" ? maxPessoas :
+                           tipoMapa === "oportunidades" ? 12 : 3;
+                
+                return (
+                  <div
+                    key={regiao.nome}
+                    className={`${getIntensidade(valor, max)} bg-opacity-20 border-2 rounded-lg p-4 hover:bg-opacity-30 transition-smooth cursor-pointer`}
+                    style={{
+                      borderColor: `hsl(var(--${getIntensidade(valor, max).replace('bg-', '')}))`
+                    }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-semibold text-foreground">{regiao.nome}</h4>
+                        {regiao.zeis && (
+                          <span className="text-xs text-primary font-medium">ZEIS/CIS</span>
+                        )}
+                      </div>
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="mt-3">
+                      <p className="text-2xl font-bold text-foreground">{valor}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {tipoMapa === "pessoas" && "pessoas"}
+                        {tipoMapa === "oportunidades" && "oportunidades"}
+                        {tipoMapa === "incubacoes" && "incubações"}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Legenda */}
+          <div className="mt-6 flex items-center justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-success rounded"></div>
+              <span className="text-sm text-muted-foreground">Baixa concentração</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-warning rounded"></div>
+              <span className="text-sm text-muted-foreground">Média concentração</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-error rounded"></div>
+              <span className="text-sm text-muted-foreground">Alta concentração</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Detalhamento por Região */}
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-muted/50 border-b border-border">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    Região
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    ZEIS/CIS
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    Pessoas
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    Oportunidades
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    Incubações
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
+                    % Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {regioes.map((regiao) => {
+                  const totalPessoas = regioes.reduce((sum, r) => sum + r.pessoas, 0);
+                  const percentual = ((regiao.pessoas / totalPessoas) * 100).toFixed(1);
+                  
+                  return (
+                    <tr key={regiao.nome} className="hover:bg-muted/30 transition-smooth">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="font-medium text-foreground">{regiao.nome}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {regiao.zeis ? (
+                          <span className="text-xs font-medium text-primary">✓ Sim</span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Não</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-medium text-foreground">{regiao.pessoas}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-muted-foreground">{regiao.oportunidades}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-muted-foreground">{regiao.incubacoes}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-medium text-foreground">{percentual}%</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        {/* Insights */}
+        <Card className="p-6 bg-primary/5 border-primary/20">
+          <h3 className="text-lg font-semibold text-foreground mb-3">
+            Insights Territoriais
+          </h3>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li>• <strong className="text-foreground">67% das pessoas</strong> estão em regiões ZEIS/CIS</li>
+            <li>• <strong className="text-foreground">Várzea</strong> concentra a maior comunidade (340 pessoas)</li>
+            <li>• <strong className="text-foreground">Boa Viagem</strong> tem baixa participação apesar da infraestrutura</li>
+            <li>• Recomendação: expandir programas em <strong className="text-foreground">Casa Amarela e Cajueiro</strong></li>
+          </ul>
+        </Card>
       </div>
     </DashboardLayout>
   );
