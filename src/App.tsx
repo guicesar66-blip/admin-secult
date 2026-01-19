@@ -25,6 +25,7 @@ import AnaliseFinanceira from "./pages/AnaliseFinanceira";
 import AnaliseTerritorial from "./pages/AnaliseTerritorial";
 import AnaliseArtistas from "./pages/AnaliseArtistas";
 import Analytics from "./pages/Analytics";
+import DadosDashboard from "./pages/DadosDashboard";
 import Investimentos from "./pages/Investimentos";
 import InvestimentoDetalhes from "./pages/InvestimentoDetalhes";
 import Configuracoes from "./pages/Configuracoes";
@@ -65,6 +66,7 @@ const App = () => (
                 <Route path="/incubacoes/:id" element={<ProtectedRoute><IncubacaoDetalhes /></ProtectedRoute>} />
                 <Route path="/usuarios" element={<ProtectedRoute><GestaoUsuarios /></ProtectedRoute>} />
                 <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+                <Route path="/dados" element={<ProtectedRoute><DadosDashboard /></ProtectedRoute>} />
                 <Route path="/analise-financeira" element={<ProtectedRoute><AnaliseFinanceira /></ProtectedRoute>} />
                 <Route path="/analise-territorial" element={<ProtectedRoute><AnaliseTerritorial /></ProtectedRoute>} />
                 <Route path="/analise-artistas" element={<ProtectedRoute><AnaliseArtistas /></ProtectedRoute>} />
