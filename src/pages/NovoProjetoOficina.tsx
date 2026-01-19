@@ -24,6 +24,8 @@ import {
   DollarSign,
   Trophy,
   Loader2,
+  Eye,
+  Rocket,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreateOficina } from "@/hooks/useOficinas";
@@ -56,6 +58,7 @@ import {
   StepPublicoCronograma,
   StepPlanilhaCustos,
   StepResultados,
+  StepPreview,
 } from "@/components/oficina-wizard";
 
 const STEP_ICONS: Record<string, React.ReactNode> = {
@@ -70,6 +73,7 @@ const STEP_ICONS: Record<string, React.ReactNode> = {
   Users: <Users className="h-4 w-4" />,
   DollarSign: <DollarSign className="h-4 w-4" />,
   Trophy: <Trophy className="h-4 w-4" />,
+  Eye: <Eye className="h-4 w-4" />,
 };
 
 const NovoProjetoOficina = () => {
@@ -80,6 +84,9 @@ const NovoProjetoOficina = () => {
   const [wizardData, setWizardData] = useState<OficinaWizardData>(OFICINA_WIZARD_INITIAL_STATE);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [exibirVitrine, setExibirVitrine] = useState(true);
+  const [mostrarProgresso, setMostrarProgresso] = useState(true);
 
   const progress = Math.round((currentStep / WIZARD_STEPS.length) * 100);
 
@@ -100,7 +107,97 @@ const NovoProjetoOficina = () => {
       case 9: return validateStep9(wizardData).isValid;
       case 10: return validateStep10(wizardData).isValid;
       case 11: return validateStep11(wizardData).isValid;
+      case 12: return true; // Preview é sempre válido
       default: return true;
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!user) {
+      toast.error("Você precisa estar logado para publicar");
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      const oficinaData = {
+        titulo: wizardData.titulo,
+        descricao: wizardData.justificativa,
+        area_artistica: wizardData.linguagem_artistica,
+        categoria: "oficina",
+        nivel: "iniciante" as const,
+        modalidade: wizardData.modalidade,
+        dias_semana: ["Sábado"],
+        horario: "14:00 - 17:00",
+        local: wizardData.local,
+        data_inicio: wizardData.periodo_oficinas_inicio || new Date().toISOString().split("T")[0],
+        data_fim: wizardData.periodo_oficinas_fim || new Date().toISOString().split("T")[0],
+        inscricao_fim: wizardData.periodo_inscricoes_fim || new Date().toISOString().split("T")[0],
+        carga_horaria: wizardData.etapas_encontros.reduce((acc, e) => acc + e.duracao_horas, 0) || 12,
+        num_encontros: wizardData.etapas_encontros.length || 4,
+        vagas_total: wizardData.quantidade_participantes || 30,
+        publico_alvo: wizardData.perfil_participante,
+        prerequisitos: wizardData.prerequisitos,
+        facilitador_nome: user.user_metadata?.nome_completo || user.email || "Facilitador",
+        organizacao: user.user_metadata?.nome_coletivo || user.user_metadata?.nome_completo || "Organização",
+        emite_certificado: true,
+        criador_id: user.id,
+        // Campos do wizard completo
+        justificativa: wizardData.justificativa,
+        linguagem_artistica: wizardData.linguagem_artistica,
+        territorios: wizardData.territorios,
+        objetivo_geral: wizardData.objetivo_geral,
+        objetivos_especificos: wizardData.objetivos_especificos,
+        metodologia_descricao: wizardData.metodologia_descricao,
+        etapas_encontros: wizardData.etapas_encontros,
+        endereco_completo: wizardData.endereco_completo,
+        canais_divulgacao: wizardData.canais_divulgacao,
+        descricao_divulgacao: wizardData.descricao_divulgacao,
+        marcas_parceiras: wizardData.marcas_parceiras,
+        estrategia_campanha: wizardData.estrategia_campanha,
+        parcerias_midia: wizardData.parcerias_midia,
+        cobertura_evento: wizardData.cobertura_evento,
+        recursos_acessibilidade: wizardData.recursos_acessibilidade,
+        descricao_acolhimento: wizardData.descricao_acolhimento,
+        equipamentos_materiais: wizardData.equipamentos_materiais,
+        quantidade_participantes: wizardData.quantidade_participantes,
+        faixa_etaria_min: wizardData.faixa_etaria_min,
+        faixa_etaria_max: wizardData.faixa_etaria_max,
+        perfil_participante: wizardData.perfil_participante,
+        equipe_instrutores: wizardData.equipe_instrutores,
+        equipe_apoio: wizardData.equipe_apoio,
+        periodo_inscricoes_inicio: wizardData.periodo_inscricoes_inicio,
+        periodo_inscricoes_fim: wizardData.periodo_inscricoes_fim,
+        periodo_oficinas_inicio: wizardData.periodo_oficinas_inicio,
+        periodo_oficinas_fim: wizardData.periodo_oficinas_fim,
+        periodo_producao_inicio: wizardData.periodo_producao_inicio,
+        periodo_producao_fim: wizardData.periodo_producao_fim,
+        data_evento_final: wizardData.data_evento_final,
+        tamanho_grupos: wizardData.tamanho_grupos,
+        itens_custo: wizardData.itens_custo,
+        reserva_tecnica_percentual: wizardData.reserva_tecnica_percentual,
+        orcamento_total: wizardData.orcamento_total,
+        resultados_quantitativos: wizardData.resultados_quantitativos,
+        resultados_qualitativos: wizardData.resultados_qualitativos,
+        indicadores_sucesso: wizardData.indicadores_sucesso,
+        // Publicação
+        status: "ativo",
+        status_wizard: "publicado",
+        step_atual: 12,
+        exibir_vitrine: exibirVitrine,
+        mostrar_progresso: mostrarProgresso,
+        meta_captacao: wizardData.orcamento_total,
+        captacao_atual: 0,
+      };
+
+      const result = await createOficina.mutateAsync(oficinaData);
+      toast.success("Projeto publicado com sucesso na Vitrine!");
+      navigate(`/oportunidades/${result.id}`);
+    } catch (error) {
+      console.error("Erro ao publicar:", error);
+      toast.error("Erro ao publicar projeto");
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -193,6 +290,8 @@ const NovoProjetoOficina = () => {
         return <StepPlanilhaCustos data={wizardData} onChange={handleDataChange} />;
       case 11:
         return <StepResultados data={wizardData} onChange={handleDataChange} />;
+      case 12:
+        return <StepPreview data={wizardData} onChange={handleDataChange} />;
       default:
         return null;
     }
@@ -211,7 +310,7 @@ const NovoProjetoOficina = () => {
                 </div>
                 <div>
                   <h2 className="font-semibold">Nova Oficina</h2>
-                  <p className="text-xs text-muted-foreground">11 etapas</p>
+                  <p className="text-xs text-muted-foreground">12 etapas</p>
                 </div>
               </div>
               <div className="mt-4">
@@ -321,16 +420,16 @@ const NovoProjetoOficina = () => {
                     </Button>
                   ) : (
                     <Button
-                      onClick={handleSaveDraft}
-                      disabled={isSaving}
+                      onClick={handlePublish}
+                      disabled={isPublishing}
                       className="gap-2 bg-green-600 hover:bg-green-700"
                     >
-                      {isSaving ? (
+                      {isPublishing ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        <Check className="h-4 w-4" />
+                        <Rocket className="h-4 w-4" />
                       )}
-                      Finalizar
+                      Publicar na Vitrine
                     </Button>
                   )}
                 </div>
