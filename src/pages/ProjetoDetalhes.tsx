@@ -97,7 +97,7 @@ const ProjetoDetalhes = () => {
         id: i.id,
         oportunidade_id: i.oficina_id,
         user_id: i.user_id,
-        status: i.status === "confirmada" ? "aprovada" : (i.status === "cancelada" ? "reprovada" : i.status),
+        status: i.status,
         mensagem: null,
         motivo_reprovacao: null,
         created_at: i.created_at,
@@ -105,6 +105,13 @@ const ProjetoDetalhes = () => {
         nome_completo: i.nome_completo,
         nome_artistico: i.nome_artistico,
         telefone: i.telefone,
+        area_artistica: i.area_artistica,
+        tempo_atuacao: i.tempo_atuacao,
+        tipo_atuacao: i.tipo_atuacao,
+        situacao_formalizacao: i.situacao_formalizacao,
+        experiencia_editais: i.experiencia_editais,
+        municipio: i.municipio,
+        bairro: i.bairro,
       }))
     : candidaturas;
 

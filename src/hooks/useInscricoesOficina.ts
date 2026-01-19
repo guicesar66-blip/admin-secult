@@ -12,6 +12,13 @@ export interface InscricaoOficina {
   nome_completo?: string;
   nome_artistico?: string;
   telefone?: string;
+  area_artistica?: string;
+  tempo_atuacao?: string;
+  tipo_atuacao?: string;
+  situacao_formalizacao?: string;
+  experiencia_editais?: string;
+  municipio?: string;
+  bairro?: string;
 }
 
 export function useInscricoesByOficina(oficinaId: string) {
@@ -38,7 +45,7 @@ export function useInscricoesByOficina(oficinaId: string) {
       const userIds = inscricoes.map(i => i.user_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, nome_completo, nome_artistico, telefone")
+        .select("user_id, nome_completo, nome_artistico, telefone, area_artistica, tempo_atuacao, tipo_atuacao, situacao_formalizacao, experiencia_editais, municipio, bairro")
         .in("user_id", userIds);
 
       // Mesclar dados
@@ -49,6 +56,13 @@ export function useInscricoesByOficina(oficinaId: string) {
           nome_completo: profile?.nome_completo,
           nome_artistico: profile?.nome_artistico,
           telefone: profile?.telefone,
+          area_artistica: profile?.area_artistica,
+          tempo_atuacao: profile?.tempo_atuacao,
+          tipo_atuacao: profile?.tipo_atuacao,
+          situacao_formalizacao: profile?.situacao_formalizacao,
+          experiencia_editais: profile?.experiencia_editais,
+          municipio: profile?.municipio,
+          bairro: profile?.bairro,
         };
       });
 
