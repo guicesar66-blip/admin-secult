@@ -350,3 +350,87 @@ export function validateStep4(data: OficinaWizardData): StepValidation {
 
   return { isValid: errors.length === 0, errors };
 }
+
+export function validateStep5(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.canais_divulgacao.length === 0) {
+    errors.push("Selecione pelo menos um canal de divulgação");
+  }
+  if (!data.descricao_divulgacao || data.descricao_divulgacao.length < 100) {
+    errors.push("Descrição das ações deve ter pelo menos 100 caracteres");
+  }
+  if (data.descricao_divulgacao.length > 1000) {
+    errors.push("Descrição das ações deve ter no máximo 1000 caracteres");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+export function validateStep6(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (!data.estrategia_campanha || data.estrategia_campanha.length < 100) {
+    errors.push("Estratégia de campanha deve ter pelo menos 100 caracteres");
+  }
+  if (data.estrategia_campanha.length > 1000) {
+    errors.push("Estratégia de campanha deve ter no máximo 1000 caracteres");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+export function validateStep7(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.recursos_acessibilidade.length === 0) {
+    errors.push("Selecione pelo menos um recurso de acessibilidade");
+  }
+  
+  // RN7.2: Se presencial, espaço físico acessível é obrigatório
+  const isPresencial = data.modalidade === "presencial" || data.modalidade === "hibrido";
+  if (isPresencial && !data.recursos_acessibilidade.includes("Espaço físico acessível (rampa, banheiro adaptado)")) {
+    errors.push("Para projetos presenciais, espaço físico acessível é obrigatório");
+  }
+  
+  // RN7.3: Projetos com mais de 20 participantes devem ter pelo menos 3 recursos
+  if (data.quantidade_participantes > 20 && data.recursos_acessibilidade.length < 3) {
+    errors.push("Projetos com mais de 20 participantes devem ter pelo menos 3 recursos de acessibilidade");
+  }
+  
+  if (!data.descricao_acolhimento || data.descricao_acolhimento.length < 50) {
+    errors.push("Descrição do acolhimento deve ter pelo menos 50 caracteres");
+  }
+  if (data.descricao_acolhimento.length > 500) {
+    errors.push("Descrição do acolhimento deve ter no máximo 500 caracteres");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+export function validateStep8(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.equipamentos_materiais.length === 0) {
+    errors.push("Adicione pelo menos uma categoria de equipamentos");
+  }
+  
+  // RN8.1: Itens com aluguel ou compra devem ter valor
+  const itensComValorFaltando = data.equipamentos_materiais.some(cat =>
+    cat.itens.some(item => 
+      (item.tipo === "aluguel" || item.tipo === "compra") && !item.valor_unitario
+    )
+  );
+  
+  if (itensComValorFaltando) {
+    errors.push("Itens de aluguel ou compra devem ter valor unitário preenchido");
+  }
+  
+  // Verificar se tem pelo menos um item em alguma categoria
+  const totalItens = data.equipamentos_materiais.reduce((acc, c) => acc + c.itens.length, 0);
+  if (totalItens === 0) {
+    errors.push("Adicione pelo menos um item em alguma categoria");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}

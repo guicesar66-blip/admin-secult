@@ -36,11 +36,21 @@ import {
   validateStep2,
   validateStep3,
   validateStep4,
+  validateStep5,
+  validateStep6,
+  validateStep7,
+  validateStep8,
 } from "@/types/oficina-wizard";
-import { StepJustificativa } from "@/components/oficina-wizard/StepJustificativa";
-import { StepObjetivoGeral } from "@/components/oficina-wizard/StepObjetivoGeral";
-import { StepObjetivosEspecificos } from "@/components/oficina-wizard/StepObjetivosEspecificos";
-import { StepMetodologia } from "@/components/oficina-wizard/StepMetodologia";
+import { 
+  StepJustificativa, 
+  StepObjetivoGeral, 
+  StepObjetivosEspecificos, 
+  StepMetodologia,
+  StepDivulgacao,
+  StepPlanoMidia,
+  StepAcessibilidade,
+  StepEquipamentos,
+} from "@/components/oficina-wizard";
 
 const STEP_ICONS: Record<string, React.ReactNode> = {
   FileText: <FileText className="h-4 w-4" />,
@@ -77,7 +87,11 @@ const NovoProjetoOficina = () => {
       case 2: return validateStep2(wizardData).isValid;
       case 3: return validateStep3(wizardData).isValid;
       case 4: return validateStep4(wizardData).isValid;
-      // Steps 5-11 serão implementados na próxima fase
+      case 5: return validateStep5(wizardData).isValid;
+      case 6: return validateStep6(wizardData).isValid;
+      case 7: return validateStep7(wizardData).isValid;
+      case 8: return validateStep8(wizardData).isValid;
+      // Steps 9-11 serão implementados na próxima fase
       default: return true;
     }
   };
@@ -157,10 +171,18 @@ const NovoProjetoOficina = () => {
         return <StepObjetivosEspecificos data={wizardData} onChange={handleDataChange} />;
       case 4:
         return <StepMetodologia data={wizardData} onChange={handleDataChange} />;
+      case 5:
+        return <StepDivulgacao data={wizardData} onChange={handleDataChange} />;
+      case 6:
+        return <StepPlanoMidia data={wizardData} onChange={handleDataChange} />;
+      case 7:
+        return <StepAcessibilidade data={wizardData} onChange={handleDataChange} />;
+      case 8:
+        return <StepEquipamentos data={wizardData} onChange={handleDataChange} />;
       default:
         return (
           <div className="p-8 text-center text-muted-foreground">
-            <p>Steps 5-11 serão implementados na próxima fase.</p>
+            <p>Steps 9-11 serão implementados na próxima fase.</p>
             <p className="mt-2">Por enquanto, você pode salvar como rascunho.</p>
           </div>
         );
