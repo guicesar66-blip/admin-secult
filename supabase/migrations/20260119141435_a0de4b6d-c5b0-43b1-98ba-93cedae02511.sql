@@ -1,0 +1,46 @@
+-- Inserir o perfil que está faltando
+INSERT INTO public.profiles (
+  user_id, 
+  nome_completo, 
+  nome_artistico,
+  telefone,
+  cep,
+  estado,
+  cidade,
+  municipio, 
+  bairro,
+  rua,
+  numero,
+  area_artistica,
+  tipo_atuacao,
+  nome_coletivo,
+  tempo_atuacao,
+  situacao_formalizacao,
+  experiencia_editais,
+  cultura_renda,
+  principais_necessidades,
+  como_conheceu
+)
+VALUES (
+  '86631440-1c1d-4dac-8117-dcd66ef15ff6',
+  'Guilherme',
+  '',
+  '81999471317',
+  '50830060',
+  'PE',
+  'Recife',
+  'Recife',
+  'Prado',
+  'Rua Pinto Júnior',
+  '',
+  'Artes Visuais',
+  'Líder/Coordenador de coletivo',
+  'os guibas',
+  'Menos de 1 ano',
+  'Sim, tenho MEI',
+  'Sim, já fui aprovado em editais',
+  'Sim, vivo exclusivamente de cultura',
+  ARRAY['Oportunidades de trabalho/cachê'],
+  'Redes sociais'
+)
+ON CONFLICT (user_id) DO NOTHING;
