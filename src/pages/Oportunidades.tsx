@@ -126,13 +126,13 @@ const Oportunidades = () => {
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem 
-                onClick={() => navigate("/oportunidades/novo/vaga")}
-                className="gap-3 cursor-pointer"
+                disabled
+                className="gap-3 cursor-not-allowed opacity-50"
               >
                 <Briefcase className="h-4 w-4 text-emerald-500" />
                 <div>
                   <p className="font-medium">Vaga de Trabalho</p>
-                  <p className="text-xs text-muted-foreground">Oportunidades profissionais</p>
+                  <p className="text-xs text-muted-foreground">Em breve</p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem 
@@ -146,13 +146,13 @@ const Oportunidades = () => {
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem 
-                onClick={() => navigate("/oportunidades/novo/bairro")}
-                className="gap-3 cursor-pointer"
+                disabled
+                className="gap-3 cursor-not-allowed opacity-50"
               >
                 <MapPin className="h-4 w-4 text-purple-500" />
                 <div>
                   <p className="font-medium">Projetos de Bairro</p>
-                  <p className="text-xs text-muted-foreground">Iniciativas comunitárias</p>
+                  <p className="text-xs text-muted-foreground">Em breve</p>
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
