@@ -35,6 +35,7 @@ import {
 import { useOportunidade, useDeleteOportunidade } from "@/hooks/useOportunidades";
 import { useOficina, useDeleteOficina } from "@/hooks/useOficinas";
 import { useCandidaturasByOportunidade, useUpdateCandidaturaStatus } from "@/hooks/useCandidaturas";
+import { useInscricoesByOficina, useUpdateInscricaoStatus } from "@/hooks/useInscricoesOficina";
 import { useUpdateOportunidade, useUpdateOficina } from "@/hooks/useUpdateOportunidade";
 import { DeleteProjectDialog } from "@/components/projeto/DeleteProjectDialog";
 import { EditProjectDialog } from "@/components/projeto/EditProjectDialog";
@@ -73,17 +74,41 @@ const ProjetoDetalhes = () => {
   const updateOportunidade = useUpdateOportunidade();
   const updateOficina = useUpdateOficina();
 
-  // Candidaturas (apenas para oportunidades)
+  // Candidaturas (para oportunidades)
   const { 
     data: candidaturas = [], 
     isLoading: loadingCandidaturas 
   } = useCandidaturasByOportunidade(oportunidade?.id || "");
   
+  // Inscrições (para oficinas)
+  const {
+    data: inscricoesOficina = [],
+    isLoading: loadingInscricoes
+  } = useInscricoesByOficina(oficina?.id || "");
+  
   const updateCandidaturaStatus = useUpdateCandidaturaStatus();
+  const updateInscricaoStatus = useUpdateInscricaoStatus();
 
   const isLoading = loadingOportunidade && loadingOficina;
   const projeto = oportunidade || oficina;
   const isOficina = !oportunidade && !!oficina;
+  
+  // Unifica candidaturas e inscrições para a aba de candidatos
+  const candidatosUnificados = isOficina 
+    ? inscricoesOficina.map(i => ({
+        id: i.id,
+        oportunidade_id: i.oficina_id,
+        user_id: i.user_id,
+        status: i.status === "confirmada" ? "aprovada" : (i.status === "cancelada" ? "reprovada" : i.status),
+        mensagem: null,
+        motivo_reprovacao: null,
+        created_at: i.created_at,
+        updated_at: null,
+        nome_completo: i.nome_completo,
+        nome_artistico: i.nome_artistico,
+        telefone: i.telefone,
+      }))
+    : candidaturas;
 
   // Handlers
   const handleDelete = async () => {
@@ -131,11 +156,19 @@ const ProjetoDetalhes = () => {
   };
 
   const handleAprovarCandidato = (candidaturaId: string) => {
-    updateCandidaturaStatus.mutate({ id: candidaturaId, status: "aprovada" });
+    if (isOficina) {
+      updateInscricaoStatus.mutate({ id: candidaturaId, status: "confirmada" });
+    } else {
+      updateCandidaturaStatus.mutate({ id: candidaturaId, status: "aprovada" });
+    }
   };
 
   const handleReprovarCandidato = (candidaturaId: string, motivo: string) => {
-    updateCandidaturaStatus.mutate({ id: candidaturaId, status: "reprovada", motivo_reprovacao: motivo });
+    if (isOficina) {
+      updateInscricaoStatus.mutate({ id: candidaturaId, status: "cancelada" });
+    } else {
+      updateCandidaturaStatus.mutate({ id: candidaturaId, status: "reprovada", motivo_reprovacao: motivo });
+    }
   };
 
   if (isLoading) {
@@ -253,10 +286,10 @@ const ProjetoDetalhes = () => {
             </TabsTrigger>
             <TabsTrigger value="candidatos" className="gap-2">
               <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Candidatos</span>
-              {candidaturas.length > 0 && (
+              <span className="hidden sm:inline">{isOficina ? "Inscritos" : "Candidatos"}</span>
+              {candidatosUnificados.length > 0 && (
                 <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
-                  {candidaturas.length}
+                  {candidatosUnificados.length}
                 </Badge>
               )}
             </TabsTrigger>
@@ -377,11 +410,11 @@ const ProjetoDetalhes = () => {
           {/* Tab: Candidatos */}
           <TabsContent value="candidatos">
             <CandidatosTab
-              candidaturas={candidaturas}
-              isLoading={loadingCandidaturas}
+              candidaturas={candidatosUnificados}
+              isLoading={isOficina ? loadingInscricoes : loadingCandidaturas}
               onAprovar={handleAprovarCandidato}
               onReprovar={handleReprovarCandidato}
-              isUpdating={updateCandidaturaStatus.isPending}
+              isUpdating={isOficina ? updateInscricaoStatus.isPending : updateCandidaturaStatus.isPending}
             />
           </TabsContent>
 
@@ -395,8 +428,8 @@ const ProjetoDetalhes = () => {
                       <Users className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold">{candidaturas.length}</div>
-                      <div className="text-sm text-muted-foreground">Candidaturas</div>
+                      <div className="text-3xl font-bold">{candidatosUnificados.length}</div>
+                      <div className="text-sm text-muted-foreground">{isOficina ? "Inscrições" : "Candidaturas"}</div>
                     </div>
                   </div>
                 </CardContent>
@@ -409,7 +442,7 @@ const ProjetoDetalhes = () => {
                     </div>
                     <div>
                       <div className="text-3xl font-bold">
-                        {candidaturas.filter(c => c.status === "aprovada").length}
+                        {candidatosUnificados.filter(c => c.status === "aprovada").length}
                       </div>
                       <div className="text-sm text-muted-foreground">Aprovados</div>
                     </div>
