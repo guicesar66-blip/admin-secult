@@ -46,12 +46,6 @@ interface MenuSection {
 
 const menuSections: MenuSection[] = [
   {
-    title: "Principal",
-    items: [
-      { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
-    ],
-  },
-  {
     title: "Gestão",
     items: [
       { icon: Target, label: "Projetos", path: "/oportunidades" },
