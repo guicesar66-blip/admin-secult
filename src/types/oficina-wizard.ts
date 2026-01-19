@@ -270,6 +270,7 @@ export const WIZARD_STEPS = [
   { id: 9, key: "publico_cronograma", label: "Público e Cronograma", icon: "Users" },
   { id: 10, key: "custos", label: "Planilha de Custos", icon: "DollarSign" },
   { id: 11, key: "resultados", label: "Resultados Esperados", icon: "Trophy" },
+  { id: 12, key: "preview", label: "Preview e Publicar", icon: "Eye" },
 ] as const;
 
 // Validações por step

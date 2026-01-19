@@ -10,3 +10,4 @@ export { StepEquipamentos } from "./StepEquipamentos";
 export { StepPublicoCronograma } from "./StepPublicoCronograma";
 export { StepPlanilhaCustos } from "./StepPlanilhaCustos";
 export { StepResultados } from "./StepResultados";
+export { StepPreview } from "./StepPreview";
