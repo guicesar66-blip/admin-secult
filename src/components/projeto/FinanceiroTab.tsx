@@ -32,6 +32,11 @@ import {
   Loader2,
   Sparkles,
   Handshake,
+  Eye,
+  Clock,
+  CheckCircle,
+  XCircle,
+  MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -44,9 +49,10 @@ import {
   useUpdateLancamento,
   useUpdateRepasse,
 } from "@/hooks/useFinanceiro";
-import { usePropostasByOportunidade } from "@/hooks/usePropostasInvestimento";
+import { usePropostasByOportunidade, PropostaInvestimento } from "@/hooks/usePropostasInvestimento";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { PropostaActionDialog } from "./PropostaActionDialog";
 
 interface FinanceiroTabProps {
   projetoId: string;
@@ -89,6 +95,8 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
   const { user } = useAuth();
   const [novoLancamentoOpen, setNovoLancamentoOpen] = useState(false);
   const [novoRepasseOpen, setNovoRepasseOpen] = useState(false);
+  const [selectedProposta, setSelectedProposta] = useState<PropostaInvestimento | null>(null);
+  const [propostaDialogOpen, setPropostaDialogOpen] = useState(false);
 
   // Form states
   const [lancamentoForm, setLancamentoForm] = useState({
@@ -144,6 +152,8 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
 
   const propostas = tipoEntidade === "oportunidade" ? propostasOportunidade : propostasOficina;
   const propostasAprovadas = propostas.filter(p => p.status === "aprovada");
+  const propostasPendentes = propostas.filter(p => p.status === "pendente");
+  const propostasOutras = propostas.filter(p => !["aprovada", "pendente"].includes(p.status || ""));
 
   // Hooks para lançamentos manuais
   const { data: lancamentosManuais = [], isLoading: loadingLancamentos } = useLancamentosFinanceiros(projetoId, tipoEntidade);
@@ -280,11 +290,14 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                 <div className="text-2xl font-bold text-green-600">
                   R$ {totalReceitas.toLocaleString("pt-BR")}
                 </div>
-                {receitasAprovadas > 0 && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {propostasAprovadas.length} investimento(s) aprovado(s)
-                  </div>
-                )}
+                <div className="text-xs text-muted-foreground mt-1">
+                  {propostasAprovadas.length > 0 && `${propostasAprovadas.length} aprovado(s)`}
+                  {propostasPendentes.length > 0 && (
+                    <span className="text-amber-600 font-medium">
+                      {propostasAprovadas.length > 0 ? " · " : ""}{propostasPendentes.length} pendente(s)
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="p-2 bg-green-100 rounded-full">
                 <TrendingUp className="h-5 w-5 text-green-600" />
@@ -423,12 +436,12 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
           </Dialog>
         </CardHeader>
         <CardContent>
-          {propostasAprovadas.length === 0 && lancamentosManuais.filter(l => l.tipo === "receita").length === 0 ? (
+          {propostas.length === 0 && lancamentosManuais.filter(l => l.tipo === "receita").length === 0 ? (
             <div className="text-center py-8">
               <Handshake className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
               <p className="text-muted-foreground">Nenhuma receita ainda</p>
               <p className="text-sm text-muted-foreground/70 mt-1">
-                As propostas de investimento aprovadas aparecerão aqui automaticamente
+                As propostas de investimento aparecerão aqui automaticamente
               </p>
             </div>
           ) : (
@@ -439,16 +452,70 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                   <TableHead>Tipo</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="w-[80px]">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {/* Propostas aprovadas */}
-                {propostasAprovadas.map((proposta) => (
-                  <TableRow key={proposta.id} className="bg-green-50/50">
+                {/* Propostas pendentes (destaque amarelo) */}
+                {propostasPendentes.map((proposta) => (
+                  <TableRow key={proposta.id} className="bg-amber-50/50 hover:bg-amber-100/50 cursor-pointer" onClick={() => {
+                    setSelectedProposta(proposta);
+                    setPropostaDialogOpen(true);
+                  }}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-green-600" />
+                        <Clock className="h-4 w-4 text-amber-600" />
+                        {proposta.tipo_apoio === "financeiro" 
+                          ? "Investimento Financeiro"
+                          : proposta.tipo_apoio === "servico"
+                            ? proposta.descricao_servico || "Serviço/Permuta"
+                            : "Patrocínio"
+                        }
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">
+                        {tipoApoioLabels[proposta.tipo_apoio]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="bg-amber-200 text-amber-800">
+                        Aguardando análise
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-amber-600 font-medium">
+                      {proposta.tipo_apoio === "financeiro" 
+                        ? `R$ ${(proposta.valor_financeiro || 0).toLocaleString("pt-BR")}`
+                        : "—"
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-amber-600 border-amber-300 hover:bg-amber-50"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProposta(proposta);
+                          setPropostaDialogOpen(true);
+                        }}
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        Analisar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+                {/* Propostas aprovadas */}
+                {propostasAprovadas.map((proposta) => (
+                  <TableRow key={proposta.id} className="bg-green-50/50 hover:bg-green-100/50 cursor-pointer" onClick={() => {
+                    setSelectedProposta(proposta);
+                    setPropostaDialogOpen(true);
+                  }}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
                         {proposta.tipo_apoio === "financeiro" 
                           ? "Investimento Financeiro"
                           : proposta.tipo_apoio === "servico"
@@ -471,9 +538,78 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                         : "—"
                       }
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProposta(proposta);
+                          setPropostaDialogOpen(true);
+                        }}
+                      >
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
+
+                {/* Propostas com outros status (rejeitada, contraproposta, cancelada) */}
+                {propostasOutras.map((proposta) => (
+                  <TableRow key={proposta.id} className="bg-muted/30 hover:bg-muted/50 cursor-pointer opacity-70" onClick={() => {
+                    setSelectedProposta(proposta);
+                    setPropostaDialogOpen(true);
+                  }}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {proposta.status === "rejeitada" || proposta.status === "cancelada" 
+                          ? <XCircle className="h-4 w-4 text-destructive" />
+                          : <MessageSquare className="h-4 w-4 text-blue-600" />
+                        }
+                        {proposta.tipo_apoio === "financeiro" 
+                          ? "Investimento Financeiro"
+                          : proposta.tipo_apoio === "servico"
+                            ? proposta.descricao_servico || "Serviço/Permuta"
+                            : "Patrocínio"
+                        }
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {tipoApoioLabels[proposta.tipo_apoio]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={proposta.status === "contraproposta" ? "outline" : "destructive"}>
+                        {proposta.status === "rejeitada" ? "Rejeitada" 
+                          : proposta.status === "cancelada" ? "Cancelada" 
+                          : "Contraproposta"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground font-medium">
+                      {proposta.tipo_apoio === "financeiro" 
+                        ? `R$ ${(proposta.valor_financeiro || 0).toLocaleString("pt-BR")}`
+                        : "—"
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProposta(proposta);
+                          setPropostaDialogOpen(true);
+                        }}
+                      >
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
                 {/* Lançamentos manuais */}
                 {lancamentosManuais.filter(l => l.tipo === "receita").map((receita) => (
                   <TableRow key={receita.id}>
@@ -790,6 +926,15 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
           )}
         </CardContent>
       </Card>
+
+      {/* Dialog de ação para propostas */}
+      <PropostaActionDialog
+        open={propostaDialogOpen}
+        onOpenChange={setPropostaDialogOpen}
+        proposta={selectedProposta}
+        projetoId={projetoId}
+        tipoEntidade={tipoEntidade}
+      />
     </div>
   );
 }

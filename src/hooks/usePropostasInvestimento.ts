@@ -122,6 +122,8 @@ export const useCreateProposta = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["minhas-propostas"] });
       queryClient.invalidateQueries({ queryKey: ["propostas-oportunidade"] });
+      queryClient.invalidateQueries({ queryKey: ["propostas-oficina"] });
+      queryClient.invalidateQueries({ queryKey: ["propostas-recebidas"] });
       toast.success("Proposta enviada com sucesso!");
     },
     onError: (error) => {
@@ -158,6 +160,8 @@ export const useUpdatePropostaStatus = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["propostas-recebidas"] });
       queryClient.invalidateQueries({ queryKey: ["propostas-oportunidade"] });
+      queryClient.invalidateQueries({ queryKey: ["propostas-oficina"] });
+      queryClient.invalidateQueries({ queryKey: ["minhas-propostas"] });
       
       const statusMessages: Record<StatusProposta, string> = {
         aprovada: "Proposta aprovada com sucesso!",
