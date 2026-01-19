@@ -7,3 +7,6 @@ export { StepDivulgacao } from "./StepDivulgacao";
 export { StepPlanoMidia } from "./StepPlanoMidia";
 export { StepAcessibilidade } from "./StepAcessibilidade";
 export { StepEquipamentos } from "./StepEquipamentos";
+export { StepPublicoCronograma } from "./StepPublicoCronograma";
+export { StepPlanilhaCustos } from "./StepPlanilhaCustos";
+export { StepResultados } from "./StepResultados";

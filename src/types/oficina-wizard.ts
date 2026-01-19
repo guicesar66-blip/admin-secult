@@ -434,3 +434,69 @@ export function validateStep8(data: OficinaWizardData): StepValidation {
 
   return { isValid: errors.length === 0, errors };
 }
+
+export function validateStep9(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.quantidade_participantes < 5 || data.quantidade_participantes > 500) {
+    errors.push("Quantidade de participantes deve estar entre 5 e 500");
+  }
+  
+  if (!data.perfil_participante || data.perfil_participante.length < 20) {
+    errors.push("Perfil do participante deve ter pelo menos 20 caracteres");
+  }
+  
+  if (data.equipe_instrutores.length === 0) {
+    errors.push("Adicione pelo menos um instrutor/facilitador");
+  }
+  
+  if (!data.periodo_inscricoes_inicio || !data.periodo_inscricoes_fim) {
+    errors.push("Defina o período de inscrições");
+  }
+  
+  if (!data.periodo_oficinas_inicio || !data.periodo_oficinas_fim) {
+    errors.push("Defina o período das oficinas");
+  }
+  
+  // Validar ordem cronológica
+  if (data.periodo_inscricoes_fim && data.periodo_oficinas_inicio) {
+    if (new Date(data.periodo_oficinas_inicio) < new Date(data.periodo_inscricoes_fim)) {
+      errors.push("O período das oficinas deve começar após o fim das inscrições");
+    }
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+export function validateStep10(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.itens_custo.length === 0) {
+    errors.push("Adicione pelo menos um item de custo");
+  }
+  
+  const total = data.itens_custo.reduce((acc, i) => acc + i.total, 0);
+  if (total <= 0) {
+    errors.push("O orçamento total deve ser maior que zero");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+export function validateStep11(data: OficinaWizardData): StepValidation {
+  const errors: string[] = [];
+  
+  if (data.resultados_quantitativos.length < 3) {
+    errors.push("Adicione pelo menos 3 resultados quantitativos");
+  }
+  
+  if (!data.resultados_qualitativos || data.resultados_qualitativos.length < 100) {
+    errors.push("Resultados qualitativos devem ter pelo menos 100 caracteres");
+  }
+  
+  if (data.indicadores_sucesso.length < 2) {
+    errors.push("Adicione pelo menos 2 indicadores de sucesso");
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
