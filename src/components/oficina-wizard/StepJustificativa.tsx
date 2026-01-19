@@ -1,7 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { 
   Select,
   SelectContent,
@@ -12,10 +11,9 @@ import {
 import { 
   OficinaWizardData, 
   LINGUAGENS_ARTISTICAS, 
-  TERRITORIOS_RMR,
   validateStep1 
 } from "@/types/oficina-wizard";
-import { FileText, MapPin, X } from "lucide-react";
+import { FileText } from "lucide-react";
 
 interface StepJustificativaProps {
   data: OficinaWizardData;
@@ -27,16 +25,6 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
   const charCountJustificativa = data.justificativa?.length || 0;
   const charCountTitulo = data.titulo?.length || 0;
 
-  const handleAddTerritorio = (territorio: string) => {
-    if (!data.territorios.includes(territorio)) {
-      onChange({ territorios: [...data.territorios, territorio] });
-    }
-  };
-
-  const handleRemoveTerritorio = (territorio: string) => {
-    onChange({ territorios: data.territorios.filter(t => t !== territorio) });
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
@@ -46,7 +34,7 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
         <div>
           <h2 className="text-xl font-semibold">Step 1: Justificativa</h2>
           <p className="text-sm text-muted-foreground">
-            Contextualizar a relevância do projeto e sua conexão com o território/comunidade
+            Contextualizar a relevância do projeto e sua conexão com a comunidade
           </p>
         </div>
       </div>
@@ -84,7 +72,7 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
           id="justificativa"
           value={data.justificativa}
           onChange={(e) => onChange({ justificativa: e.target.value })}
-          placeholder="Descreva o contexto e a relevância do projeto. Inclua informações sobre o território, comunidade beneficiada e a importância da temática abordada..."
+          placeholder="Descreva o contexto e a relevância do projeto. Inclua informações sobre a comunidade beneficiada e a importância da temática abordada..."
           className="min-h-[180px] resize-none"
           maxLength={2000}
         />
@@ -116,51 +104,6 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      {/* Território/Bairro de Atuação */}
-      <div className="space-y-2">
-        <Label className="flex items-center gap-2">
-          <MapPin className="h-4 w-4" />
-          Território/Bairro de Atuação <span className="text-destructive">*</span>
-        </Label>
-        <p className="text-sm text-muted-foreground">
-          Selecione os bairros onde a oficina será realizada ou terá impacto
-        </p>
-        
-        <Select onValueChange={handleAddTerritorio}>
-          <SelectTrigger>
-            <SelectValue placeholder="Adicionar território..." />
-          </SelectTrigger>
-          <SelectContent>
-            {TERRITORIOS_RMR.filter(t => !data.territorios.includes(t)).map((territorio) => (
-              <SelectItem key={territorio} value={territorio}>
-                {territorio}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {data.territorios.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {data.territorios.map((territorio) => (
-              <Badge 
-                key={territorio} 
-                variant="secondary" 
-                className="gap-1 py-1 px-3"
-              >
-                {territorio}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTerritorio(territorio)}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Validação visual */}
