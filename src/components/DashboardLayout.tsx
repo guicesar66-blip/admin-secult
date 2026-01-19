@@ -84,6 +84,12 @@ const menuSections: MenuSection[] = [
       },
     ],
   },
+  {
+    title: "Administração",
+    items: [
+      { icon: UserCog, label: "Usuários", path: "/usuarios" },
+    ],
+  },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
