@@ -181,7 +181,7 @@ const NovoProjetoOficina = () => {
         resultados_qualitativos: wizardData.resultados_qualitativos,
         indicadores_sucesso: wizardData.indicadores_sucesso,
         // Publicação
-        status: "ativo",
+        status: "inscricoes_abertas",
         status_wizard: "publicado",
         step_atual: 12,
         exibir_vitrine: exibirVitrine,
