@@ -105,102 +105,219 @@ export type Database = {
       oficinas: {
         Row: {
           area_artistica: string
+          canais_divulgacao: string[] | null
           captacao_atual: number | null
           carga_horaria: number
           categoria: string
+          cobertura_evento: string[] | null
           created_at: string
           criador_id: string | null
+          data_evento_final: string | null
           data_fim: string
           data_inicio: string
           descricao: string | null
+          descricao_acolhimento: string | null
+          descricao_divulgacao: string | null
           dias_semana: string[]
           emite_certificado: boolean | null
+          endereco_completo: string | null
+          equipamentos_materiais: Json | null
+          equipe_apoio: Json | null
+          equipe_instrutores: Json | null
+          estrategia_campanha: string | null
+          etapas_encontros: Json | null
           exibir_vitrine: boolean | null
           facilitador_avatar: string | null
           facilitador_bio: string | null
           facilitador_nome: string
+          faixa_etaria_max: number | null
+          faixa_etaria_min: number | null
           horario: string
           id: string
           imagem: string | null
+          indicadores_sucesso: Json | null
           inscricao_fim: string
+          itens_custo: Json | null
+          justificativa: string | null
+          linguagem_artistica: string | null
           local: string | null
+          marcas_parceiras: Json | null
           meta_captacao: number | null
+          metodologia_descricao: string | null
           modalidade: string
           mostrar_progresso: boolean | null
           nivel: string
           num_encontros: number
+          objetivo_geral: string | null
+          objetivos_especificos: Json | null
+          orcamento_total: number | null
           organizacao: string
+          parcerias_midia: Json | null
+          perfil_participante: string | null
+          periodo_inscricoes_fim: string | null
+          periodo_inscricoes_inicio: string | null
+          periodo_oficinas_fim: string | null
+          periodo_oficinas_inicio: string | null
+          periodo_producao_fim: string | null
+          periodo_producao_inicio: string | null
           prerequisitos: string | null
           publico_alvo: string | null
+          quantidade_participantes: number | null
+          recursos_acessibilidade: string[] | null
+          reserva_tecnica_percentual: number | null
+          resultados_qualitativos: string | null
+          resultados_quantitativos: Json | null
           status: string
+          status_wizard: string | null
+          step_atual: number | null
+          tamanho_grupos: number | null
+          territorios: string[] | null
           titulo: string
           updated_at: string
           vagas_total: number
         }
         Insert: {
           area_artistica: string
+          canais_divulgacao?: string[] | null
           captacao_atual?: number | null
           carga_horaria: number
           categoria: string
+          cobertura_evento?: string[] | null
           created_at?: string
           criador_id?: string | null
+          data_evento_final?: string | null
           data_fim: string
           data_inicio: string
           descricao?: string | null
+          descricao_acolhimento?: string | null
+          descricao_divulgacao?: string | null
           dias_semana: string[]
           emite_certificado?: boolean | null
+          endereco_completo?: string | null
+          equipamentos_materiais?: Json | null
+          equipe_apoio?: Json | null
+          equipe_instrutores?: Json | null
+          estrategia_campanha?: string | null
+          etapas_encontros?: Json | null
           exibir_vitrine?: boolean | null
           facilitador_avatar?: string | null
           facilitador_bio?: string | null
           facilitador_nome: string
+          faixa_etaria_max?: number | null
+          faixa_etaria_min?: number | null
           horario: string
           id?: string
           imagem?: string | null
+          indicadores_sucesso?: Json | null
           inscricao_fim: string
+          itens_custo?: Json | null
+          justificativa?: string | null
+          linguagem_artistica?: string | null
           local?: string | null
+          marcas_parceiras?: Json | null
           meta_captacao?: number | null
+          metodologia_descricao?: string | null
           modalidade: string
           mostrar_progresso?: boolean | null
           nivel: string
           num_encontros: number
+          objetivo_geral?: string | null
+          objetivos_especificos?: Json | null
+          orcamento_total?: number | null
           organizacao: string
+          parcerias_midia?: Json | null
+          perfil_participante?: string | null
+          periodo_inscricoes_fim?: string | null
+          periodo_inscricoes_inicio?: string | null
+          periodo_oficinas_fim?: string | null
+          periodo_oficinas_inicio?: string | null
+          periodo_producao_fim?: string | null
+          periodo_producao_inicio?: string | null
           prerequisitos?: string | null
           publico_alvo?: string | null
+          quantidade_participantes?: number | null
+          recursos_acessibilidade?: string[] | null
+          reserva_tecnica_percentual?: number | null
+          resultados_qualitativos?: string | null
+          resultados_quantitativos?: Json | null
           status?: string
+          status_wizard?: string | null
+          step_atual?: number | null
+          tamanho_grupos?: number | null
+          territorios?: string[] | null
           titulo: string
           updated_at?: string
           vagas_total?: number
         }
         Update: {
           area_artistica?: string
+          canais_divulgacao?: string[] | null
           captacao_atual?: number | null
           carga_horaria?: number
           categoria?: string
+          cobertura_evento?: string[] | null
           created_at?: string
           criador_id?: string | null
+          data_evento_final?: string | null
           data_fim?: string
           data_inicio?: string
           descricao?: string | null
+          descricao_acolhimento?: string | null
+          descricao_divulgacao?: string | null
           dias_semana?: string[]
           emite_certificado?: boolean | null
+          endereco_completo?: string | null
+          equipamentos_materiais?: Json | null
+          equipe_apoio?: Json | null
+          equipe_instrutores?: Json | null
+          estrategia_campanha?: string | null
+          etapas_encontros?: Json | null
           exibir_vitrine?: boolean | null
           facilitador_avatar?: string | null
           facilitador_bio?: string | null
           facilitador_nome?: string
+          faixa_etaria_max?: number | null
+          faixa_etaria_min?: number | null
           horario?: string
           id?: string
           imagem?: string | null
+          indicadores_sucesso?: Json | null
           inscricao_fim?: string
+          itens_custo?: Json | null
+          justificativa?: string | null
+          linguagem_artistica?: string | null
           local?: string | null
+          marcas_parceiras?: Json | null
           meta_captacao?: number | null
+          metodologia_descricao?: string | null
           modalidade?: string
           mostrar_progresso?: boolean | null
           nivel?: string
           num_encontros?: number
+          objetivo_geral?: string | null
+          objetivos_especificos?: Json | null
+          orcamento_total?: number | null
           organizacao?: string
+          parcerias_midia?: Json | null
+          perfil_participante?: string | null
+          periodo_inscricoes_fim?: string | null
+          periodo_inscricoes_inicio?: string | null
+          periodo_oficinas_fim?: string | null
+          periodo_oficinas_inicio?: string | null
+          periodo_producao_fim?: string | null
+          periodo_producao_inicio?: string | null
           prerequisitos?: string | null
           publico_alvo?: string | null
+          quantidade_participantes?: number | null
+          recursos_acessibilidade?: string[] | null
+          reserva_tecnica_percentual?: number | null
+          resultados_qualitativos?: string | null
+          resultados_quantitativos?: Json | null
           status?: string
+          status_wizard?: string | null
+          step_atual?: number | null
+          tamanho_grupos?: number | null
+          territorios?: string[] | null
           titulo?: string
           updated_at?: string
           vagas_total?: number
