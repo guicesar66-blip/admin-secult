@@ -71,6 +71,7 @@ const menuSections: MenuSection[] = [
         icon: BarChart3, 
         label: "Dados",
         children: [
+          { label: "Dashboard", path: "/dados" },
           { label: "Financeira", path: "/analise-financeira" },
           { label: "Territorial", path: "/analise-territorial" },
           { label: "Pessoas", path: "/analise-artistas" },
