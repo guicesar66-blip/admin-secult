@@ -21,16 +21,13 @@ import {
   MapPin,
   Users,
   DollarSign,
-  Clock,
-  User,
-  Phone,
-  FileText,
   BarChart3,
   Wallet,
   XCircle,
   Loader2,
   Briefcase,
   GraduationCap,
+  FileText,
 } from "lucide-react";
 import { useOportunidade, useDeleteOportunidade } from "@/hooks/useOportunidades";
 import { useOficina, useDeleteOficina } from "@/hooks/useOficinas";
@@ -41,6 +38,7 @@ import { DeleteProjectDialog } from "@/components/projeto/DeleteProjectDialog";
 import { EditProjectDialog } from "@/components/projeto/EditProjectDialog";
 import { CandidatosTab } from "@/components/projeto/CandidatosTab";
 import { FinanceiroTab } from "@/components/projeto/FinanceiroTab";
+import { ProjetoInfoCompleta } from "@/components/projeto/ProjetoInfoCompleta";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500" },
@@ -305,106 +303,7 @@ const ProjetoDetalhes = () => {
 
           {/* Tab: Informações */}
           <TabsContent value="info" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Detalhes do Projeto */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Detalhes do Projeto</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {dataEvento && (
-                    <div className="flex items-start gap-3">
-                      <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Data</div>
-                        <div className="text-muted-foreground">
-                          {new Date(dataEvento).toLocaleDateString("pt-BR", {
-                            weekday: "long",
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {horario && (
-                    <div className="flex items-start gap-3">
-                      <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Horário</div>
-                        <div className="text-muted-foreground">{horario}</div>
-                      </div>
-                    </div>
-                  )}
-                  {(local || municipio) && (
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Local</div>
-                        <div className="text-muted-foreground">
-                          {local}{municipio && local ? `, ${municipio}` : municipio}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-start gap-3">
-                    <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <div className="font-medium">Vagas</div>
-                      <div className="text-muted-foreground">{vagas || 0} vaga(s)</div>
-                    </div>
-                  </div>
-                  {remuneracao > 0 && (
-                    <div className="flex items-start gap-3">
-                      <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Remuneração</div>
-                        <div className="text-muted-foreground">
-                          R$ {remuneracao.toLocaleString("pt-BR")}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Responsável e Requisitos */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Responsável & Requisitos</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {criadorNome && (
-                    <div className="flex items-start gap-3">
-                      <User className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Responsável</div>
-                        <div className="text-muted-foreground">{criadorNome}</div>
-                      </div>
-                    </div>
-                  )}
-                  {criadorContato && (
-                    <div className="flex items-start gap-3">
-                      <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Contato</div>
-                        <div className="text-muted-foreground">{criadorContato}</div>
-                      </div>
-                    </div>
-                  )}
-                  {requisitos && (
-                    <div className="flex items-start gap-3">
-                      <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      <div>
-                        <div className="font-medium">Requisitos</div>
-                        <div className="text-muted-foreground whitespace-pre-wrap">{requisitos}</div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+            <ProjetoInfoCompleta projeto={projeto} isOficina={isOficina} />
           </TabsContent>
 
           {/* Tab: Candidatos */}
