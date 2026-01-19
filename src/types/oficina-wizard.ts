@@ -297,9 +297,6 @@ export function validateStep1(data: OficinaWizardData): StepValidation {
   if (!data.linguagem_artistica) {
     errors.push("Selecione uma linguagem artística");
   }
-  if (data.territorios.length === 0) {
-    errors.push("Selecione pelo menos um território");
-  }
 
   return { isValid: errors.length === 0, errors };
 }
