@@ -1,451 +1,393 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Progress } from "@/components/ui/progress";
-import {
-  Bot,
-  Send,
-  User,
+import { 
+  ArrowLeft, 
+  ArrowRight, 
+  Save, 
+  Check, 
   Calendar,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
   FileText,
   MapPin,
-  Clock,
+  Music,
   Users,
-  DollarSign,
   Megaphone,
-  Target,
+  Accessibility,
+  DollarSign,
+  Package,
+  Trophy,
+  Eye,
   Loader2,
+  Rocket,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useCreateOportunidade } from "@/hooks/useOportunidades";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCreateOportunidade } from "@/hooks/useOportunidades";
+import { toast } from "sonner";
+import { 
+  EventoWizardData, 
+  EVENTO_WIZARD_INITIAL_STATE,
+  EVENTO_WIZARD_STEPS,
+  validateEventoStep1,
+  validateEventoStep2,
+  validateEventoStep3,
+  validateEventoStep4,
+  validateEventoStep5,
+  validateEventoStep6,
+  validateEventoStep7,
+  validateEventoStep8,
+  validateEventoStep9,
+  validateEventoStep10,
+} from "@/types/evento-wizard";
+import { 
+  StepInformacoesBasicas, 
+  StepDataLocal, 
+  StepProgramacao, 
+  StepVagasArtistas,
+  StepDivulgacaoEvento,
+  StepAcessibilidadeEvento,
+  StepPublicoEquipe,
+  StepCustosEvento,
+  StepInfraestrutura,
+  StepResultadosEvento,
+  StepPreviewEvento,
+} from "@/components/evento-wizard";
 
-interface Message {
-  id: string;
-  role: "assistant" | "user";
-  content: string;
-  timestamp: Date;
-}
-
-interface EventoInfo {
-  titulo?: string;
-  descricao?: string;
-  local?: string;
-  municipio?: string;
-  dataEvento?: string;
-  horario?: string;
-  duracao?: string;
-  publicoAlvo?: string;
-  vagas?: number;
-  remuneracao?: number;
-  requisitos?: string;
-  divulgacao?: string;
-}
-
-const etapasEvento = [
-  { id: "titulo", label: "Nome do Evento", icon: <Calendar className="h-4 w-4" /> },
-  { id: "descricao", label: "Descrição", icon: <FileText className="h-4 w-4" /> },
-  { id: "local", label: "Local", icon: <MapPin className="h-4 w-4" /> },
-  { id: "dataHorario", label: "Data e Horário", icon: <Clock className="h-4 w-4" /> },
-  { id: "duracao", label: "Duração", icon: <Clock className="h-4 w-4" /> },
-  { id: "publico", label: "Público e Vagas", icon: <Users className="h-4 w-4" /> },
-  { id: "remuneracao", label: "Cachê/Remuneração", icon: <DollarSign className="h-4 w-4" /> },
-  { id: "requisitos", label: "Requisitos", icon: <Target className="h-4 w-4" /> },
-  { id: "divulgacao", label: "Divulgação", icon: <Megaphone className="h-4 w-4" /> },
-];
-
-const perguntasEvento = [
-  {
-    etapa: "inicio",
-    mensagem: "Olá! 👋 Sou o assistente CENA e vou te ajudar a criar seu **Evento Cultural**. Vamos seguir 9 etapas simples. Para começar, me conta: **qual é o nome do seu evento?**",
-  },
-  {
-    etapa: "descricao",
-    mensagem: "Ótimo nome! Agora descreva seu evento. **O que vai acontecer?** Conte sobre a proposta, atrações, e o que o público pode esperar.",
-  },
-  {
-    etapa: "local",
-    mensagem: "Onde o evento vai acontecer? Informe o **local** (nome do espaço) e o **município/cidade**. Exemplo: 'Teatro Municipal, Recife'",
-  },
-  {
-    etapa: "dataHorario",
-    mensagem: "Quando será o evento? Informe a **data** e o **horário de início**. Exemplo: '25/03/2025 às 19h'",
-  },
-  {
-    etapa: "duracao",
-    mensagem: "Qual a **duração estimada** do evento? Exemplo: '2 horas', 'o dia todo', '3 dias'",
-  },
-  {
-    etapa: "publico",
-    mensagem: "Sobre o **público**: quem é o público-alvo e quantas **vagas/lugares** estão disponíveis? Exemplo: 'Público geral, 200 lugares'",
-  },
-  {
-    etapa: "remuneracao",
-    mensagem: "Haverá **cachê ou remuneração** para artistas/participantes? Se sim, qual o valor estimado? (Digite 0 se não houver)",
-  },
-  {
-    etapa: "requisitos",
-    mensagem: "Quais são os **requisitos** para participar ou se apresentar? Exemplo: 'Experiência em música ao vivo, equipamento próprio'",
-  },
-  {
-    etapa: "divulgacao",
-    mensagem: "Como você pretende **divulgar** o evento? Redes sociais, parcerias, mídia local?",
-  },
-  {
-    etapa: "finalizacao",
-    mensagem: "🎉 Excelente! Seu evento está estruturado! Vou salvar no sistema e você poderá gerenciá-lo na listagem de projetos.",
-  },
-];
+const STEP_ICONS: Record<string, React.ReactNode> = {
+  FileText: <FileText className="h-4 w-4" />,
+  MapPin: <MapPin className="h-4 w-4" />,
+  Music: <Music className="h-4 w-4" />,
+  Users: <Users className="h-4 w-4" />,
+  Megaphone: <Megaphone className="h-4 w-4" />,
+  Accessibility: <Accessibility className="h-4 w-4" />,
+  DollarSign: <DollarSign className="h-4 w-4" />,
+  Package: <Package className="h-4 w-4" />,
+  Trophy: <Trophy className="h-4 w-4" />,
+  Eye: <Eye className="h-4 w-4" />,
+};
 
 const NovoProjetoEvento = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const createOportunidade = useCreateOportunidade();
   
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const [etapaAtual, setEtapaAtual] = useState(0);
-  const [eventoInfo, setEventoInfo] = useState<EventoInfo>({});
-  const [isTyping, setIsTyping] = useState(false);
+  const [wizardData, setWizardData] = useState<EventoWizardData>(EVENTO_WIZARD_INITIAL_STATE);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [highestStepReached, setHighestStepReached] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [exibirVitrine, setExibirVitrine] = useState(true);
+  const [mostrarProgresso, setMostrarProgresso] = useState(true);
 
-  const progresso = Math.round((etapaAtual / (perguntasEvento.length - 1)) * 100);
+  const progress = Math.round((currentStep / EVENTO_WIZARD_STEPS.length) * 100);
 
-  useEffect(() => {
-    setTimeout(() => {
-      addAssistantMessage(perguntasEvento[0].mensagem);
-    }, 500);
-  }, []);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const addAssistantMessage = (content: string) => {
-    setIsTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: "assistant",
-          content,
-          timestamp: new Date(),
-        },
-      ]);
-      setIsTyping(false);
-    }, 800);
+  const handleDataChange = (updates: Partial<EventoWizardData>) => {
+    setWizardData(prev => ({ ...prev, ...updates }));
   };
 
-  const processarResposta = (resposta: string) => {
-    const novoEventoInfo = { ...eventoInfo };
-
-    switch (etapaAtual) {
-      case 0:
-        novoEventoInfo.titulo = resposta;
-        break;
-      case 1:
-        novoEventoInfo.descricao = resposta;
-        break;
-      case 2:
-        const partes = resposta.split(",").map(p => p.trim());
-        novoEventoInfo.local = partes[0];
-        novoEventoInfo.municipio = partes[1] || partes[0];
-        break;
-      case 3:
-        const dataMatch = resposta.match(/(\d{2}\/\d{2}\/\d{4})/);
-        if (dataMatch) {
-          const [dia, mes, ano] = dataMatch[1].split("/");
-          novoEventoInfo.dataEvento = `${ano}-${mes}-${dia}`;
-        }
-        const horaMatch = resposta.match(/(\d{1,2}h|\d{1,2}:\d{2})/);
-        novoEventoInfo.horario = horaMatch ? horaMatch[1] : resposta;
-        break;
-      case 4:
-        novoEventoInfo.duracao = resposta;
-        break;
-      case 5:
-        const vagasMatch = resposta.match(/(\d+)/);
-        novoEventoInfo.vagas = vagasMatch ? parseInt(vagasMatch[1]) : 100;
-        novoEventoInfo.publicoAlvo = resposta;
-        break;
-      case 6:
-        const valorMatch = resposta.match(/(\d+[\.,]?\d*)/);
-        novoEventoInfo.remuneracao = valorMatch ? parseFloat(valorMatch[1].replace(",", ".")) : 0;
-        break;
-      case 7:
-        novoEventoInfo.requisitos = resposta;
-        break;
-      case 8:
-        novoEventoInfo.divulgacao = resposta;
-        break;
-    }
-
-    setEventoInfo(novoEventoInfo);
-  };
-
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        role: "user",
-        content: inputValue,
-        timestamp: new Date(),
-      },
-    ]);
-
-    processarResposta(inputValue);
-    setInputValue("");
-
-    const proximaEtapa = etapaAtual + 1;
-    setEtapaAtual(proximaEtapa);
-
-    if (proximaEtapa < perguntasEvento.length) {
-      addAssistantMessage(perguntasEvento[proximaEtapa].mensagem);
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1: return validateEventoStep1(wizardData).isValid;
+      case 2: return validateEventoStep2(wizardData).isValid;
+      case 3: return validateEventoStep3(wizardData).isValid;
+      case 4: return validateEventoStep4(wizardData).isValid;
+      case 5: return validateEventoStep5(wizardData).isValid;
+      case 6: return validateEventoStep6(wizardData).isValid;
+      case 7: return validateEventoStep7(wizardData).isValid;
+      case 8: return validateEventoStep8(wizardData).isValid;
+      case 9: return validateEventoStep9(wizardData).isValid;
+      case 10: return validateEventoStep10(wizardData).isValid;
+      case 11: return true; // Preview é sempre válido
+      default: return true;
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+  const handlePublish = async () => {
+    if (!user) {
+      toast.error("Você precisa estar logado para publicar");
+      return;
     }
-  };
 
-  const finalizarProjeto = async () => {
-    setIsSaving(true);
-    
+    setIsPublishing(true);
     try {
-      const result = await createOportunidade.mutateAsync({
-        titulo: eventoInfo.titulo || "Novo Evento",
-        descricao: eventoInfo.descricao,
+      // Calcular orçamento total
+      const orcamentoTotal = wizardData.itens_custo.reduce((acc, item) => acc + item.total, 0);
+      
+      const eventoData = {
+        titulo: wizardData.nome_evento,
+        descricao: wizardData.descricao_evento,
         tipo: "evento",
-        local: eventoInfo.local,
-        municipio: eventoInfo.municipio,
-        data_evento: eventoInfo.dataEvento,
-        horario: eventoInfo.horario,
-        duracao: eventoInfo.duracao || "A definir",
-        vagas: eventoInfo.vagas,
-        remuneracao: eventoInfo.remuneracao,
-        requisitos: eventoInfo.requisitos,
-        criador_nome: user?.email || "Admin",
-        criador_id: user?.id,
-      });
+        local: wizardData.nome_local,
+        municipio: wizardData.bairro,
+        data_evento: wizardData.data_evento || wizardData.data_inicio,
+        horario: wizardData.horario_inicio,
+        duracao: `${wizardData.horario_inicio} - ${wizardData.horario_termino}`,
+        vagas: wizardData.publico_esperado,
+        remuneracao: wizardData.itens_custo.find(i => i.categoria === "artistica")?.total || 0,
+        requisitos: wizardData.descricao_geral_vagas,
+        area_cultural: wizardData.linguagem_principal,
+        criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
+        criador_id: user.id,
+        status: "inscricoes_abertas",
+        exibir_vitrine: exibirVitrine,
+        mostrar_progresso: mostrarProgresso,
+        meta_captacao: orcamentoTotal,
+        captacao_atual: 0,
+      };
 
-      navigate(`/oportunidades`);
+      const result = await createOportunidade.mutateAsync(eventoData);
+      toast.success("Evento publicado com sucesso na Vitrine!");
+      navigate(`/oportunidades/${result.id}`);
     } catch (error) {
-      console.error("Error saving evento:", error);
+      console.error("Erro ao publicar:", error);
+      toast.error("Erro ao publicar evento");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const canGoNext = isStepValid(currentStep);
+
+  const handleNext = () => {
+    if (currentStep < EVENTO_WIZARD_STEPS.length && canGoNext) {
+      const nextStep = currentStep + 1;
+      setCurrentStep(nextStep);
+      setHighestStepReached(prev => Math.max(prev, nextStep));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    if (!user) {
+      toast.error("Você precisa estar logado para salvar");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const eventoData = {
+        titulo: wizardData.nome_evento || "Rascunho - Novo Evento",
+        descricao: wizardData.descricao_evento,
+        tipo: "evento",
+        local: wizardData.nome_local,
+        municipio: wizardData.bairro,
+        data_evento: wizardData.data_evento || wizardData.data_inicio,
+        horario: wizardData.horario_inicio,
+        duracao: wizardData.horario_inicio && wizardData.horario_termino 
+          ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}` 
+          : "A definir",
+        vagas: wizardData.publico_esperado,
+        area_cultural: wizardData.linguagem_principal,
+        criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
+        criador_id: user.id,
+        status: "rascunho",
+      };
+
+      const result = await createOportunidade.mutateAsync(eventoData);
+      toast.success("Rascunho salvo com sucesso!");
+      navigate(`/oportunidades/${result.id}`);
+    } catch (error) {
+      console.error("Erro ao salvar rascunho:", error);
+      toast.error("Erro ao salvar rascunho");
+    } finally {
       setIsSaving(false);
     }
   };
 
-  const projetoCompleto = etapaAtual >= perguntasEvento.length - 1;
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <StepInformacoesBasicas data={wizardData} onChange={handleDataChange} />;
+      case 2:
+        return <StepDataLocal data={wizardData} onChange={handleDataChange} />;
+      case 3:
+        return <StepProgramacao data={wizardData} onChange={handleDataChange} />;
+      case 4:
+        return <StepVagasArtistas data={wizardData} onChange={handleDataChange} />;
+      case 5:
+        return <StepDivulgacaoEvento data={wizardData} onChange={handleDataChange} />;
+      case 6:
+        return <StepAcessibilidadeEvento data={wizardData} onChange={handleDataChange} />;
+      case 7:
+        return <StepPublicoEquipe data={wizardData} onChange={handleDataChange} />;
+      case 8:
+        return <StepCustosEvento data={wizardData} onChange={handleDataChange} />;
+      case 9:
+        return <StepInfraestrutura data={wizardData} onChange={handleDataChange} />;
+      case 10:
+        return <StepResultadosEvento data={wizardData} onChange={handleDataChange} />;
+      case 11:
+        return (
+          <StepPreviewEvento 
+            data={wizardData} 
+            onChange={handleDataChange}
+            exibirVitrine={exibirVitrine}
+            setExibirVitrine={setExibirVitrine}
+            mostrarProgresso={mostrarProgresso}
+            setMostrarProgresso={setMostrarProgresso}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <DashboardLayout>
       <div className="h-[calc(100vh-120px)] flex gap-6">
-        {/* Painel de Chat */}
-        <div className="flex-1 flex flex-col">
-          <Card className="flex-1 flex flex-col overflow-hidden">
-            <CardHeader className="border-b bg-gradient-to-r from-blue-500/10 to-blue-500/5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-blue-500/20">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Criar Evento</CardTitle>
-                    <p className="text-sm text-muted-foreground">Assistente CENA - 9 etapas</p>
-                  </div>
+        {/* Sidebar - Navegação dos Steps */}
+        <div className="w-72 shrink-0">
+          <Card className="h-full overflow-hidden">
+            <CardHeader className="border-b bg-gradient-to-r from-blue-500/10 to-blue-500/5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-blue-500/20">
+                  <Calendar className="h-5 w-5 text-blue-600" />
                 </div>
-                <Badge variant="outline" className="gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  IA Ativa
-                </Badge>
+                <div>
+                  <h2 className="font-semibold">Novo Evento</h2>
+                  <p className="text-xs text-muted-foreground">11 etapas</p>
+                </div>
               </div>
               <div className="mt-4">
-                <div className="flex justify-between text-sm mb-2">
+                <div className="flex justify-between text-xs mb-2">
                   <span className="text-muted-foreground">Progresso</span>
-                  <span className="font-medium">{progresso}%</span>
+                  <span className="font-medium">{progress}%</span>
                 </div>
-                <Progress value={progresso} className="h-2" />
+                <Progress value={progress} className="h-2" />
               </div>
             </CardHeader>
-
-            <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-              <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-                <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+            <ScrollArea className="flex-1 h-[calc(100%-130px)]">
+              <div className="p-3 space-y-1">
+                {EVENTO_WIZARD_STEPS.map((step) => {
+                  const isCompleted = step.id < currentStep && isStepValid(step.id);
+                  const isCurrent = step.id === currentStep;
+                  const isAccessible = step.id <= highestStepReached;
+                  const hasError = step.id < currentStep && !isStepValid(step.id);
+                  
+                  return (
+                    <button
+                      key={step.id}
+                      onClick={() => isAccessible && setCurrentStep(step.id)}
+                      disabled={!isAccessible}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
+                        isCurrent 
+                          ? "bg-blue-500/10 border border-blue-500/30" 
+                          : !isAccessible 
+                            ? "opacity-50 cursor-not-allowed" 
+                            : hasError
+                              ? "hover:bg-red-500/5 border border-red-500/20"
+                              : "hover:bg-muted"
+                      }`}
                     >
-                      <div
-                        className={`p-2 rounded-full h-8 w-8 flex items-center justify-center shrink-0 ${
-                          message.role === "assistant"
-                            ? "bg-blue-500/20 text-blue-600"
-                            : "bg-muted"
-                        }`}
-                      >
-                        {message.role === "assistant" ? (
-                          <Bot className="h-4 w-4" />
+                      <div className={`flex items-center justify-center w-8 h-8 rounded-full shrink-0 ${
+                        isCompleted 
+                          ? "bg-green-500 text-white" 
+                          : hasError
+                            ? "bg-red-500 text-white"
+                            : isCurrent 
+                              ? "bg-blue-500 text-white" 
+                              : "bg-muted text-muted-foreground"
+                      }`}>
+                        {isCompleted ? (
+                          <Check className="h-4 w-4" />
+                        ) : hasError ? (
+                          <span className="text-sm font-medium">!</span>
                         ) : (
-                          <User className="h-4 w-4" />
+                          <span className="text-sm font-medium">{step.id}</span>
                         )}
                       </div>
-                      <div
-                        className={`rounded-2xl px-4 py-3 max-w-[80%] ${
-                          message.role === "assistant"
-                            ? "bg-muted"
-                            : "bg-blue-600 text-white"
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">
-                          {message.content.replace(/\*\*(.*?)\*\*/g, "$1")}
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-sm font-medium truncate ${isCurrent ? "text-blue-700" : ""}`}>
+                          {step.label}
                         </p>
                       </div>
-                    </div>
-                  ))}
-
-                  {isTyping && (
-                    <div className="flex gap-3">
-                      <div className="p-2 rounded-full h-8 w-8 flex items-center justify-center bg-blue-500/20 text-blue-600">
-                        <Bot className="h-4 w-4" />
-                      </div>
-                      <div className="rounded-2xl px-4 py-3 bg-muted">
-                        <div className="flex gap-1">
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce delay-100" />
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce delay-200" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-
-              <div className="p-4 border-t bg-background">
-                {!projetoCompleto ? (
-                  <div className="flex gap-2">
-                    <Textarea
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Digite sua resposta... (Enter para enviar)"
-                      className="flex-1 min-h-[60px] resize-none"
-                      disabled={isTyping}
-                    />
-                    <Button
-                      onClick={handleSend}
-                      disabled={!inputValue.trim() || isTyping}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    onClick={finalizarProjeto}
-                    disabled={isSaving}
-                    className="w-full gap-2 bg-blue-600 hover:bg-blue-700"
-                  >
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Salvando...
-                      </>
-                    ) : (
-                      <>
-                        Salvar Evento
-                        <ArrowRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                )}
+                      {isCurrent && (
+                        <Badge variant="secondary" className="text-xs shrink-0">
+                          Atual
+                        </Badge>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-            </CardContent>
+            </ScrollArea>
           </Card>
         </div>
 
-        {/* Painel Lateral */}
-        <div className="w-80 shrink-0">
-          <Card className="h-full overflow-hidden">
-            <CardHeader className="border-b bg-blue-500/10">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-blue-600" />
-                Estrutura do Evento
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <ScrollArea className="h-[calc(100vh-280px)]">
-                <div className="space-y-2">
-                  {etapasEvento.map((etapa, index) => {
-                    const isComplete = index < etapaAtual;
-                    const isCurrent = index === etapaAtual;
+        {/* Conteúdo Principal */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Card className="flex-1 flex flex-col overflow-hidden">
+            <ScrollArea className="flex-1">
+              <div className="p-6">
+                {renderCurrentStep()}
+              </div>
+            </ScrollArea>
 
-                    return (
-                      <div
-                        key={etapa.id}
-                        className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
-                          isComplete
-                            ? "bg-emerald-500/10 text-emerald-600"
-                            : isCurrent
-                            ? "bg-blue-500/10 text-blue-600"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {isComplete ? (
-                          <CheckCircle2 className="h-4 w-4" />
-                        ) : (
-                          etapa.icon
-                        )}
-                        <span className="text-sm font-medium">{etapa.label}</span>
-                      </div>
-                    );
-                  })}
+            {/* Footer com navegação */}
+            <div className="border-t p-4 bg-background shrink-0">
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStep === 1}
+                  className="gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Voltar
+                </Button>
+
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleSaveDraft}
+                    disabled={isSaving || !wizardData.nome_evento}
+                    className="gap-2"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                    Salvar Rascunho
+                  </Button>
+
+                  {currentStep < EVENTO_WIZARD_STEPS.length ? (
+                    <Button
+                      onClick={handleNext}
+                      disabled={!canGoNext}
+                      className="gap-2 bg-blue-600 hover:bg-blue-700"
+                    >
+                      Próximo
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handlePublish}
+                      disabled={isPublishing}
+                      className="gap-2 bg-green-600 hover:bg-green-700"
+                    >
+                      {isPublishing ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Rocket className="h-4 w-4" />
+                      )}
+                      Publicar na Vitrine
+                    </Button>
+                  )}
                 </div>
-
-                {eventoInfo.titulo && (
-                  <div className="mt-6 p-4 rounded-lg bg-muted/50 space-y-3">
-                    <h4 className="font-semibold">{eventoInfo.titulo}</h4>
-                    {eventoInfo.descricao && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">{eventoInfo.descricao}</p>
-                    )}
-                    {eventoInfo.local && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-3 w-3" />
-                        {eventoInfo.local}
-                      </div>
-                    )}
-                    {eventoInfo.dataEvento && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="h-3 w-3" />
-                        {eventoInfo.dataEvento} {eventoInfo.horario && `às ${eventoInfo.horario}`}
-                      </div>
-                    )}
-                    {eventoInfo.vagas && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Users className="h-3 w-3" />
-                        {eventoInfo.vagas} vagas
-                      </div>
-                    )}
-                  </div>
-                )}
-              </ScrollArea>
-            </CardContent>
+              </div>
+            </div>
           </Card>
         </div>
       </div>
