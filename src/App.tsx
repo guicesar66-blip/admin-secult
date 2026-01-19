@@ -31,6 +31,7 @@ import Configuracoes from "./pages/Configuracoes";
 import ConfiguracoesEquipe from "./pages/ConfiguracoesEquipe";
 import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
 import SistemaTrocados from "./pages/SistemaTrocados";
+import VitrineDetalhes from "./pages/VitrineDetalhes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ const App = () => (
                 <Route path="/oportunidades/:id" element={<ProtectedRoute><ProjetoDetalhes /></ProtectedRoute>} />
                 <Route path="/marketplace" element={<ProtectedRoute><MarketplaceExplorar /></ProtectedRoute>} />
                 <Route path="/marketplace/:id" element={<ProtectedRoute><OportunidadePublica /></ProtectedRoute>} />
+                <Route path="/vitrine/:id" element={<ProtectedRoute><VitrineDetalhes /></ProtectedRoute>} />
                 <Route path="/incubacoes" element={<ProtectedRoute><Incubacoes /></ProtectedRoute>} />
                 <Route path="/incubacoes/:id" element={<ProtectedRoute><IncubacaoDetalhes /></ProtectedRoute>} />
                 <Route path="/usuarios" element={<ProtectedRoute><GestaoUsuarios /></ProtectedRoute>} />

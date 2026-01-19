@@ -149,7 +149,7 @@ const MarketplaceExplorar = () => {
         className={`group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden ${
           featured ? "border-primary/30 bg-gradient-to-br from-primary/5 to-transparent" : ""
         }`}
-        onClick={() => navigate(`/oportunidade/${projeto.id}`)}
+        onClick={() => navigate(`/vitrine/${projeto.id}?tipo=${projeto.isOficina ? "oficina" : "oportunidade"}`)}
       >
         {/* Imagem de capa */}
         <div className="relative h-40 overflow-hidden">
