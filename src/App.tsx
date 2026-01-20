@@ -21,10 +21,6 @@ import NovoProjetoBairro from "./pages/NovoProjetoBairro";
 import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
-import AnaliseFinanceira from "./pages/AnaliseFinanceira";
-import AnaliseTerritorial from "./pages/AnaliseTerritorial";
-import AnaliseArtistas from "./pages/AnaliseArtistas";
-import Analytics from "./pages/Analytics";
 import DadosDashboard from "./pages/DadosDashboard";
 import Investimentos from "./pages/Investimentos";
 import InvestimentoDetalhes from "./pages/InvestimentoDetalhes";
@@ -65,11 +61,7 @@ const App = () => (
                 <Route path="/incubacoes" element={<ProtectedRoute><Incubacoes /></ProtectedRoute>} />
                 <Route path="/incubacoes/:id" element={<ProtectedRoute><IncubacaoDetalhes /></ProtectedRoute>} />
                 <Route path="/usuarios" element={<ProtectedRoute><GestaoUsuarios /></ProtectedRoute>} />
-                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
                 <Route path="/dados" element={<ProtectedRoute><DadosDashboard /></ProtectedRoute>} />
-                <Route path="/analise-financeira" element={<ProtectedRoute><AnaliseFinanceira /></ProtectedRoute>} />
-                <Route path="/analise-territorial" element={<ProtectedRoute><AnaliseTerritorial /></ProtectedRoute>} />
-                <Route path="/analise-artistas" element={<ProtectedRoute><AnaliseArtistas /></ProtectedRoute>} />
                 <Route path="/investimentos" element={<ProtectedRoute><Investimentos /></ProtectedRoute>} />
                 <Route path="/investimentos/:id" element={<ProtectedRoute><InvestimentoDetalhes /></ProtectedRoute>} />
                 <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />

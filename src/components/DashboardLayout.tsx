@@ -67,16 +67,7 @@ const menuSections: MenuSection[] = [
   {
     title: "Dados",
     items: [
-      { 
-        icon: BarChart3, 
-        label: "Dados",
-        children: [
-          { label: "Dashboard", path: "/dados" },
-          { label: "Financeira", path: "/analise-financeira" },
-          { label: "Territorial", path: "/analise-territorial" },
-          { label: "Pessoas", path: "/analise-artistas" },
-        ]
-      },
+      { icon: BarChart3, label: "Central de Dados", path: "/dados" },
     ],
   },
   {
