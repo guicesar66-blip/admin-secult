@@ -52,6 +52,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   encerrada: { label: "Encerrada", color: "bg-gray-500/20 text-gray-600" },
   cancelada: { label: "Cancelada", color: "bg-red-500/20 text-red-600" },
   inscricoes_abertas: { label: "Inscrições Abertas", color: "bg-green-500/20 text-green-600" },
+  rascunho: { label: "Rascunho", color: "bg-amber-500/20 text-amber-600" },
 };
 
 const ProjetoDetalhes = () => {

@@ -46,6 +46,11 @@ export interface CreateOportunidadeData {
   criador_id?: string;
   area_cultural?: string;
   imagem?: string;
+  status?: string;
+  exibir_vitrine?: boolean;
+  mostrar_progresso?: boolean;
+  meta_captacao?: number;
+  captacao_atual?: number;
 }
 
 export function useOportunidades(tipo?: string, criadorId?: string) {
