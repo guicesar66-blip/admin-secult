@@ -115,36 +115,41 @@ const NovoProjetoEvento = () => {
     setIsPublishing(true);
     try {
       // Calcular orçamento total
-      const orcamentoTotal = wizardData.itens_custo.reduce((acc, item) => acc + item.total, 0);
+      const orcamentoTotal = wizardData.itens_custo?.reduce((acc, item) => acc + (item.total || 0), 0) || 0;
+      
+      // Construir a duração de forma segura
+      const duracao = wizardData.horario_inicio && wizardData.horario_termino
+        ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}`
+        : "A definir";
       
       const eventoData = {
-        titulo: wizardData.nome_evento,
-        descricao: wizardData.descricao_evento,
+        titulo: wizardData.nome_evento || "Novo Evento",
+        descricao: wizardData.descricao_evento || null,
         tipo: "evento",
-        local: wizardData.nome_local,
-        municipio: wizardData.bairro,
-        data_evento: wizardData.data_evento || wizardData.data_inicio,
-        horario: wizardData.horario_inicio,
-        duracao: `${wizardData.horario_inicio} - ${wizardData.horario_termino}`,
-        vagas: wizardData.publico_esperado,
-        remuneracao: wizardData.itens_custo.find(i => i.categoria === "artistica")?.total || 0,
-        requisitos: wizardData.descricao_geral_vagas,
-        area_cultural: wizardData.linguagem_principal,
+        local: wizardData.nome_local || null,
+        municipio: wizardData.bairro || null,
+        data_evento: wizardData.data_evento || wizardData.data_inicio || null,
+        horario: wizardData.horario_inicio || null,
+        duracao: duracao,
+        vagas: wizardData.publico_esperado || null,
+        remuneracao: wizardData.itens_custo?.find(i => i.categoria === "artistica")?.total || 0,
+        requisitos: wizardData.descricao_geral_vagas || null,
+        area_cultural: wizardData.linguagem_principal || null,
         criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
         criador_id: user.id,
         status: "inscricoes_abertas",
         exibir_vitrine: exibirVitrine,
         mostrar_progresso: mostrarProgresso,
-        meta_captacao: orcamentoTotal,
+        meta_captacao: orcamentoTotal > 0 ? orcamentoTotal : null,
         captacao_atual: 0,
       };
 
       const result = await createOportunidade.mutateAsync(eventoData);
-      toast.success("Evento publicado com sucesso na Vitrine!");
+      toast.success("Evento publicado com sucesso!");
       navigate(`/oportunidades/${result.id}`);
     } catch (error) {
       console.error("Erro ao publicar:", error);
-      toast.error("Erro ao publicar evento");
+      toast.error("Erro ao publicar evento. Verifique os dados e tente novamente.");
     } finally {
       setIsPublishing(false);
     }
@@ -176,19 +181,21 @@ const NovoProjetoEvento = () => {
 
     setIsSaving(true);
     try {
+      const duracao = wizardData.horario_inicio && wizardData.horario_termino 
+        ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}` 
+        : "A definir";
+
       const eventoData = {
         titulo: wizardData.nome_evento || "Rascunho - Novo Evento",
-        descricao: wizardData.descricao_evento,
+        descricao: wizardData.descricao_evento || null,
         tipo: "evento",
-        local: wizardData.nome_local,
-        municipio: wizardData.bairro,
-        data_evento: wizardData.data_evento || wizardData.data_inicio,
-        horario: wizardData.horario_inicio,
-        duracao: wizardData.horario_inicio && wizardData.horario_termino 
-          ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}` 
-          : "A definir",
-        vagas: wizardData.publico_esperado,
-        area_cultural: wizardData.linguagem_principal,
+        local: wizardData.nome_local || null,
+        municipio: wizardData.bairro || null,
+        data_evento: wizardData.data_evento || wizardData.data_inicio || null,
+        horario: wizardData.horario_inicio || null,
+        duracao: duracao,
+        vagas: wizardData.publico_esperado || null,
+        area_cultural: wizardData.linguagem_principal || null,
         criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
         criador_id: user.id,
         status: "rascunho",
@@ -199,7 +206,7 @@ const NovoProjetoEvento = () => {
       navigate(`/oportunidades/${result.id}`);
     } catch (error) {
       console.error("Erro ao salvar rascunho:", error);
-      toast.error("Erro ao salvar rascunho");
+      toast.error("Erro ao salvar rascunho. Verifique os dados e tente novamente.");
     } finally {
       setIsSaving(false);
     }
