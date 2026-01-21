@@ -22,6 +22,7 @@ import Incubacoes from "./pages/Incubacoes";
 import IncubacaoDetalhes from "./pages/IncubacaoDetalhes";
 import GestaoUsuarios from "./pages/GestaoUsuarios";
 import DadosDashboard from "./pages/DadosDashboard";
+import MeuPerfil from "./pages/MeuPerfil";
 import Investimentos from "./pages/Investimentos";
 import InvestimentoDetalhes from "./pages/InvestimentoDetalhes";
 import Configuracoes from "./pages/Configuracoes";
@@ -67,6 +68,7 @@ const App = () => (
                 <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
                 <Route path="/configuracoes/equipe" element={<ProtectedRoute><ConfiguracoesEquipe /></ProtectedRoute>} />
                 <Route path="/configuracoes/integracoes" element={<ProtectedRoute><ConfiguracoesIntegracoes /></ProtectedRoute>} />
+                <Route path="/perfil" element={<ProtectedRoute><MeuPerfil /></ProtectedRoute>} />
                 <Route path="/trocados" element={<ProtectedRoute><SistemaTrocados /></ProtectedRoute>} />
                 
                 {/* Catch-all */}
