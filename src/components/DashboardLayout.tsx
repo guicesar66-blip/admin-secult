@@ -49,6 +49,7 @@ const menuSections: MenuSection[] = [
     title: "Gestão",
     items: [
       { icon: Target, label: "Projetos", path: "/oportunidades" },
+      { icon: Users, label: "Meu Perfil", path: "/perfil" },
     ],
   },
   {
