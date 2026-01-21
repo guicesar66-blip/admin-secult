@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   GraduationCap,
   Briefcase,
   MapPin,
-  ArrowRight,
   CheckCircle2,
   Clock,
   AlertCircle,
@@ -24,11 +23,14 @@ import {
   Wallet,
   Activity,
   Download,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useOportunidades } from "@/hooks/useOportunidades";
 import { useOficinas } from "@/hooks/useOficinas";
 import { usePropostasRecebidas } from "@/hooks/usePropostasInvestimento";
+import { useTodosLancamentos, useTodosRepasses, useTodosCandidatos, useEstatisticasTerritoriais } from "@/hooks/useDadosDashboard";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   AreaChart,
@@ -41,52 +43,9 @@ import {
   PieChart,
   Pie,
   Cell,
+  BarChart,
+  Bar,
 } from "recharts";
-
-// ===== DADOS MOCK PARA ANÁLISES (até integração real) =====
-const investimentoPorCategoria = [
-  { nome: "Incubações", valor: 78200, percentual: 62 },
-  { nome: "Oportunidades", valor: 32100, percentual: 26 },
-  { nome: "Recursos Individuais", valor: 15100, percentual: 12 },
-];
-
-const programas = [
-  { nome: "Rock Básico", participantes: 28, investido: 15200, custoPorPessoa: 543 },
-  { nome: "MPB Avançado", participantes: 15, investido: 12800, custoPorPessoa: 853 },
-  { nome: "Rap Iniciantes", participantes: 35, investido: 10500, custoPorPessoa: 300 },
-  { nome: "Festival Rock", participantes: 100, investido: 50000, custoPorPessoa: 500 },
-];
-
-const regioes = [
-  { nome: "Várzea", zeis: true, pessoas: 340, oportunidades: 12, incubacoes: 3 },
-  { nome: "Centro", zeis: false, pessoas: 180, oportunidades: 8, incubacoes: 2 },
-  { nome: "Boa Viagem", zeis: false, pessoas: 65, oportunidades: 3, incubacoes: 1 },
-  { nome: "Casa Amarela", zeis: true, pessoas: 210, oportunidades: 9, incubacoes: 2 },
-  { nome: "Cajueiro", zeis: true, pessoas: 156, oportunidades: 6, incubacoes: 1 },
-  { nome: "Santo Amaro", zeis: false, pessoas: 98, oportunidades: 5, incubacoes: 1 },
-];
-
-const dadosSociais = {
-  totalPessoas: 2847,
-  emIncubacao: 214,
-  posIncubacao: 567,
-  semIncubacao: 2066,
-  meiFormalizados: 189,
-  portfolioCompleto: 1245,
-  mediaIdade: 28,
-  genero: { masculino: 58, feminino: 40, outro: 2 },
-  escolaridade: { fundamental: 12, medio: 45, superior: 32, posGrad: 11 },
-  rendaMedia: { antes: 850, durante: 1200, depois: 2100 }
-};
-
-const progressaoCarreira = [
-  { etapa: "Cadastro Inicial", quantidade: 2847, percentual: 100 },
-  { etapa: "Portfólio Completo", quantidade: 1245, percentual: 44 },
-  { etapa: "Participou Incubação", quantidade: 781, percentual: 27 },
-  { etapa: "Concluiu Incubação", quantidade: 567, percentual: 20 },
-  { etapa: "MEI Formalizado", quantidade: 189, percentual: 7 },
-  { etapa: "Renda Musical >2SM", quantidade: 134, percentual: 5 },
-];
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500" },
@@ -100,13 +59,18 @@ export default function DadosDashboard() {
   const { data: oportunidades = [], isLoading: loadingOportunidades } = useOportunidades(undefined, user?.id);
   const { data: oficinas = [], isLoading: loadingOficinas } = useOficinas(user?.id);
   const { data: propostas = [], isLoading: loadingPropostas } = usePropostasRecebidas();
+  const { data: lancamentos = [], isLoading: loadingLancamentos } = useTodosLancamentos();
+  const { data: repasses = [], isLoading: loadingRepasses } = useTodosRepasses();
+  const { data: candidatosData, isLoading: loadingCandidatos } = useTodosCandidatos();
+  const { data: estatisticasTerritoriais = [], isLoading: loadingTerritorial } = useEstatisticasTerritoriais();
+  
   const [activeTab, setActiveTab] = useState("visao-geral");
-  const [tipoMapa, setTipoMapa] = useState("pessoas");
+  const [tipoMapa, setTipoMapa] = useState("projetos");
 
-  const isLoading = loadingOportunidades || loadingOficinas || loadingPropostas;
+  const isLoading = loadingOportunidades || loadingOficinas || loadingPropostas || loadingLancamentos || loadingRepasses || loadingCandidatos || loadingTerritorial;
 
   // Combinar projetos
-  const projetos = [
+  const projetos = useMemo(() => [
     ...oportunidades.map(o => ({
       id: o.id,
       titulo: o.titulo,
@@ -114,6 +78,9 @@ export default function DadosDashboard() {
       status: o.status,
       vagas: o.vagas || 0,
       created_at: o.created_at,
+      municipio: o.municipio,
+      local: o.local,
+      remuneracao: o.remuneracao || 0,
     })),
     ...oficinas.map(o => ({
       id: o.id,
@@ -122,13 +89,17 @@ export default function DadosDashboard() {
       status: o.status,
       vagas: o.vagas_total,
       created_at: o.created_at,
+      municipio: null,
+      local: o.local,
+      remuneracao: 0,
     })),
-  ];
+  ], [oportunidades, oficinas]);
 
-  // Estatísticas principais
+  // ===== ESTATÍSTICAS GERAIS =====
   const totalProjetos = projetos.length;
   const projetosAtivos = projetos.filter(p => p.status === "ativa" || p.status === "inscricoes_abertas").length;
   const projetosRascunho = projetos.filter(p => p.status === "rascunho").length;
+  const projetosEncerrados = projetos.filter(p => p.status === "encerrada" || p.status === "concluida").length;
   const totalVagas = projetos.reduce((acc, p) => acc + (p.vagas || 0), 0);
   
   const propostasAprovadas = propostas.filter(p => p.status === "aprovada");
@@ -137,15 +108,15 @@ export default function DadosDashboard() {
   const propostasAprovadaCount = propostasAprovadas.length;
 
   // Distribuição por tipo
-  const distribuicaoPorTipo = [
+  const distribuicaoPorTipo = useMemo(() => [
     { name: "Eventos", value: projetos.filter(p => p.tipo === "evento").length, color: "hsl(217, 91%, 60%)" },
     { name: "Oficinas", value: projetos.filter(p => p.tipo === "oficina").length, color: "hsl(45, 93%, 47%)" },
     { name: "Vagas", value: projetos.filter(p => p.tipo === "vaga").length, color: "hsl(142, 76%, 36%)" },
     { name: "Bairro", value: projetos.filter(p => p.tipo === "projeto_bairro").length, color: "hsl(262, 83%, 58%)" },
-  ].filter(item => item.value > 0);
+  ].filter(item => item.value > 0), [projetos]);
 
   // Dados para gráfico de evolução
-  const dadosEvolucao = (() => {
+  const dadosEvolucao = useMemo(() => {
     const meses: Record<string, { projetos: number }> = {};
     const hoje = new Date();
     
@@ -164,24 +135,148 @@ export default function DadosDashboard() {
     });
 
     return Object.entries(meses).map(([mes, dados]) => ({ mes, projetos: dados.projetos }));
-  })();
+  }, [projetos]);
 
-  const projetosRecentes = projetos
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 5);
+  const projetosRecentes = useMemo(() => 
+    [...projetos]
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, 5)
+  , [projetos]);
+
+  // ===== ESTATÍSTICAS FINANCEIRAS =====
+  const financeiroStats = useMemo(() => {
+    const receitas = lancamentos.filter(l => l.tipo === "receita");
+    const despesas = lancamentos.filter(l => l.tipo === "despesa");
+    
+    const totalReceitas = receitas.reduce((acc, l) => acc + Number(l.valor), 0);
+    const totalDespesas = despesas.reduce((acc, l) => acc + Number(l.valor), 0);
+    const totalRepasses = repasses.reduce((acc, r) => acc + Number(r.valor), 0);
+    const repassesPagos = repasses.filter(r => r.status === "pago").reduce((acc, r) => acc + Number(r.valor), 0);
+    const repassesPendentes = repasses.filter(r => r.status === "pendente").reduce((acc, r) => acc + Number(r.valor), 0);
+    
+    const saldo = totalReceitas - totalDespesas - repassesPagos;
+    
+    // Agrupar por categoria
+    const porCategoria: Record<string, number> = {};
+    despesas.forEach(d => {
+      const cat = d.categoria || "Outros";
+      porCategoria[cat] = (porCategoria[cat] || 0) + Number(d.valor);
+    });
+
+    // Evolução mensal
+    const evolucaoMensal: Record<string, { receitas: number; despesas: number }> = {};
+    const hoje = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const data = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+      const chave = data.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      evolucaoMensal[chave] = { receitas: 0, despesas: 0 };
+    }
+
+    lancamentos.forEach(l => {
+      const dataLanc = new Date(l.data);
+      const chave = dataLanc.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      if (evolucaoMensal[chave]) {
+        if (l.tipo === "receita") {
+          evolucaoMensal[chave].receitas += Number(l.valor);
+        } else {
+          evolucaoMensal[chave].despesas += Number(l.valor);
+        }
+      }
+    });
+
+    return {
+      totalReceitas,
+      totalDespesas,
+      totalRepasses,
+      repassesPagos,
+      repassesPendentes,
+      saldo,
+      porCategoria: Object.entries(porCategoria).map(([nome, valor]) => ({ nome, valor })),
+      evolucaoMensal: Object.entries(evolucaoMensal).map(([mes, dados]) => ({ mes, ...dados })),
+    };
+  }, [lancamentos, repasses]);
+
+  // ===== ESTATÍSTICAS DE PESSOAS =====
+  const pessoasStats = useMemo(() => {
+    const { candidaturas = [], inscricoes = [], profiles = [] } = candidatosData || {};
+    
+    const totalCandidatos = candidaturas.length;
+    const totalInscritos = inscricoes.length;
+    const totalPessoas = profiles.length;
+    
+    const candidatosAprovados = candidaturas.filter(c => c.status === "aprovada").length;
+    const candidatosPendentes = candidaturas.filter(c => c.status === "aguardando").length;
+    const inscritosConfirmados = inscricoes.filter(i => i.status === "inscrito" || i.status === "aprovada").length;
+    
+    // Distribuição por município
+    const porMunicipio: Record<string, number> = {};
+    profiles.forEach(p => {
+      const mun = p.municipio || "Não informado";
+      porMunicipio[mun] = (porMunicipio[mun] || 0) + 1;
+    });
+
+    // Distribuição por área artística
+    const porArea: Record<string, number> = {};
+    profiles.forEach(p => {
+      const area = p.area_artistica || "Não informado";
+      porArea[area] = (porArea[area] || 0) + 1;
+    });
+
+    // Tempo de atuação
+    const porTempoAtuacao: Record<string, number> = {};
+    profiles.forEach(p => {
+      const tempo = p.tempo_atuacao || "Não informado";
+      porTempoAtuacao[tempo] = (porTempoAtuacao[tempo] || 0) + 1;
+    });
+
+    // Situação de formalização
+    const porFormalizacao: Record<string, number> = {};
+    profiles.forEach(p => {
+      const sit = p.situacao_formalizacao || "Não informado";
+      porFormalizacao[sit] = (porFormalizacao[sit] || 0) + 1;
+    });
+
+    return {
+      totalCandidatos,
+      totalInscritos,
+      totalPessoas,
+      candidatosAprovados,
+      candidatosPendentes,
+      inscritosConfirmados,
+      porMunicipio: Object.entries(porMunicipio).map(([nome, quantidade]) => ({ nome, quantidade })).sort((a, b) => b.quantidade - a.quantidade),
+      porArea: Object.entries(porArea).map(([nome, quantidade]) => ({ nome, quantidade })).sort((a, b) => b.quantidade - a.quantidade),
+      porTempoAtuacao: Object.entries(porTempoAtuacao).map(([nome, quantidade]) => ({ nome, quantidade })),
+      porFormalizacao: Object.entries(porFormalizacao).map(([nome, quantidade]) => ({ nome, quantidade })),
+    };
+  }, [candidatosData]);
+
+  // ===== ESTATÍSTICAS TERRITORIAIS =====
+  const territorialStats = useMemo(() => {
+    const regioes = estatisticasTerritoriais.length > 0 
+      ? estatisticasTerritoriais 
+      : pessoasStats.porMunicipio.map(m => ({ nome: m.nome, projetos: 0, vagas: 0, pessoas: m.quantidade }));
+
+    const maxProjetos = Math.max(...regioes.map(r => r.projetos || 0), 1);
+    const maxVagas = Math.max(...regioes.map(r => r.vagas || 0), 1);
+
+    return {
+      regioes,
+      maxProjetos,
+      maxVagas,
+    };
+  }, [estatisticasTerritoriais, pessoasStats.porMunicipio]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }).format(value);
   };
 
   const getIntensidade = (valor: number, max: number) => {
+    if (max === 0) return "bg-muted/30 border-border";
     const percent = (valor / max) * 100;
-    if (percent >= 70) return "bg-red-500/20 border-red-500/50";
+    if (percent >= 70) return "bg-primary/20 border-primary/50";
     if (percent >= 40) return "bg-amber-500/20 border-amber-500/50";
     return "bg-green-500/20 border-green-500/50";
   };
-
-  const maxPessoas = Math.max(...regioes.map(r => r.pessoas));
 
   if (isLoading) {
     return (
@@ -260,7 +355,7 @@ export default function DadosDashboard() {
                       <p className="text-3xl font-bold text-foreground">{totalVagas}</p>
                     </div>
                     <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
-                      <Users className="h-6 w-6 text-secondary" />
+                      <Users className="h-6 w-6 text-secondary-foreground" />
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
@@ -461,9 +556,9 @@ export default function DadosDashboard() {
                           <AlertCircle className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm">Encerrados</span>
                         </div>
-                        <span className="font-semibold">{projetos.filter(p => p.status === "encerrada" || p.status === "concluida").length}</span>
+                        <span className="font-semibold">{projetosEncerrados}</span>
                       </div>
-                      <Progress value={totalProjetos > 0 ? (projetos.filter(p => p.status === "encerrada" || p.status === "concluida").length / totalProjetos) * 100 : 0} className="h-2 [&>div]:bg-muted-foreground" />
+                      <Progress value={totalProjetos > 0 ? (projetosEncerrados / totalProjetos) * 100 : 0} className="h-2 [&>div]:bg-muted-foreground" />
                     </div>
                   </div>
                 </CardContent>
@@ -473,103 +568,179 @@ export default function DadosDashboard() {
 
           {/* ===== FINANCEIRO ===== */}
           <TabsContent value="financeiro" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <h3 className="mb-4 text-lg font-semibold text-card-foreground">Visão Geral Financeira</h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total investido (mês)</p>
-                    <p className="mt-1 text-3xl font-bold text-foreground">R$ 125.400</p>
-                  </div>
-                  <div className="space-y-2">
-                    {investimentoPorCategoria.map((item) => (
-                      <div key={item.nome} className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">• {item.nome}:</span>
-                        <span className="font-medium text-foreground">R$ {(item.valor / 1000).toFixed(1)}k ({item.percentual}%)</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="rounded-lg bg-green-500/10 border border-green-500/20 p-3">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-green-500" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-green-600">ROI estimado</p>
-                        <p className="text-xs text-green-600/80">R$ 2.10 para cada R$ 1.00 investido</p>
-                      </div>
+            {/* KPIs Financeiros */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Receitas</p>
+                      <p className="text-2xl font-bold text-green-600">{formatCurrency(financeiroStats.totalReceitas)}</p>
                     </div>
+                    <ArrowUpRight className="h-8 w-8 text-green-500" />
                   </div>
-                </div>
+                </CardContent>
               </Card>
 
-              <Card className="p-6">
-                <h3 className="mb-4 text-lg font-semibold text-card-foreground">Investimento por Categoria</h3>
-                <div className="space-y-4">
-                  {investimentoPorCategoria.map((item) => (
-                    <div key={item.nome}>
-                      <div className="mb-2 flex justify-between text-sm">
-                        <span className="text-foreground">{item.nome}</span>
-                        <span className="font-semibold text-foreground">R$ {(item.valor / 1000).toFixed(1)}k</span>
-                      </div>
-                      <div className="h-8 w-full rounded-lg bg-muted overflow-hidden">
-                        <div className="h-full bg-primary transition-all duration-500" style={{ width: `${item.percentual}%` }} />
-                      </div>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Despesas</p>
+                      <p className="text-2xl font-bold text-red-600">{formatCurrency(financeiroStats.totalDespesas)}</p>
                     </div>
-                  ))}
-                </div>
+                    <ArrowDownRight className="h-8 w-8 text-red-500" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Repasses</p>
+                      <p className="text-2xl font-bold text-foreground">{formatCurrency(financeiroStats.totalRepasses)}</p>
+                    </div>
+                    <Users className="h-8 w-8 text-amber-500" />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {formatCurrency(financeiroStats.repassesPagos)} pagos • {formatCurrency(financeiroStats.repassesPendentes)} pendentes
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Saldo</p>
+                      <p className={`text-2xl font-bold ${financeiroStats.saldo >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatCurrency(financeiroStats.saldo)}
+                      </p>
+                    </div>
+                    <Wallet className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
               </Card>
             </div>
 
-            <Card className="overflow-hidden">
-              <div className="p-6 border-b border-border">
-                <h3 className="text-lg font-semibold text-card-foreground">Detalhamento por Programa</h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-muted/50 border-b border-border">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Programa</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Participantes</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Investido</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Custo/Pessoa</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {programas.map((programa) => (
-                      <tr key={programa.nome} className="hover:bg-muted/30 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="font-medium text-foreground">{programa.nome}</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-foreground">{programa.participantes}</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm font-medium text-foreground">R$ {(programa.investido / 1000).toFixed(1)}k</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-foreground">R$ {programa.custoPorPessoa}</span></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+            {/* Gráficos Financeiros */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                    Evolução Financeira
+                  </CardTitle>
+                  <CardDescription>Receitas e despesas dos últimos 6 meses</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    {financeiroStats.evolucaoMensal.some(m => m.receitas > 0 || m.despesas > 0) ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={financeiroStats.evolucaoMensal}>
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                          <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                          <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} 
+                            formatter={(value: number) => formatCurrency(value)}
+                          />
+                          <Bar dataKey="receitas" name="Receitas" fill="hsl(142, 76%, 36%)" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="despesas" name="Despesas" fill="hsl(0, 84%, 60%)" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                        <DollarSign className="h-12 w-12 mb-4 opacity-50" />
+                        <p>Nenhum lançamento financeiro ainda</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-card-foreground">Projeção Próximos 3 Meses</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Programas planejados</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">4 novos</p>
-                  <p className="text-xs text-muted-foreground">120 vagas</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Investimento estimado</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">R$ 285k</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Pessoas com portfólio</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">+89</p>
-                  <p className="text-xs text-muted-foreground">projeção</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">MEIs formalizados</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">+34</p>
-                  <p className="text-xs text-muted-foreground">projeção</p>
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Despesas por Categoria
+                  </CardTitle>
+                  <CardDescription>Distribuição dos gastos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {financeiroStats.porCategoria.length > 0 ? (
+                    <div className="space-y-4">
+                      {financeiroStats.porCategoria.slice(0, 6).map((cat, index) => {
+                        const total = financeiroStats.totalDespesas || 1;
+                        const percentual = (cat.valor / total) * 100;
+                        return (
+                          <div key={cat.nome}>
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm text-foreground">{cat.nome}</span>
+                              <span className="text-sm font-medium">{formatCurrency(cat.valor)}</span>
+                            </div>
+                            <Progress value={percentual} className="h-2" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-[250px] text-muted-foreground">
+                      <Target className="h-12 w-12 mb-4 opacity-50" />
+                      <p>Nenhuma despesa registrada</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Tabela de lançamentos recentes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Últimos Lançamentos</CardTitle>
+                <CardDescription>Movimentações financeiras recentes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {lancamentos.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-muted/50 border-b border-border">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Data</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Descrição</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Categoria</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Tipo</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Valor</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {lancamentos.slice(0, 10).map((lanc) => (
+                          <tr key={lanc.id} className="hover:bg-muted/30 transition-colors">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm">{new Date(lanc.data).toLocaleDateString('pt-BR')}</td>
+                            <td className="px-4 py-3 text-sm">{lanc.descricao}</td>
+                            <td className="px-4 py-3 text-sm text-muted-foreground">{lanc.categoria || "-"}</td>
+                            <td className="px-4 py-3">
+                              <Badge variant={lanc.tipo === "receita" ? "default" : "secondary"}>
+                                {lanc.tipo}
+                              </Badge>
+                            </td>
+                            <td className={`px-4 py-3 text-right font-medium ${lanc.tipo === "receita" ? "text-green-600" : "text-red-600"}`}>
+                              {lanc.tipo === "receita" ? "+" : "-"}{formatCurrency(Number(lanc.valor))}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                    <DollarSign className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Nenhum lançamento financeiro registrado</p>
+                    <p className="text-sm mt-1">Adicione lançamentos na aba Financeiro de cada projeto</p>
+                  </div>
+                )}
+              </CardContent>
             </Card>
           </TabsContent>
 
@@ -584,9 +755,9 @@ export default function DadosDashboard() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pessoas">Pessoas Cadastradas</SelectItem>
-                      <SelectItem value="oportunidades">Oportunidades</SelectItem>
-                      <SelectItem value="incubacoes">Incubações</SelectItem>
+                      <SelectItem value="projetos">Projetos por Região</SelectItem>
+                      <SelectItem value="vagas">Vagas por Região</SelectItem>
+                      <SelectItem value="pessoas">Candidatos por Município</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -594,33 +765,48 @@ export default function DadosDashboard() {
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Mapa de Calor - Recife</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {regioes.map((regiao) => {
-                  const valor = tipoMapa === "pessoas" ? regiao.pessoas : tipoMapa === "oportunidades" ? regiao.oportunidades : regiao.incubacoes;
-                  const max = tipoMapa === "pessoas" ? maxPessoas : tipoMapa === "oportunidades" ? 12 : 3;
-                  
-                  return (
-                    <div key={regiao.nome} className={`${getIntensidade(valor, max)} border-2 rounded-lg p-4 transition-colors cursor-pointer hover:opacity-80`}>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-semibold text-foreground">{regiao.nome}</h4>
-                          {regiao.zeis && <span className="text-xs text-primary font-medium">ZEIS/CIS</span>}
+              <h3 className="text-lg font-semibold text-foreground mb-4">Distribuição Territorial</h3>
+              {territorialStats.regioes.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {territorialStats.regioes.slice(0, 9).map((regiao) => {
+                    const valor = tipoMapa === "projetos" 
+                      ? regiao.projetos 
+                      : tipoMapa === "vagas" 
+                        ? regiao.vagas 
+                        : (regiao as any).quantidade || (regiao as any).pessoas || 0;
+                    const max = tipoMapa === "projetos" 
+                      ? territorialStats.maxProjetos 
+                      : tipoMapa === "vagas" 
+                        ? territorialStats.maxVagas 
+                        : Math.max(...pessoasStats.porMunicipio.map(m => m.quantidade), 1);
+                    
+                    return (
+                      <div key={regiao.nome} className={`${getIntensidade(valor, max)} border-2 rounded-lg p-4 transition-colors`}>
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h4 className="font-semibold text-foreground">{regiao.nome}</h4>
+                          </div>
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
                         </div>
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <div className="mt-3">
+                          <p className="text-2xl font-bold text-foreground">{valor}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {tipoMapa === "projetos" && "projetos"}
+                            {tipoMapa === "vagas" && "vagas"}
+                            {tipoMapa === "pessoas" && "candidatos"}
+                          </p>
+                        </div>
                       </div>
-                      <div className="mt-3">
-                        <p className="text-2xl font-bold text-foreground">{valor}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {tipoMapa === "pessoas" && "pessoas"}
-                          {tipoMapa === "oportunidades" && "oportunidades"}
-                          {tipoMapa === "incubacoes" && "incubações"}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                  <MapPin className="h-12 w-12 mb-4 opacity-50" />
+                  <p>Nenhum dado territorial disponível</p>
+                  <p className="text-sm mt-1">Crie projetos com localização para visualizar a distribuição</p>
+                </div>
+              )}
 
               <div className="mt-6 flex items-center justify-center gap-6">
                 <div className="flex items-center gap-2">
@@ -632,58 +818,48 @@ export default function DadosDashboard() {
                   <span className="text-sm text-muted-foreground">Média</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-500 rounded"></div>
+                  <div className="w-4 h-4 bg-primary rounded"></div>
                   <span className="text-sm text-muted-foreground">Alta</span>
                 </div>
               </div>
             </Card>
 
-            <Card className="overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-muted/50 border-b border-border">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Região</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">ZEIS/CIS</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Pessoas</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Oportunidades</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Incubações</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {regioes.map((regiao) => (
-                      <tr key={regiao.nome} className="hover:bg-muted/30 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="font-medium text-foreground">{regiao.nome}</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap">{regiao.zeis ? <span className="text-xs font-medium text-primary">✓ Sim</span> : <span className="text-xs text-muted-foreground">Não</span>}</td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm font-medium text-foreground">{regiao.pessoas}</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-muted-foreground">{regiao.oportunidades}</span></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-muted-foreground">{regiao.incubacoes}</span></td>
+            {/* Tabela de regiões */}
+            {territorialStats.regioes.length > 0 && (
+              <Card className="overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50 border-b border-border">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Região/Local</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Projetos</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Vagas</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-primary/5 border-primary/20">
-              <h3 className="text-lg font-semibold text-foreground mb-3">Insights Territoriais</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• <strong className="text-foreground">67% das pessoas</strong> estão em regiões ZEIS/CIS</li>
-                <li>• <strong className="text-foreground">Várzea</strong> concentra a maior comunidade (340 pessoas)</li>
-                <li>• <strong className="text-foreground">Boa Viagem</strong> tem baixa participação apesar da infraestrutura</li>
-                <li>• Recomendação: expandir programas em <strong className="text-foreground">Casa Amarela e Cajueiro</strong></li>
-              </ul>
-            </Card>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {territorialStats.regioes.map((regiao) => (
+                        <tr key={regiao.nome} className="hover:bg-muted/30 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap"><span className="font-medium text-foreground">{regiao.nome}</span></td>
+                          <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm font-medium text-foreground">{regiao.projetos}</span></td>
+                          <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-muted-foreground">{regiao.vagas}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            )}
           </TabsContent>
 
           {/* ===== PESSOAS ===== */}
           <TabsContent value="pessoas" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* KPIs de Pessoas */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Total de Pessoas</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{dadosSociais.totalPessoas.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{pessoasStats.totalPessoas}</p>
                   </div>
                   <Users className="h-8 w-8 text-primary" />
                 </div>
@@ -692,131 +868,210 @@ export default function DadosDashboard() {
               <Card className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Em Incubação</p>
-                    <p className="text-2xl font-bold text-green-500 mt-1">{dadosSociais.emIncubacao}</p>
+                    <p className="text-sm text-muted-foreground">Candidaturas</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{pessoasStats.totalCandidatos}</p>
                   </div>
-                  <GraduationCap className="h-8 w-8 text-green-500" />
+                  <Briefcase className="h-8 w-8 text-blue-500" />
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {pessoasStats.candidatosAprovados} aprovados • {pessoasStats.candidatosPendentes} pendentes
+                </p>
               </Card>
 
               <Card className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">MEIs Formalizados</p>
-                    <p className="text-2xl font-bold text-amber-500 mt-1">{dadosSociais.meiFormalizados}</p>
+                    <p className="text-sm text-muted-foreground">Inscrições Oficinas</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{pessoasStats.totalInscritos}</p>
                   </div>
-                  <Briefcase className="h-8 w-8 text-amber-500" />
+                  <GraduationCap className="h-8 w-8 text-amber-500" />
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {pessoasStats.inscritosConfirmados} confirmados
+                </p>
               </Card>
 
               <Card className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Portfólio Completo</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{dadosSociais.portfolioCompleto}</p>
+                    <p className="text-sm text-muted-foreground">Taxa de Aprovação</p>
+                    <p className="text-2xl font-bold text-green-500 mt-1">
+                      {pessoasStats.totalCandidatos > 0 
+                        ? Math.round((pessoasStats.candidatosAprovados / pessoasStats.totalCandidatos) * 100) 
+                        : 0}%
+                    </p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-primary" />
+                  <TrendingUp className="h-8 w-8 text-green-500" />
                 </div>
               </Card>
             </div>
 
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Impacto no Desenvolvimento Econômico</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Renda Média Antes</p>
-                  <p className="text-3xl font-bold text-foreground">R$ {dadosSociais.rendaMedia.antes}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Pré-incubação</p>
-                </div>
-                <div className="text-center p-4 bg-amber-500/10 rounded-lg border-2 border-amber-500/30">
-                  <p className="text-sm text-muted-foreground mb-2">Renda Média Durante</p>
-                  <p className="text-3xl font-bold text-amber-500">R$ {dadosSociais.rendaMedia.durante}</p>
-                  <p className="text-xs text-green-500 mt-1">↗ +41% vs antes</p>
-                </div>
-                <div className="text-center p-4 bg-green-500/10 rounded-lg border-2 border-green-500/30">
-                  <p className="text-sm text-muted-foreground mb-2">Renda Média Pós</p>
-                  <p className="text-3xl font-bold text-green-500">R$ {dadosSociais.rendaMedia.depois}</p>
-                  <p className="text-xs text-green-500 mt-1">↗ +147% vs antes</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Funil de Progressão de Carreira Musical</h3>
-              <div className="space-y-4">
-                {progressaoCarreira.map((etapa) => (
-                  <div key={etapa.etapa}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-foreground">{etapa.etapa}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm text-muted-foreground">{etapa.quantidade.toLocaleString()} pessoas</span>
-                        <span className="text-sm font-semibold text-primary">{etapa.percentual}%</span>
-                      </div>
+            {/* Gráficos de distribuição */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    Por Município
+                  </CardTitle>
+                  <CardDescription>Distribuição geográfica dos candidatos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pessoasStats.porMunicipio.length > 0 ? (
+                    <div className="space-y-3">
+                      {pessoasStats.porMunicipio.slice(0, 6).map((mun) => {
+                        const total = pessoasStats.totalPessoas || 1;
+                        const percentual = (mun.quantidade / total) * 100;
+                        return (
+                          <div key={mun.nome}>
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm text-foreground">{mun.nome}</span>
+                              <span className="text-sm font-medium">{mun.quantidade}</span>
+                            </div>
+                            <Progress value={percentual} className="h-2" />
+                          </div>
+                        );
+                      })}
                     </div>
-                    <Progress value={etapa.percentual} className="h-3" />
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Distribuição por Gênero</h3>
-                <div className="space-y-3">
-                  {Object.entries(dadosSociais.genero).map(([key, value]) => (
-                    <div key={key}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-muted-foreground capitalize">{key}</span>
-                        <span className="text-sm font-medium">{value}%</span>
-                      </div>
-                      <Progress value={value} />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
+                      <MapPin className="h-12 w-12 mb-4 opacity-50" />
+                      <p>Nenhum candidato ainda</p>
                     </div>
-                  ))}
-                </div>
+                  )}
+                </CardContent>
               </Card>
 
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Nível de Escolaridade</h3>
-                <div className="space-y-3">
-                  {[
-                    { key: "fundamental", label: "Ensino Fundamental" },
-                    { key: "medio", label: "Ensino Médio" },
-                    { key: "superior", label: "Ensino Superior" },
-                    { key: "posGrad", label: "Pós-Graduação" },
-                  ].map(({ key, label }) => (
-                    <div key={key}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-muted-foreground">{label}</span>
-                        <span className="text-sm font-medium">{dadosSociais.escolaridade[key as keyof typeof dadosSociais.escolaridade]}%</span>
-                      </div>
-                      <Progress value={dadosSociais.escolaridade[key as keyof typeof dadosSociais.escolaridade]} />
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Por Área Artística
+                  </CardTitle>
+                  <CardDescription>Áreas de atuação dos candidatos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pessoasStats.porArea.length > 0 ? (
+                    <div className="space-y-3">
+                      {pessoasStats.porArea.slice(0, 6).map((area) => {
+                        const total = pessoasStats.totalPessoas || 1;
+                        const percentual = (area.quantidade / total) * 100;
+                        return (
+                          <div key={area.nome}>
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm text-foreground">{area.nome}</span>
+                              <span className="text-sm font-medium">{area.quantidade}</span>
+                            </div>
+                            <Progress value={percentual} className="h-2" />
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
+                      <Target className="h-12 w-12 mb-4 opacity-50" />
+                      <p>Nenhum dado disponível</p>
+                    </div>
+                  )}
+                </CardContent>
               </Card>
             </div>
 
-            <Card className="p-6 bg-green-500/5 border-green-500/20">
-              <h3 className="text-lg font-semibold text-foreground mb-3">Principais Indicadores de Impacto Social</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-medium text-foreground mb-2">Desenvolvimento Econômico</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Aumento médio de <strong className="text-green-500">147% na renda</strong> pós-incubação</li>
-                    <li>• <strong className="text-foreground">189 MEIs</strong> formalizados (33% dos formados)</li>
-                    <li>• Geração estimada de <strong className="text-foreground">R$ 2.8M/ano</strong> em renda musical</li>
-                  </ul>
+            {/* Mais distribuições */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    Tempo de Atuação
+                  </CardTitle>
+                  <CardDescription>Experiência dos candidatos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pessoasStats.porTempoAtuacao.length > 0 ? (
+                    <div className="space-y-3">
+                      {pessoasStats.porTempoAtuacao.map((tempo) => {
+                        const total = pessoasStats.totalPessoas || 1;
+                        const percentual = (tempo.quantidade / total) * 100;
+                        return (
+                          <div key={tempo.nome}>
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm text-foreground">{tempo.nome}</span>
+                              <span className="text-sm font-medium">{tempo.quantidade}</span>
+                            </div>
+                            <Progress value={percentual} className="h-2" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
+                      <Clock className="h-12 w-12 mb-4 opacity-50" />
+                      <p>Nenhum dado disponível</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Briefcase className="h-5 w-5 text-primary" />
+                    Situação de Formalização
+                  </CardTitle>
+                  <CardDescription>Status de formalização dos candidatos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pessoasStats.porFormalizacao.length > 0 ? (
+                    <div className="space-y-3">
+                      {pessoasStats.porFormalizacao.map((form) => {
+                        const total = pessoasStats.totalPessoas || 1;
+                        const percentual = (form.quantidade / total) * 100;
+                        return (
+                          <div key={form.nome}>
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm text-foreground">{form.nome}</span>
+                              <span className="text-sm font-medium">{form.quantidade}</span>
+                            </div>
+                            <Progress value={percentual} className="h-2" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
+                      <Briefcase className="h-12 w-12 mb-4 opacity-50" />
+                      <p>Nenhum dado disponível</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Resumo de indicadores */}
+            {pessoasStats.totalPessoas > 0 && (
+              <Card className="p-6 bg-primary/5 border-primary/20">
+                <h3 className="text-lg font-semibold text-foreground mb-3">Resumo de Indicadores</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">Engajamento</h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li>• <strong className="text-foreground">{pessoasStats.totalCandidatos + pessoasStats.totalInscritos}</strong> participações totais</li>
+                      <li>• <strong className="text-foreground">{pessoasStats.candidatosAprovados}</strong> candidatos aprovados em vagas</li>
+                      <li>• <strong className="text-foreground">{pessoasStats.inscritosConfirmados}</strong> inscritos confirmados em oficinas</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">Diversidade</h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li>• <strong className="text-foreground">{pessoasStats.porMunicipio.length}</strong> municípios diferentes</li>
+                      <li>• <strong className="text-foreground">{pessoasStats.porArea.length}</strong> áreas artísticas</li>
+                      <li>• <strong className="text-foreground">{pessoasStats.porFormalizacao.filter(f => f.nome !== "Não informado").length}</strong> níveis de formalização</li>
+                    </ul>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-medium text-foreground mb-2">Desenvolvimento Profissional</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• <strong className="text-foreground">78% de conclusão</strong> dos programas de incubação</li>
-                    <li>• <strong className="text-foreground">89% criam portfólio</strong> profissional completo</li>
-                    <li>• Média de <strong className="text-foreground">4.6/5.0</strong> em satisfação dos participantes</li>
-                  </ul>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </div>
