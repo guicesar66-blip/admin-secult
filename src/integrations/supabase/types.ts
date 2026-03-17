@@ -564,7 +564,9 @@ export type Database = {
           cpf: string | null
           created_at: string
           cultura_renda: string | null
+          email: string | null
           estado: string | null
+          expectativa_app: string | null
           experiencia_editais: string | null
           id: string
           municipio: string | null
@@ -590,7 +592,9 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           cultura_renda?: string | null
+          email?: string | null
           estado?: string | null
+          expectativa_app?: string | null
           experiencia_editais?: string | null
           id?: string
           municipio?: string | null
@@ -616,7 +620,9 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           cultura_renda?: string | null
+          email?: string | null
           estado?: string | null
+          expectativa_app?: string | null
           experiencia_editais?: string | null
           id?: string
           municipio?: string | null
