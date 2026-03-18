@@ -117,7 +117,7 @@ const MarketplaceExplorar = () => {
       tipo: "oficina",
       local: of.local,
       dataEvento: null,
-      imagem: of.imagem || fallbackImages[idx % fallbackImages.length],
+      imagem: of.imagem || imagemPorTitulo[of.titulo] || fallbackImages[idx % fallbackImages.length],
       areaCultural: of.area_artistica,
       criadorNome: of.organizacao,
       metaCaptacao: of.meta_captacao || 0,
