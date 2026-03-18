@@ -41,6 +41,12 @@ import festivalJazzImg from "@/assets/oportunidades/festival-jazz.jpg";
 import documentarioVozesImg from "@/assets/oportunidades/documentario-vozes.jpg";
 import epRaizesUrbanasImg from "@/assets/oportunidades/ep-raizes-urbanas.jpg";
 import exposicaoDigitalImg from "@/assets/oportunidades/exposicao-digital.jpg";
+import showAcusticoImg from "@/assets/oportunidades/show-acustico.jpg";
+import teatroMemoriasImg from "@/assets/oportunidades/teatro-memorias.jpg";
+import festivalLgbtqImg from "@/assets/oportunidades/festival-lgbtq.jpg";
+import albumSertaoImg from "@/assets/oportunidades/album-sertao.jpg";
+import vagaProdutorImg from "@/assets/oportunidades/vaga-produtor.jpg";
+import vagaDesignerImg from "@/assets/oportunidades/vaga-designer.jpg";
 
 type TipoOportunidade = "evento" | "vaga" | "oficina" | "bairro" | "festival" | "ep" | "filme" | "exposicao" | "teatro";
 
