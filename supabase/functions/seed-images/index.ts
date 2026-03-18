@@ -15,7 +15,7 @@ const imageMapping: Record<string, string> = {
   "Show Acústico Mulheres na Música": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80",
   "Vaga de Produtor Cultural": "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=800&q=80",
   "Teatro Memórias de Minha Terra": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800&q=80",
-  "Festival LGBTQ+ de Artes": "https://images.unsplash.com/photo-1561482167-c57f27ae952a?w=800&q=80",
+  "Festival LGBTQ+ de Artes": "https://images.unsplash.com/photo-1620735692151-26a7e0748571?w=800&q=80",
   "Vaga de Designer Gráfico Cultural": "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80",
   "Álbum do Sertão - Forró Raiz": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&q=80",
 };
