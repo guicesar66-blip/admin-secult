@@ -62,7 +62,20 @@ const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: 
   teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600 border-amber-500/30" },
 };
 
-const fallbackImages = [festivalJazzImg, documentarioVozesImg, epRaizesUrbanasImg, exposicaoDigitalImg];
+const fallbackImages = [festivalJazzImg, documentarioVozesImg, epRaizesUrbanasImg, exposicaoDigitalImg, showAcusticoImg, teatroMemoriasImg, festivalLgbtqImg, albumSertaoImg, vagaProdutorImg, vagaDesignerImg];
+
+const imagemPorTitulo: Record<string, string> = {
+  "Festival de Jazz do Recôncavo": festivalJazzImg,
+  "Documentário Vozes do Sertão": documentarioVozesImg,
+  "EP Raízes Urbanas": epRaizesUrbanasImg,
+  "Exposição Digital Arte Negra": exposicaoDigitalImg,
+  "Show Acústico Mulheres na Música": showAcusticoImg,
+  "Teatro Memórias de Minha Terra": teatroMemoriasImg,
+  "Festival LGBTQ+ de Artes": festivalLgbtqImg,
+  "Álbum do Sertão - Forró Raiz": albumSertaoImg,
+  "Vaga de Produtor Cultural": vagaProdutorImg,
+  "Vaga de Designer Gráfico Cultural": vagaDesignerImg,
+};
 
 const MarketplaceExplorar = () => {
   const navigate = useNavigate();
