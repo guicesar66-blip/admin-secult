@@ -41,6 +41,12 @@ import festivalJazzImg from "@/assets/oportunidades/festival-jazz.jpg";
 import documentarioVozesImg from "@/assets/oportunidades/documentario-vozes.jpg";
 import epRaizesUrbanasImg from "@/assets/oportunidades/ep-raizes-urbanas.jpg";
 import exposicaoDigitalImg from "@/assets/oportunidades/exposicao-digital.jpg";
+import showAcusticoImg from "@/assets/oportunidades/show-acustico.jpg";
+import teatroMemoriasImg from "@/assets/oportunidades/teatro-memorias.jpg";
+import festivalLgbtqImg from "@/assets/oportunidades/festival-lgbtq.jpg";
+import albumSertaoImg from "@/assets/oportunidades/album-sertao.jpg";
+import vagaProdutorImg from "@/assets/oportunidades/vaga-produtor.jpg";
+import vagaDesignerImg from "@/assets/oportunidades/vaga-designer.jpg";
 
 type TipoOportunidade = "evento" | "vaga" | "oficina" | "bairro" | "festival" | "ep" | "filme" | "exposicao" | "teatro";
 
@@ -56,7 +62,20 @@ const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: 
   teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600 border-amber-500/30" },
 };
 
-const fallbackImages = [festivalJazzImg, documentarioVozesImg, epRaizesUrbanasImg, exposicaoDigitalImg];
+const fallbackImages = [festivalJazzImg, documentarioVozesImg, epRaizesUrbanasImg, exposicaoDigitalImg, showAcusticoImg, teatroMemoriasImg, festivalLgbtqImg, albumSertaoImg, vagaProdutorImg, vagaDesignerImg];
+
+const imagemPorTitulo: Record<string, string> = {
+  "Festival de Jazz do Recôncavo": festivalJazzImg,
+  "Documentário Vozes do Sertão": documentarioVozesImg,
+  "EP Raízes Urbanas": epRaizesUrbanasImg,
+  "Exposição Digital Arte Negra": exposicaoDigitalImg,
+  "Show Acústico Mulheres na Música": showAcusticoImg,
+  "Teatro Memórias de Minha Terra": teatroMemoriasImg,
+  "Festival LGBTQ+ de Artes": festivalLgbtqImg,
+  "Álbum do Sertão - Forró Raiz": albumSertaoImg,
+  "Vaga de Produtor Cultural": vagaProdutorImg,
+  "Vaga de Designer Gráfico Cultural": vagaDesignerImg,
+};
 
 const MarketplaceExplorar = () => {
   const navigate = useNavigate();
@@ -82,7 +101,7 @@ const MarketplaceExplorar = () => {
       tipo: op.tipo,
       local: op.local || op.municipio,
       dataEvento: op.data_evento,
-      imagem: op.imagem || fallbackImages[idx % fallbackImages.length],
+      imagem: op.imagem || imagemPorTitulo[op.titulo] || fallbackImages[idx % fallbackImages.length],
       areaCultural: op.area_cultural,
       criadorNome: op.criador_nome_completo || op.criador_nome_artistico || op.criador_nome,
       metaCaptacao: op.meta_captacao || 0,
@@ -98,7 +117,7 @@ const MarketplaceExplorar = () => {
       tipo: "oficina",
       local: of.local,
       dataEvento: null,
-      imagem: of.imagem || fallbackImages[idx % fallbackImages.length],
+      imagem: of.imagem || imagemPorTitulo[of.titulo] || fallbackImages[idx % fallbackImages.length],
       areaCultural: of.area_artistica,
       criadorNome: of.organizacao,
       metaCaptacao: of.meta_captacao || 0,
@@ -294,7 +313,7 @@ const MarketplaceExplorar = () => {
                     tipo: op.tipo,
                     local: op.local || op.municipio,
                     dataEvento: op.data_evento,
-                    imagem: op.imagem || fallbackImages[idx % fallbackImages.length],
+                    imagem: op.imagem || imagemPorTitulo[op.titulo] || fallbackImages[idx % fallbackImages.length],
                     areaCultural: op.area_cultural,
                     criadorNome: op.criador_nome,
                     metaCaptacao: op.meta_captacao || 0,
