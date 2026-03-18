@@ -313,7 +313,7 @@ const MarketplaceExplorar = () => {
                     tipo: op.tipo,
                     local: op.local || op.municipio,
                     dataEvento: op.data_evento,
-                    imagem: op.imagem || fallbackImages[idx % fallbackImages.length],
+                    imagem: op.imagem || imagemPorTitulo[op.titulo] || fallbackImages[idx % fallbackImages.length],
                     areaCultural: op.area_cultural,
                     criadorNome: op.criador_nome,
                     metaCaptacao: op.meta_captacao || 0,
