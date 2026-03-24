@@ -11,14 +11,14 @@ O projeto é estruturado em três camadas principais:
 - Superapp do Artista: Focado em gestão de carreira e visibilidade para artistas e trabalhadores da cultura.
 - Plataforma SaaS: Um sistema web de gestão e analytics para secretarias de cultura, produtoras e organizações.
 - Assistente de IA: Um chatbot conversacional com linguagem regional para facilitar o acesso de usuários com baixa literacia digital.
-- 
+  
 **O problema que resolvemos**
 
 Enquanto Pernambuco possui um ecossistema cultural riquíssimo, cerca de 44,6% dos trabalhadores do setor vivem na informalidade. O CENA atua para eliminar barreiras burocráticas, centralizar informações dispersas e dar visibilidade a artistas periféricos e mestres de cultura popular.
 
 **Equipe responsável:** 
 
--Guilherme Vinicius 
+- Guilherme Vinicius 
 - Millena Neves 
 - Vitor Hugo 
 - Vinicius Guedes 
