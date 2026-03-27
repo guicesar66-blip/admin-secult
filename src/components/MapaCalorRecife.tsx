@@ -45,23 +45,13 @@ const tipoIcons: Record<string, React.ReactNode> = {
   projeto_bairro: <MapPin className="h-3 w-3" />,
 };
 
-// Intensity scale for each type
-function getColorForBairro(porTipo: Record<string, number>, total: number, maxTotal: number): string {
-  if (total === 0) return "hsl(var(--muted))";
-  
-  // Find dominant type
-  let dominantType = "evento";
-  let maxCount = 0;
-  Object.entries(porTipo).forEach(([tipo, count]) => {
-    if (count > maxCount) {
-      maxCount = count;
-      dominantType = tipo;
-    }
-  });
-
-  const baseColor = tipoColors[dominantType] || "#6b7280";
-  const intensity = Math.max(0.3, Math.min(1, total / maxTotal));
-  return baseColor;
+// Heat map color: red intensity scale
+function getColorForBairro(_porTipo: Record<string, number>, total: number, maxTotal: number): string {
+  if (total === 0) return "hsl(var(--muted-foreground))";
+  const ratio = total / maxTotal;
+  if (ratio > 0.7) return "#991b1b";
+  if (ratio > 0.4) return "#dc2626";
+  return "#f87171";
 }
 
 function getOpacityForBairro(total: number, maxTotal: number): number {
