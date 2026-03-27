@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Briefcase, GraduationCap } from "lucide-react";
+import mapaRecifeImg from "@/assets/mapa-recife.webp";
 import {
   BarChart,
   Bar,
