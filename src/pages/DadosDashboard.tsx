@@ -66,7 +66,7 @@ export default function DadosDashboard() {
   const { data: estatisticasTerritoriais = [], isLoading: loadingTerritorial } = useEstatisticasTerritoriais();
   
   const [activeTab, setActiveTab] = useState("visao-geral");
-  const [tipoMapa, setTipoMapa] = useState("projetos");
+  
 
   const isLoading = loadingOportunidades || loadingOficinas || loadingPropostas || loadingLancamentos || loadingRepasses || loadingCandidatos || loadingTerritorial;
 
