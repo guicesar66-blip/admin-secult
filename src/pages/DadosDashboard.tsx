@@ -255,7 +255,7 @@ export default function DadosDashboard() {
   const territorialStats = useMemo(() => {
     const regioes = estatisticasTerritoriais.length > 0 
       ? estatisticasTerritoriais 
-      : pessoasStats.porMunicipio.map(m => ({ nome: m.nome, projetos: 0, vagas: 0, pessoas: m.quantidade }));
+      : pessoasStats.porMunicipio.map(m => ({ nome: m.nome, projetos: 0, vagas: 0, porTipo: {} as Record<string, number> }));
 
     const maxProjetos = Math.max(...regioes.map(r => r.projetos || 0), 1);
     const maxVagas = Math.max(...regioes.map(r => r.vagas || 0), 1);
