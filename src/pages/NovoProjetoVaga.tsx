@@ -1,417 +1,327 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Progress } from "@/components/ui/progress";
 import {
-  Bot,
-  Send,
-  User,
-  Briefcase,
-  CheckCircle2,
+  ArrowLeft,
   ArrowRight,
-  Sparkles,
-  FileText,
-  MapPin,
+  Briefcase,
+  Calendar,
+  Check,
+  ClipboardList,
   Clock,
   DollarSign,
-  Target,
-  Calendar,
+  Eye,
+  FileText,
   Loader2,
+  MapPin,
+  Save,
+  Users,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useCreateOportunidade } from "@/hooks/useOportunidades";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCreateOportunidade } from "@/hooks/useOportunidades";
+import { toast } from "sonner";
+import {
+  VagaWizardData,
+  VAGA_WIZARD_INITIAL_STATE,
+  VAGA_WIZARD_STEPS,
+  validateVagaStep1,
+  validateVagaStep2,
+  validateVagaStep3,
+  validateVagaStep4,
+  validateVagaStep5,
+  validateVagaStep6,
+} from "@/types/vaga-wizard";
+import {
+  StepInformacoesBasicas,
+  StepLocalModalidade,
+  StepCargaHoraria,
+  StepRemuneracao,
+  StepVagasRequisitos,
+  StepProcessoSeletivo,
+  StepPreviewVaga,
+} from "@/components/vaga-wizard";
 
-interface Message {
-  id: string;
-  role: "assistant" | "user";
-  content: string;
-  timestamp: Date;
-}
-
-interface VagaInfo {
-  titulo?: string;
-  descricao?: string;
-  local?: string;
-  municipio?: string;
-  duracao?: string;
-  horario?: string;
-  remuneracao?: number;
-  vagas?: number;
-  requisitos?: string;
-  prazoInscricao?: string;
-  areaCultural?: string;
-}
-
-const etapasVaga = [
-  { id: "titulo", label: "Título da Vaga", icon: <Briefcase className="h-4 w-4" /> },
-  { id: "descricao", label: "Descrição", icon: <FileText className="h-4 w-4" /> },
-  { id: "area", label: "Área Cultural", icon: <Target className="h-4 w-4" /> },
-  { id: "local", label: "Local de Trabalho", icon: <MapPin className="h-4 w-4" /> },
-  { id: "horario", label: "Carga Horária", icon: <Clock className="h-4 w-4" /> },
-  { id: "remuneracao", label: "Remuneração", icon: <DollarSign className="h-4 w-4" /> },
-  { id: "vagas", label: "Número de Vagas", icon: <Briefcase className="h-4 w-4" /> },
-  { id: "requisitos", label: "Requisitos", icon: <Target className="h-4 w-4" /> },
-  { id: "prazo", label: "Prazo de Inscrição", icon: <Calendar className="h-4 w-4" /> },
-];
-
-const perguntasVaga = [
-  {
-    etapa: "inicio",
-    mensagem: "Olá! 👋 Sou o assistente CENA e vou te ajudar a criar uma **Vaga de Trabalho**. Vamos seguir 9 etapas. Para começar: **qual é o título da vaga?** Exemplo: 'Produtor Cultural', 'Técnico de Som'",
-  },
-  {
-    etapa: "descricao",
-    mensagem: "Descreva a vaga. **Quais são as principais atividades e responsabilidades?**",
-  },
-  {
-    etapa: "area",
-    mensagem: "Qual **área cultural** essa vaga pertence? Exemplo: 'Música', 'Teatro', 'Audiovisual', 'Artes Visuais', 'Produção Cultural'",
-  },
-  {
-    etapa: "local",
-    mensagem: "Onde será o **local de trabalho**? Informe o endereço ou se é remoto. Exemplo: 'Centro Cultural, Recife' ou 'Remoto'",
-  },
-  {
-    etapa: "horario",
-    mensagem: "Qual a **carga horária** ou regime de trabalho? Exemplo: '40h semanais', 'Por projeto', 'Fins de semana'",
-  },
-  {
-    etapa: "remuneracao",
-    mensagem: "Qual a **remuneração** oferecida? Informe o valor em reais. Exemplo: '3000' para R$ 3.000,00",
-  },
-  {
-    etapa: "vagas",
-    mensagem: "Quantas **vagas** estão disponíveis para esta posição?",
-  },
-  {
-    etapa: "requisitos",
-    mensagem: "Quais são os **requisitos** para a vaga? Formação, experiência, habilidades necessárias...",
-  },
-  {
-    etapa: "prazo",
-    mensagem: "Qual o **prazo para inscrições**? Informe a data limite. Exemplo: '31/03/2025'",
-  },
-  {
-    etapa: "finalizacao",
-    mensagem: "🎉 Excelente! Sua vaga está estruturada! Vou salvar no sistema e ela ficará disponível para candidatos.",
-  },
-];
+const STEP_ICONS: Record<string, React.ReactNode> = {
+  FileText: <FileText className="h-4 w-4" />,
+  MapPin: <MapPin className="h-4 w-4" />,
+  Clock: <Clock className="h-4 w-4" />,
+  DollarSign: <DollarSign className="h-4 w-4" />,
+  Users: <Users className="h-4 w-4" />,
+  ClipboardList: <ClipboardList className="h-4 w-4" />,
+  Eye: <Eye className="h-4 w-4" />,
+};
 
 const NovoProjetoVaga = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const createOportunidade = useCreateOportunidade();
-  
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const [etapaAtual, setEtapaAtual] = useState(0);
-  const [vagaInfo, setVagaInfo] = useState<VagaInfo>({});
-  const [isTyping, setIsTyping] = useState(false);
+
+  const [wizardData, setWizardData] = useState<VagaWizardData>(VAGA_WIZARD_INITIAL_STATE);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [highestStepReached, setHighestStepReached] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const progresso = Math.round((etapaAtual / (perguntasVaga.length - 1)) * 100);
+  const totalSteps = VAGA_WIZARD_STEPS.length;
+  const progress = Math.round((currentStep / totalSteps) * 100);
 
-  useEffect(() => {
-    setTimeout(() => {
-      addAssistantMessage(perguntasVaga[0].mensagem);
-    }, 500);
-  }, []);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const addAssistantMessage = (content: string) => {
-    setIsTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: "assistant",
-          content,
-          timestamp: new Date(),
-        },
-      ]);
-      setIsTyping(false);
-    }, 800);
+  const updateData = (updates: Partial<VagaWizardData>) => {
+    setWizardData((prev) => ({ ...prev, ...updates }));
   };
 
-  const processarResposta = (resposta: string) => {
-    const novaVagaInfo = { ...vagaInfo };
-
-    switch (etapaAtual) {
-      case 0:
-        novaVagaInfo.titulo = resposta;
-        break;
-      case 1:
-        novaVagaInfo.descricao = resposta;
-        break;
-      case 2:
-        novaVagaInfo.areaCultural = resposta;
-        break;
-      case 3:
-        const partes = resposta.split(",").map(p => p.trim());
-        novaVagaInfo.local = partes[0];
-        novaVagaInfo.municipio = partes[1] || partes[0];
-        break;
-      case 4:
-        novaVagaInfo.duracao = resposta;
-        novaVagaInfo.horario = resposta;
-        break;
-      case 5:
-        const valorMatch = resposta.match(/(\d+[\.,]?\d*)/);
-        novaVagaInfo.remuneracao = valorMatch ? parseFloat(valorMatch[1].replace(",", ".")) : 0;
-        break;
-      case 6:
-        const vagasMatch = resposta.match(/(\d+)/);
-        novaVagaInfo.vagas = vagasMatch ? parseInt(vagasMatch[1]) : 1;
-        break;
-      case 7:
-        novaVagaInfo.requisitos = resposta;
-        break;
-      case 8:
-        const dataMatch = resposta.match(/(\d{2}\/\d{2}\/\d{4})/);
-        if (dataMatch) {
-          const [dia, mes, ano] = dataMatch[1].split("/");
-          novaVagaInfo.prazoInscricao = `${ano}-${mes}-${dia}`;
-        }
-        break;
-    }
-
-    setVagaInfo(novaVagaInfo);
-  };
-
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        role: "user",
-        content: inputValue,
-        timestamp: new Date(),
-      },
-    ]);
-
-    processarResposta(inputValue);
-    setInputValue("");
-
-    const proximaEtapa = etapaAtual + 1;
-    setEtapaAtual(proximaEtapa);
-
-    if (proximaEtapa < perguntasVaga.length) {
-      addAssistantMessage(perguntasVaga[proximaEtapa].mensagem);
+  const getStepValidation = (step: number) => {
+    switch (step) {
+      case 1: return validateVagaStep1(wizardData);
+      case 2: return validateVagaStep2(wizardData);
+      case 3: return validateVagaStep3(wizardData);
+      case 4: return validateVagaStep4(wizardData);
+      case 5: return validateVagaStep5(wizardData);
+      case 6: return validateVagaStep6(wizardData);
+      default: return { isValid: true, errors: [] };
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+  const isCurrentStepValid = getStepValidation(currentStep).isValid;
+
+  const handleNext = () => {
+    const validation = getStepValidation(currentStep);
+    if (!validation.isValid) {
+      toast.error("Por favor, preencha os campos obrigatórios antes de continuar.");
+      return;
     }
+    const next = currentStep + 1;
+    setCurrentStep(next);
+    if (next > highestStepReached) setHighestStepReached(next);
   };
 
-  const finalizarProjeto = async () => {
+  const handleBack = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
+  const handleStepClick = (stepId: number) => {
+    if (stepId <= highestStepReached) setCurrentStep(stepId);
+  };
+
+  const handleSave = async () => {
+    const allValidations = [1, 2, 3, 4, 5, 6].map((s) => getStepValidation(s));
+    const hasErrors = allValidations.some((v) => !v.isValid);
+    if (hasErrors) {
+      toast.error("Há informações incompletas. Revise as etapas antes de salvar.");
+      return;
+    }
+
     setIsSaving(true);
-    
     try {
+      const localStr = wizardData.modalidade === "Remoto"
+        ? wizardData.local || "Remoto"
+        : [wizardData.local, wizardData.bairro, wizardData.municipio]
+            .filter(Boolean)
+            .join(", ");
+
+      const remuneracao = wizardData.remuneracao_a_combinar ? 0 : (wizardData.remuneracao_valor ?? 0);
+
+      const requisitosCompletos = [
+        wizardData.requisitos_obrigatorios,
+        wizardData.requisitos_desejaveis
+          ? `\n\nDesejáveis:\n${wizardData.requisitos_desejaveis}`
+          : "",
+        wizardData.habilidades.length > 0
+          ? `\n\nHabilidades: ${wizardData.habilidades.join(", ")}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("");
+
       await createOportunidade.mutateAsync({
-        titulo: vagaInfo.titulo || "Nova Vaga",
-        descricao: vagaInfo.descricao,
+        titulo: wizardData.titulo,
+        descricao: wizardData.descricao,
         tipo: "vaga",
-        local: vagaInfo.local,
-        municipio: vagaInfo.municipio,
-        horario: vagaInfo.horario,
-        duracao: vagaInfo.duracao || "A definir",
-        vagas: vagaInfo.vagas,
-        remuneracao: vagaInfo.remuneracao,
-        requisitos: vagaInfo.requisitos,
-        prazo_inscricao: vagaInfo.prazoInscricao,
-        area_cultural: vagaInfo.areaCultural,
+        local: localStr,
+        municipio: wizardData.municipio || wizardData.local,
+        horario: wizardData.horario_trabalho,
+        duracao: wizardData.regime_jornada,
+        vagas: wizardData.num_vagas,
+        remuneracao: remuneracao,
+        requisitos: requisitosCompletos,
+        prazo_inscricao: wizardData.prazo_inscricao || undefined,
+        area_cultural: wizardData.area_cultural,
         criador_nome: user?.email || "Admin",
         criador_id: user?.id,
       });
 
-      navigate(`/oportunidades`);
+      toast.success("Vaga publicada com sucesso!");
+      navigate("/oportunidades");
     } catch (error) {
-      console.error("Error saving vaga:", error);
+      console.error("Erro ao salvar vaga:", error);
+      toast.error("Erro ao salvar a vaga. Tente novamente.");
       setIsSaving(false);
     }
   };
 
-  const projetoCompleto = etapaAtual >= perguntasVaga.length - 1;
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1: return <StepInformacoesBasicas data={wizardData} onChange={updateData} />;
+      case 2: return <StepLocalModalidade data={wizardData} onChange={updateData} />;
+      case 3: return <StepCargaHoraria data={wizardData} onChange={updateData} />;
+      case 4: return <StepRemuneracao data={wizardData} onChange={updateData} />;
+      case 5: return <StepVagasRequisitos data={wizardData} onChange={updateData} />;
+      case 6: return <StepProcessoSeletivo data={wizardData} onChange={updateData} />;
+      case 7: return <StepPreviewVaga data={wizardData} />;
+      default: return null;
+    }
+  };
+
+  const currentStepInfo = VAGA_WIZARD_STEPS[currentStep - 1];
 
   return (
     <DashboardLayout>
       <div className="h-[calc(100vh-120px)] flex gap-6">
-        <div className="flex-1 flex flex-col">
-          <Card className="flex-1 flex flex-col overflow-hidden">
-            <CardHeader className="border-b bg-gradient-to-r from-emerald-500/10 to-emerald-500/5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-emerald-500/20">
-                    <Briefcase className="h-5 w-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Criar Vaga de Trabalho</CardTitle>
-                    <p className="text-sm text-muted-foreground">Assistente CENA - 9 etapas</p>
-                  </div>
+        {/* Sidebar de navegação */}
+        <div className="w-72 shrink-0">
+          <Card className="h-full overflow-hidden">
+            <CardHeader className="border-b bg-emerald-500/10 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-emerald-500/20">
+                  <Briefcase className="h-5 w-5 text-emerald-600" />
                 </div>
-                <Badge variant="outline" className="gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  IA Ativa
-                </Badge>
+                <div>
+                  <p className="font-semibold text-sm">Nova Vaga de Emprego</p>
+                  <p className="text-xs text-muted-foreground">
+                    Etapa {currentStep} de {totalSteps}
+                  </p>
+                </div>
               </div>
-              <div className="mt-4">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Progresso</span>
-                  <span className="font-medium">{progresso}%</span>
-                </div>
-                <Progress value={progresso} className="h-2" />
+              <div className="mt-3">
+                <Progress value={progress} className="h-1.5" />
               </div>
             </CardHeader>
+            <ScrollArea className="h-[calc(100%-110px)]">
+              <div className="p-3 space-y-1">
+                {VAGA_WIZARD_STEPS.map((step) => {
+                  const isCompleted = step.id < currentStep;
+                  const isCurrent = step.id === currentStep;
+                  const isAccessible = step.id <= highestStepReached;
+                  const stepValidation = step.id < currentStep ? getStepValidation(step.id) : null;
+                  const hasError = stepValidation && !stepValidation.isValid;
 
-            <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-              <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-                <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  return (
+                    <button
+                      key={step.id}
+                      type="button"
+                      onClick={() => handleStepClick(step.id)}
+                      disabled={!isAccessible}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
+                        isCurrent
+                          ? "bg-emerald-500/10 text-emerald-700 font-medium"
+                          : isAccessible
+                          ? "hover:bg-muted cursor-pointer text-foreground"
+                          : "opacity-40 cursor-not-allowed text-muted-foreground"
+                      }`}
                     >
                       <div
-                        className={`p-2 rounded-full h-8 w-8 flex items-center justify-center shrink-0 ${
-                          message.role === "assistant"
-                            ? "bg-emerald-500/20 text-emerald-600"
-                            : "bg-muted"
+                        className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-all ${
+                          hasError
+                            ? "bg-red-100 text-red-600"
+                            : isCompleted
+                            ? "bg-emerald-500 text-white"
+                            : isCurrent
+                            ? "bg-emerald-600 text-white"
+                            : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        {message.role === "assistant" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
+                        {isCompleted && !hasError ? (
+                          <Check className="h-3.5 w-3.5" />
+                        ) : (
+                          step.id
+                        )}
                       </div>
-                      <div
-                        className={`rounded-2xl px-4 py-3 max-w-[80%] ${
-                          message.role === "assistant" ? "bg-muted" : "bg-emerald-600 text-white"
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">
-                          {message.content.replace(/\*\*(.*?)\*\*/g, "$1")}
-                        </p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{step.title}</p>
+                        <p className="text-xs text-muted-foreground truncate">{step.description}</p>
                       </div>
-                    </div>
-                  ))}
-
-                  {isTyping && (
-                    <div className="flex gap-3">
-                      <div className="p-2 rounded-full h-8 w-8 flex items-center justify-center bg-emerald-500/20 text-emerald-600">
-                        <Bot className="h-4 w-4" />
-                      </div>
-                      <div className="rounded-2xl px-4 py-3 bg-muted">
-                        <div className="flex gap-1">
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce delay-100" />
-                          <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce delay-200" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-
-              <div className="p-4 border-t bg-background">
-                {!projetoCompleto ? (
-                  <div className="flex gap-2">
-                    <Textarea
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Digite sua resposta... (Enter para enviar)"
-                      className="flex-1 min-h-[60px] resize-none"
-                      disabled={isTyping}
-                    />
-                    <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping} className="bg-emerald-600 hover:bg-emerald-700">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button onClick={finalizarProjeto} disabled={isSaving} className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Salvando...
-                      </>
-                    ) : (
-                      <>
-                        Salvar Vaga
-                        <ArrowRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                )}
+                    </button>
+                  );
+                })}
               </div>
-            </CardContent>
+            </ScrollArea>
           </Card>
         </div>
 
-        <div className="w-80 shrink-0">
-          <Card className="h-full overflow-hidden">
-            <CardHeader className="border-b bg-emerald-500/10">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-emerald-600" />
-                Estrutura da Vaga
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <ScrollArea className="h-[calc(100vh-280px)]">
-                <div className="space-y-2">
-                  {etapasVaga.map((etapa, index) => {
-                    const isComplete = index < etapaAtual;
-                    const isCurrent = index === etapaAtual;
-
-                    return (
-                      <div
-                        key={etapa.id}
-                        className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
-                          isComplete ? "bg-emerald-500/10 text-emerald-600" : isCurrent ? "bg-emerald-500/10 text-emerald-600" : "text-muted-foreground"
-                        }`}
-                      >
-                        {isComplete ? <CheckCircle2 className="h-4 w-4" /> : etapa.icon}
-                        <span className="text-sm font-medium">{etapa.label}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {vagaInfo.titulo && (
-                  <div className="mt-6 p-4 rounded-lg bg-muted/50 space-y-3">
-                    <h4 className="font-semibold">{vagaInfo.titulo}</h4>
-                    {vagaInfo.areaCultural && <Badge variant="outline">{vagaInfo.areaCultural}</Badge>}
-                    {vagaInfo.descricao && <p className="text-sm text-muted-foreground line-clamp-2">{vagaInfo.descricao}</p>}
-                    {vagaInfo.local && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-3 w-3" />
-                        {vagaInfo.local}
-                      </div>
-                    )}
-                    {vagaInfo.remuneracao && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <DollarSign className="h-3 w-3" />
-                        R$ {vagaInfo.remuneracao.toLocaleString("pt-BR")}
-                      </div>
-                    )}
+        {/* Conteúdo principal */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Card className="flex-1 flex flex-col overflow-hidden">
+            <CardHeader className="border-b shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600">
+                    {STEP_ICONS[currentStepInfo.icon]}
                   </div>
-                )}
-              </ScrollArea>
-            </CardContent>
+                  <div>
+                    <h1 className="text-lg font-semibold">{currentStepInfo.title}</h1>
+                    <p className="text-sm text-muted-foreground">{currentStepInfo.description}</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="shrink-0">
+                  {currentStep}/{totalSteps}
+                </Badge>
+              </div>
+            </CardHeader>
+
+            <ScrollArea className="flex-1">
+              <div className="p-6 max-w-3xl mx-auto">
+                {renderStep()}
+              </div>
+            </ScrollArea>
+
+            {/* Rodapé de navegação */}
+            <div className="border-t p-4 bg-background shrink-0">
+              <div className="flex items-center justify-between max-w-3xl mx-auto">
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  disabled={currentStep === 1}
+                  className="gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Voltar
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  {currentStep < totalSteps ? (
+                    <Button
+                      onClick={handleNext}
+                      disabled={!isCurrentStepValid}
+                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      Próximo
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSave}
+                      disabled={isSaving}
+                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Publicando...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4" />
+                          Publicar Vaga
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
       </div>
