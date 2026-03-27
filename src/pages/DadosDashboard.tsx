@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
+import { MapaCalorRecife } from "@/components/MapaCalorRecife";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
