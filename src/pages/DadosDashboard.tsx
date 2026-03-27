@@ -770,7 +770,7 @@ export default function DadosDashboard() {
                           <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-muted-foreground">{regiao.vagas}</span></td>
                           <td className="px-6 py-4">
                             <div className="flex gap-1">
-                              {Object.entries(regiao.porTipo || {}).map(([tipo, count]) => (
+                              {Object.entries(regiao.porTipo || {}).map(([tipo, count]: [string, number]) => (
                                 <Badge key={tipo} variant="outline" className="text-xs" style={{ borderColor: tipo === 'evento' ? '#3b82f6' : tipo === 'vaga' ? '#10b981' : tipo === 'oficina' ? '#f59e0b' : '#8b5cf6', color: tipo === 'evento' ? '#3b82f6' : tipo === 'vaga' ? '#10b981' : tipo === 'oficina' ? '#f59e0b' : '#8b5cf6' }}>
                                   {tipo} ({count})
                                 </Badge>
