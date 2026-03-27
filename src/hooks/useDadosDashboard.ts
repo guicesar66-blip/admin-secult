@@ -136,10 +136,10 @@ export function useEstatisticasTerritoriais() {
     queryFn: async () => {
       if (!user?.id) return [];
 
-      // Buscar oportunidades com municípios
+      // Buscar oportunidades com municípios e tipo
       const { data: oportunidades } = await supabase
         .from("oportunidades")
-        .select("id, municipio, local, vagas")
+        .select("id, municipio, local, vagas, tipo")
         .eq("criador_id", user.id);
 
       // Buscar oficinas com locais
@@ -148,31 +148,34 @@ export function useEstatisticasTerritoriais() {
         .select("id, local, vagas_total")
         .eq("criador_id", user.id);
 
-      // Agregar por região/município
-      const regiaoMap: Record<string, { projetos: number; vagas: number }> = {};
+      // Agregar por bairro e tipo
+      const regiaoMap: Record<string, { projetos: number; vagas: number; porTipo: Record<string, number> }> = {};
 
       oportunidades?.forEach(o => {
-        const regiao = o.municipio || o.local || "Não especificado";
+        const regiao = o.local || o.municipio || "Não especificado";
         if (!regiaoMap[regiao]) {
-          regiaoMap[regiao] = { projetos: 0, vagas: 0 };
+          regiaoMap[regiao] = { projetos: 0, vagas: 0, porTipo: {} };
         }
         regiaoMap[regiao].projetos += 1;
         regiaoMap[regiao].vagas += o.vagas || 0;
+        regiaoMap[regiao].porTipo[o.tipo] = (regiaoMap[regiao].porTipo[o.tipo] || 0) + 1;
       });
 
       oficinas?.forEach(o => {
         const regiao = o.local || "Não especificado";
         if (!regiaoMap[regiao]) {
-          regiaoMap[regiao] = { projetos: 0, vagas: 0 };
+          regiaoMap[regiao] = { projetos: 0, vagas: 0, porTipo: {} };
         }
         regiaoMap[regiao].projetos += 1;
         regiaoMap[regiao].vagas += o.vagas_total || 0;
+        regiaoMap[regiao].porTipo["oficina"] = (regiaoMap[regiao].porTipo["oficina"] || 0) + 1;
       });
 
       return Object.entries(regiaoMap).map(([nome, dados]) => ({
         nome,
         projetos: dados.projetos,
         vagas: dados.vagas,
+        porTipo: dados.porTipo,
       }));
     },
     enabled: !!user?.id,
