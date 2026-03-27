@@ -747,83 +747,7 @@ export default function DadosDashboard() {
 
           {/* ===== TERRITORIAL ===== */}
           <TabsContent value="territorial" className="space-y-6">
-            <Card className="p-4">
-              <div className="flex gap-4 items-center">
-                <div className="flex-1">
-                  <label className="text-sm text-muted-foreground mb-2 block">Visualização</label>
-                  <Select value={tipoMapa} onValueChange={setTipoMapa}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="projetos">Projetos por Região</SelectItem>
-                      <SelectItem value="vagas">Vagas por Região</SelectItem>
-                      <SelectItem value="pessoas">Candidatos por Município</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Distribuição Territorial</h3>
-              {territorialStats.regioes.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {territorialStats.regioes.slice(0, 9).map((regiao) => {
-                    const valor = tipoMapa === "projetos" 
-                      ? regiao.projetos 
-                      : tipoMapa === "vagas" 
-                        ? regiao.vagas 
-                        : (regiao as any).quantidade || (regiao as any).pessoas || 0;
-                    const max = tipoMapa === "projetos" 
-                      ? territorialStats.maxProjetos 
-                      : tipoMapa === "vagas" 
-                        ? territorialStats.maxVagas 
-                        : Math.max(...pessoasStats.porMunicipio.map(m => m.quantidade), 1);
-                    
-                    return (
-                      <div key={regiao.nome} className={`${getIntensidade(valor, max)} border-2 rounded-lg p-4 transition-colors`}>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h4 className="font-semibold text-foreground">{regiao.nome}</h4>
-                          </div>
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                        <div className="mt-3">
-                          <p className="text-2xl font-bold text-foreground">{valor}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {tipoMapa === "projetos" && "projetos"}
-                            {tipoMapa === "vagas" && "vagas"}
-                            {tipoMapa === "pessoas" && "candidatos"}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                  <MapPin className="h-12 w-12 mb-4 opacity-50" />
-                  <p>Nenhum dado territorial disponível</p>
-                  <p className="text-sm mt-1">Crie projetos com localização para visualizar a distribuição</p>
-                </div>
-              )}
-
-              <div className="mt-6 flex items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span className="text-sm text-muted-foreground">Baixa</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-amber-500 rounded"></div>
-                  <span className="text-sm text-muted-foreground">Média</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-primary rounded"></div>
-                  <span className="text-sm text-muted-foreground">Alta</span>
-                </div>
-              </div>
-            </Card>
+            <MapaCalorRecife dados={territorialStats.regioes} />
 
             {/* Tabela de regiões */}
             {territorialStats.regioes.length > 0 && (
@@ -832,9 +756,10 @@ export default function DadosDashboard() {
                   <table className="w-full">
                     <thead className="bg-muted/50 border-b border-border">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Região/Local</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Bairro</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Projetos</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Vagas</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Tipos</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
@@ -843,6 +768,15 @@ export default function DadosDashboard() {
                           <td className="px-6 py-4 whitespace-nowrap"><span className="font-medium text-foreground">{regiao.nome}</span></td>
                           <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm font-medium text-foreground">{regiao.projetos}</span></td>
                           <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm text-muted-foreground">{regiao.vagas}</span></td>
+                          <td className="px-6 py-4">
+                            <div className="flex gap-1">
+                              {Object.entries(regiao.porTipo || {}).map(([tipo, count]) => (
+                                <Badge key={tipo} variant="outline" className="text-xs" style={{ borderColor: tipo === 'evento' ? '#3b82f6' : tipo === 'vaga' ? '#10b981' : tipo === 'oficina' ? '#f59e0b' : '#8b5cf6', color: tipo === 'evento' ? '#3b82f6' : tipo === 'vaga' ? '#10b981' : tipo === 'oficina' ? '#f59e0b' : '#8b5cf6' }}>
+                                  {tipo} ({count})
+                                </Badge>
+                              ))}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
