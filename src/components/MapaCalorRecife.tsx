@@ -433,7 +433,7 @@ export function MapaCalorRecife({ dados }: MapaCalorRecifeProps) {
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Intensidade</p>
                   <div className="flex items-center gap-1">
                     {[0.15, 0.3, 0.5, 0.7, 0.9].map((op, i) => (
-                      <div key={i} className="flex-1 h-3 rounded-sm" style={{ backgroundColor: "#3b82f6", opacity: op }} />
+                      <div key={i} className="flex-1 h-3 rounded-sm" style={{ backgroundColor: "#ef4444", opacity: op }} />
                     ))}
                   </div>
                   <div className="flex justify-between mt-1">
