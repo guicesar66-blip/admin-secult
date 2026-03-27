@@ -125,14 +125,14 @@ const Oportunidades = () => {
                   <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuItem 
-                disabled
-                className="gap-3 cursor-not-allowed opacity-50"
+              <DropdownMenuItem
+                onClick={() => navigate("/oportunidades/novo/vaga")}
+                className="gap-3 cursor-pointer"
               >
                 <Briefcase className="h-4 w-4 text-emerald-500" />
                 <div>
                   <p className="font-medium">Vaga de Trabalho</p>
-                  <p className="text-xs text-muted-foreground">Em breve</p>
+                  <p className="text-xs text-muted-foreground">Emprego, freelancer, cachê</p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem 
