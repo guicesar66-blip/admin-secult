@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.heat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layers, Thermometer } from "lucide-react";
@@ -22,7 +23,7 @@ function HeatmapLayer({ artistas }: { artistas: Artista[] }) {
     if (artistas.length === 0) return;
 
     // @ts-ignore
-    const heat = L.heatLayer(
+    const heat = (L as any).heatLayer(
       artistas.map(a => [a.location.lat, a.location.lng, 0.5]),
       {
         radius: 30,
