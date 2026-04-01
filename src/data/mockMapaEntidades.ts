@@ -53,10 +53,11 @@ export const projetosMapaMock: ProjetoMapa[] = projetosMock.map((p) => {
     nome: p.nome,
     proponenteNome: p.proponenteNome,
     instrumento: p.instrumento,
+    linguagem: p.linguagem,
     status: p.status,
     publicoImpactado: p.publicoImpactado,
     municipio: p.municipio,
-    location: { lat: jitter(coords.lat), lng: jitter(coords.lng) },
+    location: { lat: jitter(coords.lat, p.id + "-lat"), lng: jitter(coords.lng, p.id + "-lng") },
   };
 });
 
