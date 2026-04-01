@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { Input } from "@/components/ui/input";
 import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
 import { useMapFilter } from "@/contexts/MapFilterContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
