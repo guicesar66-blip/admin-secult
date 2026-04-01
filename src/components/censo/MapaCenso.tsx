@@ -490,7 +490,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
           ))}
 
           {/* ===== CAMADA: Projetos (z=500) ===== */}
-          {camadas.projetos && projetosMapaMock.map((proj) => (
+          {camadas.projetos && projetosFiltrados.map((proj) => (
             <CircleMarker
               key={proj.id}
               center={[proj.location.lat, proj.location.lng]}
