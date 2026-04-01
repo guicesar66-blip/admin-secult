@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Search, Download, ArrowUpDown, X } from "lucide-react";
 import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
 import { getArtistasByProdutora } from "@/data/mockArtistas";
+import { getSubtipoIdsByTipoNome } from "@/data/mockLinguagens";
 import { toast } from "sonner";
 
 interface TabelaProdutorasProps {
