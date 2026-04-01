@@ -152,6 +152,7 @@ export const usuariosMock: Usuario[] = [
     id: "u15", nome_completo: "Roberto Cavalcanti", email: "roberto.c@email.com",
     telefone: "(81) 99400-0001", cpf: "444.000.000-01", nascimento: "1975-08-20",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Recife Antigo", estado: "PE",
     categorias_interesse: ["Música", "Cultura Popular"],
     created_at: "2019-08-12",
