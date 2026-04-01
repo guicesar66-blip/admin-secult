@@ -5,6 +5,8 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Respon
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import { EvolucaoCadastros } from "./EvolucaoCadastros";
 import { CapilaridadeKPI } from "./CapilaridadeKPI";
+import { PainelSocioeconomico } from "./PainelSocioeconomico";
+import { TabelaColetivos } from "./TabelaColetivos";
 
 // Dados mockados conforme história de usuário
 const TOTAL_AGENTES = 662;
@@ -236,6 +238,12 @@ export function PerfilEcossistema({ filtroPeriodo }: PerfilEcossistemaProps) {
           data={dadosLinguagem}
         />
       </div>
+
+      {/* Painel Socioeconômico dos Coletivos (US-09B) */}
+      <PainelSocioeconomico filtroPeriodo={filtroPeriodo} />
+
+      {/* Tabela de Coletivos (US-09C) */}
+      <TabelaColetivos filtroPeriodo={filtroPeriodo} />
     </div>
   );
 }
