@@ -311,7 +311,7 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
 }
 
 // ===== Component =====
-export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView }: MapaCensoProps) {
+export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView, filtroLinguagem = "todas", filtroCidades = [] }: MapaCensoProps) {
   const navigate = useNavigate();
   const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
