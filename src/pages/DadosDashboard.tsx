@@ -69,7 +69,7 @@ export default function DadosDashboard() {
       if (filtroCidades.length > 0 && !filtroCidades.includes(a.municipio)) return false;
       return true;
     });
-  }, [agentesCenso, filtroCategoria, filtroGenero, filtroRaca, filtroCidades]);
+  }, [agentesCenso, filtroLinguagem, filtroGenero, filtroRaca, filtroCidades]);
 
   const handleArtistaClick = (artista: AgenteCenso) => {
     setSelectedArtista(artista);
