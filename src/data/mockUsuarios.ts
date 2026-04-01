@@ -134,6 +134,7 @@ export const usuariosMock: Usuario[] = [
     id: "u13", nome_completo: "Juliana Mendes", email: "juliana.m@email.com",
     telefone: "(87) 99300-0002", cpf: "333.000.000-02", nascimento: "1999-03-20",
     genero: "Mulher cis", raca_cor: "Branca", municipio: "Petrolina",
+    codigo_municipio: "2611101", distrito: "Petrolina",
     bairro: "Areia Branca", estado: "PE",
     categorias_interesse: ["Audiovisual", "Artes Visuais"],
     created_at: "2023-04-01",
