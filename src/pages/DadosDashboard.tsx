@@ -126,7 +126,7 @@ export default function DadosDashboard() {
             <CardContent className="pt-5 pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">Total Agentes</p>
+                  <p className="text-xs text-muted-foreground">Total de Artistas</p>
                   <p className="text-2xl font-bold">{artistasFiltrados.length}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
