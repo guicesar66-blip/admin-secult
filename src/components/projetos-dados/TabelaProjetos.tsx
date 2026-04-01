@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Download, Search, ArrowUpDown, X, Filter, ChevronDown } from "lucide-react";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 import {
   projetosMock, instrumentos, fases, statusLabels, statusCores,
   type StatusProjeto, type FaseProjeto, type InstrumentoFomento,
