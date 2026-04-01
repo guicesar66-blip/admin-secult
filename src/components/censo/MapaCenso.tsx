@@ -56,6 +56,11 @@ interface MapaCensoProps {
   artistas: AgenteCenso[];
   onArtistaClick: (artista: AgenteCenso) => void;
   modoCalor: boolean;
+  searchQuery: string;
+  selectedMunicipio: string | null;
+  onSearchQueryChange: (q: string) => void;
+  onSelectMunicipio: (nome: string) => void;
+  onResetView: () => void;
 }
 
 // ===== Emoji icon helper =====
