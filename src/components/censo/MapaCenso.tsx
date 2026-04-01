@@ -1,22 +1,20 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.heat";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Layers, Thermometer } from "lucide-react";
-import type { Artista } from "@/data/mockCensoCultural";
-import { coresCategoria } from "@/data/mockCensoCultural";
+import type { AgenteCenso } from "@/data/mockCensoAuxiliar";
+import { coresLinguagem } from "@/data/mockCensoAuxiliar";
 
 interface MapaCensoProps {
-  artistas: Artista[];
-  onArtistaClick: (artista: Artista) => void;
+  artistas: AgenteCenso[];
+  onArtistaClick: (artista: AgenteCenso) => void;
   modoCalor: boolean;
 }
 
 // Heatmap layer component
-function HeatmapLayer({ artistas }: { artistas: Artista[] }) {
+function HeatmapLayer({ artistas }: { artistas: AgenteCenso[] }) {
   const map = useMap();
 
   useEffect(() => {
@@ -72,9 +70,9 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
             <CircleMarker
               key={artista.id}
               center={[artista.location.lat, artista.location.lng]}
-              radius={8 + (artista.scoreImpacto / 20)}
+              radius={8 + (artista.scoreReputacao / 20)}
               pathOptions={{
-                fillColor: coresCategoria[artista.categoria] || "#6b7280",
+                fillColor: coresLinguagem[artista.linguagem] || "#6b7280",
                 fillOpacity: 0.8,
                 color: "#fff",
                 weight: 2,
@@ -86,8 +84,9 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
               <Popup>
                 <div className="text-sm space-y-1 min-w-[180px]">
                   <p className="font-semibold">{artista.nomeArtistico || artista.nome}</p>
-                  <p className="text-xs text-gray-500">{artista.categoria} • {artista.bairro}</p>
-                  <p className="text-xs">Score: <strong>{artista.scoreImpacto}</strong></p>
+                  <p className="text-xs text-gray-500">{artista.linguagem} • {artista.bairro}</p>
+                  <p className="text-xs">Produtora: <strong>{artista.produtoraNome}</strong></p>
+                  <p className="text-xs">Score: <strong>{artista.scoreReputacao}</strong></p>
                   <button
                     onClick={() => onArtistaClick(artista)}
                     className="text-xs text-blue-600 underline mt-1 block"
