@@ -91,13 +91,14 @@ export default function DadosDashboard() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todas">Todas linguagens</SelectItem>
+                <SelectItem value="Artes Cênicas">Artes Cênicas</SelectItem>
                 <SelectItem value="Música">Música</SelectItem>
+                <SelectItem value="Audiovisual">Audiovisual</SelectItem>
+                <SelectItem value="Patrimônio">Patrimônio</SelectItem>
+                <SelectItem value="Literatura">Literatura</SelectItem>
                 <SelectItem value="Cultura Popular">Cultura Popular</SelectItem>
                 <SelectItem value="Artes Visuais">Artes Visuais</SelectItem>
-                <SelectItem value="Teatro">Teatro</SelectItem>
-                <SelectItem value="Dança">Dança</SelectItem>
-                <SelectItem value="Audiovisual">Audiovisual</SelectItem>
-                <SelectItem value="Literatura">Literatura/Slam</SelectItem>
+                <SelectItem value="Gastronomia">Gastronomia</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>

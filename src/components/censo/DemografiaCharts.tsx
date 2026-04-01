@@ -116,12 +116,6 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
     percent: { label: "Participação (%)", color: "hsl(var(--primary))" },
   };
 
-  // Find filtered language info
-  const linguagemInfo = useMemo(() => {
-    if (filtroLinguagem === "todas") return null;
-    return data.linguagem.find((d) => d.name.toLowerCase().includes(filtroLinguagem.toLowerCase()));
-  }, [filtroLinguagem, data.linguagem]);
-
   return (
     <>
       {/* Donut charts — Gênero and Raça/Cor */}
@@ -130,7 +124,7 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
         <DonutChart title="Distribuição por Raça/Cor" data={data.raca} colors={DONUT_COLORS_RACA} />
       </div>
 
-      {/* Diversified charts: Stacked bar (Faixa Etária), Radar (Formalização), Donut (Linguagem) */}
+      {/* Diversified charts: Stacked bar (Faixa Etária), Radar (Formalização), Linguagem */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Faixa Etária — Stacked vertical bar */}
         <Card className="h-full">
@@ -186,7 +180,7 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
           </CardContent>
         </Card>
 
-        {/* Linguagem Artística — Donut or filtered info */}
+        {/* Linguagem — tipos principais (donut) ou subtipos quando filtrado (bar) */}
         {filtroLinguagem === "todas" ? (
           <DonutChart
             title="Distribuição por Linguagem"
@@ -196,19 +190,21 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
         ) : (
           <Card className="h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-semibold">Linguagem Filtrada</CardTitle>
+              <CardTitle className="text-base font-semibold">
+                Subtipos — {data.filtroTipoNome}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center h-[220px]">
-              {linguagemInfo ? (
-                <>
-                  <p className="text-3xl font-bold">{linguagemInfo.value}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    agentes em <span className="font-medium text-foreground">{filtroLinguagem}</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{linguagemInfo.percent}% do total</p>
-                </>
+            <CardContent>
+              {data.linguagemSubtipos.length > 0 ? (
+                <DonutChart
+                  title=""
+                  data={data.linguagemSubtipos}
+                  colors={LINGUAGEM_COLORS}
+                />
               ) : (
-                <p className="text-sm text-muted-foreground">Nenhum dado para "{filtroLinguagem}"</p>
+                <div className="flex items-center justify-center h-[220px]">
+                  <p className="text-sm text-muted-foreground">Nenhum dado para "{filtroLinguagem}"</p>
+                </div>
               )}
             </CardContent>
           </Card>
