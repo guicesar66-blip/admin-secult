@@ -62,6 +62,9 @@ export interface MapFilterEvent {
   nome?: string;
   tipo?: string;
   categoria?: string;
+  /** For municipality clicks: the municipality where the nearest equipment is located */
+  municipioEquipamento?: string;
+  equipamentoProximo?: string;
 }
 
 interface MapaEquipamentosProps {
