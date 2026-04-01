@@ -25,7 +25,7 @@ export function RaioAcesso({ filtroCritico, onToggleCritico }: RaioAcessoProps) 
             </p>
             <p className="text-4xl font-bold mt-1">{acessoKPI.percentualAte1h}%</p>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-              <span>{acessoKPI.totalEquipamentos} equipamentos mapeados</span>
+              <span>{acessoKPI.totalEquipamentos} espaços mapeados</span>
               <span>·</span>
               <span className={`font-medium flex items-center gap-1 ${filtroCritico ? "text-destructive" : "text-destructive"}`}>
                 <AlertTriangle className="h-3.5 w-3.5" />
