@@ -6,6 +6,7 @@ import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import { EvolucaoCadastros } from "./EvolucaoCadastros";
 import { CapilaridadeKPI } from "./CapilaridadeKPI";
 import { PainelSocioeconomico } from "./PainelSocioeconomico";
+import { TabelaColetivos } from "./TabelaColetivos";
 
 // Dados mockados conforme história de usuário
 const TOTAL_AGENTES = 662;
