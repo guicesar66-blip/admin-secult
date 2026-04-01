@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, Users, Briefcase, TrendingUp } from "lucide-react";
 import { equipamentosMock, tiposEquipamento, iconesTipoEquipamento } from "@/data/mockEquipamentosCulturais";
+import { tiposLinguagem } from "@/data/mockLinguagens";
 import { QualidadeEspacos } from "./QualidadeEspacos";
 import { AtividadeEspacos } from "./AtividadeEspacos";
 import { InventarioEquipamentos } from "./InventarioEquipamentos";
@@ -26,7 +27,16 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
   const equipamentosFiltrados = useMemo(() => {
     let result = equipamentosMock;
     if (filtroLinguagem !== "todas") {
-      result = result.filter(e => e.linguagens.some(l => l.toLowerCase().includes(filtroLinguagem.toLowerCase())));
+      // Get all subtipo names for the selected tipo to match against equipamento linguagens
+      const tipo = tiposLinguagem.find(t => t.nome === filtroLinguagem);
+      const subtipoNames = tipo ? tipo.subtipos.map(s => s.nome.toLowerCase()) : [];
+      const tipoLower = filtroLinguagem.toLowerCase();
+      result = result.filter(e =>
+        e.linguagens.some(l => {
+          const ll = l.toLowerCase();
+          return ll === tipoLower || subtipoNames.includes(ll);
+        })
+      );
     }
     if (filtroCidades.length > 0) {
       result = result.filter(e => filtroCidades.includes(e.municipio));

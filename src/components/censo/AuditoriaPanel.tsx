@@ -26,12 +26,19 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [] }
     vermelho: "bg-red-500/10 text-red-600 border-red-500/20",
   };
 
-  const totalProjetos = projetosAuditoriaMock.length;
-  const emDia = projetosAuditoriaMock.filter(p => p.status === "verde").length;
-  const pendencias = projetosAuditoriaMock.filter(p => p.status === "amarelo").length;
-  const atrasados = projetosAuditoriaMock.filter(p => p.status === "vermelho").length;
+  // Apply global filters
+  const projetosFiltrados = projetosAuditoriaMock.filter(p => {
+    if (filtroLinguagem !== "todas" && p.linguagem !== filtroLinguagem) return false;
+    if (filtroCidades.length > 0 && !filtroCidades.includes(p.municipio)) return false;
+    return true;
+  });
 
-  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(projetosAuditoriaMock);
+  const totalProjetos = projetosFiltrados.length;
+  const emDia = projetosFiltrados.filter(p => p.status === "verde").length;
+  const pendencias = projetosFiltrados.filter(p => p.status === "amarelo").length;
+  const atrasados = projetosFiltrados.filter(p => p.status === "vermelho").length;
+
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(projetosFiltrados);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(value);
