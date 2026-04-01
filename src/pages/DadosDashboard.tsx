@@ -160,10 +160,14 @@ export default function DadosDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="mapa" className="gap-2">
               <Map className="h-4 w-4" />
               <span className="hidden sm:inline">Censo Cultural</span>
+            </TabsTrigger>
+            <TabsTrigger value="perfil" className="gap-2">
+              <UserCheck className="h-4 w-4" />
+              <span className="hidden sm:inline">Perfil do Ecossistema</span>
             </TabsTrigger>
             <TabsTrigger value="auditoria" className="gap-2">
               <FileCheck className="h-4 w-4" />
