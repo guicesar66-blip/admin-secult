@@ -44,7 +44,7 @@ export default function DadosDashboard() {
   const [activeTab, setActiveTab] = useState("mapa");
   const [selectedArtista, setSelectedArtista] = useState<AgenteCenso | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [insightsOpen, setInsightsOpen] = useState(false);
+  
   const [modoCalor, setModoCalor] = useState(false);
   const [filtroPeriodo, setFiltroPeriodo] = useState<string>("ultimo-ano");
   const [filtroLinguagem, setFiltroLinguagem] = useState<string>("todas");
