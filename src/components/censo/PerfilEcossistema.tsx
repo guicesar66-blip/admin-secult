@@ -12,6 +12,7 @@ import { SALARIO_MINIMO_2025 } from "@/data/mockProdutoras";
 interface PerfilEcossistemaProps {
   filtroPeriodo: string;
   filtroLinguagem: string;
+  filtroCidades?: string[];
 }
 
 interface MiniKPIProps {
@@ -49,8 +50,8 @@ function MiniKPI({ label, value, subtitle, icon, trend, accentColor = "bg-primar
   );
 }
 
-export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcossistemaProps) {
-  const data = useEcossistemaData(filtroLinguagem);
+export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem, filtroCidades = [] }: PerfilEcossistemaProps) {
+  const data = useEcossistemaData(filtroLinguagem, filtroCidades);
   const percentSM = data.rendaMedia > 0 ? ((data.rendaMedia / SALARIO_MINIMO_2025) * 100).toFixed(0) : "0";
 
   const MUNICIPIOS_COM_AGENTES = 47;

@@ -130,19 +130,28 @@ function artistaTemTipo(artista: Artista, tipoNome: string): boolean {
   return artista.subtipo_ids.some((sid) => subIds.includes(sid));
 }
 
-export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
+export function useEcossistemaData(filtroLinguagem: string, filtroCidades: string[] = []): EcossistemaData {
   return useMemo(() => {
     // Get unique artistas (deduplicate M:N by usuario_id)
     const uniqueArtistas = getArtistasUnicos();
 
+    // Filter by municipio (from usuario)
+    const usuarioMap = new Map(usuariosMock.map((u) => [u.id, u]));
+    const afterCityFilter =
+      filtroCidades.length === 0
+        ? uniqueArtistas
+        : uniqueArtistas.filter((a) => {
+            const usuario = usuarioMap.get(a.usuario_id);
+            return usuario ? filtroCidades.includes(usuario.municipio) : false;
+          });
+
     // Filter by tipo principal de linguagem
     const filteredArtistas =
       filtroLinguagem === "todas"
-        ? uniqueArtistas
-        : uniqueArtistas.filter((a) => artistaTemTipo(a, filtroLinguagem));
+        ? afterCityFilter
+        : afterCityFilter.filter((a) => artistaTemTipo(a, filtroLinguagem));
 
-    // Enrich with usuario data
-    const usuarioMap = new Map(usuariosMock.map((u) => [u.id, u]));
+    // Enrich with usuario data (map already built above)
     const artistas: ArtistaEnriquecido[] = filteredArtistas
       .map((a) => {
         const usuario = usuarioMap.get(a.usuario_id);
@@ -151,13 +160,17 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       })
       .filter(Boolean) as ArtistaEnriquecido[];
 
-    // Filter produtoras: keep those that have at least one artista with the selected linguagem
-    const produtoras =
-      filtroLinguagem === "todas"
-        ? produtorasMock
-        : produtorasMock.filter((p) =>
-            getArtistasByProdutora(p.id).some((a) => artistaTemTipo(a, filtroLinguagem))
-          );
+    // Filter produtoras by city and linguagem
+    let produtorasFiltered = produtorasMock;
+    if (filtroCidades.length > 0) {
+      produtorasFiltered = produtorasFiltered.filter((p) => filtroCidades.includes(p.municipio));
+    }
+    if (filtroLinguagem !== "todas") {
+      produtorasFiltered = produtorasFiltered.filter((p) =>
+        getArtistasByProdutora(p.id).some((a) => artistaTemTipo(a, filtroLinguagem))
+      );
+    }
+    const produtoras = produtorasFiltered;
 
     const total = artistas.length || 1;
 
@@ -301,5 +314,5 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       percentProdutorasVulneravel,
       ivc,
     };
-  }, [filtroLinguagem]);
+  }, [filtroLinguagem, filtroCidades]);
 }

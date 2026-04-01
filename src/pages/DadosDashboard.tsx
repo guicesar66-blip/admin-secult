@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ export default function DadosDashboard() {
   const [modoCalor, setModoCalor] = useState(false);
   const [filtroPeriodo, setFiltroPeriodo] = useState<string>("ultimo-ano");
   const [filtroLinguagem, setFiltroLinguagem] = useState<string>("todas");
+  const [filtroCidades, setFiltroCidades] = useState<string[]>([]);
 
   // Filters
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
@@ -84,6 +86,10 @@ export default function DadosDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <FiltroCidadeMultiSelect
+              selectedCidades={filtroCidades}
+              onSelectedCidadesChange={setFiltroCidades}
+            />
             <Select value={filtroLinguagem} onValueChange={setFiltroLinguagem}>
               <SelectTrigger className="w-[170px] h-9">
                 <Palette className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -329,6 +335,7 @@ export default function DadosDashboard() {
                 filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
               }
               filtroLinguagem={filtroLinguagem}
+              filtroCidades={filtroCidades}
             />
           </TabsContent>
 

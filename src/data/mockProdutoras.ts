@@ -20,6 +20,8 @@ export interface Produtora {
   descricao: string;
   linguagem_principal: string;
   municipio: string;
+  codigo_municipio: string;
+  distrito?: string;
   estado: string;
   endereco: string;
   // Formalização flexível
@@ -71,7 +73,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Maracatu Raízes",
     descricao: "O Maracatu Raízes é uma produtora cultural fundada em 2013 com foco na preservação e difusão do maracatu de baque virado nas comunidades periféricas do Recife. Promove oficinas, cortejos e participação em festivais.",
     linguagem_principal: "Cultura Popular",
-    municipio: "Recife", estado: "PE",
+    municipio: "Recife", codigo_municipio: "2611606", distrito: "Recife", estado: "PE",
     endereco: "Rua do Maracatu, 44 — Recife, PE",
     tipo_formalizacao: "Associação Cultural",
     cnpj: "12.345.678/0001-90",
@@ -96,7 +98,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Slam da Periferia",
     descricao: "Produtora de poesia falada e slam que promove competições e saraus nas periferias de Olinda e Recife.",
     linguagem_principal: "Literatura/Slam",
-    municipio: "Olinda", estado: "PE",
+    municipio: "Olinda", codigo_municipio: "2609600", distrito: "Olinda", estado: "PE",
     endereco: "Rua do Amparo, 12 — Olinda, PE",
     tipo_formalizacao: "Informal",
     cnpj: null,
@@ -116,7 +118,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Cia. Movimento Livre",
     descricao: "Companhia de dança contemporânea com sede em Caruaru que explora a interseção entre tradição e modernidade.",
     linguagem_principal: "Dança",
-    municipio: "Caruaru", estado: "PE",
+    municipio: "Caruaru", codigo_municipio: "2604106", distrito: "Caruaru", estado: "PE",
     endereco: "Av. Agamenon Magalhães, 500 — Caruaru, PE",
     tipo_formalizacao: "MEI",
     cnpj: "98.765.432/0001-11",
@@ -137,7 +139,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Coletivo Canoa",
     descricao: "Produtora de conteúdo audiovisual independente focada em documentários sobre a cultura ribeirinha do São Francisco.",
     linguagem_principal: "Audiovisual",
-    municipio: "Petrolina", estado: "PE",
+    municipio: "Petrolina", codigo_municipio: "2611101", distrito: "Petrolina", estado: "PE",
     endereco: "Rua do Rio, 78 — Petrolina, PE",
     tipo_formalizacao: "Informal",
     cnpj: null,
@@ -153,7 +155,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Grupo Rabeca Viva",
     descricao: "Grupo musical dedicado à preservação da rabeca e da música tradicional pernambucana com projetos educacionais.",
     linguagem_principal: "Música",
-    municipio: "Recife", estado: "PE",
+    municipio: "Recife", codigo_municipio: "2611606", distrito: "Recife", estado: "PE",
     endereco: "Rua da Rabeca, 33 — Recife, PE",
     tipo_formalizacao: "Associação Cultural",
     cnpj: "55.123.456/0001-33",
