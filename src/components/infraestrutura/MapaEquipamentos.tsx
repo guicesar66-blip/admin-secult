@@ -57,7 +57,7 @@ function PaneSetup() {
 }
 
 export interface MapFilterEvent {
-  type: "equipamento" | "municipio" | "artista";
+  type: "equipamento" | "municipio" | "artista" | "reset";
   municipio?: string;
   nome?: string;
   tipo?: string;
