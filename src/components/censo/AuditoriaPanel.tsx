@@ -94,7 +94,7 @@ export function AuditoriaPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {projetosAuditoriaMock.map((p) => (
+                {dadosPaginados.map((p) => (
                   <TableRow key={p.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
