@@ -30,9 +30,20 @@ const coordenadasMunicipios: Record<string, { lat: number; lng: number }> = {
   "Cabo de Santo Agostinho": { lat: -8.2844, lng: -35.0290 },
 };
 
-// Gerar variação de coordenada para não sobrepor marcadores
-function jitter(val: number, range = 0.015): number {
-  return val + (Math.random() - 0.5) * range;
+// Gerar variação determinística de coordenada para não sobrepor marcadores
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash;
+}
+
+function jitter(val: number, seed: string, range = 0.015): number {
+  const h = hashCode(seed);
+  const normalized = ((h % 10000) / 10000); // 0..1 deterministic
+  return val + (normalized - 0.5) * range;
 }
 
 export const projetosMapaMock: ProjetoMapa[] = projetosMock.map((p) => {
