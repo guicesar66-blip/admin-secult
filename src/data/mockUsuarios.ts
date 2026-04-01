@@ -143,6 +143,7 @@ export const usuariosMock: Usuario[] = [
     id: "u14", nome_completo: "Pedro Nascimento", email: "pedro.n@email.com",
     telefone: "(87) 99300-0003", cpf: "333.000.000-03", nascimento: "1991-10-05",
     genero: "Homem cis", raca_cor: "Preta", municipio: "Petrolina",
+    codigo_municipio: "2611101", distrito: "Petrolina",
     bairro: "Jardim Maravilha", estado: "PE",
     categorias_interesse: ["Audiovisual"],
     created_at: "2023-04-01",
