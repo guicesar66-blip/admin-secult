@@ -56,6 +56,18 @@ function PaneSetup() {
   return null;
 }
 
+/** Fires a reset event when the user clicks on an empty area of the map */
+function MapResetClick({ onReset }: { onReset?: () => void }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!onReset) return;
+    const handler = () => onReset();
+    map.on("click", handler);
+    return () => { map.off("click", handler); };
+  }, [map, onReset]);
+  return null;
+}
+
 export interface MapFilterEvent {
   type: "equipamento" | "municipio" | "artista" | "reset";
   municipio?: string;
