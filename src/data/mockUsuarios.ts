@@ -26,6 +26,7 @@ export const usuariosMock: Usuario[] = [
     id: "u1", nome_completo: "Ana Cristina Lima", email: "anacristina@email.com",
     telefone: "(81) 99900-1234", cpf: "123.000.000-45", nascimento: "1988-03-12",
     genero: "Mulher cis", raca_cor: "Parda", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     endereco: "Rua do Sol, 100", bairro: "Boa Vista", cep: "50030-220", estado: "PE",
     categorias_interesse: ["Cultura Popular", "Dança", "Percussão"],
     created_at: "2022-01-15",
