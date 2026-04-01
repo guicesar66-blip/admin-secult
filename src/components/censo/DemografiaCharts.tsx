@@ -187,25 +187,19 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
             data={data.linguagem}
             colors={LINGUAGEM_COLORS}
           />
+        ) : data.linguagemSubtipos.length > 0 ? (
+          <DonutChart
+            title={`Subtipos — ${data.filtroTipoNome}`}
+            data={data.linguagemSubtipos}
+            colors={LINGUAGEM_COLORS}
+          />
         ) : (
           <Card className="h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-semibold">
-                Subtipos — {data.filtroTipoNome}
-              </CardTitle>
+              <CardTitle className="text-base font-semibold">Subtipos — {data.filtroTipoNome}</CardTitle>
             </CardHeader>
-            <CardContent>
-              {data.linguagemSubtipos.length > 0 ? (
-                <DonutChart
-                  title=""
-                  data={data.linguagemSubtipos}
-                  colors={LINGUAGEM_COLORS}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-[220px]">
-                  <p className="text-sm text-muted-foreground">Nenhum dado para "{filtroLinguagem}"</p>
-                </div>
-              )}
+            <CardContent className="flex items-center justify-center h-[220px]">
+              <p className="text-sm text-muted-foreground">Nenhum dado para "{filtroLinguagem}"</p>
             </CardContent>
           </Card>
         )}
