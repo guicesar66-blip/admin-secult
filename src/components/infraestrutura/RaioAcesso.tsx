@@ -34,7 +34,7 @@ export function RaioAcesso({ filtroCritico, onToggleCritico }: RaioAcessoProps) 
             </div>
             {filtroCritico && (
               <p className="text-xs text-destructive font-medium mt-2">
-                🔴 Filtro ativo — exibindo apenas municípios e equipamentos com acesso crítico
+                🔴 Filtro ativo — exibindo apenas municípios e espaços com acesso crítico
               </p>
             )}
           </div>

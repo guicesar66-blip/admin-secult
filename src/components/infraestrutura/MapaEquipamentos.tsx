@@ -148,7 +148,7 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
             </div>
           ))}
           <span className="text-xs text-muted-foreground ml-auto flex items-center">
-            {equipamentosFiltrados.length} equipamentos exibidos
+            {equipamentosFiltrados.length} espaços exibidos
           </span>
         </div>
       </CardHeader>
