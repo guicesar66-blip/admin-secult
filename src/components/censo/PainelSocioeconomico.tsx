@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell } from "recharts";
-import { GraduationCap, Home, ShieldAlert, Info } from "lucide-react";
+import { GraduationCap, Home, ShieldAlert } from "lucide-react";
 import { REFERENCIA_SUPERIOR_PE, IVC_COLORS } from "@/data/mockProdutoras";
 import type { EcossistemaData } from "@/hooks/useEcossistemaData";
 
