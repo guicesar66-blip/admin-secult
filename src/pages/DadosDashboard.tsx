@@ -118,13 +118,6 @@ export default function DadosDashboard() {
                 <SelectItem value="todos">Todo período</SelectItem>
               </SelectContent>
             </Select>
-            <Button
-              onClick={() => setInsightsOpen(true)}
-              className="gap-2 bg-gradient-to-r from-primary to-primary/80 shadow-lg"
-            >
-              <Sparkles className="h-4 w-4" />
-              AI Insights
-            </Button>
           </div>
         </div>
 
