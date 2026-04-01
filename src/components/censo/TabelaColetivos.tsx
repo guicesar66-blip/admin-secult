@@ -188,7 +188,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((p) => (
+                {dadosPaginados.map((p) => (
                   <TableRow
                     key={p.id}
                     className="cursor-pointer hover:bg-muted/50"
