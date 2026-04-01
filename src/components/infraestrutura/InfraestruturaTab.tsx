@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { MapaEquipamentos, type MapFilterEvent } from "./MapaEquipamentos";
+import { MetricasEspacos } from "./MetricasEspacos";
 import { RaioAcesso } from "./RaioAcesso";
 import { InventarioEquipamentos } from "./InventarioEquipamentos";
 
@@ -8,57 +8,27 @@ interface InfraestruturaTabProps {
 }
 
 export function InfraestruturaTab({ filtroPeriodo }: InfraestruturaTabProps) {
-  const [filtroCritico, setFiltroCritico] = useState(false);
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
+  const [filtroConservacao, setFiltroConservacao] = useState("todos");
+  const [filtroAcessibilidade, setFiltroAcessibilidade] = useState("todos");
   const [busca, setBusca] = useState("");
-  const tabelaRef = useRef<HTMLDivElement>(null);
-
-  const handleMapClick = useCallback((event: MapFilterEvent) => {
-    // Clear all existing filters before applying new ones
-    setBusca("");
-
-    switch (event.type) {
-      case "equipamento":
-        setFiltroMunicipio(event.municipio ?? "todos");
-        setFiltroTipo(event.tipo ?? "todos");
-        break;
-      case "municipio":
-        setFiltroMunicipio(event.municipio ?? "todos");
-        setFiltroTipo("todos");
-        break;
-      case "artista":
-        setFiltroMunicipio(event.municipio ?? "todos");
-        setFiltroTipo("todos");
-        break;
-      case "reset":
-        setFiltroMunicipio("todos");
-        setFiltroTipo("todos");
-        return; // no scroll on reset
-      default:
-        return;
-    }
-
-    setTimeout(() => {
-      tabelaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-  }, []);
 
   return (
     <div className="space-y-6">
-      <RaioAcesso filtroCritico={filtroCritico} onToggleCritico={() => setFiltroCritico((v) => !v)} />
-      <MapaEquipamentos filtroCritico={filtroCritico} onMapClick={handleMapClick} />
-      <div ref={tabelaRef}>
-        <InventarioEquipamentos
-          filtroCritico={filtroCritico}
-          filtroMunicipio={filtroMunicipio}
-          onFiltroMunicipioChange={setFiltroMunicipio}
-          filtroTipo={filtroTipo}
-          onFiltroTipoChange={setFiltroTipo}
-          busca={busca}
-          onBuscaChange={setBusca}
-        />
-      </div>
+      <MetricasEspacos />
+      <InventarioEquipamentos
+        filtroMunicipio={filtroMunicipio}
+        onFiltroMunicipioChange={setFiltroMunicipio}
+        filtroTipo={filtroTipo}
+        onFiltroTipoChange={setFiltroTipo}
+        filtroConservacao={filtroConservacao}
+        onFiltroConservacaoChange={setFiltroConservacao}
+        filtroAcessibilidade={filtroAcessibilidade}
+        onFiltroAcessibilidadeChange={setFiltroAcessibilidade}
+        busca={busca}
+        onBuscaChange={setBusca}
+      />
     </div>
   );
 }
