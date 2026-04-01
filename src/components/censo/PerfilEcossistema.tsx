@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
+import { EvolucaoCadastros } from "./EvolucaoCadastros";
+import { CapilaridadeKPI } from "./CapilaridadeKPI";
 
 // Dados mockados conforme história de usuário
 const TOTAL_AGENTES = 662;
