@@ -53,24 +53,24 @@ export function QualidadeEspacos({ filtroLinguagem = "todas", filtroCidades = []
 
   const conservacao = useMemo(() => {
     const cats = ["Excelente", "Bom", "Regular", "Precário"] as const;
-    const total = equipamentosMock.length;
-    return cats.map(c => ({ name: c, value: equipamentosMock.filter(e => e.conservacao === c).length, percent: Math.round(equipamentosMock.filter(e => e.conservacao === c).length / total * 100) }));
-  }, []);
+    const total = baseData.length || 1;
+    return cats.map(c => ({ name: c, value: baseData.filter(e => e.conservacao === c).length, percent: Math.round(baseData.filter(e => e.conservacao === c).length / total * 100) }));
+  }, [baseData]);
 
-  const precarios = equipamentosMock.filter(e => e.conservacao === "Precário");
+  const precarios = baseData.filter(e => e.conservacao === "Precário");
 
   const acessKeys: (keyof typeof equipamentosMock[0]["acessibilidade"])[] = ["rampa", "elevador", "banheiro_adaptado", "piso_tatil", "vagas_pcd", "audiodescricao", "libras"];
   const acessLabels: Record<string, string> = { rampa: "Rampa", elevador: "Elevador", banheiro_adaptado: "Banheiro adapt.", piso_tatil: "Piso tátil", vagas_pcd: "Vagas PCD", audiodescricao: "Audiodescrição", libras: "Libras" };
-  const acessData = acessKeys.map(k => ({ name: acessLabels[k], percent: Math.round(equipamentosMock.filter(e => e.acessibilidade[k]).length / equipamentosMock.length * 100) })).sort((a, b) => b.percent - a.percent);
+  const acessData = acessKeys.map(k => ({ name: acessLabels[k], percent: baseData.length > 0 ? Math.round(baseData.filter(e => e.acessibilidade[k]).length / baseData.length * 100) : 0 })).sort((a, b) => b.percent - a.percent);
 
   const nivelAcess = useMemo(() => {
-    const total = equipamentosMock.length;
+    const total = baseData.length || 1;
     return [
-      { name: "Totalmente", value: equipamentosMock.filter(e => e.nivelAcessibilidade === "Total").length, percent: Math.round(equipamentosMock.filter(e => e.nivelAcessibilidade === "Total").length / total * 100) },
-      { name: "Parcialmente", value: equipamentosMock.filter(e => e.nivelAcessibilidade === "Parcial").length, percent: Math.round(equipamentosMock.filter(e => e.nivelAcessibilidade === "Parcial").length / total * 100) },
-      { name: "Não acessível", value: equipamentosMock.filter(e => e.nivelAcessibilidade === "Não acessível").length, percent: Math.round(equipamentosMock.filter(e => e.nivelAcessibilidade === "Não acessível").length / total * 100) },
+      { name: "Totalmente", value: baseData.filter(e => e.nivelAcessibilidade === "Total").length, percent: Math.round(baseData.filter(e => e.nivelAcessibilidade === "Total").length / total * 100) },
+      { name: "Parcialmente", value: baseData.filter(e => e.nivelAcessibilidade === "Parcial").length, percent: Math.round(baseData.filter(e => e.nivelAcessibilidade === "Parcial").length / total * 100) },
+      { name: "Não acessível", value: baseData.filter(e => e.nivelAcessibilidade === "Não acessível").length, percent: Math.round(baseData.filter(e => e.nivelAcessibilidade === "Não acessível").length / total * 100) },
     ];
-  }, []);
+  }, [baseData]);
 
   return (
     <div className="space-y-6">

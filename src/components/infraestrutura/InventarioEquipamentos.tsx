@@ -29,6 +29,8 @@ interface InventarioEquipamentosProps {
   onFiltroAcessibilidadeChange: (value: string) => void;
   busca: string;
   onBuscaChange: (value: string) => void;
+  filtroLinguagemGlobal?: string;
+  filtroCidadesGlobal?: string[];
 }
 
 export function InventarioEquipamentos({
@@ -37,6 +39,8 @@ export function InventarioEquipamentos({
   filtroConservacao, onFiltroConservacaoChange,
   filtroAcessibilidade, onFiltroAcessibilidadeChange,
   busca, onBuscaChange,
+  filtroLinguagemGlobal = "todas",
+  filtroCidadesGlobal = [],
 }: InventarioEquipamentosProps) {
   const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
@@ -53,6 +57,10 @@ export function InventarioEquipamentos({
 
   const dados = useMemo(() => {
     let resultado = [...equipamentosMock];
+    // Global filters
+    if (filtroLinguagemGlobal !== "todas") resultado = resultado.filter(e => e.linguagens.some(l => l.toLowerCase().includes(filtroLinguagemGlobal.toLowerCase())));
+    if (filtroCidadesGlobal.length > 0) resultado = resultado.filter(e => filtroCidadesGlobal.includes(e.municipio));
+    // Local filters
     if (busca) {
       const q = busca.toLowerCase();
       resultado = resultado.filter(e => e.nome.toLowerCase().includes(q) || e.municipio.toLowerCase().includes(q));
@@ -69,7 +77,7 @@ export function InventarioEquipamentos({
       return sortDir === "asc" ? cmp : -cmp;
     });
     return resultado;
-  }, [busca, filtroMunicipio, filtroTipo, filtroConservacao, filtroAcessibilidade, sortKey, sortDir]);
+  }, [busca, filtroMunicipio, filtroTipo, filtroConservacao, filtroAcessibilidade, sortKey, sortDir, filtroLinguagemGlobal, filtroCidadesGlobal]);
 
   const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
 
