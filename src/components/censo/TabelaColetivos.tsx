@@ -90,6 +90,8 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
     return result;
   }, [busca, filtroLinguagemLocal, filtroMunicipio, filtroStatus, filtroIVC, filtroCNPJ, filtroLinguagem, sortKey, sortDir]);
 
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(filtered);
+
   const SortableHeader = ({ label, keyName }: { label: string; keyName: SortKey }) => (
     <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(keyName)}>
       <div className="flex items-center gap-1">

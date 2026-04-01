@@ -26,6 +26,8 @@ export function AuditoriaPanel() {
   const pendencias = projetosAuditoriaMock.filter(p => p.status === "amarelo").length;
   const atrasados = projetosAuditoriaMock.filter(p => p.status === "vermelho").length;
 
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(projetosAuditoriaMock);
+
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(value);
 

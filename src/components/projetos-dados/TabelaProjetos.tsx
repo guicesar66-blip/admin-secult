@@ -58,6 +58,8 @@ export function TabelaProjetos() {
     return resultado;
   }, [busca, filtroInstrumento, filtroStatus, filtroLinguagem, filtroFase, sortKey, sortDir]);
 
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
+
   const handleExportCSV = () => {
     const headers = ["Nome", "Proponente", "Linguagem", "Instrumento", "Município", "Fase", "Status", "Público", "Valor (R$)", "Conformidade (%)"];
     const rows = dados.map(p => [p.nome, p.proponenteNome, p.linguagem, p.instrumento, p.municipio, fases.find(f => f.value === p.fase)?.label, statusLabels[p.status], p.publicoImpactado, p.valorCaptado, p.scoreConformidade]);

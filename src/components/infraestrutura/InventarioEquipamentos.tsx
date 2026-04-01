@@ -71,6 +71,8 @@ export function InventarioEquipamentos({
     return resultado;
   }, [busca, filtroMunicipio, filtroTipo, filtroConservacao, filtroAcessibilidade, sortKey, sortDir]);
 
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
+
   const handleExportCSV = () => {
     const headers = ["Município", "Tipo", "Nome", "Capacidade", "Acessibilidade PCD", "Conservação", "Gestão", "Status"];
     const rows = dados.map(e => [e.municipio, e.tipo, e.nome, e.capacidade ?? "", e.nivelAcessibilidade, e.conservacao, e.gestao, e.status]);
