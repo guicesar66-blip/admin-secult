@@ -294,6 +294,16 @@ export default function DadosDashboard() {
             </div>
           </TabsContent>
 
+          {/* ===== PERFIL DO ECOSSISTEMA ===== */}
+          <TabsContent value="perfil" className="space-y-4">
+            <PerfilEcossistema filtroPeriodo={
+              filtroPeriodo === "ultimo-mes" ? "Último mês" :
+              filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
+              filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
+              filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
+            } />
+          </TabsContent>
+
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
             <AuditoriaPanel />
