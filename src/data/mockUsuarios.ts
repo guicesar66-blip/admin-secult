@@ -53,6 +53,7 @@ export const usuariosMock: Usuario[] = [
     id: "u4", nome_completo: "Lucas Fernandes", email: "lucas.f@email.com",
     telefone: "(81) 99100-0001", cpf: "111.000.000-01", nascimento: "1998-01-15",
     genero: "Homem cis", raca_cor: "Preta", municipio: "Olinda",
+    codigo_municipio: "2609600", distrito: "Olinda",
     bairro: "Rio Doce", estado: "PE",
     categorias_interesse: ["Literatura", "Slam"],
     created_at: "2021-06-10",
