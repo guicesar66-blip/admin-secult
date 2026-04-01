@@ -208,6 +208,16 @@ export const municipiosPE: Municipio[] = [
   { codigo: "2616506", nome: "Xexéu", codigo_regiao_intermediaria: "2601", regiao_intermediaria: "Recife", codigo_regiao_imediata: "260003", regiao_imediata: "Palmares", concentracao_urbana: null, distritos: [{ codigo: "261650605", nome: "Xexéu" }] },
 ];
 
+// Helper: lista de regiões únicas
+export function getRegioesUnicas(): string[] {
+  return [...new Set(municipiosPE.map((m) => m.regiao_intermediaria))];
+}
+
+// Helper: municípios por região
+export function getMunicipiosByRegiao(regiao: string): Municipio[] {
+  return municipiosPE.filter((m) => m.regiao_intermediaria === regiao);
+}
+
 // Helper: agrupar municípios por região intermediária
 export function getMunicipiosPorRegiao(): { regiao: string; municipios: Municipio[] }[] {
   const map = new Map<string, Municipio[]>();
