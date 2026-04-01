@@ -11,20 +11,24 @@ export function InfraestruturaTab({ filtroPeriodo }: InfraestruturaTabProps) {
   const [filtroCritico, setFiltroCritico] = useState(false);
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
+  const [busca, setBusca] = useState("");
   const tabelaRef = useRef<HTMLDivElement>(null);
 
   const handleMapClick = useCallback((event: MapFilterEvent) => {
+    // Clear all existing filters before applying new ones
+    setBusca("");
+
     switch (event.type) {
       case "equipamento":
-        if (event.municipio) setFiltroMunicipio(event.municipio);
-        if (event.tipo) setFiltroTipo(event.tipo);
+        setFiltroMunicipio(event.municipio ?? "todos");
+        setFiltroTipo(event.tipo ?? "todos");
         break;
       case "municipio":
-        if (event.municipio) setFiltroMunicipio(event.municipio);
+        setFiltroMunicipio(event.municipio ?? "todos");
         setFiltroTipo("todos");
         break;
       case "artista":
-        if (event.municipio) setFiltroMunicipio(event.municipio);
+        setFiltroMunicipio(event.municipio ?? "todos");
         setFiltroTipo("todos");
         break;
       default:
@@ -47,6 +51,8 @@ export function InfraestruturaTab({ filtroPeriodo }: InfraestruturaTabProps) {
           onFiltroMunicipioChange={setFiltroMunicipio}
           filtroTipo={filtroTipo}
           onFiltroTipoChange={setFiltroTipo}
+          busca={busca}
+          onBuscaChange={setBusca}
         />
       </div>
     </div>

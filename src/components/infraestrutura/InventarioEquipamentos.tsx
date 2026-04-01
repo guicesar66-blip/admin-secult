@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Download, Search, ArrowUpDown } from "lucide-react";
+import { Download, Search, ArrowUpDown, X } from "lucide-react";
 import {
   equipamentosMock,
   tiposEquipamento,
@@ -29,6 +29,8 @@ interface InventarioEquipamentosProps {
   onFiltroMunicipioChange: (value: string) => void;
   filtroTipo: string;
   onFiltroTipoChange: (value: string) => void;
+  busca: string;
+  onBuscaChange: (value: string) => void;
 }
 
 export function InventarioEquipamentos({
@@ -37,8 +39,9 @@ export function InventarioEquipamentos({
   onFiltroMunicipioChange,
   filtroTipo,
   onFiltroTipoChange,
+  busca,
+  onBuscaChange,
 }: InventarioEquipamentosProps) {
-  const [busca, setBusca] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -134,34 +137,71 @@ export function InventarioEquipamentos({
             <Input
               placeholder="Buscar por nome ou município..."
               value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="pl-8 h-9"
+              onChange={(e) => onBuscaChange(e.target.value)}
+              className="pl-8 pr-8 h-9"
             />
+            {busca && (
+              <button
+                type="button"
+                onClick={() => onBuscaChange("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
-          <Select value={filtroMunicipio} onValueChange={onFiltroMunicipioChange}>
-            <SelectTrigger className="w-[180px] h-9">
-              <SelectValue placeholder="Município" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos municípios</SelectItem>
-              {municipios.map((m) => (
-                <SelectItem key={m} value={m}>{m}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={filtroTipo} onValueChange={onFiltroTipoChange}>
-            <SelectTrigger className="w-[180px] h-9">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos tipos</SelectItem>
-              {tiposEquipamento.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {iconesTipoEquipamento[t]} {t}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative flex items-center">
+            <Select value={filtroMunicipio} onValueChange={onFiltroMunicipioChange}>
+              <SelectTrigger className="w-[180px] h-9 pr-8">
+                <SelectValue placeholder="Município" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos municípios</SelectItem>
+                {municipios.map((m) => (
+                  <SelectItem key={m} value={m}>{m}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {filtroMunicipio !== "todos" && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onFiltroMunicipioChange("todos");
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+          <div className="relative flex items-center">
+            <Select value={filtroTipo} onValueChange={onFiltroTipoChange}>
+              <SelectTrigger className="w-[180px] h-9 pr-8">
+                <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos tipos</SelectItem>
+                {tiposEquipamento.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {iconesTipoEquipamento[t]} {t}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {filtroTipo !== "todos" && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onFiltroTipoChange("todos");
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
