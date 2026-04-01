@@ -358,9 +358,6 @@ export default function DadosDashboard() {
               <p className="text-muted-foreground max-w-md mx-auto">
                 Módulo de análise preditiva com detecção de desertos culturais, sugestão automática de editais e simulador de impacto.
               </p>
-              <Button onClick={() => setInsightsOpen(true)} className="gap-2">
-                <Sparkles className="h-4 w-4" /> Ver Insights Disponíveis
-              </Button>
             </div>
           </TabsContent>
         </Tabs>
