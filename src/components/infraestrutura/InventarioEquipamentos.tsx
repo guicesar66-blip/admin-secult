@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Download, Search, ArrowUpDown, X } from "lucide-react";
+import { Download, Search, ArrowUpDown } from "lucide-react";
 import {
   equipamentosMock,
   tiposEquipamento,
@@ -23,23 +23,22 @@ import {
 type SortKey = "municipio" | "tipo" | "nome" | "capacidade" | "gestao" | "status";
 type SortDir = "asc" | "desc";
 
-export interface TableFilter {
-  municipio?: string;
-  nome?: string;
-  tipo?: string;
-  label?: string;
-}
-
 interface InventarioEquipamentosProps {
   filtroCritico?: boolean;
-  filtroExterno?: TableFilter | null;
-  onLimparFiltroExterno?: () => void;
+  filtroMunicipio: string;
+  onFiltroMunicipioChange: (value: string) => void;
+  filtroTipo: string;
+  onFiltroTipoChange: (value: string) => void;
 }
 
-export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, onLimparFiltroExterno }: InventarioEquipamentosProps) {
+export function InventarioEquipamentos({
+  filtroCritico = false,
+  filtroMunicipio,
+  onFiltroMunicipioChange,
+  filtroTipo,
+  onFiltroTipoChange,
+}: InventarioEquipamentosProps) {
   const [busca, setBusca] = useState("");
-  const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
-  const [filtroTipo, setFiltroTipo] = useState("todos");
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -73,18 +72,6 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
       resultado = resultado.filter((e) => equipamentosCriticosNomes.has(e.nome));
     }
 
-    // Filtro externo do mapa
-    if (filtroExterno) {
-      if (filtroExterno.nome) {
-        resultado = resultado.filter((e) => e.nome === filtroExterno.nome);
-      } else if (filtroExterno.municipio) {
-        resultado = resultado.filter((e) => e.municipio === filtroExterno.municipio);
-      }
-      if (filtroExterno.tipo) {
-        resultado = resultado.filter((e) => e.tipo === filtroExterno.tipo);
-      }
-    }
-
     if (busca) {
       const q = busca.toLowerCase();
       resultado = resultado.filter(
@@ -110,7 +97,7 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
     });
 
     return resultado;
-  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir, filtroCritico, equipamentosCriticosNomes, filtroExterno]);
+  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir, filtroCritico, equipamentosCriticosNomes]);
 
   const SortableHeader = ({ label, colKey }: { label: string; colKey: SortKey }) => (
     <TableHead
@@ -129,20 +116,10 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
       <CardHeader className="pb-3">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <CardTitle className="text-base font-semibold flex items-center gap-2 flex-wrap">
-            Inventário de Equipamentos Culturais
+            Inventário de Espaços Culturais
             {filtroCritico && (
               <Badge variant="destructive" className="text-[10px]">
                 Filtro crítico ativo
-              </Badge>
-            )}
-            {filtroExterno && (
-              <Badge
-                variant="secondary"
-                className="text-[10px] gap-1 cursor-pointer hover:bg-destructive/10"
-                onClick={onLimparFiltroExterno}
-              >
-                Filtro do mapa: {filtroExterno.label}
-                <X className="h-3 w-3" />
               </Badge>
             )}
           </CardTitle>
@@ -161,7 +138,7 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
               className="pl-8 h-9"
             />
           </div>
-          <Select value={filtroMunicipio} onValueChange={setFiltroMunicipio}>
+          <Select value={filtroMunicipio} onValueChange={onFiltroMunicipioChange}>
             <SelectTrigger className="w-[180px] h-9">
               <SelectValue placeholder="Município" />
             </SelectTrigger>
@@ -172,7 +149,7 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
               ))}
             </SelectContent>
           </Select>
-          <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+          <Select value={filtroTipo} onValueChange={onFiltroTipoChange}>
             <SelectTrigger className="w-[180px] h-9">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
@@ -204,7 +181,7 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
               {dados.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhum equipamento encontrado.
+                    Nenhum espaço cultural encontrado.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -239,7 +216,7 @@ export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, o
           </Table>
         </div>
         <p className="text-xs text-muted-foreground mt-2">
-          {dados.length} equipamento{dados.length !== 1 ? "s" : ""} encontrado{dados.length !== 1 ? "s" : ""}
+          {dados.length} espaço{dados.length !== 1 ? "s" : ""} cultural{dados.length !== 1 ? "is" : ""} encontrado{dados.length !== 1 ? "s" : ""}
         </p>
       </CardContent>
     </Card>

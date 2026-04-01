@@ -107,7 +107,7 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
       <CardHeader className="pb-3">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <CardTitle className="text-base font-semibold">
-            Mapa de Equipamentos Culturais
+            Mapa de Espaços Culturais
           </CardTitle>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -148,7 +148,7 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
             </div>
           ))}
           <span className="text-xs text-muted-foreground ml-auto flex items-center">
-            {equipamentosFiltrados.length} equipamentos exibidos
+            {equipamentosFiltrados.length} espaços exibidos
           </span>
         </div>
       </CardHeader>

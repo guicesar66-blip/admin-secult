@@ -21,11 +21,11 @@ export function RaioAcesso({ filtroCritico, onToggleCritico }: RaioAcessoProps) 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              População com acesso em até 1h a um equipamento cultural
+              População com acesso em até 1h a um espaço cultural
             </p>
             <p className="text-4xl font-bold mt-1">{acessoKPI.percentualAte1h}%</p>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-              <span>{acessoKPI.totalEquipamentos} equipamentos mapeados</span>
+              <span>{acessoKPI.totalEquipamentos} espaços mapeados</span>
               <span>·</span>
               <span className={`font-medium flex items-center gap-1 ${filtroCritico ? "text-destructive" : "text-destructive"}`}>
                 <AlertTriangle className="h-3.5 w-3.5" />
@@ -34,7 +34,7 @@ export function RaioAcesso({ filtroCritico, onToggleCritico }: RaioAcessoProps) 
             </div>
             {filtroCritico && (
               <p className="text-xs text-destructive font-medium mt-2">
-                🔴 Filtro ativo — exibindo apenas municípios e equipamentos com acesso crítico
+                🔴 Filtro ativo — exibindo apenas municípios e espaços com acesso crítico
               </p>
             )}
           </div>
