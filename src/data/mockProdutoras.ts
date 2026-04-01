@@ -20,6 +20,8 @@ export interface Produtora {
   descricao: string;
   linguagem_principal: string;
   municipio: string;
+  codigo_municipio: string;
+  distrito?: string;
   estado: string;
   endereco: string;
   // Formalização flexível
