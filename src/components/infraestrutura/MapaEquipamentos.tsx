@@ -18,7 +18,7 @@ import {
   getFaixaAcesso,
   formatarTempo,
 } from "@/data/mockEquipamentosCulturais";
-import { artistasMock, coresCategoria } from "@/data/mockCensoCultural";
+import { buildAgentesCenso, coresLinguagem } from "@/data/mockCensoAuxiliar";
 
 const raios = [
   { minutos: 30, metros: 15000, cor: "#22c55e", opacidade: 0.08 },

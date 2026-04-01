@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertTriangle, XCircle, FileText, Download, Camera } from "lucide-react";
-import { projetosAuditoriaMock } from "@/data/mockCensoCultural";
+import { projetosAuditoriaMock } from "@/data/mockCensoAuxiliar";
 
 export function AuditoriaPanel() {
   const statusIcon = {
