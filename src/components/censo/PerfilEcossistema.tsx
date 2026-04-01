@@ -7,7 +7,7 @@ import { TabelaColetivos } from "./TabelaColetivos";
 import { DemografiaCharts } from "./DemografiaCharts";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { useEcossistemaData } from "@/hooks/useEcossistemaData";
-import { SALARIO_MINIMO_2025 } from "@/data/mockColetivos";
+import { SALARIO_MINIMO_2025 } from "@/data/mockProdutoras";
 
 interface PerfilEcossistemaProps {
   filtroPeriodo: string;
