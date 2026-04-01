@@ -398,6 +398,8 @@ export default function DadosDashboard() {
               onSearchQueryChange={setSearchQuery}
               onSelectMunicipio={handleSelectMunicipio}
               onResetView={handleResetView}
+              filtroLinguagem={effectiveLinguagem}
+              filtroCidades={effectiveCidades}
             />
           </TabsContent>
 
