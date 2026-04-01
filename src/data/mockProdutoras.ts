@@ -155,7 +155,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Grupo Rabeca Viva",
     descricao: "Grupo musical dedicado à preservação da rabeca e da música tradicional pernambucana com projetos educacionais.",
     linguagem_principal: "Música",
-    municipio: "Recife", estado: "PE",
+    municipio: "Recife", codigo_municipio: "2611606", distrito: "Recife", estado: "PE",
     endereco: "Rua da Rabeca, 33 — Recife, PE",
     tipo_formalizacao: "Associação Cultural",
     cnpj: "55.123.456/0001-33",
