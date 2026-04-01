@@ -4,24 +4,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, Marker, Popup, Circle } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
   equipamentosMock,
   tiposEquipamento,
   iconesTipoEquipamento,
-  type EquipamentoCultural,
+  municipiosAcessoMock,
+  getFaixaAcesso,
+  formatarTempo,
 } from "@/data/mockEquipamentosCulturais";
 import { artistasMock, coresCategoria } from "@/data/mockCensoCultural";
 
-const coresTipo: Record<string, string> = {
-  "Teatro": "#8b5cf6",
-  "Museu": "#3b82f6",
-  "Biblioteca": "#06b6d4",
-  "CEU": "#f97316",
-  "Espaço Independente": "#ec4899",
-};
+const raios = [
+  { minutos: 30, metros: 15000, cor: "#22c55e", opacidade: 0.08 },
+  { minutos: 60, metros: 35000, cor: "#eab308", opacidade: 0.06 },
+  { minutos: 120, metros: 70000, cor: "#f97316", opacidade: 0.04 },
+];
 
 function createEmojiIcon(emoji: string) {
   return L.divIcon({
@@ -32,9 +32,14 @@ function createEmojiIcon(emoji: string) {
   });
 }
 
-export function MapaEquipamentos() {
+interface MapaEquipamentosProps {
+  onMunicipioClick?: (municipio: string) => void;
+}
+
+export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
+  const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
 
   const toggleTipo = (tipo: string) => {
     setTiposFiltro((prev) =>
@@ -53,15 +58,27 @@ export function MapaEquipamentos() {
           <CardTitle className="text-base font-semibold">
             Mapa de Equipamentos Culturais
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Switch
-              id="toggle-artistas"
-              checked={mostrarArtistas}
-              onCheckedChange={setMostrarArtistas}
-            />
-            <Label htmlFor="toggle-artistas" className="text-xs text-muted-foreground cursor-pointer">
-              Sobrepor artistas
-            </Label>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="toggle-raio"
+                checked={mostrarRaioAcesso}
+                onCheckedChange={setMostrarRaioAcesso}
+              />
+              <Label htmlFor="toggle-raio" className="text-xs text-muted-foreground cursor-pointer">
+                Raio de acesso
+              </Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="toggle-artistas"
+                checked={mostrarArtistas}
+                onCheckedChange={setMostrarArtistas}
+              />
+              <Label htmlFor="toggle-artistas" className="text-xs text-muted-foreground cursor-pointer">
+                Sobrepor artistas
+              </Label>
+            </div>
           </div>
         </div>
         {/* Filtros por tipo */}
@@ -95,6 +112,55 @@ export function MapaEquipamentos() {
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
+
+            {/* Camada de raio de acesso - círculos concêntricos */}
+            {mostrarRaioAcesso &&
+              equipamentosFiltrados
+                .filter((eq) => eq.status === "Ativo")
+                .map((eq) =>
+                  raios.map((r) => (
+                    <Circle
+                      key={`${eq.id}-${r.minutos}`}
+                      center={[eq.location.lat, eq.location.lng]}
+                      radius={r.metros}
+                      pathOptions={{
+                        fillColor: r.cor,
+                        fillOpacity: r.opacidade,
+                        color: r.cor,
+                        weight: 0.5,
+                        opacity: 0.3,
+                      }}
+                    />
+                  ))
+                )}
+
+            {/* Camada de raio de acesso - pontos dos municípios */}
+            {mostrarRaioAcesso &&
+              municipiosAcessoMock.map((m) => {
+                const faixa = getFaixaAcesso(m.tempoMedio);
+                return (
+                  <CircleMarker
+                    key={`acesso-${m.municipio}`}
+                    center={[m.location.lat, m.location.lng]}
+                    radius={m.tempoMedio > 120 ? 8 : 5}
+                    pathOptions={{
+                      fillColor: faixa.cor,
+                      fillOpacity: 0.8,
+                      color: faixa.cor,
+                      weight: 2,
+                    }}
+                    eventHandlers={{
+                      click: () => onMunicipioClick?.(m.municipio),
+                    }}
+                  >
+                    <LTooltip direction="top" offset={[0, -5]}>
+                      <span className="text-xs font-medium">
+                        {m.municipio} · {formatarTempo(m.tempoMedio)}
+                      </span>
+                    </LTooltip>
+                  </CircleMarker>
+                );
+              })}
 
             {/* Camada de artistas */}
             {mostrarArtistas &&
@@ -156,6 +222,22 @@ export function MapaEquipamentos() {
               {tipo}
             </div>
           ))}
+          {mostrarRaioAcesso && (
+            <>
+              <span className="text-xs text-muted-foreground">|</span>
+              {[
+                { cor: "#22c55e", label: "Até 30 min" },
+                { cor: "#eab308", label: "30–1h" },
+                { cor: "#f97316", label: "1h–2h" },
+                { cor: "#ef4444", label: ">2h" },
+              ].map((f) => (
+                <div key={f.label} className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: f.cor }} />
+                  {f.label}
+                </div>
+              ))}
+            </>
+          )}
           {mostrarArtistas && (
             <div className="text-xs text-muted-foreground ml-auto">
               ● Pontos coloridos = artistas do censo
