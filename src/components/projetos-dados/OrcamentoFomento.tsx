@@ -8,7 +8,12 @@ import { DollarSign } from "lucide-react";
 import { orcamentoPorInstrumento } from "@/data/mockProjetos";
 import { projetosPorInstrumento } from "@/data/mockEquipamentosCulturais";
 
-export function OrcamentoFomento() {
+interface OrcamentoFomentoProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = [] }: OrcamentoFomentoProps) {
   const totalInvestido = orcamentoPorInstrumento.reduce((s, i) => s + i.pago, 0);
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);
 

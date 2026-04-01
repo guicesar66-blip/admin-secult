@@ -1,10 +1,19 @@
+import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Line } from "recharts";
-import { evolucaoFormalizacaoTrimestral } from "@/data/mockProjetos";
+import { evolucaoFormalizacaoTrimestral, getProjetosFiltrados } from "@/data/mockProjetos";
 
-export function FormalizacaoProjetos() {
+interface FormalizacaoProjetosProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades = [] }: FormalizacaoProjetosProps) {
+  const dados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
+  const hasFilter = filtroLinguagem !== "todas" || filtroCidades.length > 0;
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -16,6 +25,7 @@ export function FormalizacaoProjetos() {
               <Badge variant="outline" className="text-[10px] text-green-600">-0,6 p.p.</Badge>
               <span className="text-xs text-muted-foreground">Nacional: 44,6% (IBGE SIIC 2024)</span>
             </div>
+            {hasFilter && <p className="text-[10px] text-muted-foreground mt-1 italic">Filtro ativo — {dados.length} projetos</p>}
           </CardContent>
         </Card>
         <Card>

@@ -2,16 +2,22 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Briefcase, CheckCircle, AlertTriangle, DollarSign, Clock, Users } from "lucide-react";
-import { projetosMock, evolucaoPortfolioMensal, getKPIsProjetos } from "@/data/mockProjetos";
+import { getProjetosFiltrados, evolucaoPortfolioMensal, getKPIsProjetos } from "@/data/mockProjetos";
 
-export function VisaoGeralProjetos() {
-  const kpis = useMemo(() => getKPIsProjetos(), []);
+interface VisaoGeralProjetosProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = [] }: VisaoGeralProjetosProps) {
+  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
+  const dados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const [linhasVisiveis, setLinhasVisiveis] = useState({ iniciados: true, concluidos: true, desembolsado: true });
 
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);
-  const percentPendencia = Math.round((kpis.comPendencia / projetosMock.length) * 100);
+  const percentPendencia = dados.length > 0 ? Math.round((kpis.comPendencia / dados.length) * 100) : 0;
 
   const toggleLinha = (key: keyof typeof linhasVisiveis) => {
     setLinhasVisiveis(prev => ({ ...prev, [key]: !prev[key] }));
@@ -19,7 +25,6 @@ export function VisaoGeralProjetos() {
 
   return (
     <div className="space-y-4">
-      {/* Cards US-15 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card>
           <CardContent className="pt-5 pb-4">
@@ -97,7 +102,6 @@ export function VisaoGeralProjetos() {
         </Card>
       </div>
 
-      {/* Evolução mensal */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between flex-wrap gap-2">

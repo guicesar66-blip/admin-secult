@@ -15,26 +15,26 @@ interface ProjetosResultadosTabProps {
 export function ProjetosResultadosTab({ filtroPeriodo, filtroLinguagem, filtroCidades }: ProjetosResultadosTabProps) {
   return (
     <div className="space-y-6">
-      <VisaoGeralProjetos />
+      <VisaoGeralProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
 
       <CollapsibleSection sectionKey="proj-impacto" title="Impacto Financeiro e Econômico">
-        <ImpactoFinanceiro />
+        <ImpactoFinanceiro filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-alcance" title="Alcance Social e Participação">
-        <AlcanceSocial />
+        <AlcanceSocial filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-formal" title="Formalização via Projetos">
-        <FormalizacaoProjetos />
+        <FormalizacaoProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-orcamento" title="Orçamento e Fomento">
-        <OrcamentoFomento />
+        <OrcamentoFomento filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-tabela" title="Tabela de Projetos">
-        <TabelaProjetos />
+        <TabelaProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
       </CollapsibleSection>
     </div>
   );

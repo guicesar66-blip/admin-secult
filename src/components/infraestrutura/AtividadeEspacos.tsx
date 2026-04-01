@@ -10,41 +10,53 @@ import {
   evolucaoPublicoMensal,
 } from "@/data/mockEquipamentosCulturais";
 
-export function AtividadeEspacos() {
-  const ativos = equipamentosMock.filter(e => e.status === "Ativo");
+interface AtividadeEspacosProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function AtividadeEspacos({ filtroLinguagem = "todas", filtroCidades = [] }: AtividadeEspacosProps) {
+  const baseData = useMemo(() => {
+    let result = equipamentosMock;
+    if (filtroLinguagem !== "todas") result = result.filter(e => e.linguagens.some(l => l.toLowerCase().includes(filtroLinguagem.toLowerCase())));
+    if (filtroCidades.length > 0) result = result.filter(e => filtroCidades.includes(e.municipio));
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
+
+  const ativos = baseData.filter(e => e.status === "Ativo");
 
   const byTipo = useMemo(() => tiposEquipamento.map(t => ({
     tipo: t,
-    count: equipamentosMock.filter(e => e.tipo === t).length,
+    count: baseData.filter(e => e.tipo === t).length,
     publicoMedio: Math.round(ativos.filter(e => e.tipo === t).reduce((s, e) => s + e.publicoMensal, 0) / (ativos.filter(e => e.tipo === t).length || 1)),
-    projetos: equipamentosMock.filter(e => e.tipo === t).reduce((s, e) => s + e.projetosRealizados, 0),
-  })), [ativos]);
+    projetos: baseData.filter(e => e.tipo === t).reduce((s, e) => s + e.projetosRealizados, 0),
+  })), [baseData, ativos]);
 
   const rankingPublico = useMemo(() =>
     [...ativos].sort((a, b) => b.publicoMensal - a.publicoMensal).slice(0, 10).map(e => ({ name: e.nome.length > 25 ? e.nome.slice(0, 22) + "…" : e.nome, value: e.publicoMensal })),
   [ativos]);
 
   const rankingProjetos = useMemo(() =>
-    [...equipamentosMock].sort((a, b) => b.projetosRealizados - a.projetosRealizados).slice(0, 10).map(e => ({ name: e.nome.length > 25 ? e.nome.slice(0, 22) + "…" : e.nome, value: e.projetosRealizados })),
-  []);
+    [...baseData].sort((a, b) => b.projetosRealizados - a.projetosRealizados).slice(0, 10).map(e => ({ name: e.nome.length > 25 ? e.nome.slice(0, 22) + "…" : e.nome, value: e.projetosRealizados })),
+  [baseData]);
 
   const taxaOcupacao = 34;
-  const taxaReuso = Math.round(equipamentosMock.filter(e => e.projetosRealizados > 3).length / equipamentosMock.length * 100);
+  const taxaReuso = baseData.length > 0 ? Math.round(baseData.filter(e => e.projetosRealizados > 3).length / baseData.length * 100) : 0;
 
   const mesorregioes = ["Metropolitana", "Agreste", "Sertão", "Vale do São Francisco"] as const;
   const popEstimada: Record<string, number> = { Metropolitana: 4000000, Agreste: 2300000, Sertão: 1200000, "Vale do São Francisco": 800000 };
   const byMesorregiao = mesorregioes.map(m => ({
     name: m === "Vale do São Francisco" ? "Vale SF" : m,
-    espacos: equipamentosMock.filter(e => e.mesorregiao === m).length,
-    por100k: parseFloat((equipamentosMock.filter(e => e.mesorregiao === m).length / (popEstimada[m] / 100000)).toFixed(2)),
+    espacos: baseData.filter(e => e.mesorregiao === m).length,
+    por100k: parseFloat((baseData.filter(e => e.mesorregiao === m).length / (popEstimada[m] / 100000)).toFixed(2)),
   }));
 
-  const allLinguagens = [...new Set(equipamentosMock.flatMap(e => e.linguagens))];
+  const allLinguagens = [...new Set(baseData.flatMap(e => e.linguagens))];
   const lingRanking = allLinguagens.map(l => ({
     name: l,
-    percent: Math.round(equipamentosMock.filter(e => e.linguagens.includes(l)).length / equipamentosMock.length * 100),
+    percent: baseData.length > 0 ? Math.round(baseData.filter(e => e.linguagens.includes(l)).length / baseData.length * 100) : 0,
   })).sort((a, b) => b.percent - a.percent);
-  const multiLinguagem = Math.round(equipamentosMock.filter(e => e.linguagens.length >= 3).length / equipamentosMock.length * 100);
+  const multiLinguagem = baseData.length > 0 ? Math.round(baseData.filter(e => e.linguagens.length >= 3).length / baseData.length * 100) : 0;
 
   const chartConfigLine = { publico: { label: "Público", color: "hsl(var(--primary))" } };
   const chartConfigBar = { value: { label: "Público/mês", color: "hsl(var(--primary))" } };

@@ -8,7 +8,12 @@ import { projetosAuditoriaMock } from "@/data/mockCensoAuxiliar";
 import { usePaginacao } from "@/hooks/usePaginacao";
 import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 
-export function AuditoriaPanel() {
+interface AuditoriaPanelProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [] }: AuditoriaPanelProps) {
   const statusIcon = {
     verde: <CheckCircle2 className="h-4 w-4 text-green-500" />,
     amarelo: <AlertTriangle className="h-4 w-4 text-amber-500" />,

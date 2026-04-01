@@ -1,12 +1,11 @@
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Users, Heart, Star, MessageCircle } from "lucide-react";
-import { projetosMock, comentariosMock, evolucaoCrowdfundingMensal, getKPIsProjetos } from "@/data/mockProjetos";
+import { Heart, Star, MessageCircle } from "lucide-react";
+import { projetosMock, comentariosMock, evolucaoCrowdfundingMensal, getKPIsProjetos, getProjetosFiltrados } from "@/data/mockProjetos";
 
 const publicoPorLinguagem = [
   { linguagem: "Música", publico: 58000 },
@@ -51,33 +50,42 @@ function MiniDonut({ data, size = 120 }: { data: { name: string; value: number; 
   );
 }
 
-export function AlcanceSocial() {
-  const kpis = useMemo(() => getKPIsProjetos(), []);
+interface AlcanceSocialProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [] }: AlcanceSocialProps) {
+  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
+  const projetosFiltrados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const [filtroComentario, setFiltroComentario] = useState("todos");
 
   const comentariosFiltrados = useMemo(() => {
-    if (filtroComentario === "todos") return comentariosMock;
-    return comentariosMock.filter(c => c.origem === filtroComentario);
-  }, [filtroComentario]);
+    const projetoIds = new Set(projetosFiltrados.map(p => p.id));
+    let filtered = comentariosMock.filter(c => projetoIds.has(c.projetoId));
+    if (filtroComentario !== "todos") filtered = filtered.filter(c => c.origem === filtroComentario);
+    return filtered;
+  }, [filtroComentario, projetosFiltrados]);
 
   const avaliacaoArtistas = useMemo(() => {
-    const arts = comentariosMock.filter(c => c.origem === "artista");
-    return { media: (arts.reduce((s, c) => s + c.avaliacao, 0) / arts.length).toFixed(1), total: arts.length };
-  }, []);
+    const projetoIds = new Set(projetosFiltrados.map(p => p.id));
+    const arts = comentariosMock.filter(c => c.origem === "artista" && projetoIds.has(c.projetoId));
+    return { media: arts.length > 0 ? (arts.reduce((s, c) => s + c.avaliacao, 0) / arts.length).toFixed(1) : "0", total: arts.length };
+  }, [projetosFiltrados]);
   const avaliacaoCidadaos = useMemo(() => {
-    const cids = comentariosMock.filter(c => c.origem === "cidadao");
-    return { media: (cids.reduce((s, c) => s + c.avaliacao, 0) / cids.length).toFixed(1), total: cids.length };
-  }, []);
+    const projetoIds = new Set(projetosFiltrados.map(p => p.id));
+    const cids = comentariosMock.filter(c => c.origem === "cidadao" && projetoIds.has(c.projetoId));
+    return { media: cids.length > 0 ? (cids.reduce((s, c) => s + c.avaliacao, 0) / cids.length).toFixed(1) : "0", total: cids.length };
+  }, [projetosFiltrados]);
 
   const topEngajamento = useMemo(() =>
-    [...projetosMock].sort((a, b) => b.crowdfundingApoiadores - a.crowdfundingApoiadores).slice(0, 5),
-  []);
+    [...projetosFiltrados].sort((a, b) => b.crowdfundingApoiadores - a.crowdfundingApoiadores).slice(0, 5),
+  [projetosFiltrados]);
 
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);
 
   return (
     <div className="space-y-4">
-      {/* Alcance do público */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Público Total</p><p className="text-2xl font-bold">{(kpis.totalPublico / 1000).toFixed(0)}k</p><Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.publico}%</Badge></CardContent></Card>
         <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Eventos Realizados</p><p className="text-2xl font-bold">{kpis.totalEventos}</p></CardContent></Card>
@@ -86,7 +94,6 @@ export function AlcanceSocial() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Público por linguagem */}
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Público por Linguagem</CardTitle></CardHeader>
           <CardContent>
@@ -102,7 +109,6 @@ export function AlcanceSocial() {
           </CardContent>
         </Card>
 
-        {/* Perfil demográfico */}
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Perfil Demográfico do Público</CardTitle></CardHeader>
           <CardContent>
@@ -123,7 +129,6 @@ export function AlcanceSocial() {
         </Card>
       </div>
 
-      {/* Engajamento cidadão */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base font-semibold flex items-center gap-2"><Heart className="h-4 w-4" /> Engajamento Cidadão</CardTitle></CardHeader>
@@ -155,7 +160,6 @@ export function AlcanceSocial() {
           </CardContent>
         </Card>
 
-        {/* Top engajamento */}
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Top 5 Engajamento Cidadão</CardTitle></CardHeader>
           <CardContent>
@@ -180,7 +184,6 @@ export function AlcanceSocial() {
         </Card>
       </div>
 
-      {/* Comentários */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -205,6 +208,9 @@ export function AlcanceSocial() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
+            {comentariosFiltrados.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">Nenhum comentário encontrado para os filtros selecionados.</p>
+            )}
             {comentariosFiltrados.map(c => {
               const projeto = projetosMock.find(p => p.id === c.projetoId);
               return (

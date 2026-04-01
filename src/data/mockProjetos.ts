@@ -839,17 +839,26 @@ export const statusCores: Record<StatusProjeto, string> = {
   ativo: "hsl(142, 71%, 45%)", concluido: "hsl(215, 60%, 50%)", pendencia: "hsl(45, 93%, 47%)", irregular: "hsl(0, 84%, 60%)", cancelado: "hsl(0, 0%, 55%)",
 };
 
-export function getKPIsProjetos() {
-  const ativos = projetosMock.filter(p => p.status === "ativo");
-  const concluidos = projetosMock.filter(p => p.status === "concluido");
-  const comPendencia = projetosMock.filter(p => p.status === "pendencia" || p.status === "irregular");
-  const totalRecursos = projetosMock.reduce((s, p) => s + p.valorCaptado, 0);
-  const totalPublico = projetosMock.reduce((s, p) => s + p.publicoImpactado, 0);
-  const totalEmpregos = projetosMock.reduce((s, p) => s + p.empregosGerados, 0);
-  const totalEventos = projetosMock.reduce((s, p) => s + p.totalEventos, 0);
-  const totalMarketplace = projetosMock.reduce((s, p) => s + p.volumeMarketplace, 0);
-  const totalCrowdfunding = projetosMock.reduce((s, p) => s + p.crowdfundingValor, 0);
-  const totalApoiadores = projetosMock.reduce((s, p) => s + p.crowdfundingApoiadores, 0);
+export function getProjetosFiltrados(filtroLinguagem: string = "todas", filtroCidades: string[] = []): ProjetoCultural[] {
+  return projetosMock.filter(p => {
+    if (filtroLinguagem !== "todas" && p.linguagem !== filtroLinguagem) return false;
+    if (filtroCidades.length > 0 && !filtroCidades.includes(p.municipio)) return false;
+    return true;
+  });
+}
+
+export function getKPIsProjetos(filtroLinguagem: string = "todas", filtroCidades: string[] = []) {
+  const dados = getProjetosFiltrados(filtroLinguagem, filtroCidades);
+  const ativos = dados.filter(p => p.status === "ativo");
+  const concluidos = dados.filter(p => p.status === "concluido");
+  const comPendencia = dados.filter(p => p.status === "pendencia" || p.status === "irregular");
+  const totalRecursos = dados.reduce((s, p) => s + p.valorCaptado, 0);
+  const totalPublico = dados.reduce((s, p) => s + p.publicoImpactado, 0);
+  const totalEmpregos = dados.reduce((s, p) => s + p.empregosGerados, 0);
+  const totalEventos = dados.reduce((s, p) => s + p.totalEventos, 0);
+  const totalMarketplace = dados.reduce((s, p) => s + p.volumeMarketplace, 0);
+  const totalCrowdfunding = dados.reduce((s, p) => s + p.crowdfundingValor, 0);
+  const totalApoiadores = dados.reduce((s, p) => s + p.crowdfundingApoiadores, 0);
 
   return {
     projetosAtivos: ativos.length,

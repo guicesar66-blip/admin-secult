@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
+import { getKPIsProjetos } from "@/data/mockProjetos";
 import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
 import { useMapFilter } from "@/contexts/MapFilterContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
@@ -39,7 +40,7 @@ import { ProjetosResultadosTab } from "@/components/projetos-dados/ProjetosResul
 import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
   buildAgentesCenso,
-  getEstatisticasGerais,
+  
   linguagensArtisticas,
   coresLinguagem,
   type AgenteCenso,
@@ -87,7 +88,9 @@ export default function DadosDashboard() {
   }, []);
 
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
-  const estatisticas = useMemo(() => getEstatisticasGerais(), []);
+
+  // Filtered projects for top KPIs
+  const projetosKPIs = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
 
   const artistasFiltrados = useMemo(() => {
     return agentesCenso.filter((a) => {
@@ -171,7 +174,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Projetos Ativos</p>
-                  <p className="text-2xl font-bold">{estatisticas.projetosAtivos}</p>
+                  <p className="text-2xl font-bold">{projetosKPIs.projetosAtivos}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
                   <Briefcase className="h-5 w-5 text-green-600" />
@@ -184,7 +187,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">R$ Investido</p>
-                  <p className="text-2xl font-bold">{formatCurrency(estatisticas.totalInvestido)}</p>
+                  <p className="text-2xl font-bold">{formatCurrency(projetosKPIs.totalRecursos)}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
                   <DollarSign className="h-5 w-5 text-amber-600" />
@@ -197,7 +200,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Alcance Populacional</p>
-                  <p className="text-2xl font-bold">{(estatisticas.alcancePopulacional / 1000).toFixed(0)}k</p>
+                  <p className="text-2xl font-bold">{(projetosKPIs.totalPublico / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                   <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -399,7 +402,7 @@ export default function DadosDashboard() {
               filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
               filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
               filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
-            } />
+            } filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
           </TabsContent>
 
           {/* ===== PROJETOS E RESULTADOS ===== */}
@@ -418,7 +421,7 @@ export default function DadosDashboard() {
 
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
-            <AuditoriaPanel />
+            <AuditoriaPanel filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
           </TabsContent>
 
           {/* ===== IA PREDITIVA ===== */}
