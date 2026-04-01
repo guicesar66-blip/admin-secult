@@ -126,6 +126,7 @@ export function AuditoriaPanel() {
               </TableBody>
             </Table>
           </div>
+          <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={projetosAuditoriaMock.length} onPaginaChange={setPaginaAtual} labelItens="projetos" />
         </CardContent>
       </Card>
     </div>

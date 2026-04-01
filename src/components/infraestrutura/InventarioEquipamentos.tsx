@@ -173,9 +173,7 @@ export function InventarioEquipamentos({
             </TableBody>
           </Table>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          {dados.length} espaço{dados.length !== 1 ? "s" : ""} cultural{dados.length !== 1 ? "is" : ""} encontrado{dados.length !== 1 ? "s" : ""}
-        </p>
+        <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={dados.length} onPaginaChange={setPaginaAtual} labelItens="espaços culturais" />
       </CardContent>
     </Card>
   );

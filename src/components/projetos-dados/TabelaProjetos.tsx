@@ -179,7 +179,7 @@ export function TabelaProjetos() {
             </TableBody>
           </Table>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">{dados.length} projeto{dados.length !== 1 ? "s" : ""} encontrado{dados.length !== 1 ? "s" : ""}</p>
+        <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={dados.length} onPaginaChange={setPaginaAtual} labelItens="projetos" />
       </CardContent>
     </Card>
   );

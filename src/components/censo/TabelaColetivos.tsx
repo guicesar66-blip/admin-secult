@@ -218,7 +218,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                     <TableCell className="text-xs text-muted-foreground">{p.cnpj || "—"}</TableCell>
                   </TableRow>
                 ))}
-                {filtered.length === 0 && (
+                {dadosPaginados.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       Nenhuma produtora encontrada com os filtros aplicados.
@@ -229,10 +229,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
             </Table>
           </div>
 
-          {/* Rodapé */}
-          <p className="text-sm text-muted-foreground mt-3">
-            {filtered.length} produtora{filtered.length !== 1 ? "s" : ""} encontrada{filtered.length !== 1 ? "s" : ""}
-          </p>
+          <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={filtered.length} onPaginaChange={setPaginaAtual} labelItens="produtoras" />
         </CardContent>
       </Card>
     </div>
