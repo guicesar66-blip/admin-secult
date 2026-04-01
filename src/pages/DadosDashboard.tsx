@@ -55,7 +55,6 @@ export default function DadosDashboard() {
 
   // Filters
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
-  const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
 
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
