@@ -83,6 +83,22 @@ export default function DadosDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Select value={filtroLinguagem} onValueChange={setFiltroLinguagem}>
+              <SelectTrigger className="w-[170px] h-9">
+                <Palette className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Linguagem" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas linguagens</SelectItem>
+                <SelectItem value="Música">Música</SelectItem>
+                <SelectItem value="Cultura Popular">Cultura Popular</SelectItem>
+                <SelectItem value="Artes Visuais">Artes Visuais</SelectItem>
+                <SelectItem value="Teatro">Teatro</SelectItem>
+                <SelectItem value="Artesanato">Artesanato</SelectItem>
+                <SelectItem value="Dança">Dança</SelectItem>
+                <SelectItem value="Audiovisual">Audiovisual</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>
               <SelectTrigger className="w-[180px] h-9">
                 <CalendarDays className="h-4 w-4 mr-2 text-muted-foreground" />
