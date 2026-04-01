@@ -79,6 +79,23 @@ export default function ColetivosDetalhes() {
   }
 
   const tempo = Math.max(0, new Date().getFullYear() - new Date(produtora.data_fundacao).getFullYear());
+  const tempoLabel = tempo >= 2 ? `${tempo} anos` : `${tempo} ano`;
+  const dataFundFormatted = new Date(produtora.data_fundacao).toLocaleDateString("pt-BR");
+  const ivc = ivcConfig[produtora.ivc];
+
+  const handleArtistaClick = (artistaId: string) => {
+    const artista = artistas.find((a) => a.id === artistaId);
+    if (!artista) return;
+    const usuario = usuarioMap.get(artista.usuario_id);
+    if (!usuario) return;
+    setSelectedArtista({ artista, usuario });
+    setModalOpen(true);
+  };
+
+  const handleProdutoraFromModal = (produtoraId: string) => {
+    setModalOpen(false);
+    navigate(`/dados/produtora/${produtoraId}`);
+  };
 
   const galeriaImages = [
     "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
