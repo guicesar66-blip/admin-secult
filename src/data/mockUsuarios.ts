@@ -98,6 +98,7 @@ export const usuariosMock: Usuario[] = [
     id: "u9", nome_completo: "Diego Santos", email: "diego.s@email.com",
     telefone: "(81) 99200-0002", cpf: "222.000.000-02", nascimento: "1996-09-18",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Caruaru",
+    codigo_municipio: "2604106", distrito: "Caruaru",
     bairro: "Centro", estado: "PE",
     categorias_interesse: ["Dança", "Música"],
     created_at: "2018-05-10",
