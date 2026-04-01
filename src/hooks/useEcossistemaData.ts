@@ -2,6 +2,13 @@ import { useMemo } from "react";
 import { artistasMock, getArtistasUnicos, getArtistasByProdutora, type Artista } from "@/data/mockArtistas";
 import { usuariosMock, type Usuario } from "@/data/mockUsuarios";
 import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
+import {
+  tiposLinguagem,
+  getTipoNome,
+  getSubtipoNome,
+  getSubtipoIdsByTipoNome,
+  type TipoLinguagem,
+} from "@/data/mockLinguagens";
 
 function getAge(nascimento: string): number {
   const birth = new Date(nascimento);
@@ -63,7 +70,7 @@ function normalizeFormalizacao(f: string): string {
   return "Informal";
 }
 
-interface CountItem {
+export interface CountItem {
   name: string;
   value: number;
   percent: number;
@@ -92,7 +99,10 @@ export interface EcossistemaData {
   raca: CountItem[];
   faixaEtaria: CountItem[];
   formalizacao: (CountItem & { fullMark: number })[];
+  // Linguagem: tipos principais quando sem filtro, subtipos quando filtrado
   linguagem: CountItem[];
+  linguagemSubtipos: CountItem[];
+  filtroTipoNome: string | null;
   renda: CountItem[];
   escolaridade: CountItem[];
   rendaMedia: number;
@@ -112,18 +122,24 @@ const RENDA_VALUES: Record<string, number> = {
   "Acima R$ 2.640": 3500,
 };
 
+/**
+ * Checks if an artista has at least one subtipo belonging to the given tipo nome.
+ */
+function artistaTemTipo(artista: Artista, tipoNome: string): boolean {
+  const subIds = getSubtipoIdsByTipoNome(tipoNome);
+  return artista.subtipo_ids.some((sid) => subIds.includes(sid));
+}
+
 export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
   return useMemo(() => {
     // Get unique artistas (deduplicate M:N by usuario_id)
     const uniqueArtistas = getArtistasUnicos();
 
-    // Filter by linguagem
+    // Filter by tipo principal de linguagem
     const filteredArtistas =
       filtroLinguagem === "todas"
         ? uniqueArtistas
-        : uniqueArtistas.filter((a) =>
-            a.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
-          );
+        : uniqueArtistas.filter((a) => artistaTemTipo(a, filtroLinguagem));
 
     // Enrich with usuario data
     const usuarioMap = new Map(usuariosMock.map((u) => [u.id, u]));
@@ -140,9 +156,7 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       filtroLinguagem === "todas"
         ? produtorasMock
         : produtorasMock.filter((p) =>
-            getArtistasByProdutora(p.id).some((a) =>
-              a.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
-            )
+            getArtistasByProdutora(p.id).some((a) => artistaTemTipo(a, filtroLinguagem))
           );
 
     const total = artistas.length || 1;
@@ -163,13 +177,31 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       return { name, value, percent: Math.round((value / total) * 100) };
     });
 
-    // Socioeconomic from artista data
+    // Formalizacao
     const formRaw = countBy(artistas.map((a) => normalizeFormalizacao(a.formalizacao)));
     const formalizacao = formRaw.map((f) => ({ ...f, fullMark: 50 }));
 
-    const allLinguagens = artistas.flatMap((a) => a.linguagens);
-    const linguagem = countBy(allLinguagens);
+    // Linguagem — tipos principais (count artistas per tipo)
+    const linguagem: CountItem[] = tiposLinguagem.map((tipo) => {
+      const count = artistas.filter((a) => artistaTemTipo(a, tipo.nome)).length;
+      return { name: tipo.nome, value: count, percent: Math.round((count / total) * 100) };
+    }).filter((d) => d.value > 0).sort((a, b) => b.value - a.value);
 
+    // Linguagem subtipos — only when filtered by a specific tipo
+    let linguagemSubtipos: CountItem[] = [];
+    let filtroTipoNome: string | null = null;
+    if (filtroLinguagem !== "todas") {
+      filtroTipoNome = filtroLinguagem;
+      const tipo = tiposLinguagem.find((t) => t.nome === filtroLinguagem);
+      if (tipo) {
+        linguagemSubtipos = tipo.subtipos.map((sub) => {
+          const count = artistas.filter((a) => a.subtipo_ids.includes(sub.id)).length;
+          return { name: sub.nome, value: count, percent: Math.round((count / total) * 100) };
+        }).filter((d) => d.value > 0).sort((a, b) => b.value - a.value);
+      }
+    }
+
+    // Renda
     const rendaCats = ["Sem renda", "Até R$ 600", "R$ 600–1.320", "R$ 1.320–2.640", "Acima R$ 2.640"];
     const rendaMap = new Map<string, number>();
     rendaCats.forEach((c) => rendaMap.set(c, 0));
@@ -247,6 +279,8 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       faixaEtaria,
       formalizacao,
       linguagem,
+      linguagemSubtipos,
+      filtroTipoNome,
       renda,
       escolaridade,
       rendaMedia,
