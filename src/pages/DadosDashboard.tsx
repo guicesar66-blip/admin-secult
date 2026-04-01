@@ -326,6 +326,42 @@ export default function DadosDashboard() {
                     {artistasFiltrados.length} artistas exibidos
                   </span>
                 </div>
+
+                {/* Search municipality (US-05) */}
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                  <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar município no mapa..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setShowSuggestions(true);
+                        if (e.target.value === "") setSelectedMunicipio(null);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      className="pl-9 h-9"
+                    />
+                    {showSuggestions && municipioSuggestions.length > 0 && (
+                      <div className="absolute z-50 top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        {municipioSuggestions.map((nome) => (
+                          <button
+                            key={nome}
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors"
+                            onClick={() => handleSelectMunicipio(nome)}
+                          >
+                            {nome}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {selectedMunicipio && (
+                    <Button variant="outline" size="sm" onClick={handleResetView} className="gap-1.5">
+                      <RotateCcw className="h-3.5 w-3.5" /> Ver PE completo
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -334,6 +370,11 @@ export default function DadosDashboard() {
               artistas={artistasFiltrados}
               onArtistaClick={handleArtistaClick}
               modoCalor={modoCalor}
+              searchQuery={searchQuery}
+              selectedMunicipio={selectedMunicipio}
+              onSearchQueryChange={setSearchQuery}
+              onSelectMunicipio={handleSelectMunicipio}
+              onResetView={handleResetView}
             />
           </TabsContent>
 
