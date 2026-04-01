@@ -9,6 +9,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Download, Search, ArrowUpDown, X } from "lucide-react";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 import {
   equipamentosMock, tiposEquipamento, iconesTipoEquipamento, conservacaoCores,
 } from "@/data/mockEquipamentosCulturais";
