@@ -402,7 +402,7 @@ export default function DadosDashboard() {
               filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
               filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
               filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
-            } />
+            } filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
           </TabsContent>
 
           {/* ===== PROJETOS E RESULTADOS ===== */}
