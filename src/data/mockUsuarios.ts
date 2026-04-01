@@ -62,6 +62,7 @@ export const usuariosMock: Usuario[] = [
     id: "u5", nome_completo: "Mariana Costa", email: "mariana.c@email.com",
     telefone: "(81) 99100-0002", cpf: "111.000.000-02", nascimento: "2001-05-22",
     genero: "Mulher cis", raca_cor: "Parda", municipio: "Olinda",
+    codigo_municipio: "2609600", distrito: "Olinda",
     bairro: "Peixinhos", estado: "PE",
     categorias_interesse: ["Literatura", "Teatro"],
     created_at: "2022-01-20",
