@@ -241,6 +241,9 @@ export function PerfilEcossistema({ filtroPeriodo }: PerfilEcossistemaProps) {
 
       {/* Painel Socioeconômico dos Coletivos (US-09B) */}
       <PainelSocioeconomico filtroPeriodo={filtroPeriodo} />
+
+      {/* Tabela de Coletivos (US-09C) */}
+      <TabelaColetivos filtroPeriodo={filtroPeriodo} />
     </div>
   );
 }
