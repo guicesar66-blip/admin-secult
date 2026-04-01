@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Respon
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import { EvolucaoCadastros } from "./EvolucaoCadastros";
 import { CapilaridadeKPI } from "./CapilaridadeKPI";
+import { PainelSocioeconomico } from "./PainelSocioeconomico";
 
 // Dados mockados conforme história de usuário
 const TOTAL_AGENTES = 662;
