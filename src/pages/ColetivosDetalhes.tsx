@@ -42,6 +42,13 @@ export default function ColetivosDetalhes() {
 
   const coletivo = coletivosMock.find((c) => c.id === id);
 
+  const membrosFiltrados = useMemo(() => {
+    if (!coletivo) return [];
+    if (!buscaMembro) return coletivo.membrosLista;
+    const q = buscaMembro.toLowerCase();
+    return coletivo.membrosLista.filter((m) => m.nome.toLowerCase().includes(q));
+  }, [buscaMembro, coletivo]);
+
   if (!coletivo) {
     return (
       <DashboardLayout>
@@ -58,12 +65,6 @@ export default function ColetivosDetalhes() {
   const tempoLabel = coletivo.tempoExistencia >= 2 ? `${coletivo.tempoExistencia} anos` : `${coletivo.tempoExistencia} ano`;
   const dataFundFormatted = new Date(coletivo.dataFundacao).toLocaleDateString("pt-BR");
   const ivc = ivcConfig[coletivo.ivc];
-
-  const membrosFiltrados = useMemo(() => {
-    if (!buscaMembro) return coletivo.membrosLista;
-    const q = buscaMembro.toLowerCase();
-    return coletivo.membrosLista.filter((m) => m.nome.toLowerCase().includes(q));
-  }, [buscaMembro, coletivo.membrosLista]);
 
   const handleMembroClick = (membro: MembroColetivo) => {
     setMembroSelecionado(membro);
