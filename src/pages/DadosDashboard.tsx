@@ -361,6 +361,7 @@ export default function DadosDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      </CollapseSectionProvider>
 
       {/* Drawer do artista */}
       <ArtistaDrawer
