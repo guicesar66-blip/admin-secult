@@ -30,6 +30,7 @@ import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
 import { InsightsIAModal } from "@/components/censo/InsightsIAModal";
 import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
 import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
+import { ProjetosResultadosTab } from "@/components/projetos-dados/ProjetosResultadosTab";
 import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
   buildAgentesCenso,
