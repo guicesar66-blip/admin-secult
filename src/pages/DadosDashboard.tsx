@@ -187,7 +187,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">R$ Investido</p>
-                  <p className="text-2xl font-bold">{formatCurrency(estatisticas.totalInvestido)}</p>
+                  <p className="text-2xl font-bold">{formatCurrency(projetosKPIs.totalRecursos)}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
                   <DollarSign className="h-5 w-5 text-amber-600" />
