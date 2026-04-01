@@ -316,6 +316,29 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
   const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
 
+  // Filter projetos and espacos by global filters
+  const projetosFiltrados = useMemo(() => {
+    let result = projetosMapaMock;
+    if (filtroLinguagem !== "todas") {
+      result = result.filter(p => p.linguagem === filtroLinguagem);
+    }
+    if (filtroCidades.length > 0) {
+      result = result.filter(p => filtroCidades.includes(p.municipio));
+    }
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
+
+  const espacosFiltrados = useMemo(() => {
+    let result = equipamentosMock;
+    if (filtroLinguagem !== "todas") {
+      result = result.filter(e => e.linguagens.some(l => l === filtroLinguagem));
+    }
+    if (filtroCidades.length > 0) {
+      result = result.filter(e => filtroCidades.includes(e.municipio));
+    }
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
+
   // Camadas toggles (US-02)
   const [camadas, setCamadas] = useState<CamadasState>({
     produtores: true,
@@ -335,7 +358,14 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
     setCamadas({ produtores: true, projetos: true, espacos: true, desertos: true });
   };
 
-  const totalVisiveis = contarEntidadesVisiveis(camadas, artistas);
+  const totalVisiveis = useMemo(() => {
+    let total = 0;
+    if (camadas.produtores) total += artistas.length;
+    if (camadas.projetos) total += projetosFiltrados.length;
+    if (camadas.espacos) total += espacosFiltrados.length;
+    if (camadas.desertos) total += desertosCulturaisMock.length;
+    return total;
+  }, [camadas, artistas.length, projetosFiltrados.length, espacosFiltrados.length]);
 
   // Filter application handlers (US-03)
   const applyProdutorFilter = useCallback((artista: AgenteCenso) => {
