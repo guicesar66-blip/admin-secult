@@ -118,7 +118,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Cia. Movimento Livre",
     descricao: "Companhia de dança contemporânea com sede em Caruaru que explora a interseção entre tradição e modernidade.",
     linguagem_principal: "Dança",
-    municipio: "Caruaru", estado: "PE",
+    municipio: "Caruaru", codigo_municipio: "2604106", distrito: "Caruaru", estado: "PE",
     endereco: "Av. Agamenon Magalhães, 500 — Caruaru, PE",
     tipo_formalizacao: "MEI",
     cnpj: "98.765.432/0001-11",
