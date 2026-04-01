@@ -89,6 +89,7 @@ export const usuariosMock: Usuario[] = [
     id: "u8", nome_completo: "Fernanda Alves", email: "fernanda.a@email.com",
     telefone: "(81) 99200-0001", cpf: "222.000.000-01", nascimento: "1987-04-10",
     genero: "Mulher cis", raca_cor: "Branca", municipio: "Caruaru",
+    codigo_municipio: "2604106", distrito: "Caruaru",
     bairro: "Maurício de Nassau", estado: "PE",
     categorias_interesse: ["Dança", "Artes Cênicas"],
     created_at: "2017-01-20",
