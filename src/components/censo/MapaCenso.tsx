@@ -476,7 +476,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
           ))}
 
           {/* ===== CAMADA: Espaços Culturais (z=450) ===== */}
-          {camadas.espacos && equipamentosMock.map((eq) => (
+          {camadas.espacos && espacosFiltrados.map((eq) => (
             <Marker
               key={eq.id}
               position={[eq.location.lat, eq.location.lng]}
