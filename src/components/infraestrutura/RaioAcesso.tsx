@@ -52,8 +52,7 @@ export function RaioAcesso() {
             {criticos.map((m) => (
               <div
                 key={m.municipio}
-                className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
-                onClick={() => onMunicipioClick(m.municipio)}
+                className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-muted/50 transition-colors"
               >
                 <div>
                   <p className="text-xs font-medium">{m.municipio}</p>
