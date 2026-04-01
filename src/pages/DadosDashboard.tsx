@@ -54,7 +54,7 @@ export default function DadosDashboard() {
   const [filtroCidades, setFiltroCidades] = useState<string[]>([]);
 
   // Filters
-  const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
+  const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
 
