@@ -160,13 +160,17 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
       })
       .filter(Boolean) as ArtistaEnriquecido[];
 
-    // Filter produtoras: keep those that have at least one artista with the selected linguagem
-    const produtoras =
-      filtroLinguagem === "todas"
-        ? produtorasMock
-        : produtorasMock.filter((p) =>
-            getArtistasByProdutora(p.id).some((a) => artistaTemTipo(a, filtroLinguagem))
-          );
+    // Filter produtoras by city and linguagem
+    let produtorasFiltered = produtorasMock;
+    if (filtroCidades.length > 0) {
+      produtorasFiltered = produtorasFiltered.filter((p) => filtroCidades.includes(p.municipio));
+    }
+    if (filtroLinguagem !== "todas") {
+      produtorasFiltered = produtorasFiltered.filter((p) =>
+        getArtistasByProdutora(p.id).some((a) => artistaTemTipo(a, filtroLinguagem))
+      );
+    }
+    const produtoras = produtorasFiltered;
 
     const total = artistas.length || 1;
 
