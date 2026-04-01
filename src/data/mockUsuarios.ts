@@ -116,6 +116,7 @@ export const usuariosMock: Usuario[] = [
     id: "u11", nome_completo: "Marcos Vieira", email: "marcos.v@email.com",
     telefone: "(81) 99200-0004", cpf: "222.000.000-04", nascimento: "1985-12-01",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Caruaru",
+    codigo_municipio: "2604106", distrito: "Caruaru",
     bairro: "Boa Vista", estado: "PE",
     categorias_interesse: ["Dança", "Teatro", "Artes Visuais"],
     created_at: "2017-01-20",
