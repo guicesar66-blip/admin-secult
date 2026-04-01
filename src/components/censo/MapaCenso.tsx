@@ -422,7 +422,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       label: "Projetos",
       icon: <FolderKanban className="h-4 w-4" />,
       cor: CORES_CAMADA.projetos,
-      count: projetosMapaMock.length,
+      count: projetosFiltrados.length,
     },
     {
       key: "espacos" as const,
