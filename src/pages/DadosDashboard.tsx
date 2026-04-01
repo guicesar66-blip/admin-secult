@@ -185,7 +185,7 @@ export default function DadosDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-flex">
             <TabsTrigger value="mapa" className="gap-2">
               <Map className="h-4 w-4" />
               <span className="hidden sm:inline">Censo Cultural</span>
@@ -196,7 +196,11 @@ export default function DadosDashboard() {
             </TabsTrigger>
             <TabsTrigger value="infraestrutura" className="gap-2">
               <Building2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Infraestrutura Cultural</span>
+              <span className="hidden sm:inline">Espaços Culturais</span>
+            </TabsTrigger>
+            <TabsTrigger value="projetos" className="gap-2">
+              <Briefcase className="h-4 w-4" />
+              <span className="hidden sm:inline">Projetos e Resultados</span>
             </TabsTrigger>
             <TabsTrigger value="auditoria" className="gap-2">
               <FileCheck className="h-4 w-4" />
