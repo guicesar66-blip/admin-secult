@@ -156,9 +156,9 @@ export function InventarioEquipamentos({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dados.length === 0 ? (
+              {dadosPaginados.length === 0 ? (
                 <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum espaço cultural encontrado.</TableCell></TableRow>
-              ) : dados.map(eq => (
+              ) : dadosPaginados.map(eq => (
                 <TableRow key={eq.id} className="cursor-pointer hover:bg-accent/50" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
                   <TableCell className="font-medium text-sm">{eq.municipio}</TableCell>
                   <TableCell className="text-sm"><span className="mr-1">{iconesTipoEquipamento[eq.tipo]}</span>{eq.tipo}</TableCell>
