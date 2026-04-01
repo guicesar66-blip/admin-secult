@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
+import { useMapFilter } from "@/contexts/MapFilterContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
