@@ -61,6 +61,16 @@ export function FiltroCidadeMultiSelect({
     }
   };
 
+  const toggleExpandRegiao = (regiao: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedRegioes(prev => {
+      const next = new Set(prev);
+      if (next.has(regiao)) next.delete(regiao);
+      else next.add(regiao);
+      return next;
+    });
+  };
+
   const toggleExpand = (nome: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedCidades(prev => {
