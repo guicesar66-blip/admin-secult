@@ -20,7 +20,12 @@ import { linguagensArtisticas } from "@/data/mockCensoAuxiliar";
 type SortKey = "nome" | "proponenteNome" | "linguagem" | "instrumento" | "municipio" | "fase" | "status" | "publicoImpactado" | "valorCaptado" | "scoreConformidade";
 type SortDir = "asc" | "desc";
 
-export function TabelaProjetos() {
+interface TabelaProjetosProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function TabelaProjetos({ filtroLinguagem: filtroLinguagemGlobal = "todas", filtroCidades: filtroCidadesGlobal = [] }: TabelaProjetosProps) {
   const navigate = useNavigate();
   const [busca, setBusca] = useState("");
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
@@ -40,6 +45,10 @@ export function TabelaProjetos() {
 
   const dados = useMemo(() => {
     let resultado = [...projetosMock];
+    // Global filters
+    if (filtroLinguagemGlobal !== "todas") resultado = resultado.filter(p => p.linguagem === filtroLinguagemGlobal);
+    if (filtroCidadesGlobal.length > 0) resultado = resultado.filter(p => filtroCidadesGlobal.includes(p.municipio));
+    // Local filters
     if (busca) {
       const q = busca.toLowerCase();
       resultado = resultado.filter(p => p.nome.toLowerCase().includes(q) || p.proponenteNome.toLowerCase().includes(q));
@@ -56,7 +65,7 @@ export function TabelaProjetos() {
       return sortDir === "asc" ? cmp : -cmp;
     });
     return resultado;
-  }, [busca, filtroInstrumento, filtroStatus, filtroLinguagem, filtroFase, sortKey, sortDir]);
+  }, [busca, filtroInstrumento, filtroStatus, filtroLinguagem, filtroFase, sortKey, sortDir, filtroLinguagemGlobal, filtroCidadesGlobal]);
 
   const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
 
