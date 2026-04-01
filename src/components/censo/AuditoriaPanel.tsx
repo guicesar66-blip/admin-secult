@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertTriangle, XCircle, FileText, Download, Camera } from "lucide-react";
 import { projetosAuditoriaMock } from "@/data/mockCensoAuxiliar";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 
 export function AuditoriaPanel() {
   const statusIcon = {
