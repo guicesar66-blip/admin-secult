@@ -304,5 +304,5 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
       percentProdutorasVulneravel,
       ivc,
     };
-  }, [filtroLinguagem]);
+  }, [filtroLinguagem, filtroCidades]);
 }
