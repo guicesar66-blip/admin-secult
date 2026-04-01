@@ -63,7 +63,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <MiniKPI
           label="Total de Agentes Culturais"
-          value={data.totalMembros.toLocaleString("pt-BR")}
+          value={data.totalArtistas.toLocaleString("pt-BR")}
           subtitle={`Período: ${filtroPeriodo}`}
           icon={<Users className="h-4 w-4 text-primary" />}
           trend={{ value: "+8,2%", positive: true }}
