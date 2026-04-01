@@ -228,7 +228,7 @@ export function InventarioEquipamentos({
                 </TableRow>
               ) : (
                 dados.map((eq) => (
-                  <TableRow key={eq.id}>
+                  <TableRow key={eq.id} className="cursor-pointer hover:bg-accent/50" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
                     <TableCell className="font-medium text-sm">{eq.municipio}</TableCell>
                     <TableCell className="text-sm">
                       <span className="mr-1">{iconesTipoEquipamento[eq.tipo]}</span>

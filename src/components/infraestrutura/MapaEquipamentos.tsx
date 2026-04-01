@@ -317,12 +317,23 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
                         {eq.gestao}
                       </Badge>
                       <Badge
-                        variant="outline"
-                        className={`text-[10px] ${eq.status === "Ativo" ? "border-green-500 text-green-700" : "border-red-500 text-red-700"}`}
+                        variant={eq.status === "Ativo" ? "default" : "destructive"}
+                        className="text-[10px]"
                       >
                         {eq.status}
                       </Badge>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="link"
+                      className="text-xs p-0 h-auto mt-1 gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/dados/espaco/${eq.id}`);
+                      }}
+                    >
+                      <Eye className="h-3 w-3" /> Ver detalhe
+                    </Button>
                   </div>
                 </Popup>
               </Marker>
