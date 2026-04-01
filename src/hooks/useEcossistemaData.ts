@@ -177,9 +177,19 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       return { name, value, percent: Math.round((value / total) * 100) };
     });
 
-    // Formalizacao
-    const formRaw = countBy(artistas.map((a) => normalizeFormalizacao(a.formalizacao)));
-    const formalizacao = formRaw.map((f) => ({ ...f, fullMark: 50 }));
+    // Formalizacao — always include all categories for radar shape
+    const formCats = ["MEI", "Informal", "ME/EPP", "Coletivo"];
+    const formCountMap = new Map<string, number>();
+    formCats.forEach((c) => formCountMap.set(c, 0));
+    artistas.forEach((a) => {
+      const cat = normalizeFormalizacao(a.formalizacao);
+      formCountMap.set(cat, (formCountMap.get(cat) || 0) + 1);
+    });
+    const maxForm = Math.max(...Array.from(formCountMap.values()), 1);
+    const formalizacao = formCats.map((name) => {
+      const value = formCountMap.get(name) || 0;
+      return { name, value, percent: Math.round((value / total) * 100), fullMark: maxForm };
+    });
 
     // Linguagem — tipos principais (count artistas per tipo)
     const linguagem: CountItem[] = tiposLinguagem.map((tipo) => {

@@ -155,18 +155,19 @@ export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProp
           </CardHeader>
           <CardContent>
             <ChartContainer config={formalizacaoConfig} className="h-[220px] w-full">
-              <RadarChart data={data.formalizacao} cx="50%" cy="50%" outerRadius="70%">
-                <PolarGrid className="stroke-border/40" />
+              <RadarChart data={data.formalizacao} cx="50%" cy="50%" outerRadius="65%">
+                <PolarGrid className="stroke-border/40" gridType="polygon" />
                 <PolarAngleAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <PolarRadiusAxis tick={{ fontSize: 9 }} domain={[0, 50]} />
+                <PolarRadiusAxis tick={{ fontSize: 9 }} domain={[0, "dataMax"]} tickCount={4} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Radar
-                  name="Participação (%)"
-                  dataKey="percent"
+                  name="Agentes"
+                  dataKey="value"
                   stroke="hsl(var(--primary))"
                   fill="hsl(var(--primary))"
                   fillOpacity={0.25}
                   strokeWidth={2}
+                  dot={{ r: 3, fill: "hsl(var(--primary))" }}
                 />
               </RadarChart>
             </ChartContainer>
