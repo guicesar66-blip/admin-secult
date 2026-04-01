@@ -201,6 +201,12 @@ export function PerfilEcossistema({ filtroPeriodo }: PerfilEcossistemaProps) {
         </CardContent>
       </Card>
 
+      {/* Evolução de cadastros + Capilaridade — lado a lado */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <EvolucaoCadastros filtroPeriodo={filtroPeriodo} />
+        <CapilaridadeKPI filtroPeriodo={filtroPeriodo} />
+      </div>
+
       {/* Donut charts — Gênero e Raça/Cor */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DonutChart
