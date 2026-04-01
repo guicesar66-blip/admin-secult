@@ -94,8 +94,8 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
         />
         <MiniKPI
           label="Coletivos c/ membro vulnerável"
-          value={`${data.percentColetivosVulneravel}%`}
-          subtitle="ao menos 1 membro"
+          value={`${data.percentProdutorasVulneravel}%`}
+          subtitle="ao menos 1 artista"
           icon={<ShieldAlert className="h-4 w-4 text-warning" />}
           accentColor="bg-warning/10 text-warning"
         />
