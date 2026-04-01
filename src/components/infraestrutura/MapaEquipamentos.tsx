@@ -56,11 +56,7 @@ function PaneSetup() {
   return null;
 }
 
-interface MapaEquipamentosProps {
-  onMunicipioClick?: (municipio: string) => void;
-}
-
-export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
+export function MapaEquipamentos() {
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
