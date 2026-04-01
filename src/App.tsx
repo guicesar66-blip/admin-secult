@@ -32,6 +32,7 @@ import SistemaTrocados from "./pages/SistemaTrocados";
 import VitrineDetalhes from "./pages/VitrineDetalhes";
 import ColetivosDetalhes from "./pages/ColetivosDetalhes";
 import EspacoDetalhes from "./pages/EspacoDetalhes";
+import ProjetoImpactoDetalhes from "./pages/ProjetoImpactoDetalhes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
