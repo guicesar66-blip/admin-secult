@@ -2,18 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell } from "recharts";
 import { GraduationCap, Home, ShieldAlert, Info } from "lucide-react";
-import {
-  dadosRendaColetivos,
-  dadosEscolaridade,
-  REFERENCIA_SUPERIOR_PE,
-  dadosServicosBasicos,
-  dadosVulnerabilidade,
-  dadosIVC,
-  IVC_COLORS,
-} from "@/data/mockColetivos";
+import { REFERENCIA_SUPERIOR_PE, IVC_COLORS } from "@/data/mockColetivos";
+import type { EcossistemaData } from "@/hooks/useEcossistemaData";
 
 interface PainelSocioeconomicoProps {
   filtroPeriodo: string;
+  data: EcossistemaData;
 }
 
 function ProgressBar({ label, percent, color = "bg-primary" }: { label: string; percent: number; color?: string }) {
@@ -30,7 +24,7 @@ function ProgressBar({ label, percent, color = "bg-primary" }: { label: string; 
   );
 }
 
-function BlocoRenda() {
+function BlocoRenda({ data }: { data: EcossistemaData }) {
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -38,7 +32,7 @@ function BlocoRenda() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {dadosRendaColetivos.map((item, i) => (
+          {data.renda.map((item, i) => (
             <ProgressBar
               key={item.name}
               label={`${item.name} (${item.value})`}
@@ -52,18 +46,18 @@ function BlocoRenda() {
   );
 }
 
-function BlocoEscolaridade() {
+function BlocoEscolaridade({ data }: { data: EcossistemaData }) {
   const donutColors = [
     "hsl(215, 60%, 50%)", "hsl(270, 50%, 55%)", "hsl(142, 60%, 40%)",
     "hsl(38, 69%, 50%)", "hsl(340, 65%, 55%)", "hsl(0, 0%, 60%)",
   ];
 
-  const percentSuperior = dadosEscolaridade
+  const percentSuperior = data.escolaridade
     .filter((d) => d.name.includes("Superior completo") || d.name.includes("Pós"))
     .reduce((s, d) => s + d.percent, 0);
 
   const chartConfig = Object.fromEntries(
-    dadosEscolaridade.map((d, i) => [d.name, { label: d.name, color: donutColors[i] }])
+    data.escolaridade.map((d, i) => [d.name, { label: d.name, color: donutColors[i % donutColors.length] }])
   );
 
   return (
@@ -79,18 +73,18 @@ function BlocoEscolaridade() {
             <ChartContainer config={chartConfig} className="h-[170px] w-[170px] aspect-square shrink-0">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Pie data={dadosEscolaridade} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" nameKey="name" strokeWidth={2} stroke="hsl(var(--background))">
-                  {dadosEscolaridade.map((_, i) => (
-                    <Cell key={i} fill={donutColors[i]} />
+                <Pie data={data.escolaridade} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" nameKey="name" strokeWidth={2} stroke="hsl(var(--background))">
+                  {data.escolaridade.map((_, i) => (
+                    <Cell key={i} fill={donutColors[i % donutColors.length]} />
                   ))}
                 </Pie>
               </PieChart>
             </ChartContainer>
             <div className="flex flex-col gap-1.5 flex-1">
-              {dadosEscolaridade.map((item, i) => (
+              {data.escolaridade.map((item, i) => (
                 <div key={item.name} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="inline-block h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: donutColors[i] }} />
+                    <span className="inline-block h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: donutColors[i % donutColors.length] }} />
                     <span className="text-muted-foreground text-xs">{item.name}</span>
                   </div>
                   <span className="font-medium tabular-nums text-xs">{item.percent}%</span>
@@ -121,7 +115,7 @@ function BlocoEscolaridade() {
   );
 }
 
-function BlocoMoradia() {
+function BlocoMoradia({ data }: { data: EcossistemaData }) {
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -131,7 +125,7 @@ function BlocoMoradia() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {dadosServicosBasicos.map((item) => (
+          {data.servicosBasicos.map((item) => (
             <ProgressBar
               key={item.name}
               label={item.name}
@@ -145,7 +139,7 @@ function BlocoMoradia() {
   );
 }
 
-function BlocoVulnerabilidade() {
+function BlocoVulnerabilidade({ data }: { data: EcossistemaData }) {
   return (
     <>
       <Card className="h-full">
@@ -156,7 +150,7 @@ function BlocoVulnerabilidade() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {dadosVulnerabilidade.map((item) => (
+            {data.vulnerabilidades.map((item) => (
               <ProgressBar
                 key={item.name}
                 label={item.name}
@@ -164,6 +158,9 @@ function BlocoVulnerabilidade() {
                 color={item.percent >= 30 ? "bg-destructive" : item.percent >= 15 ? "bg-warning" : "bg-muted-foreground/50"}
               />
             ))}
+            {data.vulnerabilidades.length === 0 && (
+              <p className="text-sm text-muted-foreground">Nenhuma vulnerabilidade declarada para o filtro atual.</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -175,9 +172,9 @@ function BlocoVulnerabilidade() {
   );
 }
 
-function BlocoIVC() {
+function BlocoIVC({ data }: { data: EcossistemaData }) {
   const chartConfig = Object.fromEntries(
-    dadosIVC.map((d, i) => [d.name, { label: d.name, color: IVC_COLORS[i] }])
+    data.ivc.map((d, i) => [d.name, { label: d.name, color: IVC_COLORS[i] }])
   );
 
   return (
@@ -190,15 +187,15 @@ function BlocoIVC() {
           <ChartContainer config={chartConfig} className="h-[170px] w-[170px] aspect-square shrink-0">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Pie data={dadosIVC} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" nameKey="name" strokeWidth={2} stroke="hsl(var(--background))">
-                {dadosIVC.map((_, i) => (
+              <Pie data={data.ivc} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" nameKey="name" strokeWidth={2} stroke="hsl(var(--background))">
+                {data.ivc.map((_, i) => (
                   <Cell key={i} fill={IVC_COLORS[i]} />
                 ))}
               </Pie>
             </PieChart>
           </ChartContainer>
           <div className="flex flex-col gap-3 flex-1">
-            {dadosIVC.map((item, i) => (
+            {data.ivc.map((item, i) => (
               <div key={item.name} className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: IVC_COLORS[i] }} />
@@ -217,25 +214,25 @@ function BlocoIVC() {
   );
 }
 
-export function PainelSocioeconomico({ filtroPeriodo }: PainelSocioeconomicoProps) {
+export function PainelSocioeconomico({ filtroPeriodo, data }: PainelSocioeconomicoProps) {
   return (
     <div className="space-y-4">
       {/* Row 1: Renda + IVC */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <BlocoRenda />
-        <BlocoIVC />
+        <BlocoRenda data={data} />
+        <BlocoIVC data={data} />
       </div>
 
       {/* Row 2: Escolaridade */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <BlocoEscolaridade />
+        <BlocoEscolaridade data={data} />
       </div>
 
       {/* Row 3: Moradia + Vulnerabilidade */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <BlocoMoradia />
+        <BlocoMoradia data={data} />
         <div className="space-y-4">
-          <BlocoVulnerabilidade />
+          <BlocoVulnerabilidade data={data} />
         </div>
       </div>
     </div>

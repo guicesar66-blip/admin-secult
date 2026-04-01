@@ -6,18 +6,8 @@ import { PainelSocioeconomico } from "./PainelSocioeconomico";
 import { TabelaColetivos } from "./TabelaColetivos";
 import { DemografiaCharts } from "./DemografiaCharts";
 import { CollapsibleSection } from "./CollapsibleSection";
-import {
-  RENDA_MEDIA_MEMBROS,
-  SALARIO_MINIMO_2025,
-  PERCENT_SEM_SERVICO,
-  PERCENT_COLETIVOS_VULNERAVEL,
-} from "@/data/mockColetivos";
-
-const TOTAL_AGENTES = 662;
-const VARIACAO_PERIODO = "+8,2%";
-const MUNICIPIOS_COM_AGENTES = 47;
-const TOTAL_MUNICIPIOS = 185;
-const PERCENTUAL_CAPILARIDADE = ((MUNICIPIOS_COM_AGENTES / TOTAL_MUNICIPIOS) * 100).toFixed(1);
+import { useEcossistemaData } from "@/hooks/useEcossistemaData";
+import { SALARIO_MINIMO_2025 } from "@/data/mockColetivos";
 
 interface PerfilEcossistemaProps {
   filtroPeriodo: string;
@@ -34,7 +24,7 @@ interface MiniKPIProps {
 }
 
 function MiniKPI({ label, value, subtitle, icon, trend, accentColor = "bg-primary/10 text-primary" }: MiniKPIProps) {
-  const [bgClass, textClass] = accentColor.split(" ");
+  const [bgClass] = accentColor.split(" ");
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="pt-4 pb-3 px-4">
@@ -60,7 +50,12 @@ function MiniKPI({ label, value, subtitle, icon, trend, accentColor = "bg-primar
 }
 
 export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcossistemaProps) {
-  const percentSM = ((RENDA_MEDIA_MEMBROS / SALARIO_MINIMO_2025) * 100).toFixed(0);
+  const data = useEcossistemaData(filtroLinguagem);
+  const percentSM = data.rendaMedia > 0 ? ((data.rendaMedia / SALARIO_MINIMO_2025) * 100).toFixed(0) : "0";
+
+  const MUNICIPIOS_COM_AGENTES = 47;
+  const TOTAL_MUNICIPIOS = 185;
+  const PERCENTUAL_CAPILARIDADE = ((MUNICIPIOS_COM_AGENTES / TOTAL_MUNICIPIOS) * 100).toFixed(1);
 
   return (
     <div className="space-y-6">
@@ -68,10 +63,10 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <MiniKPI
           label="Total de Agentes Culturais"
-          value={TOTAL_AGENTES.toLocaleString("pt-BR")}
+          value={data.totalMembros.toLocaleString("pt-BR")}
           subtitle={`Período: ${filtroPeriodo}`}
           icon={<Users className="h-4 w-4 text-primary" />}
-          trend={{ value: VARIACAO_PERIODO, positive: true }}
+          trend={{ value: "+8,2%", positive: true }}
           accentColor="bg-primary/10 text-primary"
         />
         <MiniKPI
@@ -84,7 +79,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
         />
         <MiniKPI
           label="Renda Média Mensal"
-          value={`R$ ${RENDA_MEDIA_MEMBROS.toLocaleString("pt-BR")}`}
+          value={`R$ ${data.rendaMedia.toLocaleString("pt-BR")}`}
           subtitle={`${percentSM}% do salário mínimo`}
           icon={<DollarSign className="h-4 w-4 text-warning" />}
           trend={{ value: `${percentSM}% do SM`, positive: false }}
@@ -92,14 +87,14 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
         />
         <MiniKPI
           label="Sem acesso a serviço básico"
-          value={`${PERCENT_SEM_SERVICO}%`}
+          value={`${data.percentSemServico}%`}
           subtitle="dos membros cadastrados"
           icon={<AlertTriangle className="h-4 w-4 text-destructive" />}
           accentColor="bg-destructive/10 text-destructive"
         />
         <MiniKPI
           label="Coletivos c/ membro vulnerável"
-          value={`${PERCENT_COLETIVOS_VULNERAVEL}%`}
+          value={`${data.percentColetivosVulneravel}%`}
           subtitle="ao menos 1 membro"
           icon={<ShieldAlert className="h-4 w-4 text-warning" />}
           accentColor="bg-warning/10 text-warning"
@@ -113,16 +108,16 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       </div>
 
       {/* Demographic charts */}
-      <DemografiaCharts filtroLinguagem={filtroLinguagem} />
+      <DemografiaCharts filtroLinguagem={filtroLinguagem} data={data} />
 
       {/* Painel Socioeconômico — collapsible */}
       <CollapsibleSection sectionKey="painel-socioeconomico" title="Painel Socioeconômico dos Coletivos">
-        <PainelSocioeconomico filtroPeriodo={filtroPeriodo} />
+        <PainelSocioeconomico filtroPeriodo={filtroPeriodo} data={data} />
       </CollapsibleSection>
 
       {/* Tabela de Coletivos — collapsible */}
       <CollapsibleSection sectionKey="tabela-coletivos" title="Coletivos Cadastrados">
-        <TabelaColetivos filtroPeriodo={filtroPeriodo} />
+        <TabelaColetivos filtroPeriodo={filtroPeriodo} filtroLinguagem={filtroLinguagem} />
       </CollapsibleSection>
     </div>
   );

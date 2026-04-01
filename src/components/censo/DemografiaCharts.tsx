@@ -5,47 +5,8 @@ import {
   PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  ResponsiveContainer,
 } from "recharts";
-
-// ===== Data =====
-const dadosGenero = [
-  { name: "Masculino", value: 358, percent: 54 },
-  { name: "Feminino", value: 285, percent: 43 },
-  { name: "Não-binário/outro", value: 19, percent: 3 },
-];
-
-const dadosRaca = [
-  { name: "Parda", value: 318, percent: 48 },
-  { name: "Branca", value: 172, percent: 26 },
-  { name: "Preta", value: 146, percent: 22 },
-  { name: "Outros", value: 26, percent: 4 },
-];
-
-const dadosFaixaEtaria = [
-  { name: "18-25a", value: 119, percent: 18 },
-  { name: "26-35a", value: 205, percent: 31 },
-  { name: "36-45a", value: 185, percent: 28 },
-  { name: "46-60a", value: 113, percent: 17 },
-  { name: "60+", value: 40, percent: 6 },
-];
-
-const dadosFormalizacao = [
-  { name: "Informal", value: 291, percent: 44, fullMark: 50 },
-  { name: "MEI", value: 205, percent: 31, fullMark: 50 },
-  { name: "Coletivo", value: 86, percent: 13, fullMark: 50 },
-  { name: "ME/EPP", value: 80, percent: 12, fullMark: 50 },
-];
-
-const dadosLinguagem = [
-  { name: "Música", value: 185, percent: 28 },
-  { name: "Cultura Popular", value: 146, percent: 22 },
-  { name: "Artes Visuais", value: 106, percent: 16 },
-  { name: "Teatro", value: 79, percent: 12 },
-  { name: "Artesanato", value: 73, percent: 11 },
-  { name: "Dança", value: 46, percent: 7 },
-  { name: "Audiovisual", value: 27, percent: 4 },
-];
+import type { EcossistemaData } from "@/hooks/useEcossistemaData";
 
 const DONUT_COLORS_GENERO = [
   "hsl(215, 60%, 50%)",
@@ -58,6 +19,8 @@ const DONUT_COLORS_RACA = [
   "hsl(38, 69%, 50%)",
   "hsl(0, 66%, 48%)",
   "hsl(215, 20%, 65%)",
+  "hsl(142, 60%, 40%)",
+  "hsl(270, 50%, 55%)",
 ];
 
 const FAIXA_ETARIA_COLORS = [
@@ -66,6 +29,12 @@ const FAIXA_ETARIA_COLORS = [
   "hsl(215, 60%, 40%)",
   "hsl(215, 50%, 55%)",
   "hsl(215, 40%, 70%)",
+];
+
+const LINGUAGEM_COLORS = [
+  "hsl(215, 60%, 50%)", "hsl(24, 77%, 57%)", "hsl(142, 60%, 40%)",
+  "hsl(270, 50%, 55%)", "hsl(38, 69%, 50%)", "hsl(340, 65%, 55%)",
+  "hsl(0, 66%, 48%)", "hsl(195, 60%, 50%)", "hsl(160, 50%, 45%)",
 ];
 
 // ===== Reusable DonutChart =====
@@ -79,7 +48,7 @@ function DonutChart({
   colors: string[];
 }) {
   const chartConfig = Object.fromEntries(
-    data.map((d, i) => [d.name, { label: d.name, color: colors[i] }])
+    data.map((d, i) => [d.name, { label: d.name, color: colors[i % colors.length] }])
   );
 
   return (
@@ -104,7 +73,7 @@ function DonutChart({
                 stroke="hsl(var(--background))"
               >
                 {data.map((_, i) => (
-                  <Cell key={i} fill={colors[i]} />
+                  <Cell key={i} fill={colors[i % colors.length]} />
                 ))}
               </Pie>
             </PieChart>
@@ -116,7 +85,7 @@ function DonutChart({
                 <div className="flex items-center gap-2">
                   <span
                     className="inline-block h-3 w-3 rounded-sm shrink-0"
-                    style={{ backgroundColor: colors[i] }}
+                    style={{ backgroundColor: colors[i % colors.length] }}
                   />
                   <span className="text-muted-foreground">{item.name}</span>
                 </div>
@@ -135,29 +104,30 @@ function DonutChart({
 
 interface DemografiaChartsProps {
   filtroLinguagem: string;
+  data: EcossistemaData;
 }
 
-export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
-  // Filter linguagem data if a specific language is selected
-  const linguagemInfo = useMemo(() => {
-    if (filtroLinguagem === "todas") return null;
-    return dadosLinguagem.find((d) => d.name === filtroLinguagem);
-  }, [filtroLinguagem]);
-
+export function DemografiaCharts({ filtroLinguagem, data }: DemografiaChartsProps) {
   const faixaEtariaConfig = Object.fromEntries(
-    dadosFaixaEtaria.map((d, i) => [d.name, { label: d.name, color: FAIXA_ETARIA_COLORS[i] }])
+    data.faixaEtaria.map((d, i) => [d.name, { label: d.name, color: FAIXA_ETARIA_COLORS[i] }])
   );
 
   const formalizacaoConfig = {
     percent: { label: "Participação (%)", color: "hsl(var(--primary))" },
   };
 
+  // Find filtered language info
+  const linguagemInfo = useMemo(() => {
+    if (filtroLinguagem === "todas") return null;
+    return data.linguagem.find((d) => d.name.toLowerCase().includes(filtroLinguagem.toLowerCase()));
+  }, [filtroLinguagem, data.linguagem]);
+
   return (
     <>
       {/* Donut charts — Gênero and Raça/Cor */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <DonutChart title="Distribuição por Gênero" data={dadosGenero} colors={DONUT_COLORS_GENERO} />
-        <DonutChart title="Distribuição por Raça/Cor" data={dadosRaca} colors={DONUT_COLORS_RACA} />
+        <DonutChart title="Distribuição por Gênero" data={data.genero} colors={DONUT_COLORS_GENERO} />
+        <DonutChart title="Distribuição por Raça/Cor" data={data.raca} colors={DONUT_COLORS_RACA} />
       </div>
 
       {/* Diversified charts: Stacked bar (Faixa Etária), Radar (Formalização), Donut (Linguagem) */}
@@ -169,14 +139,13 @@ export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
           </CardHeader>
           <CardContent>
             <ChartContainer config={faixaEtariaConfig} className="h-[220px] w-full">
-              <BarChart data={dadosFaixaEtaria} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+              <BarChart data={data.faixaEtaria} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                {dadosFaixaEtaria.map((entry, i) => null)}
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                  {dadosFaixaEtaria.map((_, i) => (
+                  {data.faixaEtaria.map((_, i) => (
                     <Cell key={i} fill={FAIXA_ETARIA_COLORS[i]} />
                   ))}
                 </Bar>
@@ -192,7 +161,7 @@ export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
           </CardHeader>
           <CardContent>
             <ChartContainer config={formalizacaoConfig} className="h-[220px] w-full">
-              <RadarChart data={dadosFormalizacao} cx="50%" cy="50%" outerRadius="70%">
+              <RadarChart data={data.formalizacao} cx="50%" cy="50%" outerRadius="70%">
                 <PolarGrid className="stroke-border/40" />
                 <PolarAngleAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
                 <PolarRadiusAxis tick={{ fontSize: 9 }} domain={[0, 50]} />
@@ -208,7 +177,7 @@ export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
               </RadarChart>
             </ChartContainer>
             <div className="flex flex-wrap gap-2 mt-2">
-              {dadosFormalizacao.map((item) => (
+              {data.formalizacao.map((item) => (
                 <span key={item.name} className="text-xs text-muted-foreground">
                   {item.name}: <span className="font-medium text-foreground">{item.value}</span> ({item.percent}%)
                 </span>
@@ -217,16 +186,12 @@ export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Linguagem Artística — Donut */}
+        {/* Linguagem Artística — Donut or filtered info */}
         {filtroLinguagem === "todas" ? (
           <DonutChart
             title="Distribuição por Linguagem"
-            data={dadosLinguagem}
-            colors={[
-              "hsl(215, 60%, 50%)", "hsl(24, 77%, 57%)", "hsl(142, 60%, 40%)",
-              "hsl(270, 50%, 55%)", "hsl(38, 69%, 50%)", "hsl(340, 65%, 55%)",
-              "hsl(0, 66%, 48%)",
-            ]}
+            data={data.linguagem}
+            colors={LINGUAGEM_COLORS}
           />
         ) : (
           <Card className="h-full">
@@ -237,7 +202,9 @@ export function DemografiaCharts({ filtroLinguagem }: DemografiaChartsProps) {
               {linguagemInfo ? (
                 <>
                   <p className="text-3xl font-bold">{linguagemInfo.value}</p>
-                  <p className="text-sm text-muted-foreground mt-1">agentes em <span className="font-medium text-foreground">{filtroLinguagem}</span></p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    agentes em <span className="font-medium text-foreground">{filtroLinguagem}</span>
+                  </p>
                   <p className="text-xs text-muted-foreground mt-0.5">{linguagemInfo.percent}% do total</p>
                 </>
               ) : (
