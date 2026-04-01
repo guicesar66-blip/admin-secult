@@ -10,6 +10,8 @@ export interface Usuario {
   genero: string;
   raca_cor: string;
   municipio: string;
+  codigo_municipio: string;
+  distrito?: string;
   endereco?: string;
   bairro?: string;
   cep?: string;
