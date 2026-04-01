@@ -30,6 +30,7 @@ import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
 import { InsightsIAModal } from "@/components/censo/InsightsIAModal";
 import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
 import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
+import { ProjetosResultadosTab } from "@/components/projetos-dados/ProjetosResultadosTab";
 import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
   buildAgentesCenso,
@@ -184,7 +185,7 @@ export default function DadosDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-flex">
             <TabsTrigger value="mapa" className="gap-2">
               <Map className="h-4 w-4" />
               <span className="hidden sm:inline">Censo Cultural</span>
@@ -195,7 +196,11 @@ export default function DadosDashboard() {
             </TabsTrigger>
             <TabsTrigger value="infraestrutura" className="gap-2">
               <Building2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Infraestrutura Cultural</span>
+              <span className="hidden sm:inline">Espaços Culturais</span>
+            </TabsTrigger>
+            <TabsTrigger value="projetos" className="gap-2">
+              <Briefcase className="h-4 w-4" />
+              <span className="hidden sm:inline">Projetos e Resultados</span>
             </TabsTrigger>
             <TabsTrigger value="auditoria" className="gap-2">
               <FileCheck className="h-4 w-4" />
@@ -331,6 +336,20 @@ export default function DadosDashboard() {
               filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
               filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
             } />
+          </TabsContent>
+
+          {/* ===== PROJETOS E RESULTADOS ===== */}
+          <TabsContent value="projetos" className="space-y-4">
+            <ProjetosResultadosTab
+              filtroPeriodo={
+                filtroPeriodo === "ultimo-mes" ? "Último mês" :
+                filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
+                filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
+                filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
+              }
+              filtroLinguagem={filtroLinguagem}
+              filtroCidades={filtroCidades}
+            />
           </TabsContent>
 
           {/* ===== AUDITORIA ===== */}
