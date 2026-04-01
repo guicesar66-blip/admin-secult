@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DollarSign } from "lucide-react";
 import { orcamentoPorInstrumento } from "@/data/mockProjetos";
+import { projetosPorInstrumento } from "@/data/mockEquipamentosCulturais";
 
 export function OrcamentoFomento() {
   const totalInvestido = orcamentoPorInstrumento.reduce((s, i) => s + i.pago, 0);
@@ -150,6 +151,22 @@ export function OrcamentoFomento() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Projetos por Instrumento de Fomento */}
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Projetos por Instrumento de Fomento</CardTitle></CardHeader>
+        <CardContent>
+          <ChartContainer config={{ value: { label: "Projetos", color: "hsl(270, 50%, 55%)" } }} className="h-[220px] w-full">
+            <BarChart data={projetosPorInstrumento} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
+              <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="instrumento" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} width={120} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="projetos" fill="hsl(270, 50%, 55%)" radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }
