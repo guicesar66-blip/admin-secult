@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, Users, Briefcase, TrendingUp } from "lucide-react";
 import { equipamentosMock, tiposEquipamento, iconesTipoEquipamento } from "@/data/mockEquipamentosCulturais";
+import { tiposLinguagem } from "@/data/mockLinguagens";
 import { QualidadeEspacos } from "./QualidadeEspacos";
 import { AtividadeEspacos } from "./AtividadeEspacos";
 import { InventarioEquipamentos } from "./InventarioEquipamentos";
