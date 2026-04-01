@@ -32,16 +32,16 @@ import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
 import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
 import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
-  artistasMock,
-  categoriasArtisticas,
-  coresCategoria,
-  estatisticasGerais,
-  type Artista,
-} from "@/data/mockCensoCultural";
+  buildAgentesCenso,
+  getEstatisticasGerais,
+  linguagensArtisticas,
+  coresLinguagem,
+  type AgenteCenso,
+} from "@/data/mockCensoAuxiliar";
 
 export default function DadosDashboard() {
   const [activeTab, setActiveTab] = useState("mapa");
-  const [selectedArtista, setSelectedArtista] = useState<Artista | null>(null);
+  const [selectedArtista, setSelectedArtista] = useState<AgenteCenso | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [modoCalor, setModoCalor] = useState(false);
@@ -53,19 +53,21 @@ export default function DadosDashboard() {
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
-  const [filtroFiscal, setFiltroFiscal] = useState<string>("todos");
+
+  const agentesCenso = useMemo(() => buildAgentesCenso(), []);
+  const estatisticas = useMemo(() => getEstatisticasGerais(), []);
 
   const artistasFiltrados = useMemo(() => {
-    return artistasMock.filter((a) => {
-      if (filtroCategoria !== "todas" && a.categoria !== filtroCategoria) return false;
-      if (filtroGenero !== "todos" && a.genero !== filtroGenero) return false;
-      if (filtroRaca !== "todas" && a.raca !== filtroRaca) return false;
-      if (filtroFiscal !== "todos" && a.statusFiscal !== filtroFiscal) return false;
+    return agentesCenso.filter((a) => {
+      if (filtroCategoria !== "todas" && a.linguagem !== filtroCategoria) return false;
+      if (filtroGenero !== "todos" && !a.genero.toLowerCase().includes(filtroGenero.toLowerCase())) return false;
+      if (filtroRaca !== "todas" && !a.raca.toLowerCase().includes(filtroRaca.toLowerCase())) return false;
+      if (filtroCidades.length > 0 && !filtroCidades.includes(a.municipio)) return false;
       return true;
     });
-  }, [filtroCategoria, filtroGenero, filtroRaca, filtroFiscal]);
+  }, [agentesCenso, filtroCategoria, filtroGenero, filtroRaca, filtroCidades]);
 
-  const handleArtistaClick = (artista: Artista) => {
+  const handleArtistaClick = (artista: AgenteCenso) => {
     setSelectedArtista(artista);
     setDrawerOpen(true);
   };
@@ -82,7 +84,7 @@ export default function DadosDashboard() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Central de Inteligência Territorial</h1>
             <p className="text-muted-foreground mt-1">
-              Ecossistema cultural em tempo real — Recife, PE
+              Ecossistema cultural em tempo real — Pernambuco
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -97,14 +99,9 @@ export default function DadosDashboard() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todas">Todas linguagens</SelectItem>
-                <SelectItem value="Artes Cênicas">Artes Cênicas</SelectItem>
-                <SelectItem value="Música">Música</SelectItem>
-                <SelectItem value="Audiovisual">Audiovisual</SelectItem>
-                <SelectItem value="Patrimônio">Patrimônio</SelectItem>
-                <SelectItem value="Literatura">Literatura</SelectItem>
-                <SelectItem value="Cultura Popular">Cultura Popular</SelectItem>
-                <SelectItem value="Artes Visuais">Artes Visuais</SelectItem>
-                <SelectItem value="Gastronomia">Gastronomia</SelectItem>
+                {linguagensArtisticas.map((lang) => (
+                  <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>
@@ -135,7 +132,7 @@ export default function DadosDashboard() {
             <CardContent className="pt-5 pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">Total Artistas</p>
+                  <p className="text-xs text-muted-foreground">Total Agentes</p>
                   <p className="text-2xl font-bold">{artistasFiltrados.length}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -149,7 +146,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Projetos Ativos</p>
-                  <p className="text-2xl font-bold">{estatisticasGerais.projetosAtivos}</p>
+                  <p className="text-2xl font-bold">{estatisticas.projetosAtivos}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
                   <Briefcase className="h-5 w-5 text-green-600" />
@@ -162,7 +159,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">R$ Investido</p>
-                  <p className="text-2xl font-bold">{formatCurrency(estatisticasGerais.totalInvestido)}</p>
+                  <p className="text-2xl font-bold">{formatCurrency(estatisticas.totalInvestido)}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
                   <DollarSign className="h-5 w-5 text-amber-600" />
@@ -175,7 +172,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Alcance Populacional</p>
-                  <p className="text-2xl font-bold">{(estatisticasGerais.alcancePopulacional / 1000).toFixed(0)}k</p>
+                  <p className="text-2xl font-bold">{(estatisticas.alcancePopulacional / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                   <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -227,7 +224,7 @@ export default function DadosDashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="todas">Todas linguagens</SelectItem>
-                      {categoriasArtisticas.map((cat) => (
+                      {linguagensArtisticas.map((cat) => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
                     </SelectContent>
@@ -239,8 +236,8 @@ export default function DadosDashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="todos">Todos gêneros</SelectItem>
-                      <SelectItem value="Masculino">Masculino</SelectItem>
-                      <SelectItem value="Feminino">Feminino</SelectItem>
+                      <SelectItem value="Mulher">Feminino</SelectItem>
+                      <SelectItem value="Homem">Masculino</SelectItem>
                       <SelectItem value="Não-binário">Não-binário</SelectItem>
                     </SelectContent>
                   </Select>
@@ -259,19 +256,6 @@ export default function DadosDashboard() {
                     </SelectContent>
                   </Select>
 
-                  <Select value={filtroFiscal} onValueChange={setFiltroFiscal}>
-                    <SelectTrigger className="w-[160px] h-9">
-                      <SelectValue placeholder="Status Fiscal" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todos">Todos status</SelectItem>
-                      <SelectItem value="Regular">Regular</SelectItem>
-                      <SelectItem value="Irregular">Irregular</SelectItem>
-                      <SelectItem value="Pendente">Pendente</SelectItem>
-                      <SelectItem value="Isento">Isento</SelectItem>
-                    </SelectContent>
-                  </Select>
-
                   <div className="flex items-center gap-2 ml-auto">
                     <Switch
                       id="modo-calor"
@@ -287,28 +271,28 @@ export default function DadosDashboard() {
                 {/* Legend */}
                 {!modoCalor && (
                   <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border">
-                    {categoriasArtisticas.map((cat) => (
+                    {linguagensArtisticas.map((cat) => (
                       <Badge
                         key={cat}
                         variant="outline"
                         className="text-xs cursor-pointer transition-opacity"
                         style={{
-                          backgroundColor: coresCategoria[cat] + "18",
-                          color: coresCategoria[cat],
-                          borderColor: coresCategoria[cat] + "44",
+                          backgroundColor: (coresLinguagem[cat] || "#6b7280") + "18",
+                          color: coresLinguagem[cat] || "#6b7280",
+                          borderColor: (coresLinguagem[cat] || "#6b7280") + "44",
                           opacity: filtroCategoria === "todas" || filtroCategoria === cat ? 1 : 0.4,
                         }}
                         onClick={() => setFiltroCategoria(filtroCategoria === cat ? "todas" : cat)}
                       >
                         <span
                           className="inline-block h-2 w-2 rounded-full mr-1"
-                          style={{ backgroundColor: coresCategoria[cat] }}
+                          style={{ backgroundColor: coresLinguagem[cat] || "#6b7280" }}
                         />
                         {cat}
                       </Badge>
                     ))}
                     <span className="text-xs text-muted-foreground ml-2 flex items-center">
-                      {artistasFiltrados.length} artistas exibidos
+                      {artistasFiltrados.length} agentes exibidos
                     </span>
                   </div>
                 )}
