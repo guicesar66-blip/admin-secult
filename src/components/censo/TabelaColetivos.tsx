@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 
 interface TabelaColetivosProps {
   filtroPeriodo: string;
+  filtroLinguagem: string;
 }
 
 type SortKey = "nome" | "municipio" | "membros" | "tempoExistencia" | "scoreReputacao";
@@ -21,10 +22,10 @@ type SortDir = "asc" | "desc";
 const linguagens = [...new Set(coletivosMock.map((c) => c.linguagem))];
 const municipios = [...new Set(coletivosMock.map((c) => c.municipio))];
 
-export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
+export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaColetivosProps) {
   const navigate = useNavigate();
   const [busca, setBusca] = useState("");
-  const [filtroLinguagem, setFiltroLinguagem] = useState("todos");
+  const [filtroLinguagemLocal, setFiltroLinguagemLocal] = useState("todos");
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroIVC, setFiltroIVC] = useState("todos");
@@ -44,11 +45,21 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
   const filtered = useMemo(() => {
     let result = coletivosMock;
 
+    // Global language filter: keep coletivos that have members with that linguagem
+    if (filtroLinguagem !== "todas") {
+      result = result.filter((c) =>
+        c.linguagem.toLowerCase().includes(filtroLinguagem.toLowerCase()) ||
+        c.membrosLista.some((m) =>
+          m.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
+        )
+      );
+    }
+
     if (busca) {
       const q = busca.toLowerCase();
       result = result.filter((c) => c.nome.toLowerCase().includes(q) || c.municipio.toLowerCase().includes(q));
     }
-    if (filtroLinguagem !== "todos") result = result.filter((c) => c.linguagem === filtroLinguagem);
+    if (filtroLinguagemLocal !== "todos") result = result.filter((c) => c.linguagem === filtroLinguagemLocal);
     if (filtroMunicipio !== "todos") result = result.filter((c) => c.municipio === filtroMunicipio);
     if (filtroStatus !== "todos") result = result.filter((c) => c.status === filtroStatus);
     if (filtroIVC !== "todos") result = result.filter((c) => c.ivc === filtroIVC);
@@ -63,7 +74,7 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
     });
 
     return result;
-  }, [busca, filtroLinguagem, filtroMunicipio, filtroStatus, filtroIVC, filtroCNPJ, sortKey, sortDir]);
+  }, [busca, filtroLinguagemLocal, filtroMunicipio, filtroStatus, filtroIVC, filtroCNPJ, filtroLinguagem, sortKey, sortDir]);
 
   const SortableHeader = ({ label, keyName }: { label: string; keyName: SortKey }) => (
     <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(keyName)}>
@@ -74,11 +85,11 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
     </TableHead>
   );
 
-  const hasFilters = busca || filtroLinguagem !== "todos" || filtroMunicipio !== "todos" || filtroStatus !== "todos" || filtroIVC !== "todos" || filtroCNPJ !== "todos";
+  const hasFilters = busca || filtroLinguagemLocal !== "todos" || filtroMunicipio !== "todos" || filtroStatus !== "todos" || filtroIVC !== "todos" || filtroCNPJ !== "todos";
 
   const clearFilters = () => {
     setBusca("");
-    setFiltroLinguagem("todos");
+    setFiltroLinguagemLocal("todos");
     setFiltroMunicipio("todos");
     setFiltroStatus("todos");
     setFiltroIVC("todos");
@@ -87,7 +98,6 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
 
   return (
     <div className="space-y-4">
-
       <Card>
         <CardContent className="pt-6">
           {/* Filtros */}
@@ -96,7 +106,7 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Buscar por nome ou município..." value={busca} onChange={(e) => setBusca(e.target.value)} className="pl-9" />
             </div>
-            <Select value={filtroLinguagem} onValueChange={setFiltroLinguagem}>
+            <Select value={filtroLinguagemLocal} onValueChange={setFiltroLinguagemLocal}>
               <SelectTrigger className="w-[160px]"><SelectValue placeholder="Linguagem" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todas linguagens</SelectItem>
