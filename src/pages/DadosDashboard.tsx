@@ -371,11 +371,6 @@ export default function DadosDashboard() {
         onOpenChange={setDrawerOpen}
       />
 
-      {/* Modal AI Insights */}
-      <InsightsIAModal
-        open={insightsOpen}
-        onOpenChange={setInsightsOpen}
-      />
     </DashboardLayout>
   );
 }
