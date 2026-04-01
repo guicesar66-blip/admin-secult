@@ -116,7 +116,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       </CollapsibleSection>
 
       {/* Tabela de Coletivos — collapsible */}
-      <CollapsibleSection sectionKey="tabela-coletivos" title="Coletivos Cadastrados">
+      <CollapsibleSection sectionKey="tabela-produtoras" title="Produtoras Cadastradas">
         <TabelaColetivos filtroPeriodo={filtroPeriodo} filtroLinguagem={filtroLinguagem} />
       </CollapsibleSection>
     </div>
