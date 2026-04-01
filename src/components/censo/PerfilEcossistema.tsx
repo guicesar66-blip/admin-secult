@@ -93,7 +93,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
           accentColor="bg-destructive/10 text-destructive"
         />
         <MiniKPI
-          label="Coletivos c/ membro vulnerável"
+          label="Produtoras c/ artista vulnerável"
           value={`${data.percentProdutorasVulneravel}%`}
           subtitle="ao menos 1 artista"
           icon={<ShieldAlert className="h-4 w-4 text-warning" />}
