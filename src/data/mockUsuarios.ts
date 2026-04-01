@@ -35,6 +35,7 @@ export const usuariosMock: Usuario[] = [
     id: "u2", nome_completo: "João Pedro Barros", email: "joao.barros@email.com",
     telefone: "(81) 99800-5678", cpf: "456.000.000-78", nascimento: "1995-07-22",
     genero: "Homem cis", raca_cor: "Preta", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Ibura", estado: "PE",
     categorias_interesse: ["Dança", "Percussão"],
     created_at: "2022-03-10",
