@@ -26,7 +26,16 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
   const equipamentosFiltrados = useMemo(() => {
     let result = equipamentosMock;
     if (filtroLinguagem !== "todas") {
-      result = result.filter(e => e.linguagens.some(l => l.toLowerCase().includes(filtroLinguagem.toLowerCase())));
+      // Get all subtipo names for the selected tipo to match against equipamento linguagens
+      const tipo = tiposLinguagem.find(t => t.nome === filtroLinguagem);
+      const subtipoNames = tipo ? tipo.subtipos.map(s => s.nome.toLowerCase()) : [];
+      const tipoLower = filtroLinguagem.toLowerCase();
+      result = result.filter(e =>
+        e.linguagens.some(l => {
+          const ll = l.toLowerCase();
+          return ll === tipoLower || subtipoNames.includes(ll);
+        })
+      );
     }
     if (filtroCidades.length > 0) {
       result = result.filter(e => filtroCidades.includes(e.municipio));

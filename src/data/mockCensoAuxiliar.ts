@@ -55,17 +55,19 @@ export interface ProjetoAuditoria {
   evidencias: number;
   prazo: string;
   percentualConcluido: number;
+  linguagem: string;
+  municipio: string;
 }
 
 export const projetosAuditoriaMock: ProjetoAuditoria[] = [
-  { id: "pa-001", titulo: "Festival de Maracatu Nação", artista: "Ana Cristina Lima", valor: 85000, status: "verde", statusLabel: "Em dia", evidencias: 12, prazo: "2026-06-15", percentualConcluido: 75 },
-  { id: "pa-002", titulo: "Oficina de Frevo nas Escolas", artista: "Fernanda Alves", valor: 42000, status: "verde", statusLabel: "Em dia", evidencias: 8, prazo: "2026-05-20", percentualConcluido: 90 },
-  { id: "pa-003", titulo: "Mostra de Grafite Urbano", artista: "Carla Souza", valor: 25000, status: "amarelo", statusLabel: "Pendência documental", evidencias: 5, prazo: "2026-04-30", percentualConcluido: 60 },
-  { id: "pa-004", titulo: "Documentário Mangue Rising", artista: "Thiago Ribeiro", valor: 120000, status: "verde", statusLabel: "Em dia", evidencias: 20, prazo: "2026-08-01", percentualConcluido: 45 },
-  { id: "pa-005", titulo: "Circuito de Teatro de Bonecos", artista: "Marcos Vieira", valor: 35000, status: "vermelho", statusLabel: "Atraso na prestação", evidencias: 3, prazo: "2026-03-15", percentualConcluido: 40 },
-  { id: "pa-006", titulo: "Slam de Poesia Periférica", artista: "Mariana Costa", valor: 18000, status: "amarelo", statusLabel: "NF com data divergente", evidencias: 4, prazo: "2026-05-10", percentualConcluido: 55 },
-  { id: "pa-007", titulo: "Hip Hop Transforma", artista: "Lucas Fernandes", valor: 30000, status: "verde", statusLabel: "Em dia", evidencias: 9, prazo: "2026-07-20", percentualConcluido: 30 },
-  { id: "pa-008", titulo: "Exposição Barro & Fogo", artista: "Tatiana Reis", valor: 15000, status: "vermelho", statusLabel: "CNPJ divergente", evidencias: 1, prazo: "2026-03-01", percentualConcluido: 20 },
+  { id: "pa-001", titulo: "Festival de Maracatu Nação", artista: "Ana Cristina Lima", valor: 85000, status: "verde", statusLabel: "Em dia", evidencias: 12, prazo: "2026-06-15", percentualConcluido: 75, linguagem: "Cultura Popular", municipio: "Recife" },
+  { id: "pa-002", titulo: "Oficina de Frevo nas Escolas", artista: "Fernanda Alves", valor: 42000, status: "verde", statusLabel: "Em dia", evidencias: 8, prazo: "2026-05-20", percentualConcluido: 90, linguagem: "Música", municipio: "Olinda" },
+  { id: "pa-003", titulo: "Mostra de Grafite Urbano", artista: "Carla Souza", valor: 25000, status: "amarelo", statusLabel: "Pendência documental", evidencias: 5, prazo: "2026-04-30", percentualConcluido: 60, linguagem: "Artes Visuais", municipio: "Recife" },
+  { id: "pa-004", titulo: "Documentário Mangue Rising", artista: "Thiago Ribeiro", valor: 120000, status: "verde", statusLabel: "Em dia", evidencias: 20, prazo: "2026-08-01", percentualConcluido: 45, linguagem: "Audiovisual", municipio: "Recife" },
+  { id: "pa-005", titulo: "Circuito de Teatro de Bonecos", artista: "Marcos Vieira", valor: 35000, status: "vermelho", statusLabel: "Atraso na prestação", evidencias: 3, prazo: "2026-03-15", percentualConcluido: 40, linguagem: "Artes Cênicas", municipio: "Caruaru" },
+  { id: "pa-006", titulo: "Slam de Poesia Periférica", artista: "Mariana Costa", valor: 18000, status: "amarelo", statusLabel: "NF com data divergente", evidencias: 4, prazo: "2026-05-10", percentualConcluido: 55, linguagem: "Literatura", municipio: "Recife" },
+  { id: "pa-007", titulo: "Hip Hop Transforma", artista: "Lucas Fernandes", valor: 30000, status: "verde", statusLabel: "Em dia", evidencias: 9, prazo: "2026-07-20", percentualConcluido: 30, linguagem: "Música", municipio: "Petrolina" },
+  { id: "pa-008", titulo: "Exposição Barro & Fogo", artista: "Tatiana Reis", valor: 15000, status: "vermelho", statusLabel: "CNPJ divergente", evidencias: 1, prazo: "2026-03-01", percentualConcluido: 20, linguagem: "Artes Visuais", municipio: "Garanhuns" },
 ];
 
 // ===== INSIGHTS IA =====
