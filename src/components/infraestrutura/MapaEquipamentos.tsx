@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -56,7 +56,11 @@ function PaneSetup() {
   return null;
 }
 
-export function MapaEquipamentos() {
+interface MapaEquipamentosProps {
+  filtroCritico?: boolean;
+}
+
+export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProps) {
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
@@ -67,9 +71,28 @@ export function MapaEquipamentos() {
     );
   };
 
-  const equipamentosFiltrados = equipamentosMock.filter((e) =>
-    tiposFiltro.includes(e.tipo)
+  // Municípios críticos e seus equipamentos mais próximos
+  const municipiosCriticos = useMemo(
+    () => municipiosAcessoMock.filter((m) => m.tempoMedio > 120),
+    []
   );
+  const equipamentosCriticosNomes = useMemo(
+    () => new Set(municipiosCriticos.map((m) => m.equipamentoProximo)),
+    [municipiosCriticos]
+  );
+
+  const equipamentosFiltrados = useMemo(() => {
+    let resultado = equipamentosMock.filter((e) => tiposFiltro.includes(e.tipo));
+    if (filtroCritico) {
+      resultado = resultado.filter((e) => equipamentosCriticosNomes.has(e.nome));
+    }
+    return resultado;
+  }, [tiposFiltro, filtroCritico, equipamentosCriticosNomes]);
+
+  const municipiosFiltrados = useMemo(() => {
+    if (filtroCritico) return municipiosCriticos;
+    return municipiosAcessoMock;
+  }, [filtroCritico, municipiosCriticos]);
 
   return (
     <Card>
@@ -158,7 +181,7 @@ export function MapaEquipamentos() {
 
             {/* Camada de raio de acesso - pontos dos municípios */}
             {mostrarRaioAcesso &&
-              municipiosAcessoMock.map((m) => {
+              municipiosFiltrados.map((m) => {
                 const faixa = getFaixaAcesso(m.tempoMedio);
                 return (
                   <CircleMarker

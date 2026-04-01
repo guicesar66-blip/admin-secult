@@ -17,18 +17,31 @@ import {
   equipamentosMock,
   tiposEquipamento,
   iconesTipoEquipamento,
-  type EquipamentoCultural,
+  municipiosAcessoMock,
 } from "@/data/mockEquipamentosCulturais";
 
 type SortKey = "municipio" | "tipo" | "nome" | "capacidade" | "gestao" | "status";
 type SortDir = "asc" | "desc";
 
-export function InventarioEquipamentos() {
+interface InventarioEquipamentosProps {
+  filtroCritico?: boolean;
+}
+
+export function InventarioEquipamentos({ filtroCritico = false }: InventarioEquipamentosProps) {
   const [busca, setBusca] = useState("");
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  const equipamentosCriticosNomes = useMemo(
+    () => new Set(
+      municipiosAcessoMock
+        .filter((m) => m.tempoMedio > 120)
+        .map((m) => m.equipamentoProximo)
+    ),
+    []
+  );
 
   const municipios = useMemo(
     () => [...new Set(equipamentosMock.map((e) => e.municipio))].sort(),
@@ -46,6 +59,11 @@ export function InventarioEquipamentos() {
 
   const dados = useMemo(() => {
     let resultado = [...equipamentosMock];
+
+    // Filtro crítico: apenas equipamentos referenciados por municípios com acesso >2h
+    if (filtroCritico) {
+      resultado = resultado.filter((e) => equipamentosCriticosNomes.has(e.nome));
+    }
 
     if (busca) {
       const q = busca.toLowerCase();
@@ -72,7 +90,7 @@ export function InventarioEquipamentos() {
     });
 
     return resultado;
-  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir]);
+  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir, filtroCritico, equipamentosCriticosNomes]);
 
   const SortableHeader = ({ label, colKey }: { label: string; colKey: SortKey }) => (
     <TableHead
@@ -92,6 +110,11 @@ export function InventarioEquipamentos() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <CardTitle className="text-base font-semibold">
             Inventário de Equipamentos Culturais
+            {filtroCritico && (
+              <Badge variant="destructive" className="ml-2 text-[10px]">
+                Filtro crítico ativo
+              </Badge>
+            )}
           </CardTitle>
           <Button variant="outline" size="sm" className="gap-2" onClick={() => alert("Exportação CSV em desenvolvimento")}>
             <Download className="h-4 w-4" />
