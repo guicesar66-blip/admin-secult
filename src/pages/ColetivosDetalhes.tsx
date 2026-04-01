@@ -54,6 +54,17 @@ export default function ColetivosDetalhes() {
     });
   }, [buscaMembro, artistas, usuarioMap]);
 
+  const servicosAgregados = useMemo(() => {
+    const total = artistas.length || 1;
+    return {
+      agua: Math.round(artistas.filter((a) => a.servicos_basicos.agua).length / total * 100),
+      energia: Math.round(artistas.filter((a) => a.servicos_basicos.energia).length / total * 100),
+      coleta_lixo: Math.round(artistas.filter((a) => a.servicos_basicos.coleta_lixo).length / total * 100),
+      esgoto: Math.round(artistas.filter((a) => a.servicos_basicos.esgoto).length / total * 100),
+      internet: Math.round(artistas.filter((a) => a.servicos_basicos.internet).length / total * 100),
+    };
+  }, [artistas]);
+
   if (!produtora) {
     return (
       <DashboardLayout>
@@ -68,35 +79,6 @@ export default function ColetivosDetalhes() {
   }
 
   const tempo = Math.max(0, new Date().getFullYear() - new Date(produtora.data_fundacao).getFullYear());
-  const tempoLabel = tempo >= 2 ? `${tempo} anos` : `${tempo} ano`;
-  const dataFundFormatted = new Date(produtora.data_fundacao).toLocaleDateString("pt-BR");
-  const ivc = ivcConfig[produtora.ivc];
-
-  const handleArtistaClick = (artistaId: string) => {
-    const artista = artistas.find((a) => a.id === artistaId);
-    if (!artista) return;
-    const usuario = usuarioMap.get(artista.usuario_id);
-    if (!usuario) return;
-    setSelectedArtista({ artista, usuario });
-    setModalOpen(true);
-  };
-
-  const handleProdutoraFromModal = (produtoraId: string) => {
-    setModalOpen(false);
-    navigate(`/dados/produtora/${produtoraId}`);
-  };
-
-  // Compute socioeconomic aggregates from artistas
-  const servicosAgregados = useMemo(() => {
-    const total = artistas.length || 1;
-    return {
-      agua: Math.round(artistas.filter((a) => a.servicos_basicos.agua).length / total * 100),
-      energia: Math.round(artistas.filter((a) => a.servicos_basicos.energia).length / total * 100),
-      coleta_lixo: Math.round(artistas.filter((a) => a.servicos_basicos.coleta_lixo).length / total * 100),
-      esgoto: Math.round(artistas.filter((a) => a.servicos_basicos.esgoto).length / total * 100),
-      internet: Math.round(artistas.filter((a) => a.servicos_basicos.internet).length / total * 100),
-    };
-  }, [artistas]);
 
   const galeriaImages = [
     "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
