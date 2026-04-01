@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Download, Search, ArrowUpDown } from "lucide-react";
+import { Download, Search, ArrowUpDown, X } from "lucide-react";
 import {
   equipamentosMock,
   tiposEquipamento,
@@ -23,11 +23,20 @@ import {
 type SortKey = "municipio" | "tipo" | "nome" | "capacidade" | "gestao" | "status";
 type SortDir = "asc" | "desc";
 
-interface InventarioEquipamentosProps {
-  filtroCritico?: boolean;
+export interface TableFilter {
+  municipio?: string;
+  nome?: string;
+  tipo?: string;
+  label?: string;
 }
 
-export function InventarioEquipamentos({ filtroCritico = false }: InventarioEquipamentosProps) {
+interface InventarioEquipamentosProps {
+  filtroCritico?: boolean;
+  filtroExterno?: TableFilter | null;
+  onLimparFiltroExterno?: () => void;
+}
+
+export function InventarioEquipamentos({ filtroCritico = false, filtroExterno, onLimparFiltroExterno }: InventarioEquipamentosProps) {
   const [busca, setBusca] = useState("");
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
@@ -60,9 +69,20 @@ export function InventarioEquipamentos({ filtroCritico = false }: InventarioEqui
   const dados = useMemo(() => {
     let resultado = [...equipamentosMock];
 
-    // Filtro crítico: apenas equipamentos referenciados por municípios com acesso >2h
     if (filtroCritico) {
       resultado = resultado.filter((e) => equipamentosCriticosNomes.has(e.nome));
+    }
+
+    // Filtro externo do mapa
+    if (filtroExterno) {
+      if (filtroExterno.nome) {
+        resultado = resultado.filter((e) => e.nome === filtroExterno.nome);
+      } else if (filtroExterno.municipio) {
+        resultado = resultado.filter((e) => e.municipio === filtroExterno.municipio);
+      }
+      if (filtroExterno.tipo) {
+        resultado = resultado.filter((e) => e.tipo === filtroExterno.tipo);
+      }
     }
 
     if (busca) {
@@ -90,7 +110,7 @@ export function InventarioEquipamentos({ filtroCritico = false }: InventarioEqui
     });
 
     return resultado;
-  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir, filtroCritico, equipamentosCriticosNomes]);
+  }, [busca, filtroMunicipio, filtroTipo, sortKey, sortDir, filtroCritico, equipamentosCriticosNomes, filtroExterno]);
 
   const SortableHeader = ({ label, colKey }: { label: string; colKey: SortKey }) => (
     <TableHead
@@ -108,11 +128,21 @@ export function InventarioEquipamentos({ filtroCritico = false }: InventarioEqui
     <Card>
       <CardHeader className="pb-3">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <CardTitle className="text-base font-semibold">
+          <CardTitle className="text-base font-semibold flex items-center gap-2 flex-wrap">
             Inventário de Equipamentos Culturais
             {filtroCritico && (
-              <Badge variant="destructive" className="ml-2 text-[10px]">
+              <Badge variant="destructive" className="text-[10px]">
                 Filtro crítico ativo
+              </Badge>
+            )}
+            {filtroExterno && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] gap-1 cursor-pointer hover:bg-destructive/10"
+                onClick={onLimparFiltroExterno}
+              >
+                Filtro do mapa: {filtroExterno.label}
+                <X className="h-3 w-3" />
               </Badge>
             )}
           </CardTitle>
