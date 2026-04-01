@@ -9,13 +9,7 @@ import {
   iconesTipoEquipamento,
 } from "@/data/mockEquipamentosCulturais";
 
-interface RaioAcessoProps {
-  municipioSelecionado: string | null;
-  onMunicipioClick: (municipio: string) => void;
-}
-
-export function RaioAcesso({ municipioSelecionado, onMunicipioClick }: RaioAcessoProps) {
-  const municipioInfo = municipiosAcessoMock.find((m) => m.municipio === municipioSelecionado);
+export function RaioAcesso() {
   const criticos = municipiosAcessoMock.filter((m) => m.tempoMedio > 120);
 
   return (
