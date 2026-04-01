@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Search, Download, ArrowUpDown, X } from "lucide-react";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
 import { getArtistasByProdutora } from "@/data/mockArtistas";
 import { getSubtipoIdsByTipoNome } from "@/data/mockLinguagens";
@@ -87,6 +89,8 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
 
     return result;
   }, [busca, filtroLinguagemLocal, filtroMunicipio, filtroStatus, filtroIVC, filtroCNPJ, filtroLinguagem, sortKey, sortDir]);
+
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(filtered);
 
   const SortableHeader = ({ label, keyName }: { label: string; keyName: SortKey }) => (
     <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(keyName)}>
@@ -186,7 +190,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((p) => (
+                {dadosPaginados.map((p) => (
                   <TableRow
                     key={p.id}
                     className="cursor-pointer hover:bg-muted/50"
@@ -216,7 +220,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                     <TableCell className="text-xs text-muted-foreground">{p.cnpj || "—"}</TableCell>
                   </TableRow>
                 ))}
-                {filtered.length === 0 && (
+                {dadosPaginados.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       Nenhuma produtora encontrada com os filtros aplicados.
@@ -227,10 +231,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
             </Table>
           </div>
 
-          {/* Rodapé */}
-          <p className="text-sm text-muted-foreground mt-3">
-            {filtered.length} produtora{filtered.length !== 1 ? "s" : ""} encontrada{filtered.length !== 1 ? "s" : ""}
-          </p>
+          <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={filtered.length} onPaginaChange={setPaginaAtual} labelItens="produtoras" />
         </CardContent>
       </Card>
     </div>

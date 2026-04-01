@@ -9,6 +9,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Download, Search, ArrowUpDown, X } from "lucide-react";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 import {
   equipamentosMock, tiposEquipamento, iconesTipoEquipamento, conservacaoCores,
 } from "@/data/mockEquipamentosCulturais";
@@ -68,6 +70,8 @@ export function InventarioEquipamentos({
     });
     return resultado;
   }, [busca, filtroMunicipio, filtroTipo, filtroConservacao, filtroAcessibilidade, sortKey, sortDir]);
+
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
 
   const handleExportCSV = () => {
     const headers = ["Município", "Tipo", "Nome", "Capacidade", "Acessibilidade PCD", "Conservação", "Gestão", "Status"];
@@ -154,9 +158,9 @@ export function InventarioEquipamentos({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dados.length === 0 ? (
+              {dadosPaginados.length === 0 ? (
                 <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum espaço cultural encontrado.</TableCell></TableRow>
-              ) : dados.map(eq => (
+              ) : dadosPaginados.map(eq => (
                 <TableRow key={eq.id} className="cursor-pointer hover:bg-accent/50" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
                   <TableCell className="font-medium text-sm">{eq.municipio}</TableCell>
                   <TableCell className="text-sm"><span className="mr-1">{iconesTipoEquipamento[eq.tipo]}</span>{eq.tipo}</TableCell>
@@ -171,9 +175,7 @@ export function InventarioEquipamentos({
             </TableBody>
           </Table>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          {dados.length} espaço{dados.length !== 1 ? "s" : ""} cultural{dados.length !== 1 ? "is" : ""} encontrado{dados.length !== 1 ? "s" : ""}
-        </p>
+        <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={dados.length} onPaginaChange={setPaginaAtual} labelItens="espaços culturais" />
       </CardContent>
     </Card>
   );

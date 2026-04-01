@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertTriangle, XCircle, FileText, Download, Camera } from "lucide-react";
 import { projetosAuditoriaMock } from "@/data/mockCensoAuxiliar";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 
 export function AuditoriaPanel() {
   const statusIcon = {
@@ -23,6 +25,8 @@ export function AuditoriaPanel() {
   const emDia = projetosAuditoriaMock.filter(p => p.status === "verde").length;
   const pendencias = projetosAuditoriaMock.filter(p => p.status === "amarelo").length;
   const atrasados = projetosAuditoriaMock.filter(p => p.status === "vermelho").length;
+
+  const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(projetosAuditoriaMock);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(value);
@@ -92,7 +96,7 @@ export function AuditoriaPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {projetosAuditoriaMock.map((p) => (
+                {dadosPaginados.map((p) => (
                   <TableRow key={p.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -124,6 +128,7 @@ export function AuditoriaPanel() {
               </TableBody>
             </Table>
           </div>
+          <PaginacaoTabela paginaAtual={paginaAtual} totalPaginas={totalPaginas} totalItens={projetosAuditoriaMock.length} onPaginaChange={setPaginaAtual} labelItens="projetos" />
         </CardContent>
       </Card>
     </div>
