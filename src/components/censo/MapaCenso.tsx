@@ -413,42 +413,6 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
 
   return (
     <div className="space-y-2">
-      {/* Search bar (US-05) */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar município..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSuggestions(true);
-              if (e.target.value === "") setSelectedMunicipio(null);
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            className="pl-9 h-9"
-          />
-          {showSuggestions && municipioSuggestions.length > 0 && (
-            <div className="absolute z-50 top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {municipioSuggestions.map((nome) => (
-                <button
-                  key={nome}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors"
-                  onClick={() => handleSelectMunicipio(nome)}
-                >
-                  {nome}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        {selectedMunicipio && (
-          <Button variant="outline" size="sm" onClick={handleResetView} className="gap-1.5">
-            <RotateCcw className="h-3.5 w-3.5" /> Ver Pernambuco completo
-          </Button>
-        )}
-      </div>
-
       <div className="relative w-full rounded-lg overflow-hidden border border-border" style={{ zIndex: 0 }}>
         <MapContainer
           center={PE_CENTER}
@@ -459,7 +423,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
         >
           <PaneSetup />
           <TileSwitcher isSatellite={isSatellite} />
-          <ZoomToMunicipio municipio={selectedMunicipio} onReset={handleResetView} />
+          <ZoomToMunicipio municipio={selectedMunicipio} onReset={onResetView} />
 
           {/* ===== CAMADA: Desertos Culturais (z=350) ===== */}
           {camadas.desertos && desertosCulturaisMock.map((dc) => (
