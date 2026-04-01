@@ -85,6 +85,7 @@ interface MapaEquipamentosProps {
 }
 
 export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEquipamentosProps) {
+  const navigate = useNavigate();
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
