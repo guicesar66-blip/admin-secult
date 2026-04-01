@@ -21,6 +21,7 @@ import {
   UserCheck,
   CalendarDays,
   Building2,
+  Palette,
 } from "lucide-react";
 import { MapaCenso } from "@/components/censo/MapaCenso";
 import { ArtistaDrawer } from "@/components/censo/ArtistaDrawer";
@@ -28,6 +29,7 @@ import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
 import { InsightsIAModal } from "@/components/censo/InsightsIAModal";
 import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
 import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
+import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
   artistasMock,
   categoriasArtisticas,
@@ -43,6 +45,7 @@ export default function DadosDashboard() {
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [modoCalor, setModoCalor] = useState(false);
   const [filtroPeriodo, setFiltroPeriodo] = useState<string>("ultimo-ano");
+  const [filtroLinguagem, setFiltroLinguagem] = useState<string>("todas");
 
   // Filters
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
@@ -70,6 +73,7 @@ export default function DadosDashboard() {
 
   return (
     <DashboardLayout>
+      <CollapseSectionProvider>
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -80,6 +84,22 @@ export default function DadosDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Select value={filtroLinguagem} onValueChange={setFiltroLinguagem}>
+              <SelectTrigger className="w-[170px] h-9">
+                <Palette className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Linguagem" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas linguagens</SelectItem>
+                <SelectItem value="Música">Música</SelectItem>
+                <SelectItem value="Cultura Popular">Cultura Popular</SelectItem>
+                <SelectItem value="Artes Visuais">Artes Visuais</SelectItem>
+                <SelectItem value="Teatro">Teatro</SelectItem>
+                <SelectItem value="Artesanato">Artesanato</SelectItem>
+                <SelectItem value="Dança">Dança</SelectItem>
+                <SelectItem value="Audiovisual">Audiovisual</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>
               <SelectTrigger className="w-[180px] h-9">
                 <CalendarDays className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -300,12 +320,15 @@ export default function DadosDashboard() {
 
           {/* ===== PERFIL DO ECOSSISTEMA ===== */}
           <TabsContent value="perfil" className="space-y-4">
-            <PerfilEcossistema filtroPeriodo={
-              filtroPeriodo === "ultimo-mes" ? "Último mês" :
-              filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
-              filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
-              filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
-            } />
+            <PerfilEcossistema
+              filtroPeriodo={
+                filtroPeriodo === "ultimo-mes" ? "Último mês" :
+                filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
+                filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
+                filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
+              }
+              filtroLinguagem={filtroLinguagem}
+            />
           </TabsContent>
 
           {/* ===== INFRAESTRUTURA CULTURAL ===== */}
@@ -338,6 +361,7 @@ export default function DadosDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      </CollapseSectionProvider>
 
       {/* Drawer do artista */}
       <ArtistaDrawer

@@ -87,7 +87,6 @@ export function TabelaColetivos({ filtroPeriodo }: TabelaColetivosProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Coletivos Cadastrados</h3>
 
       <Card>
         <CardContent className="pt-6">

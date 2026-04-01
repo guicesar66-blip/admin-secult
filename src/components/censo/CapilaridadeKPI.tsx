@@ -15,7 +15,6 @@ const mesorregioes = [
   { nome: "Vale do S. Francisco", comAgentes: 3, total: 32, percent: 9 },
 ];
 
-// Pontos representativos de cada mesorregião para o mini-mapa
 const pontosHeatmap: { lat: number; lng: number; intensidade: number; label: string }[] = [
   { lat: -8.05, lng: -34.87, intensidade: 0.92, label: "Metropolitana (23)" },
   { lat: -8.33, lng: -36.02, intensidade: 0.2, label: "Agreste (14)" },
@@ -42,7 +41,7 @@ export function CapilaridadeKPI({ filtroPeriodo }: CapilaridadeKPIProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 space-y-4">
-        {/* KPI em destaque */}
+        {/* KPI highlight */}
         <div className="flex items-center justify-between rounded-lg bg-primary/5 border border-primary/20 p-3">
           <div>
             <p className="text-3xl font-bold">
@@ -64,7 +63,7 @@ export function CapilaridadeKPI({ filtroPeriodo }: CapilaridadeKPIProps) {
           </div>
         </div>
 
-        {/* Barras por mesorregião */}
+        {/* Progress bars per mesoregion */}
         <div className="space-y-2">
           {mesorregioes.map((m) => (
             <div key={m.nome} className="space-y-1">
@@ -85,8 +84,8 @@ export function CapilaridadeKPI({ filtroPeriodo }: CapilaridadeKPIProps) {
           ))}
         </div>
 
-        {/* Mini-mapa */}
-        <div className="rounded-lg overflow-hidden border border-border h-[140px]">
+        {/* Mini-map — z-index fixed to avoid overflowing header */}
+        <div className="rounded-lg overflow-hidden border border-border h-[140px] relative z-0">
           <MapContainer
             center={[-8.3, -36.5]}
             zoom={6}
@@ -95,6 +94,7 @@ export function CapilaridadeKPI({ filtroPeriodo }: CapilaridadeKPIProps) {
             zoomControl={false}
             attributionControl={false}
             className="h-full w-full"
+            style={{ zIndex: 0 }}
           >
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
