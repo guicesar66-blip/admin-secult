@@ -170,6 +170,7 @@ export const usuariosMock: Usuario[] = [
     id: "u17", nome_completo: "André Batista", email: "andre.b@email.com",
     telefone: "(81) 99400-0003", cpf: "444.000.000-03", nascimento: "1997-03-28",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Casa Amarela", estado: "PE",
     categorias_interesse: ["Música", "Percussão"],
     created_at: "2020-02-15",
