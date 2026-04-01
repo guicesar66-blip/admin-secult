@@ -1,5 +1,7 @@
 import { useMemo } from "react";
-import { coletivosMock, type MembroColetivo, type Coletivo } from "@/data/mockColetivos";
+import { artistasMock, getArtistasUnicos, getArtistasByProdutora, type Artista } from "@/data/mockArtistas";
+import { usuariosMock, type Usuario } from "@/data/mockUsuarios";
+import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
 
 function getAge(nascimento: string): number {
   const birth = new Date(nascimento);
@@ -76,11 +78,16 @@ function countBy(items: string[]): CountItem[] {
     .sort((a, b) => b.value - a.value);
 }
 
+// Enriched artista with usuario data for charts
+export interface ArtistaEnriquecido extends Artista {
+  usuario: Usuario;
+}
+
 export interface EcossistemaData {
-  membros: MembroColetivo[];
-  coletivos: Coletivo[];
-  totalMembros: number;
-  totalColetivos: number;
+  artistas: ArtistaEnriquecido[];
+  produtoras: Produtora[];
+  totalArtistas: number;
+  totalProdutoras: number;
   genero: CountItem[];
   raca: CountItem[];
   faixaEtaria: CountItem[];
@@ -93,7 +100,7 @@ export interface EcossistemaData {
   servicosBasicos: { name: string; percent: number }[];
   percentSemServico: number;
   vulnerabilidades: { name: string; percent: number }[];
-  percentColetivosVulneravel: number;
+  percentProdutorasVulneravel: number;
   ivc: CountItem[];
 }
 
@@ -107,34 +114,48 @@ const RENDA_VALUES: Record<string, number> = {
 
 export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
   return useMemo(() => {
-    const allMembros = coletivosMock.flatMap((c) => c.membrosLista);
+    // Get unique artistas (deduplicate M:N by usuario_id)
+    const uniqueArtistas = getArtistasUnicos();
 
-    const membros =
+    // Filter by linguagem
+    const filteredArtistas =
       filtroLinguagem === "todas"
-        ? allMembros
-        : allMembros.filter((m) =>
-            m.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
+        ? uniqueArtistas
+        : uniqueArtistas.filter((a) =>
+            a.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
           );
 
-    const coletivos =
+    // Enrich with usuario data
+    const usuarioMap = new Map(usuariosMock.map((u) => [u.id, u]));
+    const artistas: ArtistaEnriquecido[] = filteredArtistas
+      .map((a) => {
+        const usuario = usuarioMap.get(a.usuario_id);
+        if (!usuario) return null;
+        return { ...a, usuario };
+      })
+      .filter(Boolean) as ArtistaEnriquecido[];
+
+    // Filter produtoras: keep those that have at least one artista with the selected linguagem
+    const produtoras =
       filtroLinguagem === "todas"
-        ? coletivosMock
-        : coletivosMock.filter((c) =>
-            c.membrosLista.some((m) =>
-              m.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
+        ? produtorasMock
+        : produtorasMock.filter((p) =>
+            getArtistasByProdutora(p.id).some((a) =>
+              a.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
             )
           );
 
-    const total = membros.length || 1;
+    const total = artistas.length || 1;
 
-    const genero = countBy(membros.map((m) => normalizeGenero(m.genero)));
-    const raca = countBy(membros.map((m) => normalizeRaca(m.racaCor)));
+    // Demographics from usuario data
+    const genero = countBy(artistas.map((a) => normalizeGenero(a.usuario.genero)));
+    const raca = countBy(artistas.map((a) => normalizeRaca(a.usuario.raca_cor)));
 
     const ageBrackets = ["18-25a", "26-35a", "36-45a", "46-60a", "60+"];
     const ageMap = new Map<string, number>();
     ageBrackets.forEach((b) => ageMap.set(b, 0));
-    membros.forEach((m) => {
-      const bracket = getAgeBracket(getAge(m.nascimento));
+    artistas.forEach((a) => {
+      const bracket = getAgeBracket(getAge(a.usuario.nascimento));
       ageMap.set(bracket, (ageMap.get(bracket) || 0) + 1);
     });
     const faixaEtaria = ageBrackets.map((name) => {
@@ -142,17 +163,18 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       return { name, value, percent: Math.round((value / total) * 100) };
     });
 
-    const formRaw = countBy(membros.map((m) => normalizeFormalizacao(m.formalizacao)));
+    // Socioeconomic from artista data
+    const formRaw = countBy(artistas.map((a) => normalizeFormalizacao(a.formalizacao)));
     const formalizacao = formRaw.map((f) => ({ ...f, fullMark: 50 }));
 
-    const allLinguagens = membros.flatMap((m) => m.linguagens);
+    const allLinguagens = artistas.flatMap((a) => a.linguagens);
     const linguagem = countBy(allLinguagens);
 
     const rendaCats = ["Sem renda", "Até R$ 600", "R$ 600–1.320", "R$ 1.320–2.640", "Acima R$ 2.640"];
     const rendaMap = new Map<string, number>();
     rendaCats.forEach((c) => rendaMap.set(c, 0));
-    membros.forEach((m) => {
-      const cat = mapRendaToCategory(m.faixaRenda);
+    artistas.forEach((a) => {
+      const cat = mapRendaToCategory(a.faixa_renda);
       rendaMap.set(cat, (rendaMap.get(cat) || 0) + 1);
     });
     const renda = rendaCats.map((name) => {
@@ -160,66 +182,66 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       return { name, value, percent: Math.round((value / total) * 100) };
     });
 
-    const rendaMedia = membros.length > 0
-      ? Math.round(membros.reduce((sum, m) => sum + (RENDA_VALUES[mapRendaToCategory(m.faixaRenda)] || 0), 0) / membros.length)
+    const rendaMedia = artistas.length > 0
+      ? Math.round(artistas.reduce((sum, a) => sum + (RENDA_VALUES[mapRendaToCategory(a.faixa_renda)] || 0), 0) / artistas.length)
       : 0;
 
     const SALARIO_MINIMO = 1518;
-    const abaixoSM = membros.filter((m) => (RENDA_VALUES[mapRendaToCategory(m.faixaRenda)] || 0) < SALARIO_MINIMO).length;
+    const abaixoSM = artistas.filter((a) => (RENDA_VALUES[mapRendaToCategory(a.faixa_renda)] || 0) < SALARIO_MINIMO).length;
     const percentAbaixoSM = Math.round((abaixoSM / total) * 100);
 
-    const escolaridade = countBy(membros.map((m) => normalizeEscolaridade(m.escolaridade)));
+    const escolaridade = countBy(artistas.map((a) => normalizeEscolaridade(a.escolaridade)));
 
-    const serviceKeys: (keyof MembroColetivo["servicosBasicos"])[] = ["agua", "energia", "coletaLixo", "esgoto", "internet"];
+    const serviceKeys: (keyof Artista["servicos_basicos"])[] = ["agua", "energia", "coleta_lixo", "esgoto", "internet"];
     const serviceLabels: Record<string, string> = {
       agua: "Água encanada",
       energia: "Energia elétrica",
-      coletaLixo: "Coleta de lixo",
+      coleta_lixo: "Coleta de lixo",
       esgoto: "Esgoto tratado",
       internet: "Internet em casa",
     };
     const servicosBasicos = serviceKeys.map((key) => {
-      const count = membros.filter((m) => m.servicosBasicos[key]).length;
+      const count = artistas.filter((a) => a.servicos_basicos[key]).length;
       return { name: serviceLabels[key], percent: Math.round((count / total) * 100) };
     }).sort((a, b) => b.percent - a.percent);
 
-    const membrosSemServico = membros.filter((m) =>
-      !m.servicosBasicos.agua || !m.servicosBasicos.energia || !m.servicosBasicos.coletaLixo || !m.servicosBasicos.esgoto || !m.servicosBasicos.internet
+    const artistasSemServico = artistas.filter((a) =>
+      !a.servicos_basicos.agua || !a.servicos_basicos.energia || !a.servicos_basicos.coleta_lixo || !a.servicos_basicos.esgoto || !a.servicos_basicos.internet
     ).length;
-    const percentSemServico = Math.round((membrosSemServico / total) * 100);
+    const percentSemServico = Math.round((artistasSemServico / total) * 100);
 
     const vulnLabels = ["Dependentes sem renda", "Benef. programa social", "Insegurança alimentar", "Familiar com deficiência", "Condição de rua (passada)"];
     const vulnerabilidades = vulnLabels.map((label) => {
-      const count = membros.filter((m) =>
-        m.vulnerabilidades.some((v) => v.toLowerCase().includes(label.toLowerCase().slice(0, 10)))
+      const count = artistas.filter((a) =>
+        a.vulnerabilidades.some((v) => v.toLowerCase().includes(label.toLowerCase().slice(0, 10)))
       ).length;
       return { name: label, percent: Math.round((count / total) * 100) };
     }).filter((v) => v.percent > 0).sort((a, b) => b.percent - a.percent);
 
-    const coletivosComVuln = coletivos.filter((c) =>
-      c.membrosLista.some((m) => m.vulnerabilidades.length > 0)
+    const produtorasComVuln = produtoras.filter((p) =>
+      getArtistasByProdutora(p.id).some((a) => a.vulnerabilidades.length > 0)
     ).length;
-    const percentColetivosVulneravel = coletivos.length > 0
-      ? Math.round((coletivosComVuln / coletivos.length) * 100)
+    const percentProdutorasVulneravel = produtoras.length > 0
+      ? Math.round((produtorasComVuln / produtoras.length) * 100)
       : 0;
 
     const ivcMap = new Map<string, number>();
     ["Média vulnerabilidade", "Alta vulnerabilidade", "Baixa vulnerabilidade"].forEach((k) => ivcMap.set(k, 0));
-    coletivos.forEach((c) => {
-      const label = c.ivc === "alta" ? "Alta vulnerabilidade" : c.ivc === "media" ? "Média vulnerabilidade" : "Baixa vulnerabilidade";
+    produtoras.forEach((p) => {
+      const label = p.ivc === "alta" ? "Alta vulnerabilidade" : p.ivc === "media" ? "Média vulnerabilidade" : "Baixa vulnerabilidade";
       ivcMap.set(label, (ivcMap.get(label) || 0) + 1);
     });
-    const totalC = coletivos.length || 1;
+    const totalP = produtoras.length || 1;
     const ivc: CountItem[] = ["Média vulnerabilidade", "Alta vulnerabilidade", "Baixa vulnerabilidade"].map((name) => {
       const value = ivcMap.get(name) || 0;
-      return { name, value, percent: Math.round((value / totalC) * 100) };
+      return { name, value, percent: Math.round((value / totalP) * 100) };
     });
 
     return {
-      membros,
-      coletivos,
-      totalMembros: membros.length,
-      totalColetivos: coletivos.length,
+      artistas,
+      produtoras,
+      totalArtistas: artistas.length,
+      totalProdutoras: produtoras.length,
       genero,
       raca,
       faixaEtaria,
@@ -232,7 +254,7 @@ export function useEcossistemaData(filtroLinguagem: string): EcossistemaData {
       servicosBasicos,
       percentSemServico,
       vulnerabilidades,
-      percentColetivosVulneravel,
+      percentProdutorasVulneravel,
       ivc,
     };
   }, [filtroLinguagem]);
