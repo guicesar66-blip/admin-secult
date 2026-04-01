@@ -338,6 +338,20 @@ export default function DadosDashboard() {
             } />
           </TabsContent>
 
+          {/* ===== PROJETOS E RESULTADOS ===== */}
+          <TabsContent value="projetos" className="space-y-4">
+            <ProjetosResultadosTab
+              filtroPeriodo={
+                filtroPeriodo === "ultimo-mes" ? "Último mês" :
+                filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
+                filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
+                filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
+              }
+              filtroLinguagem={filtroLinguagem}
+              filtroCidades={filtroCidades}
+            />
+          </TabsContent>
+
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
             <AuditoriaPanel />

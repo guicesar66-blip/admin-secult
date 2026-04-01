@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { CollapsibleSection } from "@/components/censo/CollapsibleSection";
 import { VisaoGeralProjetos } from "./VisaoGeralProjetos";
 import { ImpactoFinanceiro } from "./ImpactoFinanceiro";
@@ -16,27 +15,27 @@ interface ProjetosResultadosTabProps {
 export function ProjetosResultadosTab({ filtroPeriodo, filtroLinguagem, filtroCidades }: ProjetosResultadosTabProps) {
   return (
     <div className="space-y-6">
-      <CollapsibleSection title="Visão Geral dos Projetos" defaultOpen>
+      <CollapsibleSection sectionKey="proj-visao" title="Visão Geral dos Projetos">
         <VisaoGeralProjetos />
       </CollapsibleSection>
 
-      <CollapsibleSection title="Impacto Financeiro e Econômico" defaultOpen>
+      <CollapsibleSection sectionKey="proj-impacto" title="Impacto Financeiro e Econômico">
         <ImpactoFinanceiro />
       </CollapsibleSection>
 
-      <CollapsibleSection title="Alcance Social e Participação" defaultOpen>
+      <CollapsibleSection sectionKey="proj-alcance" title="Alcance Social e Participação">
         <AlcanceSocial />
       </CollapsibleSection>
 
-      <CollapsibleSection title="Formalização via Projetos" defaultOpen>
+      <CollapsibleSection sectionKey="proj-formal" title="Formalização via Projetos">
         <FormalizacaoProjetos />
       </CollapsibleSection>
 
-      <CollapsibleSection title="Orçamento e Fomento" defaultOpen>
+      <CollapsibleSection sectionKey="proj-orcamento" title="Orçamento e Fomento">
         <OrcamentoFomento />
       </CollapsibleSection>
 
-      <CollapsibleSection title="Tabela de Projetos" defaultOpen>
+      <CollapsibleSection sectionKey="proj-tabela" title="Tabela de Projetos">
         <TabelaProjetos />
       </CollapsibleSection>
     </div>
