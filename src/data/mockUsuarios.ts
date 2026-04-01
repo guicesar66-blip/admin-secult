@@ -125,6 +125,7 @@ export const usuariosMock: Usuario[] = [
     id: "u12", nome_completo: "Thiago Ribeiro", email: "thiago.r@email.com",
     telefone: "(87) 99300-0001", cpf: "333.000.000-01", nascimento: "1994-06-14",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Petrolina",
+    codigo_municipio: "2611101", distrito: "Petrolina",
     bairro: "Centro", estado: "PE",
     categorias_interesse: ["Audiovisual", "Música"],
     created_at: "2023-04-01",
