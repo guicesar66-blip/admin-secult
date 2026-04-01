@@ -30,6 +30,7 @@ import ConfiguracoesEquipe from "./pages/ConfiguracoesEquipe";
 import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
 import SistemaTrocados from "./pages/SistemaTrocados";
 import VitrineDetalhes from "./pages/VitrineDetalhes";
+import ColetivosDetalhes from "./pages/ColetivosDetalhes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
