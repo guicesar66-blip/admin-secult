@@ -179,6 +179,7 @@ export const usuariosMock: Usuario[] = [
     id: "u18", nome_completo: "Cláudia Freitas", email: "claudia.f@email.com",
     telefone: "(81) 99400-0004", cpf: "444.000.000-04", nascimento: "1989-07-03",
     genero: "Mulher cis", raca_cor: "Branca", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Derby", estado: "PE",
     categorias_interesse: ["Música"],
     created_at: "2019-08-12",
