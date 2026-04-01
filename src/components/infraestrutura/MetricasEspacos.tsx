@@ -18,7 +18,7 @@ import {
   conservacaoCores,
   evolucaoPublicoMensal,
   evolucaoConservacaoTrimestral,
-  projetosPorInstrumento,
+  
 } from "@/data/mockEquipamentosCulturais";
 
 // ===== REUSABLE DONUT =====
