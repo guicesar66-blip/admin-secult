@@ -71,6 +71,7 @@ export const usuariosMock: Usuario[] = [
     id: "u6", nome_completo: "Rafael Oliveira", email: "rafael.o@email.com",
     telefone: "(81) 99100-0003", cpf: "111.000.000-03", nascimento: "1993-11-08",
     genero: "Homem cis", raca_cor: "Parda", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Afogados", estado: "PE",
     categorias_interesse: ["Literatura", "Música", "Produção"],
     created_at: "2021-06-10",
