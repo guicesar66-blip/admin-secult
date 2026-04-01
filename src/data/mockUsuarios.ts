@@ -80,6 +80,7 @@ export const usuariosMock: Usuario[] = [
     id: "u7", nome_completo: "Tatiana Reis", email: "tatiana.r@email.com",
     telefone: "(81) 99100-0004", cpf: "111.000.000-04", nascimento: "1990-07-30",
     genero: "Mulher cis", raca_cor: "Preta", municipio: "Olinda",
+    codigo_municipio: "2609600", distrito: "Olinda",
     bairro: "Varadouro", estado: "PE",
     categorias_interesse: ["Literatura", "Cultura Popular"],
     created_at: "2022-02-15",
