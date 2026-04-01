@@ -174,7 +174,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Projetos Ativos</p>
-                  <p className="text-2xl font-bold">{estatisticas.projetosAtivos}</p>
+                  <p className="text-2xl font-bold">{projetosKPIs.projetosAtivos}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
                   <Briefcase className="h-5 w-5 text-green-600" />
