@@ -44,6 +44,7 @@ export const usuariosMock: Usuario[] = [
     id: "u3", nome_completo: "Carla Souza", email: "carla.souza@email.com",
     telefone: "(81) 99700-9012", cpf: "789.000.000-12", nascimento: "1992-11-05",
     genero: "Mulher cis", raca_cor: "Branca", municipio: "Olinda",
+    codigo_municipio: "2609600", distrito: "Olinda",
     bairro: "Carmo", estado: "PE",
     categorias_interesse: ["Artes Visuais", "Figurino"],
     created_at: "2022-06-01",
