@@ -20,12 +20,14 @@ import {
   Sparkles,
   UserCheck,
   CalendarDays,
+  Building2,
 } from "lucide-react";
 import { MapaCenso } from "@/components/censo/MapaCenso";
 import { ArtistaDrawer } from "@/components/censo/ArtistaDrawer";
 import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
 import { InsightsIAModal } from "@/components/censo/InsightsIAModal";
 import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
+import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
 import {
   artistasMock,
   categoriasArtisticas,
@@ -158,7 +160,7 @@ export default function DadosDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
             <TabsTrigger value="mapa" className="gap-2">
               <Map className="h-4 w-4" />
               <span className="hidden sm:inline">Censo Cultural</span>
@@ -166,6 +168,10 @@ export default function DadosDashboard() {
             <TabsTrigger value="perfil" className="gap-2">
               <UserCheck className="h-4 w-4" />
               <span className="hidden sm:inline">Perfil do Ecossistema</span>
+            </TabsTrigger>
+            <TabsTrigger value="infraestrutura" className="gap-2">
+              <Building2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Infraestrutura Cultural</span>
             </TabsTrigger>
             <TabsTrigger value="auditoria" className="gap-2">
               <FileCheck className="h-4 w-4" />
@@ -295,6 +301,16 @@ export default function DadosDashboard() {
           {/* ===== PERFIL DO ECOSSISTEMA ===== */}
           <TabsContent value="perfil" className="space-y-4">
             <PerfilEcossistema filtroPeriodo={
+              filtroPeriodo === "ultimo-mes" ? "Último mês" :
+              filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
+              filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
+              filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
+            } />
+          </TabsContent>
+
+          {/* ===== INFRAESTRUTURA CULTURAL ===== */}
+          <TabsContent value="infraestrutura" className="space-y-4">
+            <InfraestruturaTab filtroPeriodo={
               filtroPeriodo === "ultimo-mes" ? "Último mês" :
               filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
               filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
