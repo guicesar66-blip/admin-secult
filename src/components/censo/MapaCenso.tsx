@@ -13,11 +13,12 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Eye, Building2, Users, FolderKanban, AlertTriangle,
   ChevronDown, ChevronRight, Layers, Search, Map as MapIcon,
-  Satellite, RotateCcw, X,
+  Satellite, RotateCcw, X, Filter,
 } from "lucide-react";
 import type { AgenteCenso } from "@/data/mockCensoAuxiliar";
 import { coresLinguagem } from "@/data/mockCensoAuxiliar";
@@ -29,6 +30,7 @@ import {
   type ProjetoMapa, type DesertoCultural,
 } from "@/data/mockMapaEntidades";
 import { municipiosPE } from "@/data/mockMunicipios";
+import { useMapFilter, type FilterEntityType } from "@/contexts/MapFilterContext";
 
 // ===== Cores das camadas conforme spec =====
 const CORES_CAMADA = {
@@ -41,6 +43,14 @@ const CORES_CAMADA = {
 // ===== Tile URLs =====
 const TILE_STREET = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const TILE_SATELLITE = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+
+// ===== Icons per entity type =====
+const ENTITY_ICONS: Record<FilterEntityType, string> = {
+  produtor: "🎭",
+  projeto: "📋",
+  espaco: "🏛",
+  deserto: "📍",
+};
 
 interface MapaCensoProps {
   artistas: AgenteCenso[];
@@ -122,11 +132,9 @@ function ZoomToMunicipio({ municipio, onReset }: { municipio: string | null; onR
 
   useEffect(() => {
     if (!municipio) {
-      // Reset to PE view
       map.flyTo([-8.3, -36.5], 7, { duration: 1.2 });
       return;
     }
-    // Find coordinates from known lists
     const known: Record<string, [number, number]> = {
       "Recife": [-8.0576, -34.8770],
       "Olinda": [-8.0117, -34.8515],
@@ -181,9 +189,127 @@ interface CamadasState {
   desertos: boolean;
 }
 
+// ===== Popup content components (US-03) =====
+function PopupProdutor({ artista, onApplyFilter }: { artista: AgenteCenso; onApplyFilter: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
+      <div className="flex items-center gap-2">
+        <span className="text-base">🎭</span>
+        <span className="font-semibold text-sm">{artista.nomeArtistico || artista.nome}</span>
+        <Badge variant="outline" className="text-[10px] ml-auto" style={{ borderColor: CORES_CAMADA.produtores, color: CORES_CAMADA.produtores }}>
+          Coletivo
+        </Badge>
+      </div>
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p>🎨 {artista.linguagem}</p>
+        <p>📍 {artista.municipio}</p>
+        <p>📂 Produtora: <strong className="text-foreground">{artista.produtoraNome}</strong></p>
+        <div className="flex items-center gap-2">
+          <span>Score:</span>
+          <Progress value={artista.scoreReputacao} className="h-1.5 flex-1" />
+          <span className="font-medium text-foreground">{artista.scoreReputacao}/100</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 pt-1 border-t border-border">
+        <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
+          <Filter className="h-3 w-3" /> Aplicar filtro global
+        </Button>
+        <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/produtora/${artista.produtoraId}`)}>
+          Ver detalhe →
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function PopupProjeto({ proj, onApplyFilter }: { proj: ProjetoMapa; onApplyFilter: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
+      <div className="flex items-center gap-2">
+        <span className="text-base">📋</span>
+        <span className="font-semibold text-sm">{proj.nome}</span>
+        <Badge variant="outline" className="text-[10px] ml-auto" style={{ borderColor: statusProjetoCores[proj.status], color: statusProjetoCores[proj.status] }}>
+          {statusProjetoLabels[proj.status]}
+        </Badge>
+      </div>
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p>👤 {proj.proponenteNome}</p>
+        <p>📄 {proj.instrumento}</p>
+        <p>👥 {proj.publicoImpactado.toLocaleString("pt-BR")} pessoas impactadas</p>
+      </div>
+      <div className="flex items-center gap-2 pt-1 border-t border-border">
+        <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
+          <Filter className="h-3 w-3" /> Aplicar filtro global
+        </Button>
+        <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/projeto/${proj.id}`)}>
+          Ver detalhe →
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function PopupEspaco({ eq, onApplyFilter }: { eq: typeof equipamentosMock[0]; onApplyFilter: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
+      <div className="flex items-center gap-2">
+        <span className="text-base">{iconesTipoEquipamento[eq.tipo]}</span>
+        <span className="font-semibold text-sm">{eq.nome}</span>
+        <Badge variant={eq.status === "Ativo" ? "default" : "destructive"} className="text-[10px] ml-auto">
+          {eq.status}
+        </Badge>
+      </div>
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p>🏗 {eq.tipo} · {eq.municipio}</p>
+        {eq.capacidade && <p>👥 Capacidade: {eq.capacidade}</p>}
+        <p>📊 {eq.projetosRealizados} projetos realizados</p>
+        <p>🔧 Gestão: {eq.gestao}</p>
+      </div>
+      <div className="flex items-center gap-2 pt-1 border-t border-border">
+        <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
+          <Filter className="h-3 w-3" /> Aplicar filtro global
+        </Button>
+        <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
+          Ver detalhe →
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilter: () => void }) {
+  return (
+    <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
+      <div className="flex items-center gap-2">
+        <span className="text-base">📍</span>
+        <span className="font-semibold text-sm">{dc.regiao}</span>
+        <Badge variant="outline" className="text-[10px] ml-auto" style={{ borderColor: prioridadeDesertoCores[dc.prioridade], color: prioridadeDesertoCores[dc.prioridade] }}>
+          Prioridade {dc.prioridade}
+        </Badge>
+      </div>
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p>👥 Pop. {(dc.populacao / 1000).toFixed(0)}k · {dc.agentes} agentes</p>
+        <p>📊 {dc.agentes} agentes para {(dc.populacao / 1000).toFixed(0)}k habitantes — índice de cobertura {dc.cobertura100k}/100k</p>
+      </div>
+      <div className="flex items-center gap-2 pt-1 border-t border-border">
+        <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
+          <Filter className="h-3 w-3" /> Aplicar filtro global
+        </Button>
+        <Button size="sm" variant="link" className="text-xs h-7 p-0">
+          Ver detalhe →
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 // ===== Component =====
 export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProps) {
   const navigate = useNavigate();
+  const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
 
   // Camadas toggles (US-02)
@@ -194,14 +320,8 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
     desertos: true,
   });
   const [painelAberto, setPainelAberto] = useState(true);
-
-  // Sub-filters per layer
   const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
-
-  // Satellite (US-06)
   const [isSatellite, setIsSatellite] = useState(false);
-
-  // Search (US-05)
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -235,6 +355,47 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
   };
 
   const totalVisiveis = contarEntidadesVisiveis(camadas, artistas);
+
+  // Filter application handlers (US-03)
+  const applyProdutorFilter = useCallback((artista: AgenteCenso) => {
+    addFilter({
+      id: `produtor-${artista.produtoraId}`,
+      type: "produtor",
+      name: artista.produtoraNome,
+      icon: "🎭",
+      meta: { municipio: artista.municipio, linguagem: artista.linguagem },
+    });
+  }, [addFilter]);
+
+  const applyProjetoFilter = useCallback((proj: ProjetoMapa) => {
+    addFilter({
+      id: `projeto-${proj.id}`,
+      type: "projeto",
+      name: proj.nome,
+      icon: "📋",
+      meta: { municipio: proj.municipio, instrumento: proj.instrumento },
+    });
+  }, [addFilter]);
+
+  const applyEspacoFilter = useCallback((eq: typeof equipamentosMock[0]) => {
+    addFilter({
+      id: `espaco-${eq.id}`,
+      type: "espaco",
+      name: eq.nome,
+      icon: iconesTipoEquipamento[eq.tipo] || "🏛",
+      meta: { municipio: eq.municipio, tipo: eq.tipo },
+    });
+  }, [addFilter]);
+
+  const applyDesertoFilter = useCallback((dc: DesertoCultural) => {
+    addFilter({
+      id: `deserto-${dc.id}`,
+      type: "deserto",
+      name: dc.regiao,
+      icon: "📍",
+      meta: { regiao: dc.regiao },
+    });
+  }, [addFilter]);
 
   // Layer config for the control panel
   const layerConfig = [
@@ -334,21 +495,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
               }}
             >
               <Popup>
-                <div className="text-sm space-y-1 min-w-[200px]">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <span className="font-semibold">{dc.regiao}</span>
-                  </div>
-                  <p className="text-xs">Pop. {(dc.populacao / 1000).toFixed(0)}k · {dc.agentes} agentes</p>
-                  <p className="text-xs">Cobertura: {dc.cobertura100k}/100k hab.</p>
-                  <Badge
-                    variant="outline"
-                    className="text-xs mt-1"
-                    style={{ borderColor: prioridadeDesertoCores[dc.prioridade], color: prioridadeDesertoCores[dc.prioridade] }}
-                  >
-                    Prioridade {dc.prioridade}
-                  </Badge>
-                </div>
+                <PopupDeserto dc={dc} onApplyFilter={() => applyDesertoFilter(dc)} />
               </Popup>
             </Circle>
           ))}
@@ -362,22 +509,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
               pane="espacoPane"
             >
               <Popup>
-                <div className="text-sm space-y-1 min-w-[180px]">
-                  <p className="font-semibold">{iconesTipoEquipamento[eq.tipo]} {eq.nome}</p>
-                  <p className="text-muted-foreground">{eq.tipo} · {eq.municipio}</p>
-                  {eq.capacidade && <p className="text-muted-foreground">Capacidade: {eq.capacidade}</p>}
-                  <div className="flex gap-2 pt-1">
-                    <Badge variant="outline" className="text-[10px]">{eq.gestao}</Badge>
-                    <Badge variant={eq.status === "Ativo" ? "default" : "destructive"} className="text-[10px]">{eq.status}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{eq.projetosRealizados} projetos realizados</p>
-                  <Button
-                    size="sm" variant="link" className="text-xs p-0 h-auto mt-1 gap-1"
-                    onClick={(e) => { e.stopPropagation(); navigate(`/dados/espaco/${eq.id}`); }}
-                  >
-                    <Eye className="h-3 w-3" /> Ver detalhe
-                  </Button>
-                </div>
+                <PopupEspaco eq={eq} onApplyFilter={() => applyEspacoFilter(eq)} />
               </Popup>
             </Marker>
           ))}
@@ -397,18 +529,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
               }}
             >
               <Popup>
-                <div className="text-sm space-y-1 min-w-[200px]">
-                  <p className="font-semibold">{proj.nome}</p>
-                  <p className="text-xs text-muted-foreground">{proj.proponenteNome} · {proj.instrumento}</p>
-                  <Badge
-                    variant="outline"
-                    className="text-[10px]"
-                    style={{ borderColor: statusProjetoCores[proj.status], color: statusProjetoCores[proj.status] }}
-                  >
-                    {statusProjetoLabels[proj.status]}
-                  </Badge>
-                  <p className="text-xs">{proj.publicoImpactado.toLocaleString("pt-BR")} pessoas impactadas</p>
-                </div>
+                <PopupProjeto proj={proj} onApplyFilter={() => applyProjetoFilter(proj)} />
               </Popup>
             </CircleMarker>
           ))}
@@ -429,18 +550,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
               eventHandlers={{ click: () => onArtistaClick(artista) }}
             >
               <Popup>
-                <div className="text-sm space-y-1 min-w-[180px]">
-                  <p className="font-semibold">{artista.nomeArtistico || artista.nome}</p>
-                  <p className="text-xs text-muted-foreground">{artista.linguagem} · {artista.bairro}</p>
-                  <p className="text-xs">Produtora: <strong>{artista.produtoraNome}</strong></p>
-                  <p className="text-xs">Score: <strong>{artista.scoreReputacao}</strong></p>
-                  <button
-                    onClick={() => onArtistaClick(artista)}
-                    className="text-xs text-primary underline mt-1 block"
-                  >
-                    Ver perfil completo →
-                  </button>
-                </div>
+                <PopupProdutor artista={artista} onApplyFilter={() => applyProdutorFilter(artista)} />
               </Popup>
             </CircleMarker>
           ))}

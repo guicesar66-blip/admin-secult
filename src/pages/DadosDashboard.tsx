@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
+import { useMapFilter } from "@/contexts/MapFilterContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,8 @@ import {
   TrendingUp,
   Thermometer,
   Filter,
-  
+  X,
+  Info,
   UserCheck,
   CalendarDays,
   Building2,
@@ -41,6 +43,7 @@ import {
 } from "@/data/mockCensoAuxiliar";
 
 export default function DadosDashboard() {
+  const { filters, removeFilter, clearFilters } = useMapFilter();
   const [activeTab, setActiveTab] = useState("mapa");
   const [selectedArtista, setSelectedArtista] = useState<AgenteCenso | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -204,6 +207,44 @@ export default function DadosDashboard() {
               <span className="hidden sm:inline">IA Preditiva</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* ===== FILTER TAGS (US-04) ===== */}
+          {filters.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              {filters.map((f) => (
+                <Badge
+                  key={f.id}
+                  variant="secondary"
+                  className="gap-1.5 pl-2 pr-1 py-1 text-xs font-medium"
+                >
+                  <span>{f.icon}</span>
+                  {f.name}
+                  <button
+                    onClick={() => removeFilter(f.id)}
+                    className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+              {filters.length > 1 && (
+                <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={clearFilters}>
+                  Limpar todos
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* ===== FILTER WARNING BANNER (US-04) ===== */}
+          {filters.length > 0 && activeTab !== "mapa" && (
+            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+              <Info className="h-4 w-4 mt-0.5 shrink-0" />
+              <span>
+                Dados filtrados por: <strong className="text-foreground">{filters.map((f) => f.name).join(" · ")}</strong>.
+                {" "}Os gráficos e tabelas refletem apenas o contexto selecionado.
+              </span>
+            </div>
+          )}
 
           {/* ===== MAPA CULTURAL ===== */}
           <TabsContent value="mapa" className="space-y-4">

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WhiteLabelProvider } from "@/contexts/WhiteLabelContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { MapFilterProvider } from "@/contexts/MapFilterContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -41,6 +42,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <WhiteLabelProvider>
       <AuthProvider>
+        <MapFilterProvider>
         <NotificationProvider>
           <TooltipProvider>
             <Toaster />
@@ -84,6 +86,7 @@ const App = () => (
             </BrowserRouter>
           </TooltipProvider>
         </NotificationProvider>
+        </MapFilterProvider>
       </AuthProvider>
     </WhiteLabelProvider>
   </QueryClientProvider>
