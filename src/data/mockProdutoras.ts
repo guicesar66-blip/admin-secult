@@ -98,7 +98,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Slam da Periferia",
     descricao: "Produtora de poesia falada e slam que promove competições e saraus nas periferias de Olinda e Recife.",
     linguagem_principal: "Literatura/Slam",
-    municipio: "Olinda", estado: "PE",
+    municipio: "Olinda", codigo_municipio: "2609600", distrito: "Olinda", estado: "PE",
     endereco: "Rua do Amparo, 12 — Olinda, PE",
     tipo_formalizacao: "Informal",
     cnpj: null,
