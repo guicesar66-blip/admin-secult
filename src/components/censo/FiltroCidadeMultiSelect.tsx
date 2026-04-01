@@ -19,6 +19,7 @@ export function FiltroCidadeMultiSelect({
 }: FiltroCidadeMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [expandedRegioes, setExpandedRegioes] = useState<Set<string>>(new Set());
   const [expandedCidades, setExpandedCidades] = useState<Set<string>>(new Set());
   const regioes = useMemo(() => getRegioesUnicas(), []);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +59,16 @@ export function FiltroCidadeMultiSelect({
       const newSet = new Set([...selectedCidades, ...municipiosRegiao]);
       onSelectedCidadesChange([...newSet]);
     }
+  };
+
+  const toggleExpandRegiao = (regiao: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedRegioes(prev => {
+      const next = new Set(prev);
+      if (next.has(regiao)) next.delete(regiao);
+      else next.add(regiao);
+      return next;
+    });
   };
 
   const toggleExpand = (nome: string, e: React.MouseEvent) => {
@@ -148,6 +159,8 @@ export function FiltroCidadeMultiSelect({
               const allSelected = municipiosRegiao.every((m) => selectedCidades.includes(m));
               const someSelected = municipiosRegiao.some((m) => selectedCidades.includes(m));
 
+              const isRegExpanded = expandedRegioes.has(regiao);
+
               return (
                 <div key={regiao} className="mb-1">
                   {/* Region header */}
@@ -172,11 +185,19 @@ export function FiltroCidadeMultiSelect({
                         <Check className="h-2.5 w-2.5 text-primary-foreground" />
                       )}
                     </div>
-                    {regiao}
+                    <span className="flex-1 text-left">{regiao}</span>
+                    <span
+                      role="button"
+                      className="ml-auto flex items-center gap-1 hover:text-foreground transition-colors p-0.5 rounded"
+                      onClick={(e) => toggleExpandRegiao(regiao, e)}
+                    >
+                      <span className="text-[10px] normal-case tracking-normal font-normal">{municipios.length}</span>
+                      <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isRegExpanded && "rotate-90")} />
+                    </span>
                   </button>
 
                   {/* Municipalities */}
-                  {municipios.map((m) => {
+                  {isRegExpanded && municipios.map((m) => {
                     const isSelected = selectedCidades.includes(m.nome);
                     const isExpanded = expandedCidades.has(m.nome);
                     const hasDistritos = m.distritos.length > 0;
