@@ -95,9 +95,9 @@ export default function DadosDashboard() {
                 <SelectItem value="Cultura Popular">Cultura Popular</SelectItem>
                 <SelectItem value="Artes Visuais">Artes Visuais</SelectItem>
                 <SelectItem value="Teatro">Teatro</SelectItem>
-                <SelectItem value="Artesanato">Artesanato</SelectItem>
                 <SelectItem value="Dança">Dança</SelectItem>
                 <SelectItem value="Audiovisual">Audiovisual</SelectItem>
+                <SelectItem value="Literatura">Literatura/Slam</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>
