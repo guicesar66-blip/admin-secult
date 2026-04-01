@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MapContainer, TileLayer, CircleMarker, Popup, Marker, Circle,
-  useMap, useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -11,17 +11,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  Eye, Building2, Users, FolderKanban, AlertTriangle,
-  ChevronDown, ChevronRight, Layers, Search, Map as MapIcon,
-  Satellite, RotateCcw, X, Filter,
+  Building2, Users, FolderKanban, AlertTriangle,
+  ChevronDown, ChevronRight, Layers, Map as MapIcon,
+  Satellite, Filter,
 } from "lucide-react";
 import type { AgenteCenso } from "@/data/mockCensoAuxiliar";
-import { coresLinguagem } from "@/data/mockCensoAuxiliar";
 import { equipamentosMock, iconesTipoEquipamento } from "@/data/mockEquipamentosCulturais";
 import {
   projetosMapaMock, desertosCulturaisMock,
@@ -29,8 +27,7 @@ import {
   prioridadeDesertoCores,
   type ProjetoMapa, type DesertoCultural,
 } from "@/data/mockMapaEntidades";
-import { municipiosPE } from "@/data/mockMunicipios";
-import { useMapFilter, type FilterEntityType } from "@/contexts/MapFilterContext";
+import { useMapFilter } from "@/contexts/MapFilterContext";
 
 // ===== Cores das camadas conforme spec =====
 const CORES_CAMADA = {
