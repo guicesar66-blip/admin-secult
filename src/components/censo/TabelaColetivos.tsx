@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Search, Download, ArrowUpDown, X } from "lucide-react";
+import { usePaginacao } from "@/hooks/usePaginacao";
+import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
 import { getArtistasByProdutora } from "@/data/mockArtistas";
 import { getSubtipoIdsByTipoNome } from "@/data/mockLinguagens";
