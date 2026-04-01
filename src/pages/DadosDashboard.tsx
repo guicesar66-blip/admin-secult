@@ -421,7 +421,7 @@ export default function DadosDashboard() {
 
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
-            <AuditoriaPanel />
+            <AuditoriaPanel filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
           </TabsContent>
 
           {/* ===== IA PREDITIVA ===== */}
