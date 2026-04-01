@@ -181,7 +181,7 @@ export default function DadosDashboard() {
           <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-flex">
             <TabsTrigger value="mapa" className="gap-2">
               <Map className="h-4 w-4" />
-              <span className="hidden sm:inline">Censo Cultural</span>
+              <span className="hidden sm:inline">Mapa Cultural</span>
             </TabsTrigger>
             <TabsTrigger value="perfil" className="gap-2">
               <UserCheck className="h-4 w-4" />
