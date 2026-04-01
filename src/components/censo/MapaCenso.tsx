@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MapContainer, TileLayer, CircleMarker, Popup, Marker, Circle,
@@ -58,6 +58,8 @@ interface MapaCensoProps {
   onSearchQueryChange: (q: string) => void;
   onSelectMunicipio: (nome: string) => void;
   onResetView: () => void;
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
 }
 
 // ===== Emoji icon helper =====
@@ -309,10 +311,33 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
 }
 
 // ===== Component =====
-export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView }: MapaCensoProps) {
+export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView, filtroLinguagem = "todas", filtroCidades = [] }: MapaCensoProps) {
   const navigate = useNavigate();
   const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
+
+  // Filter projetos and espacos by global filters
+  const projetosFiltrados = useMemo(() => {
+    let result = projetosMapaMock;
+    if (filtroLinguagem !== "todas") {
+      result = result.filter(p => p.linguagem === filtroLinguagem);
+    }
+    if (filtroCidades.length > 0) {
+      result = result.filter(p => filtroCidades.includes(p.municipio));
+    }
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
+
+  const espacosFiltrados = useMemo(() => {
+    let result = equipamentosMock;
+    if (filtroLinguagem !== "todas") {
+      result = result.filter(e => e.linguagens.some(l => l === filtroLinguagem));
+    }
+    if (filtroCidades.length > 0) {
+      result = result.filter(e => filtroCidades.includes(e.municipio));
+    }
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
 
   // Camadas toggles (US-02)
   const [camadas, setCamadas] = useState<CamadasState>({
@@ -333,7 +358,14 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
     setCamadas({ produtores: true, projetos: true, espacos: true, desertos: true });
   };
 
-  const totalVisiveis = contarEntidadesVisiveis(camadas, artistas);
+  const totalVisiveis = useMemo(() => {
+    let total = 0;
+    if (camadas.produtores) total += artistas.length;
+    if (camadas.projetos) total += projetosFiltrados.length;
+    if (camadas.espacos) total += espacosFiltrados.length;
+    if (camadas.desertos) total += desertosCulturaisMock.length;
+    return total;
+  }, [camadas, artistas.length, projetosFiltrados.length, espacosFiltrados.length]);
 
   // Filter application handlers (US-03)
   const applyProdutorFilter = useCallback((artista: AgenteCenso) => {
@@ -390,14 +422,14 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       label: "Projetos",
       icon: <FolderKanban className="h-4 w-4" />,
       cor: CORES_CAMADA.projetos,
-      count: projetosMapaMock.length,
+      count: projetosFiltrados.length,
     },
     {
       key: "espacos" as const,
       label: "Espaços Culturais",
       icon: <Building2 className="h-4 w-4" />,
       cor: CORES_CAMADA.espacos,
-      count: equipamentosMock.length,
+      count: espacosFiltrados.length,
     },
     {
       key: "desertos" as const,
@@ -444,7 +476,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
           ))}
 
           {/* ===== CAMADA: Espaços Culturais (z=450) ===== */}
-          {camadas.espacos && equipamentosMock.map((eq) => (
+          {camadas.espacos && espacosFiltrados.map((eq) => (
             <Marker
               key={eq.id}
               position={[eq.location.lat, eq.location.lng]}
@@ -458,7 +490,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
           ))}
 
           {/* ===== CAMADA: Projetos (z=500) ===== */}
-          {camadas.projetos && projetosMapaMock.map((proj) => (
+          {camadas.projetos && projetosFiltrados.map((proj) => (
             <CircleMarker
               key={proj.id}
               center={[proj.location.lat, proj.location.lng]}
@@ -592,7 +624,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
         {camadas.projetos && (
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: CORES_CAMADA.projetos }} />
-            Projetos ({projetosMapaMock.length})
+            Projetos ({projetosFiltrados.length})
           </span>
         )}
         {camadas.espacos && (

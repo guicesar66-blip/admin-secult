@@ -89,18 +89,38 @@ export default function DadosDashboard() {
 
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
 
+  // Merge MapFilterContext into effective filters for all tabs
+  const effectiveCidades = useMemo(() => {
+    const mapMunicipios = filters
+      .filter(f => f.meta?.municipio)
+      .map(f => f.meta!.municipio as string);
+    if (mapMunicipios.length > 0 && filtroCidades.length > 0) {
+      // Intersection when both are set
+      return filtroCidades.filter(c => mapMunicipios.includes(c));
+    }
+    if (mapMunicipios.length > 0) return mapMunicipios;
+    return filtroCidades;
+  }, [filters, filtroCidades]);
+
+  const effectiveLinguagem = useMemo(() => {
+    const mapLinguagem = filters.find(f => f.meta?.linguagem)?.meta?.linguagem as string | undefined;
+    if (mapLinguagem && filtroLinguagem !== "todas") return filtroLinguagem; // header takes priority
+    if (mapLinguagem) return mapLinguagem;
+    return filtroLinguagem;
+  }, [filters, filtroLinguagem]);
+
   // Filtered projects for top KPIs
-  const projetosKPIs = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
+  const projetosKPIs = useMemo(() => getKPIsProjetos(effectiveLinguagem, effectiveCidades), [effectiveLinguagem, effectiveCidades]);
 
   const artistasFiltrados = useMemo(() => {
     return agentesCenso.filter((a) => {
-      if (filtroLinguagem !== "todas" && a.linguagem !== filtroLinguagem) return false;
+      if (effectiveLinguagem !== "todas" && a.linguagem !== effectiveLinguagem) return false;
       if (filtroGenero !== "todos" && !a.genero.toLowerCase().includes(filtroGenero.toLowerCase())) return false;
       if (filtroRaca !== "todas" && !a.raca.toLowerCase().includes(filtroRaca.toLowerCase())) return false;
-      if (filtroCidades.length > 0 && !filtroCidades.includes(a.municipio)) return false;
+      if (effectiveCidades.length > 0 && !effectiveCidades.includes(a.municipio)) return false;
       return true;
     });
-  }, [agentesCenso, filtroLinguagem, filtroGenero, filtroRaca, filtroCidades]);
+  }, [agentesCenso, effectiveLinguagem, filtroGenero, filtroRaca, effectiveCidades]);
 
   const handleArtistaClick = (artista: AgenteCenso) => {
     setSelectedArtista(artista);
@@ -378,6 +398,8 @@ export default function DadosDashboard() {
               onSearchQueryChange={setSearchQuery}
               onSelectMunicipio={handleSelectMunicipio}
               onResetView={handleResetView}
+              filtroLinguagem={effectiveLinguagem}
+              filtroCidades={effectiveCidades}
             />
           </TabsContent>
 
@@ -390,8 +412,8 @@ export default function DadosDashboard() {
                 filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
                 filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
               }
-              filtroLinguagem={filtroLinguagem}
-              filtroCidades={filtroCidades}
+              filtroLinguagem={effectiveLinguagem}
+              filtroCidades={effectiveCidades}
             />
           </TabsContent>
 
@@ -402,7 +424,7 @@ export default function DadosDashboard() {
               filtroPeriodo === "ultimo-trimestre" ? "Último trimestre" :
               filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
               filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
-            } filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+            } filtroLinguagem={effectiveLinguagem} filtroCidades={effectiveCidades} />
           </TabsContent>
 
           {/* ===== PROJETOS E RESULTADOS ===== */}
@@ -414,14 +436,14 @@ export default function DadosDashboard() {
                 filtroPeriodo === "ultimo-semestre" ? "Último semestre" :
                 filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
               }
-              filtroLinguagem={filtroLinguagem}
-              filtroCidades={filtroCidades}
+              filtroLinguagem={effectiveLinguagem}
+              filtroCidades={effectiveCidades}
             />
           </TabsContent>
 
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
-            <AuditoriaPanel filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+            <AuditoriaPanel filtroLinguagem={effectiveLinguagem} filtroCidades={effectiveCidades} />
           </TabsContent>
 
           {/* ===== IA PREDITIVA ===== */}
