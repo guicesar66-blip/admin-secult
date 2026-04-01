@@ -40,7 +40,7 @@ import { ProjetosResultadosTab } from "@/components/projetos-dados/ProjetosResul
 import { CollapseSectionProvider } from "@/contexts/CollapseSectionContext";
 import {
   buildAgentesCenso,
-  getEstatisticasGerais,
+  
   linguagensArtisticas,
   coresLinguagem,
   type AgenteCenso,
