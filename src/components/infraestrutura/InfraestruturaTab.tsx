@@ -24,7 +24,9 @@ export function InfraestruturaTab({ filtroPeriodo }: InfraestruturaTabProps) {
         setFiltroTipo(event.tipo ?? "todos");
         break;
       case "municipio":
-        setFiltroMunicipio(event.municipio ?? "todos");
+        // Use the municipality where the nearest equipment is located,
+        // since the clicked municipality may not have its own equipment
+        setFiltroMunicipio(event.municipioEquipamento ?? event.municipio ?? "todos");
         setFiltroTipo("todos");
         break;
       case "artista":
