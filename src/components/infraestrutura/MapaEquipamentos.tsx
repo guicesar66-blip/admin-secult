@@ -174,6 +174,7 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
             className="h-full w-full"
           >
             <PaneSetup />
+            <MapResetClick onReset={() => onMapClick?.({ type: "reset" })} />
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
