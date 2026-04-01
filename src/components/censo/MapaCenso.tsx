@@ -312,7 +312,7 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
 }
 
 // ===== Component =====
-export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProps) {
+export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView }: MapaCensoProps) {
   const navigate = useNavigate();
   const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
@@ -327,29 +327,6 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
   const [painelAberto, setPainelAberto] = useState(true);
   const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
   const [isSatellite, setIsSatellite] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const municipioSuggestions = useMemo(() => {
-    if (searchQuery.length < 2) return [];
-    const q = searchQuery.toLowerCase();
-    return municipiosPE
-      .filter((m) => m.nome.toLowerCase().includes(q))
-      .slice(0, 8)
-      .map((m) => m.nome);
-  }, [searchQuery]);
-
-  const handleSelectMunicipio = (nome: string) => {
-    setSelectedMunicipio(nome);
-    setSearchQuery(nome);
-    setShowSuggestions(false);
-  };
-
-  const handleResetView = () => {
-    setSelectedMunicipio(null);
-    setSearchQuery("");
-  };
 
   const toggleCamada = (key: keyof CamadasState) => {
     setCamadas((prev) => ({ ...prev, [key]: !prev[key] }));
