@@ -9,6 +9,7 @@ export interface ProjetoMapa {
   nome: string;
   proponenteNome: string;
   instrumento: string;
+  linguagem: string;
   status: "ativo" | "concluido" | "pendencia" | "irregular" | "cancelado";
   publicoImpactado: number;
   municipio: string;
