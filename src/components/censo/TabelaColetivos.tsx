@@ -176,7 +176,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                 <TableRow>
                   <TableHead className="w-[40px]" />
                   <SortableHeader label="Nome" keyName="nome" />
-                  <TableHead>Linguagem</TableHead>
+                  
                   <SortableHeader label="Município" keyName="municipio" />
                   <SortableHeader label="Artistas" keyName="artistas" />
                   <SortableHeader label="Tempo" keyName="tempo" />
