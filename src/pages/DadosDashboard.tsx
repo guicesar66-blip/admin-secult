@@ -60,6 +60,31 @@ export default function DadosDashboard() {
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
 
+  // Search municipality state (lifted from MapaCenso)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const municipioSuggestions = useMemo(() => {
+    if (searchQuery.length < 2) return [];
+    const q = searchQuery.toLowerCase();
+    return municipiosPE
+      .filter((m) => m.nome.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((m) => m.nome);
+  }, [searchQuery]);
+
+  const handleSelectMunicipio = useCallback((nome: string) => {
+    setSelectedMunicipio(nome);
+    setSearchQuery(nome);
+    setShowSuggestions(false);
+  }, []);
+
+  const handleResetView = useCallback(() => {
+    setSelectedMunicipio(null);
+    setSearchQuery("");
+  }, []);
+
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
   const estatisticas = useMemo(() => getEstatisticasGerais(), []);
 
