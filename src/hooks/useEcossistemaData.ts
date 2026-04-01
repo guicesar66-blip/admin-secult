@@ -151,8 +151,7 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
         ? afterCityFilter
         : afterCityFilter.filter((a) => artistaTemTipo(a, filtroLinguagem));
 
-    // Enrich with usuario data
-    const usuarioMap = new Map(usuariosMock.map((u) => [u.id, u]));
+    // Enrich with usuario data (map already built above)
     const artistas: ArtistaEnriquecido[] = filteredArtistas
       .map((a) => {
         const usuario = usuarioMap.get(a.usuario_id);
