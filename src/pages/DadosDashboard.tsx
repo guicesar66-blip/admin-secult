@@ -87,7 +87,12 @@ export default function DadosDashboard() {
   }, []);
 
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
-  const estatisticas = useMemo(() => getEstatisticasGerais(), []);
+
+  // Filtered projects for top KPIs
+  const projetosKPIs = useMemo(() => {
+    const { getKPIsProjetos } = require("@/data/mockProjetos");
+    return getKPIsProjetos(filtroLinguagem, filtroCidades);
+  }, [filtroLinguagem, filtroCidades]);
 
   const artistasFiltrados = useMemo(() => {
     return agentesCenso.filter((a) => {
