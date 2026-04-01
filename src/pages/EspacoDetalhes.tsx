@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -17,14 +15,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft, MapPin, Users, DollarSign, BarChart3, Star, ChevronDown,
-  Check, X, Pencil, Building2, Clock, Phone, Mail, Shield, Search,
-  TrendingUp, Calendar,
+  Check, X, Pencil, Building2, Clock, Mail, Shield, Search, TrendingUp,
 } from "lucide-react";
 import {
   equipamentosMock,
   iconesTipoEquipamento,
 } from "@/data/mockEquipamentosCulturais";
-import { getEspacoDetalhe, type EspacoDetalhe, type AcessibilidadeItem } from "@/data/mockEspacoDetalhes";
+import { getEspacoDetalhe, type EspacoDetalhe } from "@/data/mockEspacoDetalhes";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   BarChart, Bar, PieChart, Pie, Cell,
@@ -48,6 +45,7 @@ export default function EspacoDetalhes() {
   const { toast } = useToast();
 
   const equipamento = useMemo(() => equipamentosMock.find(e => e.id === id), [id]);
+
   const [detalhe, setDetalhe] = useState<EspacoDetalhe>(() => getEspacoDetalhe(id || ""));
   const [editando, setEditando] = useState(false);
   const [editDraft, setEditDraft] = useState<EspacoDetalhe>(detalhe);
@@ -55,6 +53,15 @@ export default function EspacoDetalhes() {
   const [buscaArtista, setBuscaArtista] = useState("");
   const [mostrarTodosArtistas, setMostrarTodosArtistas] = useState(false);
   const [acessOpen, setAcessOpen] = useState(false);
+
+  const artistasFiltrados = useMemo(() => {
+    let lista = detalhe.artistasVinculados;
+    if (buscaArtista) {
+      const q = buscaArtista.toLowerCase();
+      lista = lista.filter(a => a.nome.toLowerCase().includes(q) || a.linguagem.toLowerCase().includes(q));
+    }
+    return mostrarTodosArtistas ? lista : lista.slice(0, 10);
+  }, [detalhe.artistasVinculados, buscaArtista, mostrarTodosArtistas]);
 
   if (!equipamento) {
     return (
@@ -69,16 +76,8 @@ export default function EspacoDetalhes() {
     );
   }
 
-  const iniciarEdicao = () => {
-    setEditDraft({ ...detalhe });
-    setEditando(true);
-  };
-
-  const cancelarEdicao = () => {
-    setEditDraft(detalhe);
-    setEditando(false);
-  };
-
+  const iniciarEdicao = () => { setEditDraft({ ...detalhe }); setEditando(true); };
+  const cancelarEdicao = () => { setEditDraft(detalhe); setEditando(false); };
   const salvarEdicao = () => {
     setDetalhe(editDraft);
     setEditando(false);
@@ -93,15 +92,6 @@ export default function EspacoDetalhes() {
       ),
     }));
   };
-
-  const artistasFiltrados = useMemo(() => {
-    let lista = detalhe.artistasVinculados;
-    if (buscaArtista) {
-      const q = buscaArtista.toLowerCase();
-      lista = lista.filter(a => a.nome.toLowerCase().includes(q) || a.linguagem.toLowerCase().includes(q));
-    }
-    return mostrarTodosArtistas ? lista : lista.slice(0, 10);
-  }, [detalhe.artistasVinculados, buscaArtista, mostrarTodosArtistas]);
 
   const d = editando ? editDraft : detalhe;
 
@@ -148,38 +138,24 @@ export default function EspacoDetalhes() {
 
         {/* 1. Informações Gerais */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Informações Gerais</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Informações Gerais</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {editando ? (
-              <Textarea
-                value={editDraft.descricao}
-                onChange={e => setEditDraft(p => ({ ...p, descricao: e.target.value }))}
-                rows={4}
-              />
+              <Textarea value={editDraft.descricao} onChange={e => setEditDraft(p => ({ ...p, descricao: e.target.value }))} rows={4} />
             ) : (
               <p className="text-sm text-muted-foreground leading-relaxed">{d.descricao}</p>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <InfoField icon={<Users className="h-4 w-4" />} label="Capacidade"
-                value={editando ? (
-                  <Input type="number" value={equipamento.capacidade ?? ""} disabled className="h-8 w-32" />
-                ) : (
-                  `${equipamento.capacidade ?? "—"} pessoas`
-                )}
-              />
+                value={`${equipamento.capacidade ?? "—"} pessoas`} />
               <InfoField icon={<Clock className="h-4 w-4" />} label="Horários"
                 value={editando ? (
                   <Input value={editDraft.horarios} onChange={e => setEditDraft(p => ({ ...p, horarios: e.target.value }))} className="h-8" />
-                ) : d.horarios}
-              />
+                ) : d.horarios} />
               <InfoField icon={<Building2 className="h-4 w-4" />} label="Gestão"
-                value={<Badge variant="outline">{equipamento.gestao}</Badge>}
-              />
+                value={<Badge variant="outline">{equipamento.gestao}</Badge>} />
               <InfoField icon={<Shield className="h-4 w-4" />} label="CNPJ"
-                value={<span className="text-muted-foreground text-xs">{d.cnpj} {editando && <span className="text-[10px]">(não editável)</span>}</span>}
-              />
+                value={<span className="text-xs text-muted-foreground">{d.cnpj} {editando && <span className="text-[10px] opacity-60">(não editável)</span>}</span>} />
               <InfoField icon={<Mail className="h-4 w-4" />} label="Contato"
                 value={editando ? (
                   <div className="space-y-1">
@@ -188,29 +164,19 @@ export default function EspacoDetalhes() {
                     <Input value={editDraft.contatoTelefone} onChange={e => setEditDraft(p => ({ ...p, contatoTelefone: e.target.value }))} className="h-8" placeholder="Telefone" />
                   </div>
                 ) : (
-                  <div className="text-sm">
-                    <p>{d.contatoNome}</p>
-                    <p className="text-muted-foreground">{d.contatoEmail}</p>
-                    <p className="text-muted-foreground">{d.contatoTelefone}</p>
-                  </div>
-                )}
-              />
+                  <div className="text-sm"><p>{d.contatoNome}</p><p className="text-muted-foreground">{d.contatoEmail}</p><p className="text-muted-foreground">{d.contatoTelefone}</p></div>
+                )} />
               <InfoField icon={<BarChart3 className="h-4 w-4" />} label="Conservação"
                 value={editando ? (
-                  <Select value={editDraft.conservacao} onValueChange={v => setEditDraft(p => ({ ...p, conservacao: v as any }))}>
+                  <Select value={editDraft.conservacao} onValueChange={v => setEditDraft(p => ({ ...p, conservacao: v as EspacoDetalhe["conservacao"] }))}>
                     <SelectTrigger className="h-8 w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {["Excelente", "Bom", "Regular", "Precário"].map(c => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
+                      {["Excelente", "Bom", "Regular", "Precário"].map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 ) : (
-                  <Badge variant="outline" style={{ borderColor: corConservacao[d.conservacao], color: corConservacao[d.conservacao] }}>
-                    {d.conservacao}
-                  </Badge>
-                )}
-              />
+                  <Badge variant="outline" style={{ borderColor: corConservacao[d.conservacao], color: corConservacao[d.conservacao] }}>{d.conservacao}</Badge>
+                )} />
             </div>
           </CardContent>
         </Card>
@@ -220,18 +186,16 @@ export default function EspacoDetalhes() {
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               Acessibilidade para PCDs
-              <Badge variant="outline" className="font-normal">
-                {editando ? (
-                  <Select value={editDraft.acessibilidadeGeral} onValueChange={v => setEditDraft(p => ({ ...p, acessibilidadeGeral: v as any }))}>
-                    <SelectTrigger className="h-6 text-[10px] border-0 px-1"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {["Totalmente acessível", "Parcialmente acessível", "Não acessível"].map(a => (
-                        <SelectItem key={a} value={a}>{a}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : d.acessibilidadeGeral}
-              </Badge>
+              {editando ? (
+                <Select value={editDraft.acessibilidadeGeral} onValueChange={v => setEditDraft(p => ({ ...p, acessibilidadeGeral: v as EspacoDetalhe["acessibilidadeGeral"] }))}>
+                  <SelectTrigger className="h-7 text-xs w-48"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["Totalmente acessível", "Parcialmente acessível", "Não acessível"].map(a => (<SelectItem key={a} value={a}>{a}</SelectItem>))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Badge variant="outline" className="font-normal">{d.acessibilidadeGeral}</Badge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -247,29 +211,19 @@ export default function EspacoDetalhes() {
                   {d.acessibilidadeItens.map((item, idx) => (
                     <div key={item.recurso} className="flex items-center gap-2 text-sm py-1">
                       {editando ? (
-                        <Switch
-                          checked={editDraft.acessibilidadeItens[idx]?.disponivel}
-                          onCheckedChange={() => toggleAcessItem(idx)}
-                        />
+                        <Switch checked={editDraft.acessibilidadeItens[idx]?.disponivel} onCheckedChange={() => toggleAcessItem(idx)} />
                       ) : item.disponivel ? (
-                        <Check className="h-4 w-4 text-green-600 shrink-0" />
+                        <Check className="h-4 w-4 shrink-0" style={{ color: "hsl(var(--success))" }} />
                       ) : (
-                        <X className="h-4 w-4 text-red-500 shrink-0" />
+                        <X className="h-4 w-4 shrink-0" style={{ color: "hsl(var(--destructive))" }} />
                       )}
-                      <span className={item.disponivel ? "text-foreground" : "text-muted-foreground"}>
-                        {item.recurso}
-                      </span>
+                      <span className={item.disponivel ? "text-foreground" : "text-muted-foreground"}>{item.recurso}</span>
                     </div>
                   ))}
                 </div>
                 <Separator className="my-3" />
                 {editando ? (
-                  <Textarea
-                    value={editDraft.acessibilidadeObs}
-                    onChange={e => setEditDraft(p => ({ ...p, acessibilidadeObs: e.target.value }))}
-                    rows={2}
-                    placeholder="Observações sobre acessibilidade"
-                  />
+                  <Textarea value={editDraft.acessibilidadeObs} onChange={e => setEditDraft(p => ({ ...p, acessibilidadeObs: e.target.value }))} rows={2} placeholder="Observações sobre acessibilidade" />
                 ) : (
                   <p className="text-xs text-muted-foreground italic">{d.acessibilidadeObs}</p>
                 )}
@@ -280,26 +234,16 @@ export default function EspacoDetalhes() {
 
         {/* 3. Galeria de Fotos */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Galeria de Fotos</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Galeria de Fotos</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {d.fotos.map((foto, i) => (
-                <button
-                  key={i}
-                  onClick={() => setLightboxImg(foto.url)}
-                  className="group relative rounded-lg overflow-hidden border border-border aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <img
-                    src={foto.url}
-                    alt={foto.legenda}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1">
-                    <p className="text-[10px] text-white truncate">{foto.legenda}</p>
-                    <p className="text-[9px] text-white/70">{foto.data}</p>
+                <button key={i} onClick={() => setLightboxImg(foto.url)}
+                  className="group relative rounded-lg overflow-hidden border border-border aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-ring">
+                  <img src={foto.url} alt={foto.legenda} loading="lazy" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                  <div className="absolute inset-x-0 bottom-0 bg-foreground/60 px-2 py-1">
+                    <p className="text-[10px] text-background truncate">{foto.legenda}</p>
+                    <p className="text-[9px] text-background/70">{foto.data}</p>
                   </div>
                 </button>
               ))}
@@ -307,20 +251,15 @@ export default function EspacoDetalhes() {
           </CardContent>
         </Card>
 
-        {/* Lightbox */}
         <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
           <DialogContent className="max-w-4xl p-2">
-            {lightboxImg && (
-              <img src={lightboxImg} alt="Foto ampliada" className="w-full h-auto rounded-lg" />
-            )}
+            {lightboxImg && <img src={lightboxImg} alt="Foto ampliada" className="w-full h-auto rounded-lg" />}
           </DialogContent>
         </Dialog>
 
         {/* 4. Métricas de Uso */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Métricas de Uso</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Métricas de Uso</CardTitle></CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard label="Projetos realizados" value={d.metricas.totalProjetos} icon={<BarChart3 className="h-4 w-4" />} />
@@ -328,9 +267,7 @@ export default function EspacoDetalhes() {
               <MetricCard label="Média público/evento" value={d.metricas.mediaPublicoEvento} icon={<TrendingUp className="h-4 w-4" />} />
               <MetricCard label="Renda gerada" value={`R$ ${(d.metricas.rendaGerada / 1000000).toFixed(1)} mi`} icon={<DollarSign className="h-4 w-4" />} />
             </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Line chart */}
               <div className="lg:col-span-2">
                 <p className="text-sm font-medium mb-2">Eventos realizados (últimos 12 meses)</p>
                 <ResponsiveContainer width="100%" height={220}>
@@ -343,17 +280,13 @@ export default function EspacoDetalhes() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-
-              {/* Demographics donuts */}
               <div className="space-y-4">
                 <div>
                   <p className="text-xs font-medium mb-1">Faixa etária do público</p>
                   <ResponsiveContainer width="100%" height={140}>
                     <PieChart>
                       <Pie data={d.metricas.demografiaPublico.faixaEtaria} dataKey="valor" nameKey="label" cx="50%" cy="50%" innerRadius={30} outerRadius={55}>
-                        {d.metricas.demografiaPublico.faixaEtaria.map((_, i) => (
-                          <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
-                        ))}
+                        {d.metricas.demografiaPublico.faixaEtaria.map((_, i) => (<Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />))}
                       </Pie>
                       <Tooltip />
                     </PieChart>
@@ -364,9 +297,7 @@ export default function EspacoDetalhes() {
                   <ResponsiveContainer width="100%" height={140}>
                     <PieChart>
                       <Pie data={d.metricas.demografiaPublico.genero} dataKey="valor" nameKey="label" cx="50%" cy="50%" innerRadius={30} outerRadius={55}>
-                        {d.metricas.demografiaPublico.genero.map((_, i) => (
-                          <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
-                        ))}
+                        {d.metricas.demografiaPublico.genero.map((_, i) => (<Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />))}
                       </Pie>
                       <Tooltip />
                     </PieChart>
@@ -379,9 +310,7 @@ export default function EspacoDetalhes() {
 
         {/* 5. Instrumentos de Fomento */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Instrumentos de Fomento Utilizados</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Instrumentos de Fomento Utilizados</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={Math.max(120, d.fomento.length * 40)}>
               <BarChart data={d.fomento} layout="vertical" margin={{ left: 100 }}>
@@ -397,32 +326,18 @@ export default function EspacoDetalhes() {
 
         {/* 6. Comentários */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ComentariosPanel
-            titulo="Artistas e Produtores"
-            subtitulo="App do Artista"
-            media={d.comentariosArtistas.media}
-            total={d.comentariosArtistas.total}
-            lista={d.comentariosArtistas.lista}
-          />
-          <ComentariosPanel
-            titulo="Cidadãos"
-            subtitulo="App da Sociedade"
-            media={d.comentariosCidadaos.media}
-            total={d.comentariosCidadaos.total}
-            lista={d.comentariosCidadaos.lista}
-          />
+          <ComentariosPanel titulo="Artistas e Produtores" subtitulo="App do Artista" media={d.comentariosArtistas.media} total={d.comentariosArtistas.total} lista={d.comentariosArtistas.lista} />
+          <ComentariosPanel titulo="Cidadãos" subtitulo="App da Sociedade" media={d.comentariosCidadaos.media} total={d.comentariosCidadaos.total} lista={d.comentariosCidadaos.lista} />
         </div>
 
         {/* 7. Responsáveis e Artistas */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Responsáveis pelo Espaço</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Responsáveis pelo Espaço</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {d.responsaveis.map((r, i) => (
                 <div key={i} className="border border-border rounded-lg p-4 space-y-2">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-lg">
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
                     <Building2 className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <p className="font-semibold text-sm">{r.nome}</p>
@@ -441,12 +356,7 @@ export default function EspacoDetalhes() {
               <CardTitle className="text-base">Artistas que já se apresentaram</CardTitle>
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar artista ou coletivo..."
-                  value={buscaArtista}
-                  onChange={e => setBuscaArtista(e.target.value)}
-                  className="pl-8 h-9"
-                />
+                <Input placeholder="Buscar artista ou coletivo..." value={buscaArtista} onChange={e => setBuscaArtista(e.target.value)} className="pl-8 h-9" />
               </div>
             </div>
           </CardHeader>
@@ -462,9 +372,7 @@ export default function EspacoDetalhes() {
                 </TableHeader>
                 <TableBody>
                   {artistasFiltrados.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-6 text-muted-foreground">Nenhum artista encontrado.</TableCell>
-                    </TableRow>
+                    <TableRow><TableCell colSpan={3} className="text-center py-6 text-muted-foreground">Nenhum artista encontrado.</TableCell></TableRow>
                   ) : artistasFiltrados.map(a => (
                     <TableRow key={a.id}>
                       <TableCell className="font-medium text-sm">{a.nome}</TableCell>
@@ -487,16 +395,11 @@ export default function EspacoDetalhes() {
   );
 }
 
-/* ---- Sub-components ---- */
-
 function InfoField({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
     <div className="flex gap-2">
       <div className="text-muted-foreground mt-0.5 shrink-0">{icon}</div>
-      <div>
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-        <div className="text-sm">{value}</div>
-      </div>
+      <div><p className="text-xs font-medium text-muted-foreground">{label}</p><div className="text-sm">{value}</div></div>
     </div>
   );
 }
@@ -524,7 +427,7 @@ function ComentariosPanel({ titulo, subtitulo, media, total, lista }: {
         <div className="flex items-center gap-2">
           <div className="flex">
             {[1, 2, 3, 4, 5].map(s => (
-              <Star key={s} className={`h-4 w-4 ${s <= Math.round(media) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"}`} />
+              <Star key={s} className={`h-4 w-4 ${s <= Math.round(media) ? "fill-warning text-warning" : "text-muted-foreground"}`} />
             ))}
           </div>
           <span className="text-sm font-semibold">{media.toFixed(1)}</span>
@@ -535,9 +438,7 @@ function ComentariosPanel({ titulo, subtitulo, media, total, lista }: {
         {lista.map(c => (
           <div key={c.id} className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">
-                {c.nome[0]}
-              </div>
+              <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">{c.nome[0]}</div>
               <span className="text-sm font-medium">{c.nome}</span>
               <span className="text-xs text-muted-foreground ml-auto">{c.data}</span>
             </div>
