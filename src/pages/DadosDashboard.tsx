@@ -20,6 +20,7 @@ import {
   Sparkles,
   UserCheck,
   CalendarDays,
+  Building2,
 } from "lucide-react";
 import { MapaCenso } from "@/components/censo/MapaCenso";
 import { ArtistaDrawer } from "@/components/censo/ArtistaDrawer";
