@@ -205,15 +205,15 @@ export default function DadosDashboard() {
             </TabsTrigger>
           </TabsList>
 
-          {/* ===== MAPA / CENSO ===== */}
+          {/* ===== MAPA CULTURAL ===== */}
           <TabsContent value="mapa" className="space-y-4">
-            {/* Filters */}
+            {/* Filtros rápidos de artistas */}
             <Card>
               <CardContent className="pt-4 pb-4">
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Filtros:</span>
+                    <span className="text-sm font-medium">Filtros de artistas:</span>
                   </div>
 
                   <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
@@ -266,7 +266,7 @@ export default function DadosDashboard() {
                   </div>
                 </div>
 
-                {/* Legend */}
+                {/* Legend badges */}
                 {!modoCalor && (
                   <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border">
                     {linguagensArtisticas.map((cat) => (
@@ -290,7 +290,7 @@ export default function DadosDashboard() {
                       </Badge>
                     ))}
                     <span className="text-xs text-muted-foreground ml-2 flex items-center">
-                      {artistasFiltrados.length} agentes exibidos
+                      {artistasFiltrados.length} artistas exibidos
                     </span>
                   </div>
                 )}
@@ -298,13 +298,11 @@ export default function DadosDashboard() {
             </Card>
 
             {/* Map */}
-            <div className="h-[520px]">
-              <MapaCenso
-                artistas={artistasFiltrados}
-                onArtistaClick={handleArtistaClick}
-                modoCalor={modoCalor}
-              />
-            </div>
+            <MapaCenso
+              artistas={artistasFiltrados}
+              onArtistaClick={handleArtistaClick}
+              modoCalor={modoCalor}
+            />
           </TabsContent>
 
           {/* ===== PERFIL DO ECOSSISTEMA ===== */}
