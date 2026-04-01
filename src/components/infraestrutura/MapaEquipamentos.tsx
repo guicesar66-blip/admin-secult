@@ -62,9 +62,6 @@ export interface MapFilterEvent {
   nome?: string;
   tipo?: string;
   categoria?: string;
-  /** For municipality clicks: the municipality where the nearest equipment is located */
-  municipioEquipamento?: string;
-  equipamentoProximo?: string;
 }
 
 interface MapaEquipamentosProps {
@@ -208,17 +205,7 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
                       weight: 2,
                     }}
                     eventHandlers={{
-                      click: () => {
-                        // Find the municipality where the nearest equipment is actually located
-                        const eqProximo = equipamentosMock.find(e => e.nome === m.equipamentoProximo);
-                        onMapClick?.({
-                          type: "municipio",
-                          municipio: m.municipio,
-                          municipioEquipamento: eqProximo?.municipio ?? m.municipio,
-                          equipamentoProximo: m.equipamentoProximo,
-                          tipo: m.tipoEquipamento,
-                        });
-                      },
+                      click: () => onMapClick?.({ type: "municipio", municipio: m.municipio }),
                     }}
                   >
                     <Popup>
