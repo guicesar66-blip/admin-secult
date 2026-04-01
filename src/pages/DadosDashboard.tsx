@@ -27,7 +27,7 @@ import {
 import { MapaCenso } from "@/components/censo/MapaCenso";
 import { ArtistaDrawer } from "@/components/censo/ArtistaDrawer";
 import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
-import { InsightsIAModal } from "@/components/censo/InsightsIAModal";
+
 import { PerfilEcossistema } from "@/components/censo/PerfilEcossistema";
 import { InfraestruturaTab } from "@/components/infraestrutura/InfraestruturaTab";
 import { ProjetosResultadosTab } from "@/components/projetos-dados/ProjetosResultadosTab";
