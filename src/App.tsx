@@ -9,7 +9,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MapFilterProvider } from "@/contexts/MapFilterContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import Oportunidades from "./pages/Oportunidades";
 import MarketplaceExplorar from "./pages/MarketplaceExplorar";
 import OportunidadePublica from "./pages/OportunidadePublica";
