@@ -63,7 +63,7 @@ export default function DadosDashboard() {
 
   const artistasFiltrados = useMemo(() => {
     return agentesCenso.filter((a) => {
-      if (filtroCategoria !== "todas" && a.linguagem !== filtroCategoria) return false;
+      if (filtroLinguagem !== "todas" && a.linguagem !== filtroLinguagem) return false;
       if (filtroGenero !== "todos" && !a.genero.toLowerCase().includes(filtroGenero.toLowerCase())) return false;
       if (filtroRaca !== "todas" && !a.raca.toLowerCase().includes(filtroRaca.toLowerCase())) return false;
       if (filtroCidades.length > 0 && !filtroCidades.includes(a.municipio)) return false;
