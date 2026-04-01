@@ -443,7 +443,7 @@ export default function DadosDashboard() {
 
           {/* ===== AUDITORIA ===== */}
           <TabsContent value="auditoria">
-            <AuditoriaPanel filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+            <AuditoriaPanel filtroLinguagem={effectiveLinguagem} filtroCidades={effectiveCidades} />
           </TabsContent>
 
           {/* ===== IA PREDITIVA ===== */}
