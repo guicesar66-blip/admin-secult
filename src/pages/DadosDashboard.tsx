@@ -19,7 +19,8 @@ import {
   TrendingUp,
   Thermometer,
   Filter,
-  
+  X,
+  Info,
   UserCheck,
   CalendarDays,
   Building2,
