@@ -41,27 +41,6 @@ export function CapilaridadeKPI({ filtroPeriodo }: CapilaridadeKPIProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 space-y-4">
-        {/* KPI highlight */}
-        <div className="flex items-center justify-between rounded-lg bg-primary/5 border border-primary/20 p-3">
-          <div>
-            <p className="text-3xl font-bold">
-              {MUNICIPIOS_COM_AGENTES}
-              <span className="text-base font-normal text-muted-foreground">
-                /{TOTAL_MUNICIPIOS_PE}
-              </span>
-            </p>
-            <p className="text-xs text-muted-foreground">
-              municípios com agentes ({PERCENTUAL}%)
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-xs font-medium text-success">
-              <TrendingUp className="h-3 w-3" />
-              {VARIACAO} vs. trimestre anterior
-            </div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <MapPin className="h-5 w-5 text-primary" />
-          </div>
-        </div>
 
         {/* Progress bars per mesoregion */}
         <div className="space-y-2">
