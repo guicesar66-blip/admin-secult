@@ -56,11 +56,7 @@ function PaneSetup() {
   return null;
 }
 
-interface MapaEquipamentosProps {
-  onMunicipioClick?: (municipio: string) => void;
-}
-
-export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
+export function MapaEquipamentos() {
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
@@ -176,10 +172,43 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
                       color: faixa.cor,
                       weight: 2,
                     }}
-                    eventHandlers={{
-                      click: () => onMunicipioClick?.(m.municipio),
-                    }}
                   >
+                    <Popup>
+                      <div className="text-sm space-y-1 min-w-[180px]">
+                        <p className="font-semibold">{m.municipio}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-xs">Tempo médio</span>
+                          <span className="text-xs font-medium" style={{ color: faixa.cor }}>
+                            {formatarTempo(m.tempoMedio)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-xs">Mais próximo</span>
+                          <span className="text-xs font-medium text-right max-w-[120px]">
+                            {m.equipamentoProximo}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-xs">Tipo</span>
+                          <span className="text-xs">
+                            {iconesTipoEquipamento[m.tipoEquipamento]} {m.tipoEquipamento}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-xs">Distância</span>
+                          <span className="text-xs font-medium">{m.distanciaKm} km</span>
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          <Badge
+                            variant="outline"
+                            className="text-[10px]"
+                            style={{ borderColor: faixa.cor, color: faixa.cor }}
+                          >
+                            {faixa.label}
+                          </Badge>
+                        </div>
+                      </div>
+                    </Popup>
                     <LTooltip direction="top" offset={[0, -5]}>
                       <span className="text-xs font-medium">
                         {m.municipio} · {formatarTempo(m.tempoMedio)}

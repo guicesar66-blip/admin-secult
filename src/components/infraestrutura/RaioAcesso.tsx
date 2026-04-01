@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, AlertTriangle, MapPin } from "lucide-react";
+import { Clock, AlertTriangle } from "lucide-react";
 import {
   municipiosAcessoMock,
   acessoKPI,
@@ -9,13 +9,7 @@ import {
   iconesTipoEquipamento,
 } from "@/data/mockEquipamentosCulturais";
 
-interface RaioAcessoProps {
-  municipioSelecionado: string | null;
-  onMunicipioClick: (municipio: string) => void;
-}
-
-export function RaioAcesso({ municipioSelecionado, onMunicipioClick }: RaioAcessoProps) {
-  const municipioInfo = municipiosAcessoMock.find((m) => m.municipio === municipioSelecionado);
+export function RaioAcesso() {
   const criticos = municipiosAcessoMock.filter((m) => m.tempoMedio > 120);
 
   return (
@@ -46,57 +40,6 @@ export function RaioAcesso({ municipioSelecionado, onMunicipioClick }: RaioAcess
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Detalhe do município clicado */}
-        {municipioInfo ? (
-          <Card className="border-primary/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                {municipioInfo.municipio}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Tempo médio</span>
-                <Badge
-                  variant="outline"
-                  style={{
-                    borderColor: getFaixaAcesso(municipioInfo.tempoMedio).cor,
-                    color: getFaixaAcesso(municipioInfo.tempoMedio).cor,
-                  }}
-                >
-                  {formatarTempo(municipioInfo.tempoMedio)}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Equipamento mais próximo</span>
-                <span className="text-xs font-medium text-right max-w-[140px]">
-                  {municipioInfo.equipamentoProximo}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Tipo</span>
-                <span className="text-xs">
-                  {iconesTipoEquipamento[municipioInfo.tipoEquipamento]} {municipioInfo.tipoEquipamento}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Distância</span>
-                <span className="text-xs font-medium">{municipioInfo.distanciaKm} km</span>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent className="pt-6 pb-6 text-center">
-              <MapPin className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
-              <p className="text-xs text-muted-foreground">
-                Ative "Raio de acesso" no mapa e clique em um município para ver detalhes
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Municípios críticos */}
         <Card>
           <CardHeader className="pb-2">
@@ -109,8 +52,7 @@ export function RaioAcesso({ municipioSelecionado, onMunicipioClick }: RaioAcess
             {criticos.map((m) => (
               <div
                 key={m.municipio}
-                className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
-                onClick={() => onMunicipioClick(m.municipio)}
+                className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-muted/50 transition-colors"
               >
                 <div>
                   <p className="text-xs font-medium">{m.municipio}</p>
