@@ -54,7 +54,6 @@ export default function DadosDashboard() {
   const [filtroCidades, setFiltroCidades] = useState<string[]>([]);
 
   // Filters
-  const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
 
@@ -63,13 +62,13 @@ export default function DadosDashboard() {
 
   const artistasFiltrados = useMemo(() => {
     return agentesCenso.filter((a) => {
-      if (filtroCategoria !== "todas" && a.linguagem !== filtroCategoria) return false;
+      if (filtroLinguagem !== "todas" && a.linguagem !== filtroLinguagem) return false;
       if (filtroGenero !== "todos" && !a.genero.toLowerCase().includes(filtroGenero.toLowerCase())) return false;
       if (filtroRaca !== "todas" && !a.raca.toLowerCase().includes(filtroRaca.toLowerCase())) return false;
       if (filtroCidades.length > 0 && !filtroCidades.includes(a.municipio)) return false;
       return true;
     });
-  }, [agentesCenso, filtroCategoria, filtroGenero, filtroRaca, filtroCidades]);
+  }, [agentesCenso, filtroLinguagem, filtroGenero, filtroRaca, filtroCidades]);
 
   const handleArtistaClick = (artista: AgenteCenso) => {
     setSelectedArtista(artista);
@@ -257,18 +256,6 @@ export default function DadosDashboard() {
                     <span className="text-sm font-medium">Filtros de artistas:</span>
                   </div>
 
-                  <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-                    <SelectTrigger className="w-[160px] h-9">
-                      <SelectValue placeholder="Linguagem" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todas">Todas linguagens</SelectItem>
-                      {linguagensArtisticas.map((cat) => (
-                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
                   <Select value={filtroGenero} onValueChange={setFiltroGenero}>
                     <SelectTrigger className="w-[140px] h-9">
                       <SelectValue placeholder="Gênero" />
@@ -305,36 +292,11 @@ export default function DadosDashboard() {
                       <Thermometer className="h-4 w-4" /> Heatmap
                     </Label>
                   </div>
-                </div>
 
-                {/* Legend badges */}
-                {!modoCalor && (
-                  <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border">
-                    {linguagensArtisticas.map((cat) => (
-                      <Badge
-                        key={cat}
-                        variant="outline"
-                        className="text-xs cursor-pointer transition-opacity"
-                        style={{
-                          backgroundColor: (coresLinguagem[cat] || "#6b7280") + "18",
-                          color: coresLinguagem[cat] || "#6b7280",
-                          borderColor: (coresLinguagem[cat] || "#6b7280") + "44",
-                          opacity: filtroCategoria === "todas" || filtroCategoria === cat ? 1 : 0.4,
-                        }}
-                        onClick={() => setFiltroCategoria(filtroCategoria === cat ? "todas" : cat)}
-                      >
-                        <span
-                          className="inline-block h-2 w-2 rounded-full mr-1"
-                          style={{ backgroundColor: coresLinguagem[cat] || "#6b7280" }}
-                        />
-                        {cat}
-                      </Badge>
-                    ))}
-                    <span className="text-xs text-muted-foreground ml-2 flex items-center">
-                      {artistasFiltrados.length} artistas exibidos
-                    </span>
-                  </div>
-                )}
+                  <span className="text-xs text-muted-foreground flex items-center">
+                    {artistasFiltrados.length} artistas exibidos
+                  </span>
+                </div>
               </CardContent>
             </Card>
 
