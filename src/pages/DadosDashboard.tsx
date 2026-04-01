@@ -18,7 +18,11 @@ import {
   Thermometer,
   Filter,
   Sparkles,
+  UserCheck,
+  CalendarDays,
 } from "lucide-react";
+import { Select as PeriodoSelect } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { MapaCenso } from "@/components/censo/MapaCenso";
 import { ArtistaDrawer } from "@/components/censo/ArtistaDrawer";
 import { AuditoriaPanel } from "@/components/censo/AuditoriaPanel";
