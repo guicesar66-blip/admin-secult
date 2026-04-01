@@ -8,21 +8,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Search, Download, ArrowUpDown, X } from "lucide-react";
-import { coletivosMock, type Coletivo } from "@/data/mockColetivos";
+import { produtorasMock, type Produtora } from "@/data/mockProdutoras";
+import { getArtistasByProdutora } from "@/data/mockArtistas";
 import { toast } from "sonner";
 
-interface TabelaColetivosProps {
+interface TabelaProdutorasProps {
   filtroPeriodo: string;
   filtroLinguagem: string;
 }
 
-type SortKey = "nome" | "municipio" | "membros" | "tempoExistencia" | "scoreReputacao";
+type SortKey = "nome" | "municipio" | "artistas" | "tempo" | "scoreReputacao";
 type SortDir = "asc" | "desc";
 
-const linguagens = [...new Set(coletivosMock.map((c) => c.linguagem))];
-const municipios = [...new Set(coletivosMock.map((c) => c.municipio))];
+const linguagens = [...new Set(produtorasMock.map((p) => p.linguagem_principal))];
+const municipios = [...new Set(produtorasMock.map((p) => p.municipio))];
 
-export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaColetivosProps) {
+export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdutorasProps) {
   const navigate = useNavigate();
   const [busca, setBusca] = useState("");
   const [filtroLinguagemLocal, setFiltroLinguagemLocal] = useState("todos");
@@ -43,33 +44,42 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaColeti
   };
 
   const filtered = useMemo(() => {
-    let result = coletivosMock;
+    let result = produtorasMock.map((p) => ({
+      ...p,
+      _artistas: getArtistasByProdutora(p.id),
+      _tempo: Math.max(0, new Date().getFullYear() - new Date(p.data_fundacao).getFullYear()),
+    }));
 
-    // Global language filter: keep coletivos that have members with that linguagem
+    // Global language filter
     if (filtroLinguagem !== "todas") {
-      result = result.filter((c) =>
-        c.linguagem.toLowerCase().includes(filtroLinguagem.toLowerCase()) ||
-        c.membrosLista.some((m) =>
-          m.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
+      result = result.filter((p) =>
+        p.linguagem_principal.toLowerCase().includes(filtroLinguagem.toLowerCase()) ||
+        p._artistas.some((a) =>
+          a.linguagens.some((l) => l.toLowerCase().includes(filtroLinguagem.toLowerCase()))
         )
       );
     }
 
     if (busca) {
       const q = busca.toLowerCase();
-      result = result.filter((c) => c.nome.toLowerCase().includes(q) || c.municipio.toLowerCase().includes(q));
+      result = result.filter((p) => p.nome.toLowerCase().includes(q) || p.municipio.toLowerCase().includes(q));
     }
-    if (filtroLinguagemLocal !== "todos") result = result.filter((c) => c.linguagem === filtroLinguagemLocal);
-    if (filtroMunicipio !== "todos") result = result.filter((c) => c.municipio === filtroMunicipio);
-    if (filtroStatus !== "todos") result = result.filter((c) => c.status === filtroStatus);
-    if (filtroIVC !== "todos") result = result.filter((c) => c.ivc === filtroIVC);
-    if (filtroCNPJ === "com") result = result.filter((c) => c.cnpj !== null);
-    if (filtroCNPJ === "sem") result = result.filter((c) => c.cnpj === null);
+    if (filtroLinguagemLocal !== "todos") result = result.filter((p) => p.linguagem_principal === filtroLinguagemLocal);
+    if (filtroMunicipio !== "todos") result = result.filter((p) => p.municipio === filtroMunicipio);
+    if (filtroStatus !== "todos") result = result.filter((p) => p.status === filtroStatus);
+    if (filtroIVC !== "todos") result = result.filter((p) => p.ivc === filtroIVC);
+    if (filtroCNPJ === "com") result = result.filter((p) => p.cnpj);
+    if (filtroCNPJ === "sem") result = result.filter((p) => !p.cnpj);
 
     result = [...result].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
-      const cmp = typeof aVal === "string" ? aVal.localeCompare(bVal as string) : (aVal as number) - (bVal as number);
+      let cmp = 0;
+      switch (sortKey) {
+        case "nome": cmp = a.nome.localeCompare(b.nome); break;
+        case "municipio": cmp = a.municipio.localeCompare(b.municipio); break;
+        case "artistas": cmp = a._artistas.length - b._artistas.length; break;
+        case "tempo": cmp = a._tempo - b._tempo; break;
+        case "scoreReputacao": cmp = a.score_reputacao - b.score_reputacao; break;
+      }
       return sortDir === "asc" ? cmp : -cmp;
     });
 
@@ -166,48 +176,48 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaColeti
                   <SortableHeader label="Nome" keyName="nome" />
                   <TableHead>Linguagem</TableHead>
                   <SortableHeader label="Município" keyName="municipio" />
-                  <SortableHeader label="Membros" keyName="membros" />
-                  <SortableHeader label="Tempo" keyName="tempoExistencia" />
+                  <SortableHeader label="Artistas" keyName="artistas" />
+                  <SortableHeader label="Tempo" keyName="tempo" />
                   <TableHead>Status</TableHead>
                   <SortableHeader label="Score" keyName="scoreReputacao" />
                   <TableHead>CNPJ</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((c) => (
+                {filtered.map((p) => (
                   <TableRow
-                    key={c.id}
+                    key={p.id}
                     className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => navigate(`/dados/coletivo/${c.id}`)}
+                    onClick={() => navigate(`/dados/produtora/${p.id}`)}
                   >
                     <TableCell>
                       <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                        {c.nome.charAt(0)}
+                        {p.nome.charAt(0)}
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium">{c.nome}</TableCell>
-                    <TableCell><Badge variant="secondary" className="text-xs">{c.linguagem}</Badge></TableCell>
-                    <TableCell>{c.municipio}</TableCell>
-                    <TableCell className="tabular-nums">{c.membros}</TableCell>
-                    <TableCell className="tabular-nums">{c.tempoExistencia} anos</TableCell>
+                    <TableCell className="font-medium">{p.nome}</TableCell>
+                    <TableCell><Badge variant="secondary" className="text-xs">{p.linguagem_principal}</Badge></TableCell>
+                    <TableCell>{p.municipio}</TableCell>
+                    <TableCell className="tabular-nums">{p._artistas.length}</TableCell>
+                    <TableCell className="tabular-nums">{p._tempo} anos</TableCell>
                     <TableCell>
-                      <Badge variant={c.status === "ativo" ? "default" : "secondary"} className="text-xs">
-                        {c.status === "ativo" ? "✅ Ativo" : "⚠️ Inativo"}
+                      <Badge variant={p.status === "ativo" ? "default" : "secondary"} className="text-xs">
+                        {p.status === "ativo" ? "✅ Ativo" : "⚠️ Inativo"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Progress value={c.scoreReputacao} className="h-2 w-16" />
-                        <span className="text-xs tabular-nums">{c.scoreReputacao}</span>
+                        <Progress value={p.score_reputacao} className="h-2 w-16" />
+                        <span className="text-xs tabular-nums">{p.score_reputacao}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{c.cnpj || "—"}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{p.cnpj || "—"}</TableCell>
                   </TableRow>
                 ))}
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
-                      Nenhum coletivo encontrado com os filtros aplicados.
+                      Nenhuma produtora encontrada com os filtros aplicados.
                     </TableCell>
                   </TableRow>
                 )}
@@ -217,7 +227,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaColeti
 
           {/* Rodapé */}
           <p className="text-sm text-muted-foreground mt-3">
-            {filtered.length} coletivo{filtered.length !== 1 ? "s" : ""} encontrado{filtered.length !== 1 ? "s" : ""}
+            {filtered.length} produtora{filtered.length !== 1 ? "s" : ""} encontrada{filtered.length !== 1 ? "s" : ""}
           </p>
         </CardContent>
       </Card>

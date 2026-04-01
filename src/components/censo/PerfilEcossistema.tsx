@@ -7,7 +7,7 @@ import { TabelaColetivos } from "./TabelaColetivos";
 import { DemografiaCharts } from "./DemografiaCharts";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { useEcossistemaData } from "@/hooks/useEcossistemaData";
-import { SALARIO_MINIMO_2025 } from "@/data/mockColetivos";
+import { SALARIO_MINIMO_2025 } from "@/data/mockProdutoras";
 
 interface PerfilEcossistemaProps {
   filtroPeriodo: string;
@@ -63,7 +63,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <MiniKPI
           label="Total de Agentes Culturais"
-          value={data.totalMembros.toLocaleString("pt-BR")}
+          value={data.totalArtistas.toLocaleString("pt-BR")}
           subtitle={`Período: ${filtroPeriodo}`}
           icon={<Users className="h-4 w-4 text-primary" />}
           trend={{ value: "+8,2%", positive: true }}
@@ -93,9 +93,9 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
           accentColor="bg-destructive/10 text-destructive"
         />
         <MiniKPI
-          label="Coletivos c/ membro vulnerável"
-          value={`${data.percentColetivosVulneravel}%`}
-          subtitle="ao menos 1 membro"
+          label="Produtoras c/ artista vulnerável"
+          value={`${data.percentProdutorasVulneravel}%`}
+          subtitle="ao menos 1 artista"
           icon={<ShieldAlert className="h-4 w-4 text-warning" />}
           accentColor="bg-warning/10 text-warning"
         />
@@ -116,7 +116,7 @@ export function PerfilEcossistema({ filtroPeriodo, filtroLinguagem }: PerfilEcos
       </CollapsibleSection>
 
       {/* Tabela de Coletivos — collapsible */}
-      <CollapsibleSection sectionKey="tabela-coletivos" title="Coletivos Cadastrados">
+      <CollapsibleSection sectionKey="tabela-produtoras" title="Produtoras Cadastradas">
         <TabelaColetivos filtroPeriodo={filtroPeriodo} filtroLinguagem={filtroLinguagem} />
       </CollapsibleSection>
     </div>

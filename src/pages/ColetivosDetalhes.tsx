@@ -8,9 +8,10 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Mail, Phone, Instagram, Facebook, MapPin, Star, Search, ExternalLink } from "lucide-react";
-import { coletivosMock } from "@/data/mockColetivos";
-import { MembroDetalheModal } from "@/components/censo/MembroDetalheModal";
-import type { MembroColetivo } from "@/data/mockColetivos";
+import { produtorasMock } from "@/data/mockProdutoras";
+import { getArtistasByProdutora } from "@/data/mockArtistas";
+import { usuariosMock } from "@/data/mockUsuarios";
+import { MembroDetalheModal, type ArtistaComUsuario } from "@/components/censo/MembroDetalheModal";
 import { toast } from "sonner";
 
 function ServiceIcon({ ok, label }: { ok: boolean; label: string }) {
@@ -36,24 +37,39 @@ const statusProjetoConfig = {
 export default function ColetivosDetalhes() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [membroSelecionado, setMembroSelecionado] = useState<MembroColetivo | null>(null);
+  const [selectedArtista, setSelectedArtista] = useState<ArtistaComUsuario | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [buscaMembro, setBuscaMembro] = useState("");
 
-  const coletivo = coletivosMock.find((c) => c.id === id);
+  const produtora = produtorasMock.find((p) => p.id === id);
+  const artistas = useMemo(() => (produtora ? getArtistasByProdutora(produtora.id) : []), [produtora]);
+  const usuarioMap = useMemo(() => new Map(usuariosMock.map((u) => [u.id, u])), []);
 
-  const membrosFiltrados = useMemo(() => {
-    if (!coletivo) return [];
-    if (!buscaMembro) return coletivo.membrosLista;
+  const artistasFiltrados = useMemo(() => {
+    if (!buscaMembro) return artistas;
     const q = buscaMembro.toLowerCase();
-    return coletivo.membrosLista.filter((m) => m.nome.toLowerCase().includes(q));
-  }, [buscaMembro, coletivo]);
+    return artistas.filter((a) => {
+      const u = usuarioMap.get(a.usuario_id);
+      return u?.nome_completo.toLowerCase().includes(q) || a.papel.toLowerCase().includes(q);
+    });
+  }, [buscaMembro, artistas, usuarioMap]);
 
-  if (!coletivo) {
+  const servicosAgregados = useMemo(() => {
+    const total = artistas.length || 1;
+    return {
+      agua: Math.round(artistas.filter((a) => a.servicos_basicos.agua).length / total * 100),
+      energia: Math.round(artistas.filter((a) => a.servicos_basicos.energia).length / total * 100),
+      coleta_lixo: Math.round(artistas.filter((a) => a.servicos_basicos.coleta_lixo).length / total * 100),
+      esgoto: Math.round(artistas.filter((a) => a.servicos_basicos.esgoto).length / total * 100),
+      internet: Math.round(artistas.filter((a) => a.servicos_basicos.internet).length / total * 100),
+    };
+  }, [artistas]);
+
+  if (!produtora) {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-muted-foreground">Coletivo não encontrado.</p>
+          <p className="text-muted-foreground">Produtora não encontrada.</p>
           <Button variant="outline" className="mt-4" onClick={() => navigate("/dados")}>
             Voltar à Central de Dados
           </Button>
@@ -62,24 +78,25 @@ export default function ColetivosDetalhes() {
     );
   }
 
-  const tempoLabel = coletivo.tempoExistencia >= 2 ? `${coletivo.tempoExistencia} anos` : `${coletivo.tempoExistencia} ano`;
-  const dataFundFormatted = new Date(coletivo.dataFundacao).toLocaleDateString("pt-BR");
-  const ivc = ivcConfig[coletivo.ivc];
+  const tempo = Math.max(0, new Date().getFullYear() - new Date(produtora.data_fundacao).getFullYear());
+  const tempoLabel = tempo >= 2 ? `${tempo} anos` : `${tempo} ano`;
+  const dataFundFormatted = new Date(produtora.data_fundacao).toLocaleDateString("pt-BR");
+  const ivc = ivcConfig[produtora.ivc];
 
-  const handleMembroClick = (membro: MembroColetivo) => {
-    setMembroSelecionado(membro);
+  const handleArtistaClick = (artistaId: string) => {
+    const artista = artistas.find((a) => a.id === artistaId);
+    if (!artista) return;
+    const usuario = usuarioMap.get(artista.usuario_id);
+    if (!usuario) return;
+    setSelectedArtista({ artista, usuario });
     setModalOpen(true);
   };
 
-  const handleColetivoFromModal = (nome: string) => {
-    const c = coletivosMock.find((col) => col.nome === nome);
-    if (c) {
-      setModalOpen(false);
-      navigate(`/dados/coletivo/${c.id}`);
-    }
+  const handleProdutoraFromModal = (produtoraId: string) => {
+    setModalOpen(false);
+    navigate(`/dados/produtora/${produtoraId}`);
   };
 
-  // Mock gallery images
   const galeriaImages = [
     "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
     "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
@@ -96,28 +113,27 @@ export default function ColetivosDetalhes() {
             <ArrowLeft className="h-4 w-4" /> Voltar
           </Button>
 
-          {/* Banner + Avatar */}
           <div className="relative">
             <div className="h-40 rounded-xl bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
             <div className="absolute bottom-0 left-6 translate-y-1/2 h-20 w-20 rounded-full bg-primary/10 border-4 border-background flex items-center justify-center text-2xl font-bold text-primary">
-              {coletivo.nome.charAt(0)}
+              {produtora.nome.charAt(0)}
             </div>
           </div>
 
           <div className="mt-12 ml-2">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold">{coletivo.nome}</h1>
-              <Badge variant="secondary">{coletivo.linguagem}</Badge>
-              <Badge variant={coletivo.status === "ativo" ? "default" : "secondary"}>
-                {coletivo.status === "ativo" ? "✅ Ativo" : "⚠️ Inativo"}
+              <h1 className="text-2xl font-bold">{produtora.nome}</h1>
+              <Badge variant="secondary">{produtora.linguagem_principal}</Badge>
+              <Badge variant={produtora.status === "ativo" ? "default" : "secondary"}>
+                {produtora.status === "ativo" ? "✅ Ativo" : "⚠️ Inativo"}
               </Badge>
             </div>
             <p className="text-muted-foreground text-sm mt-1 flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" /> {coletivo.municipio}
+              <MapPin className="h-3.5 w-3.5" /> {produtora.municipio}
             </p>
             <div className="flex items-center gap-3 mt-2">
-              <Progress value={coletivo.scoreReputacao} className="h-2 w-32" />
-              <span className="text-sm font-medium tabular-nums">{coletivo.scoreReputacao}/100</span>
+              <Progress value={produtora.score_reputacao} className="h-2 w-32" />
+              <span className="text-sm font-medium tabular-nums">{produtora.score_reputacao}/100</span>
             </div>
           </div>
         </div>
@@ -126,72 +142,44 @@ export default function ColetivosDetalhes() {
         <Card>
           <CardHeader><CardTitle className="text-base">Identificação e Dados Gerais</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">{coletivo.descricao}</p>
+            <p className="text-sm text-muted-foreground">{produtora.descricao}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               <div><span className="text-muted-foreground">Fundação:</span> {dataFundFormatted} ({tempoLabel})</div>
-              <div><span className="text-muted-foreground">CNPJ:</span> {coletivo.cnpj || "Sem CNPJ — coletivo informal"}</div>
-              <div><span className="text-muted-foreground">Formalização:</span> {coletivo.formalizacao}</div>
-              <div><span className="text-muted-foreground">Endereço:</span> {coletivo.endereco}</div>
-              <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {coletivo.email}</div>
-              <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> {coletivo.telefone}</div>
-              {coletivo.redesSociais?.instagram && (
-                <div className="flex items-center gap-2"><Instagram className="h-3.5 w-3.5 text-muted-foreground" /> {coletivo.redesSociais.instagram}</div>
+              <div><span className="text-muted-foreground">CNPJ:</span> {produtora.cnpj || "Sem CNPJ — informal"}</div>
+              <div><span className="text-muted-foreground">Formalização:</span> {produtora.tipo_formalizacao || "Não informado"}</div>
+              <div><span className="text-muted-foreground">Endereço:</span> {produtora.endereco}</div>
+              <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {produtora.email}</div>
+              <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> {produtora.telefone}</div>
+              {produtora.redes_sociais?.instagram && (
+                <div className="flex items-center gap-2"><Instagram className="h-3.5 w-3.5 text-muted-foreground" /> {produtora.redes_sociais.instagram}</div>
               )}
-              {coletivo.redesSociais?.facebook && (
-                <div className="flex items-center gap-2"><Facebook className="h-3.5 w-3.5 text-muted-foreground" /> {coletivo.redesSociais.facebook}</div>
+              {produtora.redes_sociais?.facebook && (
+                <div className="flex items-center gap-2"><Facebook className="h-3.5 w-3.5 text-muted-foreground" /> {produtora.redes_sociais.facebook}</div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Situação Socioeconômica */}
+        {/* Situação Socioeconômica (agregada dos artistas) */}
         <Card>
           <CardHeader><CardTitle className="text-base">Situação Socioeconômica</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center gap-4">
               <Badge className={`${ivc.color} text-sm px-3 py-1`}>{ivc.label}</Badge>
-              <div className="text-sm"><span className="text-muted-foreground">Renda média:</span> <span className="font-medium">R$ {coletivo.rendaMediaMembros.toLocaleString("pt-BR")}/mês</span></div>
-              <div className="text-sm"><span className="text-muted-foreground">Abaixo de 1 SM:</span> <span className="font-medium text-destructive">{coletivo.percentAbaixoSM}%</span></div>
-            </div>
-            <div className="text-sm"><span className="text-muted-foreground">Escolaridade predominante:</span> {coletivo.escolaridadePredominante}</div>
-
-            {/* Escolaridade mini bars */}
-            <div className="space-y-2">
-              {coletivo.escolaridadeDistribuicao.map((d) => (
-                <div key={d.name} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">{d.name}</span>
-                    <span className="tabular-nums">{d.percent}%</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${d.percent}%` }} />
-                  </div>
-                </div>
-              ))}
+              <div className="text-sm"><span className="text-muted-foreground">Artistas:</span> <span className="font-medium">{artistas.length}</span></div>
             </div>
 
             {/* Serviços básicos */}
             <div className="flex flex-wrap gap-2">
-              <ServiceIcon ok={coletivo.servicosBasicos.agua >= 80} label={`Água (${coletivo.servicosBasicos.agua}%)`} />
-              <ServiceIcon ok={coletivo.servicosBasicos.energia >= 80} label={`Energia (${coletivo.servicosBasicos.energia}%)`} />
-              <ServiceIcon ok={coletivo.servicosBasicos.coletaLixo >= 80} label={`Lixo (${coletivo.servicosBasicos.coletaLixo}%)`} />
-              <ServiceIcon ok={coletivo.servicosBasicos.esgoto >= 60} label={`Esgoto (${coletivo.servicosBasicos.esgoto}%)`} />
-              <ServiceIcon ok={coletivo.servicosBasicos.internet >= 60} label={`Internet (${coletivo.servicosBasicos.internet}%)`} />
+              <ServiceIcon ok={servicosAgregados.agua >= 80} label={`Água (${servicosAgregados.agua}%)`} />
+              <ServiceIcon ok={servicosAgregados.energia >= 80} label={`Energia (${servicosAgregados.energia}%)`} />
+              <ServiceIcon ok={servicosAgregados.coleta_lixo >= 80} label={`Lixo (${servicosAgregados.coleta_lixo}%)`} />
+              <ServiceIcon ok={servicosAgregados.esgoto >= 60} label={`Esgoto (${servicosAgregados.esgoto}%)`} />
+              <ServiceIcon ok={servicosAgregados.internet >= 60} label={`Internet (${servicosAgregados.internet}%)`} />
             </div>
 
-            {/* Vulnerabilidades */}
-            {coletivo.vulnerabilidades.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {coletivo.vulnerabilidades.map((v) => (
-                  <Badge key={v.label} variant="outline" className="border-destructive/50 text-destructive text-xs">
-                    {v.percent}% — {v.label}
-                  </Badge>
-                ))}
-              </div>
-            )}
-
             <p className="text-xs text-muted-foreground italic">
-              Dados autodeclarados pelos membros no App do Artista.
+              Dados agregados dos artistas desta produtora.
             </p>
           </CardContent>
         </Card>
@@ -210,49 +198,53 @@ export default function ColetivosDetalhes() {
           </CardContent>
         </Card>
 
-        {/* Membros */}
+        {/* Artistas */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Membros do Coletivo ({coletivo.membrosLista.length})</CardTitle>
+              <CardTitle className="text-base">Artistas ({artistas.length})</CardTitle>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Buscar membro..." value={buscaMembro} onChange={(e) => setBuscaMembro(e.target.value)} className="pl-9 h-8 text-sm" />
+                <Input placeholder="Buscar artista..." value={buscaMembro} onChange={(e) => setBuscaMembro(e.target.value)} className="pl-9 h-8 text-sm" />
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            {membrosFiltrados.length > 0 ? (
+            {artistasFiltrados.length > 0 ? (
               <div className="space-y-2">
-                {membrosFiltrados.map((m) => (
-                  <div
-                    key={m.id}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => handleMembroClick(m)}
-                  >
-                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-sm font-bold text-muted-foreground">
-                      {m.nome.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">{m.nome}</span>
-                        {m.representanteLegal && (
-                          <Badge variant="outline" className="text-[10px] gap-0.5 border-warning text-warning px-1.5 py-0">
-                            <Star className="h-2.5 w-2.5" /> Representante
-                          </Badge>
-                        )}
+                {artistasFiltrados.map((a) => {
+                  const u = usuarioMap.get(a.usuario_id);
+                  if (!u) return null;
+                  return (
+                    <div
+                      key={a.id}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() => handleArtistaClick(a.id)}
+                    >
+                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-sm font-bold text-muted-foreground">
+                        {u.nome_completo.charAt(0)}
                       </div>
-                      <span className="text-xs text-muted-foreground">{m.funcao}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm">{u.nome_completo}</span>
+                          {a.representante_legal && (
+                            <Badge variant="outline" className="text-[10px] gap-0.5 border-warning text-warning px-1.5 py-0">
+                              <Star className="h-2.5 w-2.5" /> Representante
+                            </Badge>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground">{a.papel}</span>
+                      </div>
+                      <Badge variant={a.status === "ativo" ? "default" : "secondary"} className="text-xs">
+                        {a.status === "ativo" ? "Ativo" : "Inativo"}
+                      </Badge>
                     </div>
-                    <Badge variant={m.status === "ativo" ? "default" : "secondary"} className="text-xs">
-                      {m.status === "ativo" ? "Ativo" : "Inativo"}
-                    </Badge>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-muted-foreground text-center py-4">
-                {coletivo.membrosLista.length === 0 ? "Nenhum membro cadastrado com detalhes." : "Nenhum membro encontrado."}
+                {artistas.length === 0 ? "Nenhum artista cadastrado." : "Nenhum artista encontrado."}
               </p>
             )}
           </CardContent>
@@ -262,23 +254,22 @@ export default function ColetivosDetalhes() {
         <Card>
           <CardHeader><CardTitle className="text-base">Projetos Realizados</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            {/* Resumo */}
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl font-bold">{coletivo.projetos.length}</p>
+                <p className="text-2xl font-bold">{produtora.projetos.length}</p>
                 <p className="text-xs text-muted-foreground">Projetos</p>
               </div>
               <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl font-bold">R$ {(coletivo.totalCaptado / 1000).toFixed(0)}k</p>
+                <p className="text-2xl font-bold">R$ {(produtora.total_captado / 1000).toFixed(0)}k</p>
                 <p className="text-xs text-muted-foreground">Total captado</p>
               </div>
               <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl font-bold">{coletivo.mediaPublico}</p>
+                <p className="text-2xl font-bold">{produtora.media_publico}</p>
                 <p className="text-xs text-muted-foreground">Média de público</p>
               </div>
             </div>
 
-            {coletivo.projetos.length > 0 ? (
+            {produtora.projetos.length > 0 ? (
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
@@ -291,14 +282,10 @@ export default function ColetivosDetalhes() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {coletivo.projetos.map((p, i) => {
+                    {produtora.projetos.map((p, i) => {
                       const st = statusProjetoConfig[p.status];
                       return (
-                        <TableRow
-                          key={i}
-                          className="cursor-pointer"
-                          onClick={() => toast.info("Módulo 2 — Gestão de Projetos disponível em breve")}
-                        >
+                        <TableRow key={i} className="cursor-pointer" onClick={() => toast.info("Módulo 2 — Gestão de Projetos disponível em breve")}>
                           <TableCell className="font-medium">{p.nome}</TableCell>
                           <TableCell>{p.instrumento}</TableCell>
                           <TableCell className="tabular-nums">{p.ano}</TableCell>
@@ -317,12 +304,12 @@ export default function ColetivosDetalhes() {
         </Card>
 
         {/* Espaços Vinculados */}
-        {coletivo.espacosVinculados.length > 0 && (
+        {produtora.espacos_vinculados.length > 0 && (
           <Card>
             <CardHeader><CardTitle className="text-base">Espaços Culturais Vinculados</CardTitle></CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {coletivo.espacosVinculados.map((e, i) => (
+                {produtora.espacos_vinculados.map((e, i) => (
                   <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => toast.info("Módulo de espaços disponível em breve")}>
                     <div className="flex items-center gap-3">
                       <span className="font-medium text-sm">{e.nome}</span>
@@ -339,12 +326,11 @@ export default function ColetivosDetalhes() {
         )}
       </div>
 
-      {/* Modal de detalhe do membro (US-09E) */}
       <MembroDetalheModal
-        membro={membroSelecionado}
+        dados={selectedArtista}
         open={modalOpen}
         onOpenChange={setModalOpen}
-        onColetivoClick={handleColetivoFromModal}
+        onProdutoraClick={handleProdutoraFromModal}
       />
     </DashboardLayout>
   );
