@@ -139,7 +139,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Coletivo Canoa",
     descricao: "Produtora de conteúdo audiovisual independente focada em documentários sobre a cultura ribeirinha do São Francisco.",
     linguagem_principal: "Audiovisual",
-    municipio: "Petrolina", estado: "PE",
+    municipio: "Petrolina", codigo_municipio: "2611101", distrito: "Petrolina", estado: "PE",
     endereco: "Rua do Rio, 78 — Petrolina, PE",
     tipo_formalizacao: "Informal",
     cnpj: null,
