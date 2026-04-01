@@ -86,6 +86,10 @@ export default function DadosDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <FiltroCidadeMultiSelect
+              selectedCidades={filtroCidades}
+              onSelectedCidadesChange={setFiltroCidades}
+            />
             <Select value={filtroLinguagem} onValueChange={setFiltroLinguagem}>
               <SelectTrigger className="w-[170px] h-9">
                 <Palette className="h-4 w-4 mr-2 text-muted-foreground" />
