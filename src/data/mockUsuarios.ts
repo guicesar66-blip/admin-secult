@@ -161,6 +161,7 @@ export const usuariosMock: Usuario[] = [
     id: "u16", nome_completo: "Sandra Moreira", email: "sandra.m@email.com",
     telefone: "(81) 99400-0002", cpf: "444.000.000-02", nascimento: "1982-11-14",
     genero: "Mulher cis", raca_cor: "Preta", municipio: "Recife",
+    codigo_municipio: "2611606", distrito: "Recife",
     bairro: "Espinheiro", estado: "PE",
     categorias_interesse: ["Música"],
     created_at: "2019-08-12",
