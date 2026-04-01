@@ -155,9 +155,9 @@ export function TabelaProjetos() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dados.length === 0 ? (
+              {dadosPaginados.length === 0 ? (
                 <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">Nenhum projeto encontrado.</TableCell></TableRow>
-              ) : dados.map(p => (
+              ) : dadosPaginados.map(p => (
                 <TableRow key={p.id} className="cursor-pointer hover:bg-accent/50" onClick={() => navigate(`/dados/projeto/${p.id}`)}>
                   <TableCell className="font-medium text-sm">{p.nome}</TableCell>
                   <TableCell className="text-sm">{p.proponenteNome}</TableCell>
