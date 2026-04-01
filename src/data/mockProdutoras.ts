@@ -73,7 +73,7 @@ export const produtorasMock: Produtora[] = [
     nome: "Maracatu Raízes",
     descricao: "O Maracatu Raízes é uma produtora cultural fundada em 2013 com foco na preservação e difusão do maracatu de baque virado nas comunidades periféricas do Recife. Promove oficinas, cortejos e participação em festivais.",
     linguagem_principal: "Cultura Popular",
-    municipio: "Recife", estado: "PE",
+    municipio: "Recife", codigo_municipio: "2611606", distrito: "Recife", estado: "PE",
     endereco: "Rua do Maracatu, 44 — Recife, PE",
     tipo_formalizacao: "Associação Cultural",
     cnpj: "12.345.678/0001-90",
