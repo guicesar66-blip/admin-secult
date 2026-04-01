@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell } from "recharts";
-import { GraduationCap, Home, ShieldAlert, Info } from "lucide-react";
+import { GraduationCap, Home, ShieldAlert } from "lucide-react";
 import { REFERENCIA_SUPERIOR_PE, IVC_COLORS } from "@/data/mockProdutoras";
 import type { EcossistemaData } from "@/hooks/useEcossistemaData";
 
@@ -164,10 +164,6 @@ function BlocoVulnerabilidade({ data }: { data: EcossistemaData }) {
           </div>
         </CardContent>
       </Card>
-      <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-        <Info className="h-4 w-4 shrink-0 mt-0.5" />
-        <span>Dados autodeclarados pelos membros. A CENA não valida as informações junto a órgãos externos.</span>
-      </div>
     </>
   );
 }
