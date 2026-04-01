@@ -21,7 +21,7 @@ export function RaioAcesso({ filtroCritico, onToggleCritico }: RaioAcessoProps) 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              População com acesso em até 1h a um equipamento cultural
+              População com acesso em até 1h a um espaço cultural
             </p>
             <p className="text-4xl font-bold mt-1">{acessoKPI.percentualAte1h}%</p>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
