@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Check, ChevronDown, MapPin, Search, X } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, MapPin, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ export function FiltroCidadeMultiSelect({
 }: FiltroCidadeMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [expandedCidades, setExpandedCidades] = useState<Set<string>>(new Set());
   const regioes = useMemo(() => getRegioesUnicas(), []);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,6 +58,16 @@ export function FiltroCidadeMultiSelect({
       const newSet = new Set([...selectedCidades, ...municipiosRegiao]);
       onSelectedCidadesChange([...newSet]);
     }
+  };
+
+  const toggleExpand = (nome: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedCidades(prev => {
+      const next = new Set(prev);
+      if (next.has(nome)) next.delete(nome);
+      else next.add(nome);
+      return next;
+    });
   };
 
   const clearAll = () => onSelectedCidadesChange([]);
@@ -167,33 +178,58 @@ export function FiltroCidadeMultiSelect({
                   {/* Municipalities */}
                   {municipios.map((m) => {
                     const isSelected = selectedCidades.includes(m.nome);
+                    const isExpanded = expandedCidades.has(m.nome);
+                    const hasDistritos = m.distritos.length > 0;
+
                     return (
-                      <button
-                        key={m.codigo}
-                        className={cn(
-                          "w-full flex items-center gap-2 px-2 pl-6 py-1.5 text-sm rounded-sm",
-                          "hover:bg-accent transition-colors",
-                          isSelected && "bg-accent/50"
-                        )}
-                        onClick={() => toggleCidade(m.nome)}
-                      >
-                        <div
+                      <div key={m.codigo}>
+                        <button
                           className={cn(
-                            "h-3.5 w-3.5 rounded-sm border flex items-center justify-center shrink-0",
-                            isSelected
-                              ? "bg-primary border-primary"
-                              : "border-muted-foreground/30"
+                            "w-full flex items-center gap-2 px-2 pl-6 py-1.5 text-sm rounded-sm",
+                            "hover:bg-accent transition-colors",
+                            isSelected && "bg-accent/50"
                           )}
+                          onClick={() => toggleCidade(m.nome)}
                         >
-                          {isSelected && (
-                            <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                          <div
+                            className={cn(
+                              "h-3.5 w-3.5 rounded-sm border flex items-center justify-center shrink-0",
+                              isSelected
+                                ? "bg-primary border-primary"
+                                : "border-muted-foreground/30"
+                            )}
+                          >
+                            {isSelected && (
+                              <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                            )}
+                          </div>
+                          <span className="truncate">{m.nome}</span>
+                          {hasDistritos && (
+                            <span
+                              role="button"
+                              className="ml-auto flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded"
+                              onClick={(e) => toggleExpand(m.nome, e)}
+                            >
+                              <span className="text-[10px]">{m.distritos.length}d</span>
+                              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                            </span>
                           )}
-                        </div>
-                        <span className="truncate">{m.nome}</span>
-                        <span className="ml-auto text-[10px] text-muted-foreground">
-                          {m.distritos.length}d
-                        </span>
-                      </button>
+                        </button>
+
+                        {/* Distritos (bairros) */}
+                        {isExpanded && hasDistritos && (
+                          <div className="pl-10 pr-2 pb-1">
+                            {m.distritos.map((distrito) => (
+                              <div
+                                key={distrito.codigo}
+                                className="text-xs text-muted-foreground py-0.5 px-2 rounded-sm hover:bg-accent/30 transition-colors"
+                              >
+                                {distrito.nome}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
