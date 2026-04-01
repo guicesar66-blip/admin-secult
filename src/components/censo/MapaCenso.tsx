@@ -27,7 +27,7 @@ import {
   prioridadeDesertoCores,
   type ProjetoMapa, type DesertoCultural,
 } from "@/data/mockMapaEntidades";
-import { useMapFilter } from "@/contexts/MapFilterContext";
+import { useMapFilter, type FilterEntityType } from "@/contexts/MapFilterContext";
 
 // ===== Cores das camadas conforme spec =====
 const CORES_CAMADA = {
