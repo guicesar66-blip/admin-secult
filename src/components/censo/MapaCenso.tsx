@@ -429,7 +429,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       label: "Espaços Culturais",
       icon: <Building2 className="h-4 w-4" />,
       cor: CORES_CAMADA.espacos,
-      count: equipamentosMock.length,
+      count: espacosFiltrados.length,
     },
     {
       key: "desertos" as const,
