@@ -270,26 +270,26 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
                 );
               })}
 
-            {/* Camada de artistas */}
+            {/* Camada de artistas (via produtoras) */}
             {mostrarArtistas &&
-              artistasMock.map((artista) => (
+              buildAgentesCenso().map((agente) => (
                 <CircleMarker
-                  key={artista.id}
-                  center={[artista.location.lat, artista.location.lng]}
+                  key={agente.id}
+                  center={[agente.location.lat, agente.location.lng]}
                   radius={4}
                   pane="artistaPane"
                   pathOptions={{
-                    fillColor: coresCategoria[artista.categoria] || "#94a3b8",
+                    fillColor: coresLinguagem[agente.linguagem] || "#94a3b8",
                     fillOpacity: 0.5,
-                    color: coresCategoria[artista.categoria] || "#94a3b8",
+                    color: coresLinguagem[agente.linguagem] || "#94a3b8",
                     weight: 1,
                   }}
                   eventHandlers={{
-                    click: () => onMapClick?.({ type: "artista", categoria: artista.categoria, municipio: artista.municipio }),
+                    click: () => onMapClick?.({ type: "artista", categoria: agente.linguagem, municipio: agente.municipio }),
                   }}
                 >
                   <LTooltip direction="top" offset={[0, -5]}>
-                    <span className="text-xs">{artista.nome} · {artista.categoria}</span>
+                    <span className="text-xs">{agente.nomeArtistico || agente.nome} · {agente.linguagem}</span>
                   </LTooltip>
                 </CircleMarker>
               ))}
