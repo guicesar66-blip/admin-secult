@@ -43,6 +43,7 @@ import {
 } from "@/data/mockCensoAuxiliar";
 
 export default function DadosDashboard() {
+  const { filters, removeFilter, clearFilters } = useMapFilter();
   const [activeTab, setActiveTab] = useState("mapa");
   const [selectedArtista, setSelectedArtista] = useState<AgenteCenso | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
