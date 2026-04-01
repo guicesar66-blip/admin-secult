@@ -8,6 +8,7 @@ import type { Artista } from "@/data/mockArtistas";
 import type { Usuario } from "@/data/mockUsuarios";
 import { produtorasMock } from "@/data/mockProdutoras";
 import { artistasMock } from "@/data/mockArtistas";
+import { getSubtipoNome } from "@/data/mockLinguagens";
 
 export interface ArtistaComUsuario {
   artista: Artista;
