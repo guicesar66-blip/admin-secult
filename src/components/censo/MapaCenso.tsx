@@ -58,6 +58,8 @@ interface MapaCensoProps {
   onSearchQueryChange: (q: string) => void;
   onSelectMunicipio: (nome: string) => void;
   onResetView: () => void;
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
 }
 
 // ===== Emoji icon helper =====
