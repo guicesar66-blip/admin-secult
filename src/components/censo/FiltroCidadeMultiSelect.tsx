@@ -19,6 +19,7 @@ export function FiltroCidadeMultiSelect({
 }: FiltroCidadeMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [expandedRegioes, setExpandedRegioes] = useState<Set<string>>(new Set());
   const [expandedCidades, setExpandedCidades] = useState<Set<string>>(new Set());
   const regioes = useMemo(() => getRegioesUnicas(), []);
   const searchInputRef = useRef<HTMLInputElement>(null);
