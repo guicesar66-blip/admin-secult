@@ -79,14 +79,28 @@ export default function DadosDashboard() {
               Ecossistema cultural em tempo real — Recife, PE
             </p>
           </div>
-          <Button
-            onClick={() => setInsightsOpen(true)}
-            className="gap-2 bg-gradient-to-r from-primary to-primary/80 shadow-lg"
-          >
-            <Sparkles className="h-4 w-4" />
-            AI Insights
-          </Button>
-        </div>
+          <div className="flex items-center gap-3">
+            <Select value={filtroPeriodo} onValueChange={setFiltroPeriodo}>
+              <SelectTrigger className="w-[180px] h-9">
+                <CalendarDays className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Período" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ultimo-mes">Último mês</SelectItem>
+                <SelectItem value="ultimo-trimestre">Último trimestre</SelectItem>
+                <SelectItem value="ultimo-semestre">Último semestre</SelectItem>
+                <SelectItem value="ultimo-ano">Último ano</SelectItem>
+                <SelectItem value="todos">Todo período</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              onClick={() => setInsightsOpen(true)}
+              className="gap-2 bg-gradient-to-r from-primary to-primary/80 shadow-lg"
+            >
+              <Sparkles className="h-4 w-4" />
+              AI Insights
+            </Button>
+          </div>
 
         {/* Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
