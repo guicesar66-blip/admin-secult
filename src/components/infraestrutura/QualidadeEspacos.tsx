@@ -37,8 +37,19 @@ function DonutChart({ title, data, colors }: { title: string; data: { name: stri
   );
 }
 
-export function QualidadeEspacos() {
-  const ativos = equipamentosMock.filter(e => e.status === "Ativo");
+interface QualidadeEspacosProps {
+  filtroLinguagem?: string;
+  filtroCidades?: string[];
+}
+
+export function QualidadeEspacos({ filtroLinguagem = "todas", filtroCidades = [] }: QualidadeEspacosProps) {
+  const baseData = useMemo(() => {
+    let result = equipamentosMock;
+    if (filtroLinguagem !== "todas") result = result.filter(e => e.linguagens.some(l => l.toLowerCase().includes(filtroLinguagem.toLowerCase())));
+    if (filtroCidades.length > 0) result = result.filter(e => filtroCidades.includes(e.municipio));
+    return result;
+  }, [filtroLinguagem, filtroCidades]);
+  const ativos = baseData.filter(e => e.status === "Ativo");
 
   const conservacao = useMemo(() => {
     const cats = ["Excelente", "Bom", "Regular", "Precário"] as const;
