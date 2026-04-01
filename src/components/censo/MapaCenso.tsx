@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MapContainer, TileLayer, CircleMarker, Popup, Marker, Circle,
-  useMap, useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -11,17 +11,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  Eye, Building2, Users, FolderKanban, AlertTriangle,
-  ChevronDown, ChevronRight, Layers, Search, Map as MapIcon,
-  Satellite, RotateCcw, X, Filter,
+  Building2, Users, FolderKanban, AlertTriangle,
+  ChevronDown, ChevronRight, Layers, Map as MapIcon,
+  Satellite, Filter,
 } from "lucide-react";
 import type { AgenteCenso } from "@/data/mockCensoAuxiliar";
-import { coresLinguagem } from "@/data/mockCensoAuxiliar";
 import { equipamentosMock, iconesTipoEquipamento } from "@/data/mockEquipamentosCulturais";
 import {
   projetosMapaMock, desertosCulturaisMock,
@@ -29,7 +27,6 @@ import {
   prioridadeDesertoCores,
   type ProjetoMapa, type DesertoCultural,
 } from "@/data/mockMapaEntidades";
-import { municipiosPE } from "@/data/mockMunicipios";
 import { useMapFilter, type FilterEntityType } from "@/contexts/MapFilterContext";
 
 // ===== Cores das camadas conforme spec =====
@@ -56,6 +53,11 @@ interface MapaCensoProps {
   artistas: AgenteCenso[];
   onArtistaClick: (artista: AgenteCenso) => void;
   modoCalor: boolean;
+  searchQuery: string;
+  selectedMunicipio: string | null;
+  onSearchQueryChange: (q: string) => void;
+  onSelectMunicipio: (nome: string) => void;
+  onResetView: () => void;
 }
 
 // ===== Emoji icon helper =====
@@ -307,7 +309,7 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
 }
 
 // ===== Component =====
-export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProps) {
+export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView }: MapaCensoProps) {
   const navigate = useNavigate();
   const { addFilter } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
@@ -322,29 +324,6 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
   const [painelAberto, setPainelAberto] = useState(true);
   const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
   const [isSatellite, setIsSatellite] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const municipioSuggestions = useMemo(() => {
-    if (searchQuery.length < 2) return [];
-    const q = searchQuery.toLowerCase();
-    return municipiosPE
-      .filter((m) => m.nome.toLowerCase().includes(q))
-      .slice(0, 8)
-      .map((m) => m.nome);
-  }, [searchQuery]);
-
-  const handleSelectMunicipio = (nome: string) => {
-    setSelectedMunicipio(nome);
-    setSearchQuery(nome);
-    setShowSuggestions(false);
-  };
-
-  const handleResetView = () => {
-    setSelectedMunicipio(null);
-    setSearchQuery("");
-  };
 
   const toggleCamada = (key: keyof CamadasState) => {
     setCamadas((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -431,42 +410,6 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
 
   return (
     <div className="space-y-2">
-      {/* Search bar (US-05) */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar município..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSuggestions(true);
-              if (e.target.value === "") setSelectedMunicipio(null);
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            className="pl-9 h-9"
-          />
-          {showSuggestions && municipioSuggestions.length > 0 && (
-            <div className="absolute z-50 top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {municipioSuggestions.map((nome) => (
-                <button
-                  key={nome}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors"
-                  onClick={() => handleSelectMunicipio(nome)}
-                >
-                  {nome}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        {selectedMunicipio && (
-          <Button variant="outline" size="sm" onClick={handleResetView} className="gap-1.5">
-            <RotateCcw className="h-3.5 w-3.5" /> Ver Pernambuco completo
-          </Button>
-        )}
-      </div>
-
       <div className="relative w-full rounded-lg overflow-hidden border border-border" style={{ zIndex: 0 }}>
         <MapContainer
           center={PE_CENTER}
@@ -477,7 +420,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor }: MapaCensoProp
         >
           <PaneSetup />
           <TileSwitcher isSatellite={isSatellite} />
-          <ZoomToMunicipio municipio={selectedMunicipio} onReset={handleResetView} />
+          <ZoomToMunicipio municipio={selectedMunicipio} onReset={onResetView} />
 
           {/* ===== CAMADA: Desertos Culturais (z=350) ===== */}
           {camadas.desertos && desertosCulturaisMock.map((dc) => (

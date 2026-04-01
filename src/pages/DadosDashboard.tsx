@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { Input } from "@/components/ui/input";
 import { FiltroCidadeMultiSelect } from "@/components/censo/FiltroCidadeMultiSelect";
 import { useMapFilter } from "@/contexts/MapFilterContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
@@ -21,6 +22,8 @@ import {
   Filter,
   X,
   Info,
+  Search,
+  RotateCcw,
   UserCheck,
   CalendarDays,
   Building2,
@@ -41,6 +44,7 @@ import {
   coresLinguagem,
   type AgenteCenso,
 } from "@/data/mockCensoAuxiliar";
+import { municipiosPE } from "@/data/mockMunicipios";
 
 export default function DadosDashboard() {
   const { filters, removeFilter, clearFilters } = useMapFilter();
@@ -56,6 +60,31 @@ export default function DadosDashboard() {
   // Filters
   const [filtroGenero, setFiltroGenero] = useState<string>("todos");
   const [filtroRaca, setFiltroRaca] = useState<string>("todas");
+
+  // Search municipality state (lifted from MapaCenso)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const municipioSuggestions = useMemo(() => {
+    if (searchQuery.length < 2) return [];
+    const q = searchQuery.toLowerCase();
+    return municipiosPE
+      .filter((m) => m.nome.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((m) => m.nome);
+  }, [searchQuery]);
+
+  const handleSelectMunicipio = useCallback((nome: string) => {
+    setSelectedMunicipio(nome);
+    setSearchQuery(nome);
+    setShowSuggestions(false);
+  }, []);
+
+  const handleResetView = useCallback(() => {
+    setSelectedMunicipio(null);
+    setSearchQuery("");
+  }, []);
 
   const agentesCenso = useMemo(() => buildAgentesCenso(), []);
   const estatisticas = useMemo(() => getEstatisticasGerais(), []);
@@ -297,6 +326,42 @@ export default function DadosDashboard() {
                     {artistasFiltrados.length} artistas exibidos
                   </span>
                 </div>
+
+                {/* Search municipality (US-05) */}
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                  <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar município no mapa..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setShowSuggestions(true);
+                        if (e.target.value === "") setSelectedMunicipio(null);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      className="pl-9 h-9"
+                    />
+                    {showSuggestions && municipioSuggestions.length > 0 && (
+                      <div className="absolute z-50 top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        {municipioSuggestions.map((nome) => (
+                          <button
+                            key={nome}
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors"
+                            onClick={() => handleSelectMunicipio(nome)}
+                          >
+                            {nome}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {selectedMunicipio && (
+                    <Button variant="outline" size="sm" onClick={handleResetView} className="gap-1.5">
+                      <RotateCcw className="h-3.5 w-3.5" /> Ver PE completo
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -305,6 +370,11 @@ export default function DadosDashboard() {
               artistas={artistasFiltrados}
               onArtistaClick={handleArtistaClick}
               modoCalor={modoCalor}
+              searchQuery={searchQuery}
+              selectedMunicipio={selectedMunicipio}
+              onSearchQueryChange={setSearchQuery}
+              onSelectMunicipio={handleSelectMunicipio}
+              onResetView={handleResetView}
             />
           </TabsContent>
 
