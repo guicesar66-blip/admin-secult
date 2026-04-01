@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -56,11 +56,20 @@ function PaneSetup() {
   return null;
 }
 
-interface MapaEquipamentosProps {
-  filtroCritico?: boolean;
+export interface MapFilterEvent {
+  type: "equipamento" | "municipio" | "artista";
+  municipio?: string;
+  nome?: string;
+  tipo?: string;
+  categoria?: string;
 }
 
-export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProps) {
+interface MapaEquipamentosProps {
+  filtroCritico?: boolean;
+  onMapClick?: (filter: MapFilterEvent) => void;
+}
+
+export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEquipamentosProps) {
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
@@ -71,7 +80,6 @@ export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProp
     );
   };
 
-  // Municípios críticos e seus equipamentos mais próximos
   const municipiosCriticos = useMemo(
     () => municipiosAcessoMock.filter((m) => m.tempoMedio > 120),
     []
@@ -145,7 +153,8 @@ export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProp
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg overflow-hidden border border-border h-[480px]">
+        {/* relative z-0 creates a stacking context so Leaflet's internal z-indexes don't overflow above the page header */}
+        <div className="rounded-lg overflow-hidden border border-border h-[480px] relative z-0">
           <MapContainer
             center={[-8.3, -36.5]}
             zoom={7}
@@ -194,6 +203,9 @@ export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProp
                       fillOpacity: 0.8,
                       color: faixa.cor,
                       weight: 2,
+                    }}
+                    eventHandlers={{
+                      click: () => onMapClick?.({ type: "municipio", municipio: m.municipio }),
                     }}
                   >
                     <Popup>
@@ -255,6 +267,9 @@ export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProp
                     color: coresCategoria[artista.categoria] || "#94a3b8",
                     weight: 1,
                   }}
+                  eventHandlers={{
+                    click: () => onMapClick?.({ type: "artista", categoria: artista.categoria, municipio: artista.municipio }),
+                  }}
                 >
                   <LTooltip direction="top" offset={[0, -5]}>
                     <span className="text-xs">{artista.nome} · {artista.categoria}</span>
@@ -269,6 +284,9 @@ export function MapaEquipamentos({ filtroCritico = false }: MapaEquipamentosProp
                 position={[eq.location.lat, eq.location.lng]}
                 icon={createEmojiIcon(iconesTipoEquipamento[eq.tipo])}
                 pane="equipamentoPane"
+                eventHandlers={{
+                  click: () => onMapClick?.({ type: "equipamento", municipio: eq.municipio, nome: eq.nome, tipo: eq.tipo }),
+                }}
               >
                 <Popup>
                   <div className="text-sm space-y-1 min-w-[180px]">
