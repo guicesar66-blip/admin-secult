@@ -47,6 +47,7 @@ export default function DadosDashboard() {
   const [modoCalor, setModoCalor] = useState(false);
   const [filtroPeriodo, setFiltroPeriodo] = useState<string>("ultimo-ano");
   const [filtroLinguagem, setFiltroLinguagem] = useState<string>("todas");
+  const [filtroCidades, setFiltroCidades] = useState<string[]>([]);
 
   // Filters
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
