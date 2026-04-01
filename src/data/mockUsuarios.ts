@@ -107,6 +107,7 @@ export const usuariosMock: Usuario[] = [
     id: "u10", nome_completo: "Patrícia Lima", email: "patricia.l@email.com",
     telefone: "(81) 99200-0003", cpf: "222.000.000-03", nascimento: "2000-02-25",
     genero: "Mulher cis", raca_cor: "Preta", municipio: "Caruaru",
+    codigo_municipio: "2604106", distrito: "Caruaru",
     bairro: "Petrópolis", estado: "PE",
     categorias_interesse: ["Dança"],
     created_at: "2021-03-15",
