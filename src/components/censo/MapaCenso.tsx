@@ -624,7 +624,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
         {camadas.projetos && (
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: CORES_CAMADA.projetos }} />
-            Projetos ({projetosMapaMock.length})
+            Projetos ({projetosFiltrados.length})
           </span>
         )}
         {camadas.espacos && (
