@@ -56,7 +56,6 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
       result = result.filter((p) =>
         p.linguagem_principal.toLowerCase().includes(filtroLinguagem.toLowerCase()) ||
         p._artistas.some((a) => {
-          const { getSubtipoIdsByTipoNome } = require("@/data/mockLinguagens");
           const subIds = getSubtipoIdsByTipoNome(filtroLinguagem);
           return a.subtipo_ids.some((sid: string) => subIds.includes(sid));
         })

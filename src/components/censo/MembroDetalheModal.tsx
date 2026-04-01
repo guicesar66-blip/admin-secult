@@ -154,10 +154,9 @@ export function MembroDetalheModal({ dados, open, onOpenChange, onProdutoraClick
             <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Dados Culturais e Profissionais</h4>
             <div className="space-y-2 text-sm">
               <div className="flex flex-wrap gap-1.5">
-                {artista.subtipo_ids.map((sid) => {
-                  const { getSubtipoNome } = require("@/data/mockLinguagens");
-                  return <Badge key={sid} variant="secondary">{getSubtipoNome(sid)}</Badge>;
-                })}
+                {artista.subtipo_ids.map((sid) => (
+                  <Badge key={sid} variant="secondary">{getSubtipoNome(sid)}</Badge>
+                ))}
               </div>
               <div><span className="text-muted-foreground">Atuação:</span> {artista.tempo_atuacao} anos</div>
               <div><span className="text-muted-foreground">Formalização:</span> {artista.formalizacao}</div>
