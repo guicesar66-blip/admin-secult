@@ -200,7 +200,7 @@ export default function DadosDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Alcance Populacional</p>
-                  <p className="text-2xl font-bold">{(estatisticas.alcancePopulacional / 1000).toFixed(0)}k</p>
+                  <p className="text-2xl font-bold">{(projetosKPIs.totalPublico / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                   <TrendingUp className="h-5 w-5 text-blue-600" />
