@@ -335,6 +335,7 @@ export default function DadosDashboard() {
                 filtroPeriodo === "ultimo-ano" ? "Último ano" : "Todo período"
               }
               filtroLinguagem={filtroLinguagem}
+              filtroCidades={filtroCidades}
             />
           </TabsContent>
 
