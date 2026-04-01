@@ -4,13 +4,21 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Eye, EyeOff, Info, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { MembroColetivo } from "@/data/mockColetivos";
+import type { Artista } from "@/data/mockArtistas";
+import type { Usuario } from "@/data/mockUsuarios";
+import { produtorasMock } from "@/data/mockProdutoras";
+import { artistasMock } from "@/data/mockArtistas";
 
-interface MembroDetalheModalProps {
-  membro: MembroColetivo | null;
+export interface ArtistaComUsuario {
+  artista: Artista;
+  usuario: Usuario;
+}
+
+interface ArtistaDetalheModalProps {
+  dados: ArtistaComUsuario | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onColetivoClick?: (nomeColetivo: string) => void;
+  onProdutoraClick?: (produtoraId: string) => void;
 }
 
 function MaskableField({ value, label }: { value: string; label: string }) {
@@ -49,11 +57,21 @@ function calcAge(nascimento: string) {
   return age;
 }
 
-export function MembroDetalheModal({ membro, open, onOpenChange, onColetivoClick }: MembroDetalheModalProps) {
-  if (!membro) return null;
+export function MembroDetalheModal({ dados, open, onOpenChange, onProdutoraClick }: ArtistaDetalheModalProps) {
+  if (!dados) return null;
 
-  const age = calcAge(membro.nascimento);
-  const nascFormatted = new Date(membro.nascimento).toLocaleDateString("pt-BR");
+  const { artista, usuario } = dados;
+  const age = calcAge(usuario.nascimento);
+  const nascFormatted = new Date(usuario.nascimento).toLocaleDateString("pt-BR");
+
+  // Get all produtoras this usuario belongs to
+  const produtorasDoArtista = artistasMock
+    .filter((a) => a.usuario_id === usuario.id)
+    .map((a) => {
+      const prod = produtorasMock.find((p) => p.id === a.produtora_id);
+      return prod ? { produtora: prod, papel: a.papel, status: a.status, data_entrada: a.data_entrada, data_saida: a.data_saida, representante: a.representante_legal } : null;
+    })
+    .filter(Boolean) as { produtora: typeof produtorasMock[0]; papel: string; status: string; data_entrada: string; data_saida?: string; representante: boolean }[];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -61,13 +79,13 @@ export function MembroDetalheModal({ membro, open, onOpenChange, onColetivoClick
         <DialogHeader>
           <div className="flex items-center gap-4">
             <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-muted-foreground">
-              {membro.nome.charAt(0)}
+              {usuario.nome_completo.charAt(0)}
             </div>
             <div>
-              <DialogTitle className="text-lg">{membro.nome}</DialogTitle>
-              <p className="text-sm text-muted-foreground">{membro.funcao}</p>
+              <DialogTitle className="text-lg">{usuario.nome_completo}</DialogTitle>
+              <p className="text-sm text-muted-foreground">{artista.papel}{artista.nome_artistico ? ` — ${artista.nome_artistico}` : ""}</p>
             </div>
-            {membro.representanteLegal && (
+            {artista.representante_legal && (
               <Badge variant="outline" className="ml-auto gap-1 border-warning text-warning">
                 <Star className="h-3 w-3" /> Representante Legal
               </Badge>
@@ -80,13 +98,13 @@ export function MembroDetalheModal({ membro, open, onOpenChange, onColetivoClick
           <section>
             <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Identificação</h4>
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-muted-foreground">CPF:</span> <MaskableField value={membro.cpf} label="CPF" /></div>
+              <div><span className="text-muted-foreground">CPF:</span> <MaskableField value={usuario.cpf} label="CPF" /></div>
               <div><span className="text-muted-foreground">Nascimento:</span> {nascFormatted} ({age} anos)</div>
-              <div><span className="text-muted-foreground">Gênero:</span> {membro.genero}</div>
-              <div><span className="text-muted-foreground">Raça/Cor:</span> {membro.racaCor}</div>
-              <div><span className="text-muted-foreground">Município:</span> {membro.municipio}</div>
-              <div><span className="text-muted-foreground">E-mail:</span> <MaskableField value={membro.email} label="E-mail" /></div>
-              <div><span className="text-muted-foreground">Telefone:</span> <MaskableField value={membro.telefone} label="Telefone" /></div>
+              <div><span className="text-muted-foreground">Gênero:</span> {usuario.genero}</div>
+              <div><span className="text-muted-foreground">Raça/Cor:</span> {usuario.raca_cor}</div>
+              <div><span className="text-muted-foreground">Município:</span> {usuario.municipio}</div>
+              <div><span className="text-muted-foreground">E-mail:</span> <MaskableField value={usuario.email} label="E-mail" /></div>
+              <div><span className="text-muted-foreground">Telefone:</span> <MaskableField value={usuario.telefone} label="Telefone" /></div>
             </div>
           </section>
 
@@ -94,12 +112,12 @@ export function MembroDetalheModal({ membro, open, onOpenChange, onColetivoClick
           <section>
             <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Formação</h4>
             <div className="space-y-2 text-sm">
-              <div><span className="text-muted-foreground">Escolaridade:</span> {membro.escolaridade}{membro.areaFormacao ? ` — ${membro.areaFormacao}` : ""}</div>
-              {membro.certificacoes.length > 0 && (
+              <div><span className="text-muted-foreground">Escolaridade:</span> {artista.escolaridade}{artista.area_formacao ? ` — ${artista.area_formacao}` : ""}</div>
+              {artista.certificacoes.length > 0 && (
                 <div>
                   <span className="text-muted-foreground">Certificações:</span>
                   <ul className="list-disc list-inside mt-1 space-y-0.5">
-                    {membro.certificacoes.map((c) => <li key={c}>{c}</li>)}
+                    {artista.certificacoes.map((c) => <li key={c}>{c}</li>)}
                   </ul>
                 </div>
               )}
@@ -110,61 +128,70 @@ export function MembroDetalheModal({ membro, open, onOpenChange, onColetivoClick
           <section>
             <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Dados Socioeconômicos</h4>
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-muted-foreground">Faixa de renda:</span> {membro.faixaRenda}</div>
-              <div><span className="text-muted-foreground">Moradia:</span> {membro.situacaoMoradia}</div>
-              <div><span className="text-muted-foreground">Prog. social:</span> {membro.beneficiarioProgramaSocial === "sim" ? "Sim" : membro.beneficiarioProgramaSocial === "nao" ? "Não" : "Prefiro não declarar"}</div>
+              <div><span className="text-muted-foreground">Faixa de renda:</span> {artista.faixa_renda}</div>
+              <div><span className="text-muted-foreground">Moradia:</span> {artista.situacao_moradia}</div>
+              <div><span className="text-muted-foreground">Prog. social:</span> {artista.beneficiario_programa_social === "sim" ? "Sim" : artista.beneficiario_programa_social === "nao" ? "Não" : "Prefiro não declarar"}</div>
             </div>
             <div className="flex flex-wrap gap-2 mt-3">
-              <ServiceIcon ok={membro.servicosBasicos.agua} label="Água" />
-              <ServiceIcon ok={membro.servicosBasicos.energia} label="Energia" />
-              <ServiceIcon ok={membro.servicosBasicos.coletaLixo} label="Lixo" />
-              <ServiceIcon ok={membro.servicosBasicos.esgoto} label="Esgoto" />
-              <ServiceIcon ok={membro.servicosBasicos.internet} label="Internet" />
+              <ServiceIcon ok={artista.servicos_basicos.agua} label="Água" />
+              <ServiceIcon ok={artista.servicos_basicos.energia} label="Energia" />
+              <ServiceIcon ok={artista.servicos_basicos.coleta_lixo} label="Lixo" />
+              <ServiceIcon ok={artista.servicos_basicos.esgoto} label="Esgoto" />
+              <ServiceIcon ok={artista.servicos_basicos.internet} label="Internet" />
             </div>
-            {membro.vulnerabilidades.length > 0 && (
+            {artista.vulnerabilidades.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
-                {membro.vulnerabilidades.map((v) => (
+                {artista.vulnerabilidades.map((v) => (
                   <Badge key={v} variant="outline" className="border-destructive/50 text-destructive text-xs">{v}</Badge>
                 ))}
               </div>
             )}
           </section>
 
-          {/* Cultural */}
+          {/* Cultural / Profissional */}
           <section>
-            <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Dados Culturais</h4>
+            <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Dados Culturais e Profissionais</h4>
             <div className="space-y-2 text-sm">
               <div className="flex flex-wrap gap-1.5">
-                {membro.linguagens.map((l) => <Badge key={l} variant="secondary">{l}</Badge>)}
+                {artista.linguagens.map((l) => <Badge key={l} variant="secondary">{l}</Badge>)}
               </div>
-              <div><span className="text-muted-foreground">Atuação:</span> {membro.tempoAtuacao} anos</div>
-              <div><span className="text-muted-foreground">Formalização:</span> {membro.formalizacao}</div>
+              <div><span className="text-muted-foreground">Atuação:</span> {artista.tempo_atuacao} anos</div>
+              <div><span className="text-muted-foreground">Formalização:</span> {artista.formalizacao}</div>
               <div className="flex items-center gap-3">
                 <span className="text-muted-foreground">Score:</span>
-                <Progress value={membro.scoreReputacao} className="h-2 flex-1 max-w-[200px]" />
-                <span className="font-medium tabular-nums">{membro.scoreReputacao}/100</span>
+                <Progress value={artista.score_reputacao} className="h-2 flex-1 max-w-[200px]" />
+                <span className="font-medium tabular-nums">{artista.score_reputacao}/100</span>
               </div>
+              {artista.objetivos_carreira.length > 0 && (
+                <div>
+                  <span className="text-muted-foreground">Objetivos:</span>
+                  <ul className="list-disc list-inside mt-1 space-y-0.5">
+                    {artista.objetivos_carreira.map((o) => <li key={o}>{o}</li>)}
+                  </ul>
+                </div>
+              )}
             </div>
           </section>
 
-          {/* Coletivos relacionados */}
+          {/* Produtoras relacionadas */}
           <section>
-            <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Coletivos Relacionados</h4>
+            <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Produtoras</h4>
             <div className="space-y-2">
-              {membro.coletivosRelacionados.map((c) => (
+              {produtorasDoArtista.map((item) => (
                 <div
-                  key={c.nome + c.periodo}
+                  key={item.produtora.id + item.papel}
                   className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/50 cursor-pointer"
-                  onClick={() => onColetivoClick?.(c.nome)}
+                  onClick={() => onProdutoraClick?.(item.produtora.id)}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{c.nome}</span>
-                    {c.representante && <Star className="h-3 w-3 text-warning" />}
+                    <span className="font-medium">{item.produtora.nome}</span>
+                    <Badge variant="secondary" className="text-xs">{item.papel}</Badge>
+                    {item.representante && <Star className="h-3 w-3 text-warning" />}
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <span>{c.periodo}</span>
-                    <Badge variant={c.status === "ativo" ? "default" : "secondary"} className="text-xs">
-                      {c.status === "ativo" ? "Ativo" : "Encerrado"}
+                    <span>{new Date(item.data_entrada).getFullYear()}–{item.data_saida ? new Date(item.data_saida).getFullYear() : "atual"}</span>
+                    <Badge variant={item.status === "ativo" ? "default" : "secondary"} className="text-xs">
+                      {item.status === "ativo" ? "Ativo" : "Inativo"}
                     </Badge>
                   </div>
                 </div>
