@@ -198,7 +198,7 @@ export function TabelaColetivos({ filtroPeriodo, filtroLinguagem }: TabelaProdut
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">{p.nome}</TableCell>
-                    <TableCell><Badge variant="secondary" className="text-xs">{p.linguagem_principal}</Badge></TableCell>
+                    
                     <TableCell>{p.municipio}</TableCell>
                     <TableCell className="tabular-nums">{p._artistas.length}</TableCell>
                     <TableCell className="tabular-nums">{p._tempo} anos</TableCell>
