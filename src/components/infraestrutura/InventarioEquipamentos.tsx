@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ export function InventarioEquipamentos({
   busca,
   onBuscaChange,
 }: InventarioEquipamentosProps) {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -226,7 +228,7 @@ export function InventarioEquipamentos({
                 </TableRow>
               ) : (
                 dados.map((eq) => (
-                  <TableRow key={eq.id}>
+                  <TableRow key={eq.id} className="cursor-pointer hover:bg-accent/50" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
                     <TableCell className="font-medium text-sm">{eq.municipio}</TableCell>
                     <TableCell className="text-sm">
                       <span className="mr-1">{iconesTipoEquipamento[eq.tipo]}</span>

@@ -31,6 +31,7 @@ import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
 import SistemaTrocados from "./pages/SistemaTrocados";
 import VitrineDetalhes from "./pages/VitrineDetalhes";
 import ColetivosDetalhes from "./pages/ColetivosDetalhes";
+import EspacoDetalhes from "./pages/EspacoDetalhes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
                 <Route path="/dados" element={<ProtectedRoute><DadosDashboard /></ProtectedRoute>} />
                 <Route path="/dados/coletivo/:id" element={<ProtectedRoute><ColetivosDetalhes /></ProtectedRoute>} />
                 <Route path="/dados/produtora/:id" element={<ProtectedRoute><ColetivosDetalhes /></ProtectedRoute>} />
+                <Route path="/dados/espaco/:id" element={<ProtectedRoute><EspacoDetalhes /></ProtectedRoute>} />
                 <Route path="/investimentos" element={<ProtectedRoute><Investimentos /></ProtectedRoute>} />
                 <Route path="/investimentos/:id" element={<ProtectedRoute><InvestimentoDetalhes /></ProtectedRoute>} />
                 <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />

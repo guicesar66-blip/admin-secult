@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Eye } from "lucide-react";
 import {
   equipamentosMock,
   tiposEquipamento,
@@ -82,6 +85,7 @@ interface MapaEquipamentosProps {
 }
 
 export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEquipamentosProps) {
+  const navigate = useNavigate();
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([...tiposEquipamento]);
   const [mostrarArtistas, setMostrarArtistas] = useState(false);
   const [mostrarRaioAcesso, setMostrarRaioAcesso] = useState(false);
@@ -313,12 +317,23 @@ export function MapaEquipamentos({ filtroCritico = false, onMapClick }: MapaEqui
                         {eq.gestao}
                       </Badge>
                       <Badge
-                        variant="outline"
-                        className={`text-[10px] ${eq.status === "Ativo" ? "border-green-500 text-green-700" : "border-red-500 text-red-700"}`}
+                        variant={eq.status === "Ativo" ? "default" : "destructive"}
+                        className="text-[10px]"
                       >
                         {eq.status}
                       </Badge>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="link"
+                      className="text-xs p-0 h-auto mt-1 gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/dados/espaco/${eq.id}`);
+                      }}
+                    >
+                      <Eye className="h-3 w-3" /> Ver detalhe
+                    </Button>
                   </div>
                 </Popup>
               </Marker>
