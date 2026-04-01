@@ -8,6 +8,7 @@ import type { Artista } from "@/data/mockArtistas";
 import type { Usuario } from "@/data/mockUsuarios";
 import { produtorasMock } from "@/data/mockProdutoras";
 import { artistasMock } from "@/data/mockArtistas";
+import { getSubtipoNome } from "@/data/mockLinguagens";
 
 export interface ArtistaComUsuario {
   artista: Artista;
@@ -153,7 +154,9 @@ export function MembroDetalheModal({ dados, open, onOpenChange, onProdutoraClick
             <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Dados Culturais e Profissionais</h4>
             <div className="space-y-2 text-sm">
               <div className="flex flex-wrap gap-1.5">
-                {artista.linguagens.map((l) => <Badge key={l} variant="secondary">{l}</Badge>)}
+                {artista.subtipo_ids.map((sid) => (
+                  <Badge key={sid} variant="secondary">{getSubtipoNome(sid)}</Badge>
+                ))}
               </div>
               <div><span className="text-muted-foreground">Atuação:</span> {artista.tempo_atuacao} anos</div>
               <div><span className="text-muted-foreground">Formalização:</span> {artista.formalizacao}</div>

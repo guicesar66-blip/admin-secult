@@ -26,8 +26,8 @@ export interface Artista {
   };
   vulnerabilidades: string[];
   beneficiario_programa_social: "sim" | "nao" | "prefiro_nao_declarar";
-  // Dados artísticos/profissionais
-  linguagens: string[];
+  // Dados artísticos/profissionais — agora referencia IDs de subtipos
+  subtipo_ids: string[];     // FK[] → SubtipoLinguagem.id
   tempo_atuacao: number;     // anos
   formalizacao: string;      // MEI, Informal, etc.
   score_reputacao: number;
@@ -46,6 +46,7 @@ export function getUsuarioByArtista(artista: Artista): Usuario | undefined {
 
 // ============= ARTISTAS MOCK =============
 // Each entry represents one usuario in one produtora
+// subtipo_ids reference SubtipoLinguagem IDs from mockLinguagens.ts
 
 export const artistasMock: Artista[] = [
   // --- Produtora p1: Maracatu Raízes ---
@@ -59,7 +60,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: true },
     vulnerabilidades: ["Insegurança alimentar", "2 dependentes sem renda"],
     beneficiario_programa_social: "nao",
-    linguagens: ["Percussão", "Dança", "Artes Cênicas"],
+    subtipo_ids: ["sl6", "sl2", "sl1"],  // Regional, Dança, Teatro
     tempo_atuacao: 14, formalizacao: "MEI", score_reputacao: 91,
     objetivos_carreira: ["Expandir oficinas de percussão", "Gravar álbum autoral"],
     experiencia_profissional: ["14 anos em percussão afro", "Gestora cultural certificada"],
@@ -74,7 +75,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: false },
     vulnerabilidades: ["Dependente sem renda", "Beneficiário Bolsa Família"],
     beneficiario_programa_social: "sim",
-    linguagens: ["Dança", "Percussão"],
+    subtipo_ids: ["sl2", "sl6"],  // Dança, Regional
     tempo_atuacao: 8, formalizacao: "Informal", score_reputacao: 65,
     objetivos_carreira: ["Tornar-se coreógrafo"],
     experiencia_profissional: ["8 anos em dança popular"],
@@ -87,7 +88,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 1.320–2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Artes Visuais", "Figurino"],
+    subtipo_ids: ["sl19", "sl21"],  // Artes Plásticas, Design e Moda
     tempo_atuacao: 5, formalizacao: "MEI", score_reputacao: 58,
     objetivos_carreira: ["Abrir ateliê próprio"],
     experiencia_profissional: ["5 anos em figurino para teatro e dança"],
@@ -103,7 +104,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: false },
     vulnerabilidades: ["Dependente sem renda", "Beneficiário Bolsa Família"],
     beneficiario_programa_social: "sim",
-    linguagens: ["Literatura", "Slam"],
+    subtipo_ids: ["sl13", "sl14"],  // Publicação, Incentivo à Leitura
     tempo_atuacao: 4, formalizacao: "Informal", score_reputacao: 70,
     objetivos_carreira: ["Publicar livro de poesias", "Participar de slams nacionais"],
     experiencia_profissional: ["4 anos em poesia falada"],
@@ -118,7 +119,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: false, esgoto: false, internet: true },
     vulnerabilidades: ["Insegurança alimentar"],
     beneficiario_programa_social: "sim",
-    linguagens: ["Literatura", "Teatro"],
+    subtipo_ids: ["sl13", "sl1"],  // Publicação, Teatro
     tempo_atuacao: 3, formalizacao: "Informal", score_reputacao: 62,
     objetivos_carreira: ["Fazer teatro profissional"],
     experiencia_profissional: ["3 anos em slam poetry"],
@@ -131,7 +132,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 600–1.320", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Literatura", "Música"],
+    subtipo_ids: ["sl14", "sl5"],  // Incentivo à Leitura, Popular (Música)
     tempo_atuacao: 6, formalizacao: "MEI", score_reputacao: 74,
     objetivos_carreira: ["Produzir festivais literários"],
     experiencia_profissional: ["6 anos em produção cultural"],
@@ -145,7 +146,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: false, esgoto: false, internet: false },
     vulnerabilidades: ["Dependente sem renda", "Insegurança alimentar"],
     beneficiario_programa_social: "sim",
-    linguagens: ["Literatura", "Cultura Popular"],
+    subtipo_ids: ["sl13", "sl17"],  // Publicação, Mestres de Saberes
     tempo_atuacao: 5, formalizacao: "Informal", score_reputacao: 55,
     objetivos_carreira: ["Participar de antologias"],
     experiencia_profissional: ["5 anos em poesia e cultura popular"],
@@ -161,7 +162,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 1.320–2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Dança", "Artes Cênicas"],
+    subtipo_ids: ["sl2", "sl1"],  // Dança, Teatro
     tempo_atuacao: 12, formalizacao: "MEI", score_reputacao: 88,
     objetivos_carreira: ["Internacionalizar a companhia", "Criar escola de dança"],
     experiencia_profissional: ["12 anos em dança contemporânea", "Direção artística"],
@@ -175,7 +176,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 600–1.320", situacao_moradia: "Alugada",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: ["Dependente sem renda"], beneficiario_programa_social: "nao",
-    linguagens: ["Dança", "Música"],
+    subtipo_ids: ["sl2", "sl5"],  // Dança, Popular (Música)
     tempo_atuacao: 7, formalizacao: "Informal", score_reputacao: 72,
     objetivos_carreira: ["Ser bailarino profissional em companhia nacional"],
     experiencia_profissional: ["7 anos em dança"],
@@ -188,7 +189,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "Até R$ 600", situacao_moradia: "Cedida",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: true },
     vulnerabilidades: ["Insegurança alimentar"], beneficiario_programa_social: "sim",
-    linguagens: ["Dança"],
+    subtipo_ids: ["sl2"],  // Dança
     tempo_atuacao: 4, formalizacao: "Informal", score_reputacao: 65,
     objetivos_carreira: ["Criar grupo de dança afro"],
     experiencia_profissional: ["4 anos em dança afro-brasileira"],
@@ -202,7 +203,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 1.320–2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Dança", "Teatro", "Artes Visuais"],
+    subtipo_ids: ["sl2", "sl1", "sl19"],  // Dança, Teatro, Artes Plásticas
     tempo_atuacao: 15, formalizacao: "MEI", score_reputacao: 82,
     objetivos_carreira: ["Ser referência em iluminação cênica no NE"],
     experiencia_profissional: ["15 anos em iluminação cênica e técnica"],
@@ -218,7 +219,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: false, esgoto: false, internet: false },
     vulnerabilidades: ["Insegurança alimentar", "Dependente sem renda"],
     beneficiario_programa_social: "sim",
-    linguagens: ["Audiovisual", "Música"],
+    subtipo_ids: ["sl7", "sl5"],  // Cinema, Popular (Música)
     tempo_atuacao: 5, formalizacao: "Informal", score_reputacao: 50,
     objetivos_carreira: ["Produzir documentários profissionais"],
     experiencia_profissional: ["5 anos em produção audiovisual independente"],
@@ -232,7 +233,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: true },
     vulnerabilidades: ["Condição de rua (passada)"],
     beneficiario_programa_social: "nao",
-    linguagens: ["Audiovisual", "Artes Visuais"],
+    subtipo_ids: ["sl7", "sl20"],  // Cinema, Fotografia
     tempo_atuacao: 2, formalizacao: "Informal", score_reputacao: 40,
     objetivos_carreira: ["Ser diretora de fotografia"],
     experiencia_profissional: ["2 anos em câmera e fotografia"],
@@ -246,7 +247,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: false, energia: true, coleta_lixo: false, esgoto: false, internet: false },
     vulnerabilidades: ["Dependente sem renda"],
     beneficiario_programa_social: "nao",
-    linguagens: ["Audiovisual"],
+    subtipo_ids: ["sl7", "sl8"],  // Cinema, Difusão
     tempo_atuacao: 8, formalizacao: "Informal", score_reputacao: 48,
     objetivos_carreira: ["Editar para plataformas de streaming"],
     experiencia_profissional: ["8 anos em edição de vídeo"],
@@ -262,7 +263,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 1.320–2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Música", "Cultura Popular"],
+    subtipo_ids: ["sl6", "sl17"],  // Regional, Mestres de Saberes
     tempo_atuacao: 25, formalizacao: "MEI", score_reputacao: 92,
     objetivos_carreira: ["Preservar a tradição da rabeca", "Formar novos rabequeiros"],
     experiencia_profissional: ["25 anos em música tradicional", "Professor de rabeca"],
@@ -277,7 +278,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "Acima R$ 2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Música"],
+    subtipo_ids: ["sl5", "sl6"],  // Popular, Regional
     tempo_atuacao: 18, formalizacao: "MEI", score_reputacao: 85,
     objetivos_carreira: ["Gravar álbum de música tradicional"],
     experiencia_profissional: ["18 anos em canto popular e etnomusicologia"],
@@ -291,7 +292,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 600–1.320", situacao_moradia: "Alugada",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: ["Dependente sem renda"], beneficiario_programa_social: "nao",
-    linguagens: ["Música", "Percussão"],
+    subtipo_ids: ["sl6", "sl5"],  // Regional, Popular
     tempo_atuacao: 8, formalizacao: "Informal", score_reputacao: 70,
     objetivos_carreira: ["Tocar em festivais internacionais"],
     experiencia_profissional: ["8 anos em percussão"],
@@ -305,7 +306,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "Acima R$ 2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Música"],
+    subtipo_ids: ["sl4"],  // Erudita
     tempo_atuacao: 14, formalizacao: "MEI", score_reputacao: 80,
     objetivos_carreira: ["Pesquisar música barroca brasileira"],
     experiencia_profissional: ["14 anos em flauta e musicologia"],
@@ -322,7 +323,7 @@ export const artistasMock: Artista[] = [
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: false, internet: true },
     vulnerabilidades: ["Insegurança alimentar", "2 dependentes sem renda"],
     beneficiario_programa_social: "nao",
-    linguagens: ["Percussão", "Dança", "Artes Cênicas"],
+    subtipo_ids: ["sl6", "sl2", "sl1"],  // Regional, Dança, Teatro
     tempo_atuacao: 14, formalizacao: "MEI", score_reputacao: 91,
     objetivos_carreira: ["Expandir oficinas de percussão"],
     experiencia_profissional: ["14 anos em percussão afro"],
@@ -339,7 +340,7 @@ export const artistasMock: Artista[] = [
     faixa_renda: "R$ 1.320–2.640", situacao_moradia: "Própria",
     servicos_basicos: { agua: true, energia: true, coleta_lixo: true, esgoto: true, internet: true },
     vulnerabilidades: [], beneficiario_programa_social: "nao",
-    linguagens: ["Dança", "Teatro", "Artes Visuais"],
+    subtipo_ids: ["sl2", "sl1", "sl19"],  // Dança, Teatro, Artes Plásticas
     tempo_atuacao: 15, formalizacao: "MEI", score_reputacao: 82,
     objetivos_carreira: ["Ser referência em iluminação cênica no NE"],
     experiencia_profissional: ["15 anos em iluminação cênica"],
