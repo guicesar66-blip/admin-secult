@@ -44,6 +44,7 @@ import {
   coresLinguagem,
   type AgenteCenso,
 } from "@/data/mockCensoAuxiliar";
+import { municipiosPE } from "@/data/mockMunicipios";
 
 export default function DadosDashboard() {
   const { filters, removeFilter, clearFilters } = useMapFilter();
