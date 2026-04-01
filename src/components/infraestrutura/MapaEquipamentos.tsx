@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, Marker, Popup, Circle } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -30,6 +30,30 @@ function createEmojiIcon(emoji: string) {
     iconSize: [28, 28],
     iconAnchor: [14, 14],
   });
+}
+
+/** Creates custom panes with explicit z-index so radius always renders below markers */
+function PaneSetup() {
+  const map = useMap();
+  useEffect(() => {
+    if (!map.getPane("raioPane")) {
+      const raio = map.createPane("raioPane");
+      raio.style.zIndex = "350";
+    }
+    if (!map.getPane("municipioPane")) {
+      const mun = map.createPane("municipioPane");
+      mun.style.zIndex = "450";
+    }
+    if (!map.getPane("artistaPane")) {
+      const art = map.createPane("artistaPane");
+      art.style.zIndex = "500";
+    }
+    if (!map.getPane("equipamentoPane")) {
+      const eq = map.createPane("equipamentoPane");
+      eq.style.zIndex = "550";
+    }
+  }, [map]);
+  return null;
 }
 
 interface MapaEquipamentosProps {
@@ -109,11 +133,12 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
             scrollWheelZoom={true}
             className="h-full w-full"
           >
+            <PaneSetup />
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
 
-            {/* Camada de raio de acesso - círculos concêntricos */}
+            {/* Camada de raio de acesso - círculos concêntricos (pane mais baixo) */}
             {mostrarRaioAcesso &&
               equipamentosFiltrados
                 .filter((eq) => eq.status === "Ativo")
@@ -123,6 +148,7 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
                       key={`${eq.id}-${r.minutos}`}
                       center={[eq.location.lat, eq.location.lng]}
                       radius={r.metros}
+                      pane="raioPane"
                       pathOptions={{
                         fillColor: r.cor,
                         fillOpacity: r.opacidade,
@@ -143,6 +169,7 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
                     key={`acesso-${m.municipio}`}
                     center={[m.location.lat, m.location.lng]}
                     radius={m.tempoMedio > 120 ? 8 : 5}
+                    pane="municipioPane"
                     pathOptions={{
                       fillColor: faixa.cor,
                       fillOpacity: 0.8,
@@ -169,6 +196,7 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
                   key={artista.id}
                   center={[artista.location.lat, artista.location.lng]}
                   radius={4}
+                  pane="artistaPane"
                   pathOptions={{
                     fillColor: coresCategoria[artista.categoria] || "#94a3b8",
                     fillOpacity: 0.5,
@@ -182,12 +210,13 @@ export function MapaEquipamentos({ onMunicipioClick }: MapaEquipamentosProps) {
                 </CircleMarker>
               ))}
 
-            {/* Camada de equipamentos */}
+            {/* Camada de equipamentos (pane mais alto) */}
             {equipamentosFiltrados.map((eq) => (
               <Marker
                 key={eq.id}
                 position={[eq.location.lat, eq.location.lng]}
                 icon={createEmojiIcon(iconesTipoEquipamento[eq.tipo])}
+                pane="equipamentoPane"
               >
                 <Popup>
                   <div className="text-sm space-y-1 min-w-[180px]">
