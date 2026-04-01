@@ -43,6 +43,7 @@ export function InventarioEquipamentos({
   busca,
   onBuscaChange,
 }: InventarioEquipamentosProps) {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>("municipio");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
