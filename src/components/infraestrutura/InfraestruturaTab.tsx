@@ -31,6 +31,10 @@ export function InfraestruturaTab({ filtroPeriodo }: InfraestruturaTabProps) {
         setFiltroMunicipio(event.municipio ?? "todos");
         setFiltroTipo("todos");
         break;
+      case "reset":
+        setFiltroMunicipio("todos");
+        setFiltroTipo("todos");
+        return; // no scroll on reset
       default:
         return;
     }
