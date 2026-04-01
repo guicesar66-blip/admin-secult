@@ -73,6 +73,7 @@ export default function DadosDashboard() {
 
   return (
     <DashboardLayout>
+      <CollapseSectionProvider>
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
