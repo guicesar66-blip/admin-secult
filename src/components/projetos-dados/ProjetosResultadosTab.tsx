@@ -15,9 +15,7 @@ interface ProjetosResultadosTabProps {
 export function ProjetosResultadosTab({ filtroPeriodo, filtroLinguagem, filtroCidades }: ProjetosResultadosTabProps) {
   return (
     <div className="space-y-6">
-      <CollapsibleSection sectionKey="proj-visao" title="Visão Geral dos Projetos">
-        <VisaoGeralProjetos />
-      </CollapsibleSection>
+      <VisaoGeralProjetos />
 
       <CollapsibleSection sectionKey="proj-impacto" title="Impacto Financeiro e Econômico">
         <ImpactoFinanceiro />
