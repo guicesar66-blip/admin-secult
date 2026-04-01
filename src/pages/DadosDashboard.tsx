@@ -101,8 +101,8 @@ export default function DadosDashboard() {
               AI Insights
             </Button>
           </div>
+        </div>
 
-        {/* Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-5 pb-4">
