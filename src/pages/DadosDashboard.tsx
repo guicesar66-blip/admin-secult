@@ -18,7 +18,7 @@ import {
   TrendingUp,
   Thermometer,
   Filter,
-  Sparkles,
+  
   UserCheck,
   CalendarDays,
   Building2,
