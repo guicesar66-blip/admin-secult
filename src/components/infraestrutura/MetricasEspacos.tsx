@@ -271,21 +271,6 @@ export function MetricasEspacos() {
           </CardContent>
         </Card>
 
-        {/* Por instrumento de fomento */}
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Projetos por Instrumento de Fomento</CardTitle></CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfigProj} className="h-[220px] w-full">
-              <BarChart data={projetosPorInstrumento} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
-                <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                <YAxis type="category" dataKey="instrumento" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} width={120} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="projetos" fill="hsl(270, 50%, 55%)" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
 
         {/* Ranking projetos */}
         <Card className="lg:col-span-2">

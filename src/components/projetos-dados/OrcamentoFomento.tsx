@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DollarSign } from "lucide-react";
 import { orcamentoPorInstrumento } from "@/data/mockProjetos";
+import { projetosPorInstrumento } from "@/data/mockEquipamentosCulturais";
 
 export function OrcamentoFomento() {
   const totalInvestido = orcamentoPorInstrumento.reduce((s, i) => s + i.pago, 0);
