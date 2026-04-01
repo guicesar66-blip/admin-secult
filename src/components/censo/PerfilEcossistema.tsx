@@ -12,6 +12,7 @@ import { SALARIO_MINIMO_2025 } from "@/data/mockProdutoras";
 interface PerfilEcossistemaProps {
   filtroPeriodo: string;
   filtroLinguagem: string;
+  filtroCidades?: string[];
 }
 
 interface MiniKPIProps {
