@@ -23,9 +23,10 @@ type SortDir = "asc" | "desc";
 interface TabelaProjetosProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProjetos?: string[];
 }
 
-export function TabelaProjetos({ filtroLinguagem: filtroLinguagemGlobal = "todas", filtroCidades: filtroCidadesGlobal = [] }: TabelaProjetosProps) {
+export function TabelaProjetos({ filtroLinguagem: filtroLinguagemGlobal = "todas", filtroCidades: filtroCidadesGlobal = [], filterProjetos = [] }: TabelaProjetosProps) {
   const navigate = useNavigate();
   const [busca, setBusca] = useState("");
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
@@ -46,6 +47,7 @@ export function TabelaProjetos({ filtroLinguagem: filtroLinguagemGlobal = "todas
   const dados = useMemo(() => {
     let resultado = [...projetosMock];
     // Global filters
+    if (filterProjetos.length > 0) resultado = resultado.filter(p => filterProjetos.includes(p.nome));
     if (filtroLinguagemGlobal !== "todas") resultado = resultado.filter(p => p.linguagem === filtroLinguagemGlobal);
     if (filtroCidadesGlobal.length > 0) resultado = resultado.filter(p => filtroCidadesGlobal.includes(p.municipio));
     // Local filters
@@ -65,7 +67,7 @@ export function TabelaProjetos({ filtroLinguagem: filtroLinguagemGlobal = "todas
       return sortDir === "asc" ? cmp : -cmp;
     });
     return resultado;
-  }, [busca, filtroInstrumento, filtroStatus, filtroLinguagem, filtroFase, sortKey, sortDir, filtroLinguagemGlobal, filtroCidadesGlobal]);
+  }, [busca, filtroInstrumento, filtroStatus, filtroLinguagem, filtroFase, sortKey, sortDir, filtroLinguagemGlobal, filtroCidadesGlobal, filterProjetos]);
 
   const { dadosPaginados, paginaAtual, totalPaginas, setPaginaAtual } = usePaginacao(dados);
 

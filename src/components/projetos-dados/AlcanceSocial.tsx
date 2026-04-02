@@ -53,9 +53,10 @@ function MiniDonut({ data, size = 120 }: { data: { name: string; value: number; 
 interface AlcanceSocialProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProjetos?: string[];
 }
 
-export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [] }: AlcanceSocialProps) {
+export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [], filterProjetos = [] }: AlcanceSocialProps) {
   const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const projetosFiltrados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const [filtroComentario, setFiltroComentario] = useState("todos");

@@ -10,31 +10,32 @@ interface ProjetosResultadosTabProps {
   filtroPeriodo: string;
   filtroLinguagem: string;
   filtroCidades: string[];
+  filterProjetos?: string[];
 }
 
-export function ProjetosResultadosTab({ filtroPeriodo, filtroLinguagem, filtroCidades }: ProjetosResultadosTabProps) {
+export function ProjetosResultadosTab({ filtroPeriodo, filtroLinguagem, filtroCidades, filterProjetos = [] }: ProjetosResultadosTabProps) {
   return (
     <div className="space-y-6">
-      <VisaoGeralProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+      <VisaoGeralProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
 
       <CollapsibleSection sectionKey="proj-impacto" title="Impacto Financeiro e Econômico">
-        <ImpactoFinanceiro filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+        <ImpactoFinanceiro filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-alcance" title="Alcance Social e Participação">
-        <AlcanceSocial filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+        <AlcanceSocial filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-formal" title="Formalização via Projetos">
-        <FormalizacaoProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+        <FormalizacaoProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-orcamento" title="Orçamento e Fomento">
-        <OrcamentoFomento filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+        <OrcamentoFomento filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
       </CollapsibleSection>
 
       <CollapsibleSection sectionKey="proj-tabela" title="Tabela de Projetos">
-        <TabelaProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} />
+        <TabelaProjetos filtroLinguagem={filtroLinguagem} filtroCidades={filtroCidades} filterProjetos={filterProjetos} />
       </CollapsibleSection>
     </div>
   );

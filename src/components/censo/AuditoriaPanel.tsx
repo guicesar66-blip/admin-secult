@@ -11,9 +11,10 @@ import { PaginacaoTabela } from "@/components/PaginacaoTabela";
 interface AuditoriaPanelProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProdutoras?: string[];
 }
 
-export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [] }: AuditoriaPanelProps) {
+export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], filterProdutoras = [] }: AuditoriaPanelProps) {
   const statusIcon = {
     verde: <CheckCircle2 className="h-4 w-4 text-green-500" />,
     amarelo: <AlertTriangle className="h-4 w-4 text-amber-500" />,
@@ -28,6 +29,9 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [] }
 
   // Apply global filters
   const projetosFiltrados = projetosAuditoriaMock.filter(p => {
+    // OR logic for produtor filters
+    if (filterProdutoras.length > 0 && !filterProdutoras.includes(p.produtor || "")) return false;
+    
     if (filtroLinguagem !== "todas" && p.linguagem !== filtroLinguagem) return false;
     if (filtroCidades.length > 0 && !filtroCidades.includes(p.municipio)) return false;
     return true;

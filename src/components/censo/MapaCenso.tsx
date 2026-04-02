@@ -43,8 +43,8 @@ const TILE_SATELLITE = "https://server.arcgisonline.com/ArcGIS/rest/services/Wor
 
 // ===== Icons per entity type =====
 const ENTITY_ICONS: Record<FilterEntityType, string> = {
-  produtor: "🎭",
-  projeto: "📋",
+  produtor: "�",
+  projeto: "📊",
   espaco: "🏛",
   deserto: "📍",
 };
@@ -199,7 +199,7 @@ function PopupProdutor({ artista, onApplyFilter }: { artista: AgenteCenso; onApp
   return (
     <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
       <div className="flex items-center gap-2">
-        <span className="text-base">🎭</span>
+        <span className="text-base">�</span>
         <span className="font-semibold text-sm">{artista.nomeArtistico || artista.nome}</span>
         <Badge variant="outline" className="text-[10px] ml-auto" style={{ borderColor: CORES_CAMADA.produtores, color: CORES_CAMADA.produtores }}>
           Coletivo
@@ -217,7 +217,7 @@ function PopupProdutor({ artista, onApplyFilter }: { artista: AgenteCenso; onApp
       </div>
       <div className="flex items-center gap-2 pt-1 border-t border-border">
         <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
-          <Filter className="h-3 w-3" /> Aplicar filtro global
+          <Filter className="h-3 w-3" /> Filtro global
         </Button>
         <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/produtora/${artista.produtoraId}`)}>
           Ver detalhe →
@@ -232,7 +232,7 @@ function PopupProjeto({ proj, onApplyFilter }: { proj: ProjetoMapa; onApplyFilte
   return (
     <div className="text-sm space-y-2 min-w-[220px] max-w-[280px]">
       <div className="flex items-center gap-2">
-        <span className="text-base">📋</span>
+        <span className="text-base">�</span>
         <span className="font-semibold text-sm">{proj.nome}</span>
         <Badge variant="outline" className="text-[10px] ml-auto" style={{ borderColor: statusProjetoCores[proj.status], color: statusProjetoCores[proj.status] }}>
           {statusProjetoLabels[proj.status]}
@@ -245,7 +245,7 @@ function PopupProjeto({ proj, onApplyFilter }: { proj: ProjetoMapa; onApplyFilte
       </div>
       <div className="flex items-center gap-2 pt-1 border-t border-border">
         <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
-          <Filter className="h-3 w-3" /> Aplicar filtro global
+          <Filter className="h-3 w-3" /> Filtro global
         </Button>
         <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/projeto/${proj.id}`)}>
           Ver detalhe →
@@ -274,7 +274,7 @@ function PopupEspaco({ eq, onApplyFilter }: { eq: typeof equipamentosMock[0]; on
       </div>
       <div className="flex items-center gap-2 pt-1 border-t border-border">
         <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
-          <Filter className="h-3 w-3" /> Aplicar filtro global
+          <Filter className="h-3 w-3" /> Filtro global
         </Button>
         <Button size="sm" variant="link" className="text-xs h-7 p-0" onClick={() => navigate(`/dados/espaco/${eq.id}`)}>
           Ver detalhe →
@@ -300,10 +300,7 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
       </div>
       <div className="flex items-center gap-2 pt-1 border-t border-border">
         <Button size="sm" className="text-xs h-7 gap-1 flex-1" onClick={onApplyFilter}>
-          <Filter className="h-3 w-3" /> Aplicar filtro global
-        </Button>
-        <Button size="sm" variant="link" className="text-xs h-7 p-0">
-          Ver detalhe →
+          <Filter className="h-3 w-3" /> Filtro global
         </Button>
       </div>
     </div>
@@ -313,31 +310,106 @@ function PopupDeserto({ dc, onApplyFilter }: { dc: DesertoCultural; onApplyFilte
 // ===== Component =====
 export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, selectedMunicipio, onSearchQueryChange, onSelectMunicipio, onResetView, filtroLinguagem = "todas", filtroCidades = [] }: MapaCensoProps) {
   const navigate = useNavigate();
-  const { addFilter } = useMapFilter();
+  const { addFilter, filters } = useMapFilter();
   const PE_CENTER: [number, number] = [-8.3, -36.5];
 
-  // Filter projetos and espacos by global filters
+  // Filter out "fromMap" filters to prevent self-filtering
+  const nonMapFilters = useMemo(() => {
+    return filters.filter(f => f.meta?.fromMap !== "true");
+  }, [filters]);
+
+  // Extract ALL filter values for OR logic (incremental)
+  const filterProdutoras = useMemo(() => {
+    return nonMapFilters
+      .filter(f => f.type === "produtor")
+      .map(f => f.name);
+  }, [nonMapFilters]);
+
+  const filterEspacos = useMemo(() => {
+    return nonMapFilters
+      .filter(f => f.type === "espaco")
+      .map(f => f.name);
+  }, [nonMapFilters]);
+
+  const filterProjetos = useMemo(() => {
+    return nonMapFilters
+      .filter(f => f.type === "projeto")
+      .map(f => f.name);
+  }, [nonMapFilters]);
+
+  // Use header filters (props) combined with non-map context filters
+  const mapEffectiveLinguagem = useMemo(() => {
+    // First, try to get from non-map filters (context/global)
+    const fromContext = nonMapFilters.find(f => f.meta?.linguagem)?.meta?.linguagem as string | undefined;
+    const headerFilter = filtroLinguagem || "todas";
+    // Prefer context if explicit, otherwise use header
+    return fromContext && fromContext !== "todas" ? fromContext : headerFilter;
+  }, [nonMapFilters, filtroLinguagem]);
+
+  const mapEffectiveCidades = useMemo(() => {
+    // First, try to get from non-map filters (context/global)
+    const fromContext = nonMapFilters
+      .filter(f => f.meta?.municipio)
+      .map(f => f.meta!.municipio as string);
+    // Combine with header if both exist (intersection), else use whichever exists
+    if (fromContext.length > 0 && filtroCidades.length > 0) {
+      return filtroCidades.filter(c => fromContext.includes(c));
+    }
+    return fromContext.length > 0 ? fromContext : filtroCidades;
+  }, [nonMapFilters, filtroCidades]);
+
+  // Filter projetos and espacos by ONLY non-map filters with OR logic
   const projetosFiltrados = useMemo(() => {
     let result = projetosMapaMock;
-    if (filtroLinguagem !== "todas") {
-      result = result.filter(p => p.linguagem === filtroLinguagem);
+    
+    // OR logic for projeto filters - if any apply, show only those projetos
+    if (filterProjetos.length > 0) {
+      result = result.filter(p => filterProjetos.includes(p.nome));
     }
-    if (filtroCidades.length > 0) {
-      result = result.filter(p => filtroCidades.includes(p.municipio));
+    
+    if (mapEffectiveLinguagem !== "todas") {
+      result = result.filter(p => p.linguagem === mapEffectiveLinguagem);
+    }
+    if (mapEffectiveCidades.length > 0) {
+      result = result.filter(p => mapEffectiveCidades.includes(p.municipio));
     }
     return result;
-  }, [filtroLinguagem, filtroCidades]);
+  }, [filterProjetos, mapEffectiveLinguagem, mapEffectiveCidades]);
 
   const espacosFiltrados = useMemo(() => {
     let result = equipamentosMock;
-    if (filtroLinguagem !== "todas") {
-      result = result.filter(e => e.linguagens.some(l => l === filtroLinguagem));
+    
+    // OR logic for espaco filters - if any apply, show only those espacos
+    if (filterEspacos.length > 0) {
+      result = result.filter(e => filterEspacos.includes(e.nome));
     }
-    if (filtroCidades.length > 0) {
-      result = result.filter(e => filtroCidades.includes(e.municipio));
+    
+    if (mapEffectiveLinguagem !== "todas") {
+      result = result.filter(e => e.linguagens.some(l => l === mapEffectiveLinguagem));
+    }
+    if (mapEffectiveCidades.length > 0) {
+      result = result.filter(e => mapEffectiveCidades.includes(e.municipio));
     }
     return result;
-  }, [filtroLinguagem, filtroCidades]);
+  }, [filterEspacos, mapEffectiveLinguagem, mapEffectiveCidades]);
+
+  // Filter artistas by ONLY non-map filters with OR logic
+  const artistasFiltrados = useMemo(() => {
+    let result = artistas;
+    
+    // OR logic for produtor filters - if any apply, show artistas from those produtoras
+    if (filterProdutoras.length > 0) {
+      result = result.filter(a => filterProdutoras.includes(a.produtoraNome));
+    }
+    
+    if (mapEffectiveLinguagem !== "todas") {
+      result = result.filter(a => a.linguagem === mapEffectiveLinguagem);
+    }
+    if (mapEffectiveCidades.length > 0) {
+      result = result.filter(a => mapEffectiveCidades.includes(a.municipio));
+    }
+    return result;
+  }, [artistas, filterProdutoras, mapEffectiveLinguagem, mapEffectiveCidades]);
 
   // Camadas toggles (US-02)
   const [camadas, setCamadas] = useState<CamadasState>({
@@ -368,13 +440,14 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
   }, [camadas, artistas.length, projetosFiltrados.length, espacosFiltrados.length]);
 
   // Filter application handlers (US-03)
+  // Mark as fromMap so the map itself doesn't get filtered by these
   const applyProdutorFilter = useCallback((artista: AgenteCenso) => {
     addFilter({
       id: `produtor-${artista.produtoraId}`,
       type: "produtor",
       name: artista.produtoraNome,
-      icon: "🎭",
-      meta: { municipio: artista.municipio, linguagem: artista.linguagem },
+      icon: "🎪",
+      meta: { municipio: artista.municipio, linguagem: artista.linguagem, fromMap: "true" },
     });
   }, [addFilter]);
 
@@ -383,8 +456,8 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       id: `projeto-${proj.id}`,
       type: "projeto",
       name: proj.nome,
-      icon: "📋",
-      meta: { municipio: proj.municipio, instrumento: proj.instrumento },
+      icon: "📊",
+      meta: { municipio: proj.municipio, instrumento: proj.instrumento, fromMap: "true" },
     });
   }, [addFilter]);
 
@@ -394,7 +467,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       type: "espaco",
       name: eq.nome,
       icon: iconesTipoEquipamento[eq.tipo] || "🏛",
-      meta: { municipio: eq.municipio, tipo: eq.tipo },
+      meta: { municipio: eq.municipio, tipo: eq.tipo, fromMap: "true" },
     });
   }, [addFilter]);
 
@@ -404,7 +477,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
       type: "deserto",
       name: dc.regiao,
       icon: "📍",
-      meta: { regiao: dc.regiao },
+      meta: { regiao: dc.regiao, fromMap: "true" },
     });
   }, [addFilter]);
 
@@ -413,14 +486,14 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
     {
       key: "produtores" as const,
       label: "Produtores / Coletivos",
-      icon: <Users className="h-4 w-4" />,
+      icon: <span className="text-lg">🎪</span>,
       cor: CORES_CAMADA.produtores,
-      count: artistas.length,
+      count: artistasFiltrados.length,
     },
     {
       key: "projetos" as const,
       label: "Projetos",
-      icon: <FolderKanban className="h-4 w-4" />,
+      icon: <span className="text-lg">📊</span>,
       cor: CORES_CAMADA.projetos,
       count: projetosFiltrados.length,
     },
@@ -491,47 +564,34 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
 
           {/* ===== CAMADA: Projetos (z=500) ===== */}
           {camadas.projetos && projetosFiltrados.map((proj) => (
-            <CircleMarker
+            <Marker
               key={proj.id}
-              center={[proj.location.lat, proj.location.lng]}
-              radius={7}
+              position={[proj.location.lat, proj.location.lng]}
+              icon={createEmojiIcon("📊")}
               pane="projetoPane"
-              pathOptions={{
-                fillColor: statusProjetoCores[proj.status] || CORES_CAMADA.projetos,
-                fillOpacity: 0.85,
-                color: "#fff",
-                weight: 2,
-              }}
             >
               <Popup>
                 <PopupProjeto proj={proj} onApplyFilter={() => applyProjetoFilter(proj)} />
               </Popup>
-            </CircleMarker>
+            </Marker>
           ))}
 
           {/* ===== CAMADA: Produtores/Coletivos (z=550) ===== */}
-          {camadas.produtores && !modoCalor && artistas.map((artista) => (
-            <CircleMarker
+          {camadas.produtores && !modoCalor && artistasFiltrados.map((artista) => (
+            <Marker
               key={artista.id}
-              center={[artista.location.lat, artista.location.lng]}
-              radius={7}
+              position={[artista.location.lat, artista.location.lng]}
+              icon={createEmojiIcon("🎪")}
               pane="produtorPane"
-              pathOptions={{
-                fillColor: CORES_CAMADA.produtores,
-                fillOpacity: 0.8,
-                color: "#fff",
-                weight: 2,
-              }}
-              eventHandlers={{ click: () => onArtistaClick(artista) }}
             >
               <Popup>
                 <PopupProdutor artista={artista} onApplyFilter={() => applyProdutorFilter(artista)} />
               </Popup>
-            </CircleMarker>
+            </Marker>
           ))}
 
           {/* Heatmap mode */}
-          {camadas.produtores && modoCalor && <HeatmapLayer artistas={artistas} />}
+          {camadas.produtores && modoCalor && <HeatmapLayer artistas={artistasFiltrados} />}
         </MapContainer>
 
         {/* ===== PAINEL DE CONTROLE (US-02) ===== */}
@@ -618,7 +678,7 @@ export function MapaCenso({ artistas, onArtistaClick, modoCalor, searchQuery, se
         {camadas.produtores && (
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: CORES_CAMADA.produtores }} />
-            Produtores ({artistas.length})
+            Produtores ({artistasFiltrados.length})
           </span>
         )}
         {camadas.projetos && (

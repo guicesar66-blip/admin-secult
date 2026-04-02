@@ -9,11 +9,12 @@ import { getProjetosFiltrados, evolucaoPortfolioMensal, getKPIsProjetos } from "
 interface VisaoGeralProjetosProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProjetos?: string[];
 }
 
-export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = [] }: VisaoGeralProjetosProps) {
-  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
-  const dados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
+export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = [], filterProjetos = [] }: VisaoGeralProjetosProps) {
+  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades, filterProjetos), [filtroLinguagem, filtroCidades, filterProjetos]);
+  const dados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades, filterProjetos), [filtroLinguagem, filtroCidades, filterProjetos]);
   const [linhasVisiveis, setLinhasVisiveis] = useState({ iniciados: true, concluidos: true, desembolsado: true });
 
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);

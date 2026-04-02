@@ -11,9 +11,10 @@ import { projetosPorInstrumento } from "@/data/mockEquipamentosCulturais";
 interface OrcamentoFomentoProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProjetos?: string[];
 }
 
-export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = [] }: OrcamentoFomentoProps) {
+export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = [], filterProjetos = [] }: OrcamentoFomentoProps) {
   const totalInvestido = orcamentoPorInstrumento.reduce((s, i) => s + i.pago, 0);
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);
 

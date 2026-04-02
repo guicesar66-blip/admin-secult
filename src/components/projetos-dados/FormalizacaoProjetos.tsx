@@ -8,9 +8,10 @@ import { evolucaoFormalizacaoTrimestral, getProjetosFiltrados } from "@/data/moc
 interface FormalizacaoProjetosProps {
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterProjetos?: string[];
 }
 
-export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades = [] }: FormalizacaoProjetosProps) {
+export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades = [], filterProjetos = [] }: FormalizacaoProjetosProps) {
   const dados = useMemo(() => getProjetosFiltrados(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const hasFilter = filtroLinguagem !== "todas" || filtroCidades.length > 0;
 

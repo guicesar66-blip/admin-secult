@@ -13,9 +13,10 @@ interface InfraestruturaTabProps {
   filtroPeriodo: string;
   filtroLinguagem?: string;
   filtroCidades?: string[];
+  filterEspacos?: string[];
 }
 
-export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", filtroCidades = [] }: InfraestruturaTabProps) {
+export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", filtroCidades = [], filterEspacos = [] }: InfraestruturaTabProps) {
   const [subAba, setSubAba] = useState("qualidade");
   const [filtroMunicipio, setFiltroMunicipio] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState("todos");
@@ -23,9 +24,15 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
   const [filtroAcessibilidade, setFiltroAcessibilidade] = useState("todos");
   const [busca, setBusca] = useState("");
 
-  // Pre-filter by global linguagem and cidades
+  // Pre-filter by global linguagem and cidades, and by filterEspacos (OR logic)
   const equipamentosFiltrados = useMemo(() => {
     let result = equipamentosMock;
+    
+    // Filter by espaço selection (OR logic)
+    if (filterEspacos.length > 0) {
+      result = result.filter(e => filterEspacos.includes(e.nome));
+    }
+    
     if (filtroLinguagem !== "todas") {
       // Get all subtipo names for the selected tipo to match against equipamento linguagens
       const tipo = tiposLinguagem.find(t => t.nome === filtroLinguagem);
@@ -42,7 +49,7 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
       result = result.filter(e => filtroCidades.includes(e.municipio));
     }
     return result;
-  }, [filtroLinguagem, filtroCidades]);
+  }, [filtroLinguagem, filtroCidades, filterEspacos]);
 
   const ativos = equipamentosFiltrados.filter(e => e.status === "Ativo");
   const inativos = equipamentosFiltrados.filter(e => e.status === "Inativo");

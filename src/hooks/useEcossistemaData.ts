@@ -130,7 +130,7 @@ function artistaTemTipo(artista: Artista, tipoNome: string): boolean {
   return artista.subtipo_ids.some((sid) => subIds.includes(sid));
 }
 
-export function useEcossistemaData(filtroLinguagem: string, filtroCidades: string[] = []): EcossistemaData {
+export function useEcossistemaData(filtroLinguagem: string, filtroCidades: string[] = [], filterProdutoras: string[] = []): EcossistemaData {
   return useMemo(() => {
     // Get unique artistas (deduplicate M:N by usuario_id)
     const uniqueArtistas = getArtistasUnicos();
@@ -146,10 +146,16 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
           });
 
     // Filter by tipo principal de linguagem
-    const filteredArtistas =
+    const afterLinguagemFilter =
       filtroLinguagem === "todas"
         ? afterCityFilter
         : afterCityFilter.filter((a) => artistaTemTipo(a, filtroLinguagem));
+
+    // Filter by produtor (OR logic - if any selections, show artistas from those produtoras)
+    const filteredArtistas =
+      filterProdutoras.length === 0
+        ? afterLinguagemFilter
+        : afterLinguagemFilter.filter((a) => filterProdutoras.includes(a.nome_produtor || ""));
 
     // Enrich with usuario data (map already built above)
     const artistas: ArtistaEnriquecido[] = filteredArtistas
@@ -314,5 +320,5 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
       percentProdutorasVulneravel,
       ivc,
     };
-  }, [filtroLinguagem, filtroCidades]);
+  }, [filtroLinguagem, filtroCidades, filterProdutoras]);
 }
