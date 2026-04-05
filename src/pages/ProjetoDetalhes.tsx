@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -6,193 +6,169 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   ArrowLeft,
-  Edit,
-  Trash2,
-  MoreVertical,
-  Calendar,
-  MapPin,
-  Users,
-  DollarSign,
-  BarChart3,
-  Wallet,
-  XCircle,
-  Loader2,
-  Briefcase,
-  GraduationCap,
+  Check,
+  Clock,
   FileText,
+  Upload,
+  Download,
+  History,
+  Info,
+  Loader2,
+  PenLine,
+  Trophy,
+  Play,
+  ClipboardList,
+  Send,
+  Search,
+  FilePlus,
 } from "lucide-react";
-import { useOportunidade, useDeleteOportunidade } from "@/hooks/useOportunidades";
-import { useOficina, useDeleteOficina } from "@/hooks/useOficinas";
-import { useCandidaturasByOportunidade, useUpdateCandidaturaStatus } from "@/hooks/useCandidaturas";
-import { useInscricoesByOficina, useUpdateInscricaoStatus } from "@/hooks/useInscricoesOficina";
-import { useUpdateOportunidade, useUpdateOficina } from "@/hooks/useUpdateOportunidade";
-import { DeleteProjectDialog } from "@/components/projeto/DeleteProjectDialog";
-import { EditProjectDialog } from "@/components/projeto/EditProjectDialog";
-import { CandidatosTab } from "@/components/projeto/CandidatosTab";
-import { FinanceiroTab } from "@/components/projeto/FinanceiroTab";
-import { ProjetoInfoCompleta } from "@/components/projeto/ProjetoInfoCompleta";
+import { toast } from "sonner";
+import { getProjetoById, type ProjetoStatus } from "@/data/mockVitrine";
 
-const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500" },
-  vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-emerald-500" },
-  oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-amber-500" },
-  projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-purple-500" },
+// ── Configuração de status ────────────────────────────────────────────────────
+
+const STATUS_CONFIG: Record<
+  ProjetoStatus,
+  {
+    label: string;
+    badgeColor: string;
+    cardBorder: string;
+    cardBg: string;
+    titleColor: string;
+    emoji: string;
+    descricao: string;
+    pingColor: string;
+  }
+> = {
+  rascunho: {
+    label: "Rascunho",
+    badgeColor: "bg-zinc-500/15 text-zinc-600 border-zinc-500/30",
+    cardBorder: "border-zinc-400/30",
+    cardBg: "bg-zinc-500/5",
+    titleColor: "text-zinc-700 dark:text-zinc-300",
+    emoji: "✏️",
+    descricao: "Seu projeto foi criado mas ainda não foi submetido a nenhum edital.",
+    pingColor: "bg-zinc-500",
+  },
+  submetido: {
+    label: "Submetido",
+    badgeColor: "bg-blue-500/15 text-blue-600 border-blue-500/30",
+    cardBorder: "border-blue-400/30",
+    cardBg: "bg-blue-500/5",
+    titleColor: "text-blue-800 dark:text-blue-300",
+    emoji: "📤",
+    descricao: "Sua inscrição foi enviada e aguarda triagem inicial pela SECULT Recife.",
+    pingColor: "bg-blue-500",
+  },
+  em_analise: {
+    label: "Em Análise",
+    badgeColor: "bg-violet-500/15 text-violet-700 border-violet-500/30",
+    cardBorder: "border-violet-500/30",
+    cardBg: "bg-violet-500/5",
+    titleColor: "text-violet-800 dark:text-violet-300",
+    emoji: "🔍",
+    descricao: "Sua inscrição foi recebida pela SECULT Recife e está sendo avaliada.",
+    pingColor: "bg-violet-500",
+  },
+  aprovado: {
+    label: "Aprovado",
+    badgeColor: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
+    cardBorder: "border-emerald-500/30",
+    cardBg: "bg-emerald-500/5",
+    titleColor: "text-emerald-800 dark:text-emerald-300",
+    emoji: "✅",
+    descricao: "Parabéns! Seu projeto foi selecionado para financiamento pelo edital.",
+    pingColor: "bg-emerald-500",
+  },
+  em_execucao: {
+    label: "Em Execução",
+    badgeColor: "bg-sky-500/15 text-sky-700 border-sky-500/30",
+    cardBorder: "border-sky-500/30",
+    cardBg: "bg-sky-500/5",
+    titleColor: "text-sky-800 dark:text-sky-300",
+    emoji: "🎵",
+    descricao: "Seu projeto está em andamento. Registre as atividades conforme o cronograma aprovado.",
+    pingColor: "bg-sky-500",
+  },
+  prestacao_enviada: {
+    label: "Prestação Enviada",
+    badgeColor: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+    cardBorder: "border-amber-500/30",
+    cardBg: "bg-amber-500/5",
+    titleColor: "text-amber-800 dark:text-amber-300",
+    emoji: "📋",
+    descricao: "Os documentos de prestação de contas foram enviados e estão sendo verificados.",
+    pingColor: "bg-amber-500",
+  },
+  concluido: {
+    label: "Concluído",
+    badgeColor: "bg-green-500/15 text-green-700 border-green-500/30",
+    cardBorder: "border-green-500/30",
+    cardBg: "bg-green-500/5",
+    titleColor: "text-green-800 dark:text-green-300",
+    emoji: "🏆",
+    descricao: "Projeto finalizado e aprovado pela SECULT. Certificado disponível para download.",
+    pingColor: "bg-green-500",
+  },
 };
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  ativa: { label: "Ativa", color: "bg-green-500/20 text-green-600" },
-  encerrada: { label: "Encerrada", color: "bg-gray-500/20 text-gray-600" },
-  cancelada: { label: "Cancelada", color: "bg-red-500/20 text-red-600" },
-  inscricoes_abertas: { label: "Inscrições Abertas", color: "bg-green-500/20 text-green-600" },
-  rascunho: { label: "Rascunho", color: "bg-amber-500/20 text-amber-600" },
+const STATUS_TO_STEP: Record<ProjetoStatus, number> = {
+  rascunho:          1,
+  submetido:         2,
+  em_analise:        3,
+  aprovado:          4,
+  em_execucao:       5,
+  prestacao_enviada: 6,
+  concluido:         7,
 };
+
+// ── Documentos e histórico mock ───────────────────────────────────────────────
+
+const DOCUMENTOS = [
+  { id: 1, nome: "Portfólio_Projeto.pdf",        data: "05/04/2026", status: "Recebido" },
+  { id: 2, nome: "Curriculo_Responsavel.pdf",    data: "05/04/2026", status: "Recebido" },
+  { id: 3, nome: "Orcamento_Detalhado.pdf",      data: "08/04/2026", status: "Recebido" },
+];
+
+const HISTORICO = [
+  { icon: "🔍", data: "10/04", texto: "Inscrição recebida pela SECULT Recife" },
+  { icon: "📤", data: "10/04", texto: "Projeto submetido ao edital SIC 2026" },
+  { icon: "📝", data: "08/04", texto: "Orçamento detalhado adicionado" },
+  { icon: "✏️", data: "05/04", texto: "Projeto criado via IA de Voz" },
+];
+
+// ── Componente ────────────────────────────────────────────────────────────────
 
 const ProjetoDetalhes = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  // States
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("info");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Hooks - tenta buscar como oportunidade primeiro, depois como oficina
-  const { data: oportunidade, isLoading: loadingOportunidade } = useOportunidade(id || "");
-  const { data: oficina, isLoading: loadingOficina } = useOficina(id || "");
-  
-  const deleteOportunidade = useDeleteOportunidade();
-  const deleteOficina = useDeleteOficina();
-  const updateOportunidade = useUpdateOportunidade();
-  const updateOficina = useUpdateOficina();
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadDescricao, setUploadDescricao] = useState("");
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [activeTab, setActiveTab] = useState("informacoes");
 
-  // Candidaturas (para oportunidades)
-  const { 
-    data: candidaturas = [], 
-    isLoading: loadingCandidaturas 
-  } = useCandidaturasByOportunidade(oportunidade?.id || "");
-  
-  // Inscrições (para oficinas)
-  const {
-    data: inscricoesOficina = [],
-    isLoading: loadingInscricoes
-  } = useInscricoesByOficina(oficina?.id || "");
-  
-  const updateCandidaturaStatus = useUpdateCandidaturaStatus();
-  const updateInscricaoStatus = useUpdateInscricaoStatus();
-
-  const isLoading = loadingOportunidade && loadingOficina;
-  const projeto = oportunidade || oficina;
-  const isOficina = !oportunidade && !!oficina;
-  
-  // Unifica candidaturas e inscrições para a aba de candidatos
-  const candidatosUnificados = isOficina 
-    ? inscricoesOficina.map(i => ({
-        id: i.id,
-        oportunidade_id: i.oficina_id,
-        user_id: i.user_id,
-        status: i.status,
-        mensagem: null,
-        motivo_reprovacao: null,
-        created_at: i.created_at,
-        updated_at: null,
-        nome_completo: i.nome_completo,
-        nome_artistico: i.nome_artistico,
-        telefone: i.telefone,
-        area_artistica: i.area_artistica,
-        tempo_atuacao: i.tempo_atuacao,
-        tipo_atuacao: i.tipo_atuacao,
-        situacao_formalizacao: i.situacao_formalizacao,
-        experiencia_editais: i.experiencia_editais,
-        municipio: i.municipio,
-        bairro: i.bairro,
-      }))
-    : candidaturas;
-
-  // Handlers
-  const handleDelete = async () => {
-    if (!id) return;
-    
-    try {
-      if (isOficina) {
-        await deleteOficina.mutateAsync(id);
-      } else {
-        await deleteOportunidade.mutateAsync(id);
-      }
-      navigate("/oportunidades");
-    } catch (error) {
-      console.error("Error deleting:", error);
-    }
-  };
-
-  const handleSaveEdit = async (data: Record<string, unknown>) => {
-    if (!id) return;
-    
-    try {
-      if (isOficina) {
-        await updateOficina.mutateAsync({ id, data });
-      } else {
-        await updateOportunidade.mutateAsync({ id, data: data as Parameters<typeof updateOportunidade.mutateAsync>[0]["data"] });
-      }
-      setEditDialogOpen(false);
-    } catch (error) {
-      console.error("Error updating:", error);
-    }
-  };
-
-  const handleCancelarProjeto = async () => {
-    if (!id) return;
-    
-    try {
-      if (isOficina) {
-        await updateOficina.mutateAsync({ id, data: { status: "cancelada" } });
-      } else {
-        await updateOportunidade.mutateAsync({ id, data: { status: "cancelada" } });
-      }
-    } catch (error) {
-      console.error("Error canceling:", error);
-    }
-  };
-
-  const handleAprovarCandidato = (candidaturaId: string) => {
-    if (isOficina) {
-      updateInscricaoStatus.mutate({ id: candidaturaId, status: "confirmada" });
-    } else {
-      updateCandidaturaStatus.mutate({ id: candidaturaId, status: "aprovada" });
-    }
-  };
-
-  const handleReprovarCandidato = (candidaturaId: string, motivo: string) => {
-    if (isOficina) {
-      updateInscricaoStatus.mutate({ id: candidaturaId, status: "cancelada" });
-    } else {
-      updateCandidaturaStatus.mutate({ id: candidaturaId, status: "reprovada", motivo_reprovacao: motivo });
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
-      </DashboardLayout>
-    );
-  }
+  const projeto = getProjetoById(id ?? "");
 
   if (!projeto) {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-          <p className="text-muted-foreground">Projeto não encontrado</p>
-          <Button onClick={() => navigate("/oportunidades")}>
+          <p className="text-muted-foreground">Projeto não encontrado.</p>
+          <Button variant="outline" onClick={() => navigate("/oportunidades")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
@@ -201,208 +177,468 @@ const ProjetoDetalhes = () => {
     );
   }
 
-  const tipo = isOficina ? "oficina" : (oportunidade?.tipo || "evento");
-  const tipoInfo = tipoConfig[tipo] || tipoConfig.evento;
-  const statusInfo = statusConfig[projeto.status] || statusConfig.ativa;
+  const currentStatus = STATUS_CONFIG[projeto.projetoStatus];
+  const currentStepId = STATUS_TO_STEP[projeto.projetoStatus];
 
-  // Dados comuns
-  const titulo = projeto.titulo;
-  const descricao = "descricao" in projeto ? projeto.descricao : null;
-  const status = projeto.status;
-  const local = "local" in projeto ? projeto.local : null;
-  const dataEvento = "data_evento" in projeto ? projeto.data_evento : ("data_inicio" in projeto ? projeto.data_inicio : null);
-  const horario = "horario" in projeto ? projeto.horario : null;
-  const vagas = "vagas" in projeto ? projeto.vagas : ("vagas_total" in projeto ? projeto.vagas_total : 0);
-  const remuneracao = "remuneracao" in projeto ? (projeto.remuneracao || 0) : 0;
-  const cenaCoins = "cena_coins" in projeto ? (projeto.cena_coins || 0) : 0;
-  const criadorNome = "criador_nome" in projeto ? projeto.criador_nome : ("facilitador_nome" in projeto ? projeto.facilitador_nome : null);
-  const criadorContato = "criador_contato" in projeto ? projeto.criador_contato : null;
-  const requisitos = "requisitos" in projeto ? projeto.requisitos : ("prerequisitos" in projeto ? projeto.prerequisitos : null);
-  const municipio = "municipio" in projeto ? projeto.municipio : null;
+  const handleUploadSubmit = async () => {
+    setIsSending(true);
+    await new Promise((r) => setTimeout(r, 1000));
+    setIsSending(false);
+    setUploadOpen(false);
+    setUploadFile(null);
+    setUploadDescricao("");
+    toast.success("Documento enviado com sucesso!");
+  };
+
+  const handleCloseUpload = () => {
+    setUploadOpen(false);
+    setUploadFile(null);
+    setUploadDescricao("");
+  };
+
+  interface StepDef {
+    id: number;
+    label: string;
+    icon: React.ReactNode;
+    descricao: string;
+    data?: string;
+    previsao?: string;
+    actionLabel?: string;
+    actionHandler?: () => void;
+  }
+
+  const steps: StepDef[] = [
+    {
+      id: 1,
+      label: "Rascunho",
+      icon: <PenLine className="h-3.5 w-3.5" />,
+      descricao: "Projeto criado",
+      data: "05/04/2026",
+      actionLabel: "Editar projeto",
+    },
+    {
+      id: 2,
+      label: "Submetido",
+      icon: <Send className="h-3.5 w-3.5" />,
+      descricao: "Inscrito no edital SIC 2026 — " + projeto.areaCultural,
+      data: "10/04/2026",
+      actionLabel: "Cancelar inscrição",
+    },
+    {
+      id: 3,
+      label: "Em Análise",
+      icon: <Search className="h-3.5 w-3.5" />,
+      descricao: "SECULT Recife está avaliando seu projeto",
+      previsao: "Resultado até 30/05/2026",
+      actionLabel: "Enviar documento adicional",
+      actionHandler: () => setUploadOpen(true),
+    },
+    {
+      id: 4,
+      label: "Aprovado",
+      icon: <Check className="h-3.5 w-3.5" />,
+      descricao: "Projeto selecionado para financiamento",
+      data: currentStepId >= 4 ? "15/05/2026" : undefined,
+      actionLabel: "Assinar contrato digital",
+    },
+    {
+      id: 5,
+      label: "Em Execução",
+      icon: <Play className="h-3.5 w-3.5" />,
+      descricao: "Projeto em andamento",
+      data: currentStepId >= 5 ? "01/06/2026" : undefined,
+      actionLabel: "Registrar atividade",
+    },
+    {
+      id: 6,
+      label: "Prestação Enviada",
+      icon: <ClipboardList className="h-3.5 w-3.5" />,
+      descricao: "Documentos de prestação de contas enviados",
+      data: currentStepId >= 6 ? "10/08/2026" : undefined,
+      actionLabel: "Ver prestação de contas",
+    },
+    {
+      id: 7,
+      label: "Concluído",
+      icon: <Trophy className="h-3.5 w-3.5" />,
+      descricao: "Projeto finalizado e aprovado pela SECULT",
+      data: currentStepId >= 7 ? "20/08/2026" : undefined,
+    },
+  ];
+
+  const infoItems = [
+    { label: "Artista / Responsável", value: projeto.criadorNome },
+    { label: "Linguagem Cultural",    value: projeto.areaCultural },
+    { label: "Território",             value: projeto.local },
+    { label: "ODS",                    value: "ODS 4 · ODS 8 · ODS 10" },
+    {
+      label: "Orçamento aprovado",
+      value: `R$ ${projeto.metaCaptacao.toLocaleString("pt-BR")}`,
+    },
+    {
+      label: "Edital",
+      value: `SIC 2026 — ${projeto.areaCultural} · SECULT Recife`,
+    },
+  ];
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col gap-4">
-          <Button
-            variant="ghost"
-            className="w-fit gap-2"
-            onClick={() => navigate("/oportunidades")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar aos projetos
-          </Button>
+      <div className="max-w-3xl mx-auto space-y-6 pb-10">
 
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+        {/* ── Header ── */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              onClick={() => navigate("/oportunidades")}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
             <div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-3xl font-bold tracking-tight">{titulo}</h1>
-                <Badge variant="outline" className={`${tipoInfo.color} text-white border-0`}>
-                  <span className="flex items-center gap-1.5">{tipoInfo.icon} {tipoInfo.label}</span>
-                </Badge>
-                <Badge variant="outline" className={statusInfo.color}>
-                  {statusInfo.label}
-                </Badge>
-              </div>
-              {descricao && (
-                <p className="text-muted-foreground mt-2 max-w-2xl">{descricao}</p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="outline" className="gap-2" onClick={() => setEditDialogOpen(true)}>
-                <Edit className="h-4 w-4" />
-                Editar
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem 
-                    onClick={handleCancelarProjeto}
-                    disabled={status === "cancelada"}
-                  >
-                    <XCircle className="h-4 w-4 mr-2" />
-                    Cancelar Projeto
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => setDeleteDialogOpen(true)}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Excluir Projeto
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <h1 className="text-xl font-bold tracking-tight leading-tight">
+                {projeto.titulo}
+              </h1>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                SIC 2026 — {projeto.areaCultural} · SECULT Recife
+              </p>
             </div>
           </div>
+          <Badge variant="outline" className={`shrink-0 mt-1 ${currentStatus.badgeColor}`}>
+            {currentStatus.label}
+          </Badge>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
-            <TabsTrigger value="info" className="gap-2">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Informações</span>
+        {/* ── SEÇÃO 1 — Status atual em destaque ── */}
+        <Card className={`${currentStatus.cardBorder} ${currentStatus.cardBg}`}>
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <span className="text-4xl leading-none mt-0.5">{currentStatus.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2.5">
+                  <h2 className={`text-lg font-semibold ${currentStatus.titleColor}`}>
+                    {currentStatus.label}
+                  </h2>
+                  <span className="relative flex h-2.5 w-2.5 shrink-0">
+                    <span
+                      className={`animate-ping absolute inline-flex h-full w-full rounded-full ${currentStatus.pingColor} opacity-75`}
+                    />
+                    <span
+                      className={`relative inline-flex rounded-full h-2.5 w-2.5 ${currentStatus.pingColor}`}
+                    />
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                  {currentStatus.descricao}
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Enviado em 10/04/2026
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* ── SEÇÃO 2 — Linha do tempo ── */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Acompanhamento do Projeto</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2 pb-6">
+            <div className="relative">
+              <div
+                className="absolute left-[18px] top-[22px] w-0.5 bg-border"
+                style={{ bottom: "22px" }}
+              />
+
+              <div className="space-y-0">
+                {steps.map((step, index) => {
+                  const isCompleted = step.id < currentStepId;
+                  const isCurrent   = step.id === currentStepId;
+                  const isFuture    = step.id > currentStepId;
+                  const isLast      = index === steps.length - 1;
+
+                  return (
+                    <div
+                      key={step.id}
+                      className={`relative flex gap-5 ${isLast ? "" : "pb-7"}`}
+                    >
+                      {/* Indicador circular */}
+                      <div className="z-10 shrink-0">
+                        {isCompleted ? (
+                          <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                            <Check className="h-4 w-4" />
+                          </div>
+                        ) : isCurrent ? (
+                          <div className="relative w-9 h-9 flex items-center justify-center">
+                            <span
+                              className={`animate-ping absolute inline-flex h-9 w-9 rounded-full ${currentStatus.pingColor} opacity-20`}
+                            />
+                            <div
+                              className={`relative w-9 h-9 rounded-full ${currentStatus.pingColor} text-white flex items-center justify-center shadow-md`}
+                            >
+                              {step.icon}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-9 h-9 rounded-full border-2 border-border bg-background flex items-center justify-center">
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {step.id}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Conteúdo */}
+                      <div className="flex-1 pt-1.5 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p
+                            className={`font-semibold text-sm ${
+                              isFuture
+                                ? "text-muted-foreground"
+                                : isCurrent
+                                ? currentStatus.titleColor
+                                : "text-foreground"
+                            }`}
+                          >
+                            {step.label}
+                          </p>
+                          {(isCompleted || (isCurrent && step.data)) && step.data && (
+                            <span className="text-xs text-muted-foreground">· {step.data}</span>
+                          )}
+                        </div>
+
+                        <p
+                          className={`text-sm mt-0.5 ${
+                            isFuture ? "text-muted-foreground/50" : "text-muted-foreground"
+                          }`}
+                        >
+                          {step.descricao}
+                        </p>
+
+                        {isCurrent && step.previsao && (
+                          <div className="flex items-center gap-1.5 mt-1.5">
+                            <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            <span className="text-xs text-muted-foreground">{step.previsao}</span>
+                          </div>
+                        )}
+
+                        {/* Ação do step atual */}
+                        {isCurrent && step.actionLabel && step.id !== 7 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-3 h-8 text-xs gap-1.5"
+                            onClick={step.actionHandler}
+                          >
+                            <Upload className="h-3.5 w-3.5" />
+                            {step.actionLabel}
+                          </Button>
+                        )}
+
+                        {/* Ação especial do step Concluído */}
+                        {step.id === 7 && isCurrent && (
+                          <div className="mt-3 flex items-center gap-2 flex-wrap">
+                            <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white text-xs">
+                              ✓ Concluído com sucesso
+                            </Badge>
+                            <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                              <Download className="h-3.5 w-3.5" />
+                              Baixar certificado
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* ── SEÇÃO 3 — Abas ── */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="informacoes" className="gap-1.5">
+              <Info className="h-3.5 w-3.5" />
+              Informações
             </TabsTrigger>
-            <TabsTrigger value="candidatos" className="gap-2">
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">{isOficina ? "Inscritos" : "Candidatos"}</span>
-              {candidatosUnificados.length > 0 && (
-                <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
-                  {candidatosUnificados.length}
-                </Badge>
-              )}
+            <TabsTrigger value="documentos" className="gap-1.5">
+              <FileText className="h-3.5 w-3.5" />
+              Documentos
             </TabsTrigger>
-            <TabsTrigger value="estatisticas" className="gap-2">
-              <BarChart3 className="h-4 w-4" />
-              <span className="hidden sm:inline">Estatísticas</span>
-            </TabsTrigger>
-            <TabsTrigger value="financeiro" className="gap-2">
-              <Wallet className="h-4 w-4" />
-              <span className="hidden sm:inline">Financeiro</span>
+            <TabsTrigger value="historico" className="gap-1.5">
+              <History className="h-3.5 w-3.5" />
+              Histórico
             </TabsTrigger>
           </TabsList>
 
-          {/* Tab: Informações */}
-          <TabsContent value="info" className="space-y-6">
-            <ProjetoInfoCompleta projeto={projeto} isOficina={isOficina} />
+          {/* Aba Informações */}
+          <TabsContent value="informacoes">
+            <Card>
+              <CardContent className="p-6">
+                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                  {infoItems.map(({ label, value }) => (
+                    <div key={label}>
+                      <dt className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        {label}
+                      </dt>
+                      <dd className="mt-1 text-sm font-medium">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          {/* Tab: Candidatos */}
-          <TabsContent value="candidatos">
-            <CandidatosTab
-              candidaturas={candidatosUnificados}
-              isLoading={isOficina ? loadingInscricoes : loadingCandidaturas}
-              onAprovar={handleAprovarCandidato}
-              onReprovar={handleReprovarCandidato}
-              isUpdating={isOficina ? updateInscricaoStatus.isPending : updateCandidaturaStatus.isPending}
-            />
-          </TabsContent>
-
-          {/* Tab: Estatísticas */}
-          <TabsContent value="estatisticas">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 rounded-full">
-                      <Users className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold">{candidatosUnificados.length}</div>
-                      <div className="text-sm text-muted-foreground">{isOficina ? "Inscrições" : "Candidaturas"}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-100 rounded-full">
-                      <Users className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold">
-                        {candidatosUnificados.filter(c => c.status === "aprovada").length}
+          {/* Aba Documentos */}
+          <TabsContent value="documentos">
+            <Card>
+              <CardContent className="p-6 space-y-3">
+                {DOCUMENTOS.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className="h-5 w-5 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{doc.nome}</p>
+                        <p className="text-xs text-muted-foreground">{doc.data}</p>
                       </div>
-                      <div className="text-sm text-muted-foreground">Aprovados</div>
                     </div>
+                    <Badge
+                      variant="outline"
+                      className="shrink-0 ml-3 text-emerald-600 border-emerald-500/30 bg-emerald-500/10 text-xs"
+                    >
+                      ✓ {doc.status}
+                    </Badge>
                   </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-amber-100 rounded-full">
-                      <DollarSign className="h-6 w-6 text-amber-600" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold">{cenaCoins}</div>
-                      <div className="text-sm text-muted-foreground">Cena Coins</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-1 gap-2"
+                  onClick={() => setUploadOpen(true)}
+                >
+                  <FilePlus className="h-4 w-4" />
+                  Adicionar documento
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          {/* Tab: Financeiro */}
-          <TabsContent value="financeiro">
-            <FinanceiroTab
-              projetoId={id || ""}
-              tipoEntidade={isOficina ? "oficina" : "oportunidade"}
-              remuneracao={remuneracao}
-              vagas={vagas || 0}
-              cenaCoins={cenaCoins}
-            />
+          {/* Aba Histórico */}
+          <TabsContent value="historico">
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {HISTORICO.map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className="text-lg shrink-0 leading-none mt-0.5">{item.icon}</span>
+                      <p className="flex-1 text-sm">{item.texto}</p>
+                      <span className="text-xs text-muted-foreground shrink-0">{item.data}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
 
-      {/* Dialogs */}
-      <DeleteProjectDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        projectTitle={titulo}
-        onConfirm={handleDelete}
-        isDeleting={deleteOportunidade.isPending || deleteOficina.isPending}
-      />
+      {/* ── Modal: Enviar documento ── */}
+      <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Enviar documento</DialogTitle>
+          </DialogHeader>
 
-      {!isOficina && oportunidade && (
-        <EditProjectDialog
-          open={editDialogOpen}
-          onOpenChange={setEditDialogOpen}
-          project={oportunidade}
-          onSave={handleSaveEdit}
-          isSaving={updateOportunidade.isPending}
-        />
-      )}
+          <div className="space-y-4">
+            <div
+              className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                isDragging
+                  ? "border-violet-500 bg-violet-500/5"
+                  : uploadFile
+                  ? "border-emerald-500 bg-emerald-500/5"
+                  : "border-border hover:border-muted-foreground/50"
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                const file = e.dataTransfer.files[0];
+                if (file) setUploadFile(file);
+              }}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) setUploadFile(f);
+                }}
+              />
+              {uploadFile ? (
+                <div className="flex flex-col items-center gap-2">
+                  <FileText className="h-8 w-8 text-emerald-500" />
+                  <p className="text-sm font-medium">{uploadFile.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm font-medium">
+                    Arraste o arquivo ou clique para selecionar
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    PDF, JPG, PNG · Máximo 10MB
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="desc-doc">
+                Descrição do documento{" "}
+                <span className="text-muted-foreground font-normal">(opcional)</span>
+              </Label>
+              <Textarea
+                id="desc-doc"
+                placeholder="Ex: Memorial descritivo atualizado com cronograma revisado..."
+                value={uploadDescricao}
+                onChange={(e) => setUploadDescricao(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseUpload}>
+              Cancelar
+            </Button>
+            <Button
+              disabled={!uploadFile || isSending}
+              onClick={handleUploadSubmit}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              {isSending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Enviar documento
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

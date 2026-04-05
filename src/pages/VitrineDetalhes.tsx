@@ -1,15 +1,24 @@
 import { useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { InvestmentProposalDialog } from "@/components/InvestmentProposalDialog";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowLeft,
   MapPin,
@@ -20,147 +29,132 @@ import {
   Share2,
   Briefcase,
   Target,
-  Sparkles,
   FileText,
   Music,
   Film,
   Palette,
   Theater,
-  Clock,
   GraduationCap,
   Building,
+  Send,
+  CheckCircle2,
+  ArrowRight,
+  Sparkles,
+  Building2,
+  User,
 } from "lucide-react";
-
-// Imagens fallback
-import festivalJazzImg from "@/assets/oportunidades/festival-jazz.jpg";
+import { toast } from "sonner";
+import { getProjetoById } from "@/data/mockVitrine";
+import AffinityScore from "@/components/AffinityScore";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento: { label: "Evento", icon: <Calendar className="h-5 w-5" />, color: "bg-orange-500" },
-  vaga: { label: "Vaga", icon: <Briefcase className="h-5 w-5" />, color: "bg-blue-500" },
-  oficina: { label: "Oficina", icon: <GraduationCap className="h-5 w-5" />, color: "bg-emerald-500" },
-  bairro: { label: "Bairro", icon: <Building className="h-5 w-5" />, color: "bg-purple-500" },
-  ep: { label: "EP/Álbum", icon: <Music className="h-5 w-5" />, color: "bg-pink-500" },
-  filme: { label: "Filme/Doc", icon: <Film className="h-5 w-5" />, color: "bg-cyan-500" },
-  festival: { label: "Festival", icon: <Users className="h-5 w-5" />, color: "bg-violet-500" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />, color: "bg-emerald-500" },
-  teatro: { label: "Teatro", icon: <Theater className="h-5 w-5" />, color: "bg-amber-500" },
+  evento:    { label: "Evento",    icon: <Calendar className="h-5 w-5" />,      color: "bg-orange-500" },
+  vaga:      { label: "Vaga",      icon: <Briefcase className="h-5 w-5" />,     color: "bg-blue-500" },
+  oficina:   { label: "Oficina",   icon: <GraduationCap className="h-5 w-5" />, color: "bg-emerald-500" },
+  bairro:    { label: "Bairro",    icon: <Building className="h-5 w-5" />,      color: "bg-purple-500" },
+  ep:        { label: "EP/Álbum",  icon: <Music className="h-5 w-5" />,         color: "bg-pink-500" },
+  filme:     { label: "Filme/Doc", icon: <Film className="h-5 w-5" />,          color: "bg-cyan-500" },
+  festival:  { label: "Festival",  icon: <Users className="h-5 w-5" />,         color: "bg-violet-500" },
+  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />,       color: "bg-emerald-500" },
+  teatro:    { label: "Teatro",    icon: <Theater className="h-5 w-5" />,       color: "bg-amber-500" },
+};
+
+const contrapartidasOptions = [
+  { id: "logo_material", label: "Logomarca em materiais de divulgação" },
+  { id: "creditos",      label: "Créditos no projeto final" },
+  { id: "ingressos",     label: "Ingressos ou acessos VIP" },
+  { id: "networking",    label: "Acesso a eventos de networking" },
+  { id: "relatorio",     label: "Relatório de impacto personalizado" },
+  { id: "mencao_midia",  label: "Menção em entrevistas e mídia" },
+];
+
+type TipoInvestidor = "pessoa_fisica" | "empresa" | "instituicao";
+type TipoApoio = "financeiro" | "servico" | "misto";
+
+interface PropostaData {
+  tipoInvestidor: TipoInvestidor;
+  nome: string;
+  email: string;
+  telefone: string;
+  empresa: string;
+  tipoApoio: TipoApoio;
+  valorFinanceiro: string;
+  descricaoServico: string;
+  contrapartidas: string[];
+  mensagem: string;
+  aceitaTermos: boolean;
+}
+
+const PROPOSTA_INICIAL: PropostaData = {
+  tipoInvestidor: "pessoa_fisica",
+  nome: "",
+  email: "",
+  telefone: "",
+  empresa: "",
+  tipoApoio: "financeiro",
+  valorFinanceiro: "",
+  descricaoServico: "",
+  contrapartidas: [],
+  mensagem: "",
+  aceitaTermos: false,
 };
 
 const VitrineDetalhes = () => {
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const tipo = searchParams.get("tipo") || "oportunidade";
   const navigate = useNavigate();
-  const [showInvestDialog, setShowInvestDialog] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [step, setStep] = useState(1);
+  const [proposta, setProposta] = useState<PropostaData>(PROPOSTA_INICIAL);
+  const [enviando, setEnviando] = useState(false);
 
-  // Query para oportunidade
-  const { data: oportunidade, isLoading: loadingOportunidade } = useQuery({
-    queryKey: ["vitrine-oportunidade", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("oportunidades_vitrine")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: tipo === "oportunidade" && !!id,
-  });
-
-  // Query para oficina
-  const { data: oficina, isLoading: loadingOficina } = useQuery({
-    queryKey: ["vitrine-oficina", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("oficinas_vitrine")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: tipo === "oficina" && !!id,
-  });
-
-  const isLoading = loadingOportunidade || loadingOficina;
-  
-  // Normalizar dados para exibição
-  const projeto = tipo === "oficina" && oficina ? {
-    id: oficina.id,
-    titulo: oficina.titulo,
-    descricao: oficina.descricao,
-    tipo: "oficina",
-    local: oficina.local,
-    imagem: oficina.imagem || festivalJazzImg,
-    areaCultural: oficina.area_artistica,
-    criadorNome: oficina.organizacao,
-    facilitadorNome: oficina.facilitador_nome,
-    facilitadorBio: oficina.facilitador_bio,
-    metaCaptacao: oficina.meta_captacao || 0,
-    captacaoAtual: oficina.captacao_atual || 0,
-    mostrarProgresso: oficina.mostrar_progresso ?? true,
-    totalPropostas: oficina.total_propostas || 0,
-    valorCaptado: oficina.valor_captado || 0,
-    dataInicio: oficina.data_inicio,
-    dataFim: oficina.data_fim,
-    cargaHoraria: oficina.carga_horaria,
-    numEncontros: oficina.num_encontros,
-    nivel: oficina.nivel,
-    modalidade: oficina.modalidade,
-    publicoAlvo: oficina.publico_alvo,
-    prerequisitos: oficina.prerequisitos,
-    emiteCertificado: oficina.emite_certificado,
-    diasSemana: oficina.dias_semana,
-    horario: oficina.horario,
-  } : oportunidade ? {
-    id: oportunidade.id,
-    titulo: oportunidade.titulo,
-    descricao: oportunidade.descricao,
-    tipo: oportunidade.tipo,
-    local: oportunidade.local || oportunidade.municipio,
-    imagem: oportunidade.imagem || festivalJazzImg,
-    areaCultural: oportunidade.area_cultural,
-    criadorNome: oportunidade.criador_nome_completo || oportunidade.criador_nome_artistico || oportunidade.criador_nome,
-    metaCaptacao: oportunidade.meta_captacao || 0,
-    captacaoAtual: oportunidade.captacao_atual || 0,
-    mostrarProgresso: oportunidade.mostrar_progresso ?? true,
-    totalPropostas: oportunidade.total_propostas || 0,
-    valorCaptado: oportunidade.valor_captado || 0,
-    dataEvento: oportunidade.data_evento,
-    horario: oportunidade.horario,
-    duracao: oportunidade.duracao,
-    requisitos: oportunidade.requisitos,
-    vagas: oportunidade.vagas,
-    remuneracao: oportunidade.remuneracao,
-    cenaCoins: oportunidade.cena_coins,
-  } : null;
-
+  const projeto = id ? getProjetoById(id) : undefined;
   const config = projeto ? tipoConfig[projeto.tipo] || tipoConfig.evento : tipoConfig.evento;
-  const percentCaptado = projeto && projeto.metaCaptacao > 0 
-    ? (projeto.captacaoAtual / projeto.metaCaptacao) * 100 
-    : 0;
+  const percentCaptado =
+    projeto && projeto.metaCaptacao > 0
+      ? (projeto.captacaoAtual / projeto.metaCaptacao) * 100
+      : 0;
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="space-y-6 max-w-5xl mx-auto">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-64 w-full rounded-xl" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-48 w-full" />
-            </div>
-            <Skeleton className="h-64 w-full" />
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
+  const totalSteps = 4;
+  const stepTitles = ["Seus Dados", "Tipo de Apoio", "Contrapartidas", "Confirmação"];
+
+  const canAdvance = () => {
+    switch (step) {
+      case 1: return !!(proposta.tipoInvestidor && proposta.nome && proposta.email);
+      case 2: return !!(proposta.tipoApoio && (
+        proposta.tipoApoio === "servico" ? proposta.descricaoServico : proposta.valorFinanceiro
+      ));
+      case 3: return proposta.contrapartidas.length > 0;
+      case 4: return proposta.aceitaTermos;
+      default: return true;
+    }
+  };
+
+  const handleOpenDialog = () => {
+    setStep(1);
+    setProposta(PROPOSTA_INICIAL);
+    setShowDialog(true);
+  };
+
+  const handleSubmit = async () => {
+    setEnviando(true);
+    // Simula envio com delay
+    await new Promise((r) => setTimeout(r, 1200));
+    setEnviando(false);
+    setShowDialog(false);
+    toast.success("Proposta enviada com sucesso!", {
+      description: `Sua proposta para "${projeto?.titulo}" foi recebida e será analisada pelo responsável.`,
+    });
+  };
+
+  const toggleContrapartida = (id: string, checked: boolean) => {
+    setProposta((prev) => ({
+      ...prev,
+      contrapartidas: checked
+        ? [...prev.contrapartidas, id]
+        : prev.contrapartidas.filter((c) => c !== id),
+    }));
+  };
 
   if (!projeto) {
     return (
@@ -170,23 +164,214 @@ const VitrineDetalhes = () => {
             <Target className="h-8 w-8 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Projeto não encontrado</h2>
-          <p className="text-muted-foreground mb-4">Este projeto não está mais disponível na vitrine.</p>
+          <p className="text-muted-foreground mb-4">Este projeto não está disponível na vitrine.</p>
           <Button onClick={() => navigate("/dashboard")}>Voltar à Vitrine</Button>
         </div>
       </DashboardLayout>
     );
   }
 
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-5">
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Tipo de Investidor</Label>
+              <RadioGroup
+                value={proposta.tipoInvestidor}
+                onValueChange={(v) => setProposta({ ...proposta, tipoInvestidor: v as TipoInvestidor })}
+                className="grid grid-cols-3 gap-3"
+              >
+                {(["pessoa_fisica", "empresa", "instituicao"] as const).map((tipo) => (
+                  <Label
+                    key={tipo}
+                    htmlFor={tipo}
+                    className={`flex flex-col items-center gap-2 p-4 border rounded-lg cursor-pointer transition-all ${
+                      proposta.tipoInvestidor === tipo ? "border-primary bg-primary/5" : "hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <RadioGroupItem value={tipo} id={tipo} className="sr-only" />
+                    {tipo === "pessoa_fisica" && <User className="h-6 w-6" />}
+                    {tipo === "empresa"       && <Building2 className="h-6 w-6" />}
+                    {tipo === "instituicao"   && <Heart className="h-6 w-6" />}
+                    <span className="text-sm font-medium text-center leading-tight">
+                      {tipo === "pessoa_fisica" ? "Pessoa Física" : tipo === "empresa" ? "Empresa" : "Instituição"}
+                    </span>
+                  </Label>
+                ))}
+              </RadioGroup>
+            </div>
+            <div className="grid gap-4">
+              <div>
+                <Label htmlFor="nome">Nome completo *</Label>
+                <Input id="nome" value={proposta.nome} onChange={(e) => setProposta({ ...proposta, nome: e.target.value })} placeholder="Seu nome" />
+              </div>
+              {proposta.tipoInvestidor !== "pessoa_fisica" && (
+                <div>
+                  <Label htmlFor="empresa-field">
+                    Nome da {proposta.tipoInvestidor === "empresa" ? "Empresa" : "Instituição"}
+                  </Label>
+                  <Input
+                    id="empresa-field"
+                    value={proposta.empresa}
+                    onChange={(e) => setProposta({ ...proposta, empresa: e.target.value })}
+                    placeholder={`Nome da ${proposta.tipoInvestidor === "empresa" ? "empresa" : "instituição"}`}
+                  />
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="email">E-mail *</Label>
+                  <Input id="email" type="email" value={proposta.email} onChange={(e) => setProposta({ ...proposta, email: e.target.value })} placeholder="seu@email.com" />
+                </div>
+                <div>
+                  <Label htmlFor="telefone">Telefone</Label>
+                  <Input id="telefone" value={proposta.telefone} onChange={(e) => setProposta({ ...proposta, telefone: e.target.value })} placeholder="(00) 00000-0000" />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-5">
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Tipo de Apoio</Label>
+              <RadioGroup
+                value={proposta.tipoApoio}
+                onValueChange={(v) => setProposta({ ...proposta, tipoApoio: v as TipoApoio })}
+                className="grid grid-cols-3 gap-3"
+              >
+                {([
+                  { v: "financeiro", icon: <DollarSign className="h-6 w-6 text-emerald-500" />, label: "Financeiro" },
+                  { v: "servico",    icon: <Briefcase className="h-6 w-6 text-blue-500" />,    label: "Serviço" },
+                  { v: "misto",      icon: <Sparkles className="h-6 w-6 text-amber-500" />,    label: "Misto" },
+                ] as const).map(({ v, icon, label }) => (
+                  <Label
+                    key={v}
+                    htmlFor={v}
+                    className={`flex flex-col items-center gap-2 p-4 border rounded-lg cursor-pointer transition-all ${
+                      proposta.tipoApoio === v ? "border-primary bg-primary/5" : "hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <RadioGroupItem value={v} id={v} className="sr-only" />
+                    {icon}
+                    <span className="text-sm font-medium">{label}</span>
+                  </Label>
+                ))}
+              </RadioGroup>
+            </div>
+            {(proposta.tipoApoio === "financeiro" || proposta.tipoApoio === "misto") && (
+              <div>
+                <Label htmlFor="valor">Valor do investimento *</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">R$</span>
+                  <Input id="valor" value={proposta.valorFinanceiro} onChange={(e) => setProposta({ ...proposta, valorFinanceiro: e.target.value })} placeholder="0,00" className="pl-10" />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Meta: R$ {projeto.metaCaptacao.toLocaleString("pt-BR")} | Faltam: R$ {(projeto.metaCaptacao - projeto.captacaoAtual).toLocaleString("pt-BR")}
+                </p>
+              </div>
+            )}
+            {(proposta.tipoApoio === "servico" || proposta.tipoApoio === "misto") && (
+              <div>
+                <Label htmlFor="descricao-servico">Descrição do serviço *</Label>
+                <Textarea id="descricao-servico" value={proposta.descricaoServico} onChange={(e) => setProposta({ ...proposta, descricaoServico: e.target.value })} placeholder="Descreva o serviço ou recurso que você pode oferecer..." rows={4} />
+              </div>
+            )}
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label className="text-base font-semibold mb-1 block">Contrapartidas Desejadas</Label>
+              <p className="text-sm text-muted-foreground mb-4">Selecione as contrapartidas que gostaria de receber em troca do apoio</p>
+              <div className="grid gap-3">
+                {contrapartidasOptions.map((option) => (
+                  <Label
+                    key={option.id}
+                    htmlFor={`cp-${option.id}`}
+                    className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                      proposta.contrapartidas.includes(option.id) ? "border-primary bg-primary/5" : "hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <Checkbox
+                      id={`cp-${option.id}`}
+                      checked={proposta.contrapartidas.includes(option.id)}
+                      onCheckedChange={(c) => toggleContrapartida(option.id, c as boolean)}
+                    />
+                    <span className="text-sm">{option.label}</span>
+                  </Label>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-5">
+            <div>
+              <Label htmlFor="mensagem">Mensagem para o responsável (opcional)</Label>
+              <Textarea id="mensagem" value={proposta.mensagem} onChange={(e) => setProposta({ ...proposta, mensagem: e.target.value })} placeholder="Conte um pouco sobre você e por que deseja apoiar este projeto..." rows={4} />
+            </div>
+            <div className="p-4 bg-muted/50 rounded-lg space-y-2.5">
+              <h4 className="font-semibold flex items-center gap-2 text-sm">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                Resumo da proposta
+              </h4>
+              <div className="grid gap-1.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Investidor:</span>
+                  <span className="font-medium">{proposta.nome}{proposta.empresa ? ` — ${proposta.empresa}` : ""}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tipo de apoio:</span>
+                  <span className="font-medium capitalize">{proposta.tipoApoio}</span>
+                </div>
+                {proposta.valorFinanceiro && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Valor:</span>
+                    <span className="font-medium text-emerald-500">R$ {proposta.valorFinanceiro}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-start">
+                  <span className="text-muted-foreground">Contrapartidas:</span>
+                  <div className="flex flex-wrap gap-1 justify-end max-w-[200px]">
+                    {proposta.contrapartidas.map((c) => (
+                      <Badge key={c} variant="secondary" className="text-[10px]">
+                        {contrapartidasOptions.find((o) => o.id === c)?.label.split(" ")[0]}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-4 border rounded-lg">
+              <Checkbox
+                id="termos"
+                checked={proposta.aceitaTermos}
+                onCheckedChange={(c) => setProposta({ ...proposta, aceitaTermos: c as boolean })}
+              />
+              <Label htmlFor="termos" className="text-sm leading-relaxed cursor-pointer">
+                Declaro que li e concordo com os termos de investimento e entendo que esta é uma proposta inicial que será analisada pelo responsável do projeto.
+              </Label>
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            className="gap-2"
-            onClick={() => navigate("/dashboard")}
-          >
+          <Button variant="ghost" className="gap-2" onClick={() => navigate("/dashboard")}>
             <ArrowLeft className="h-4 w-4" />
             Voltar à Vitrine
           </Button>
@@ -200,61 +385,48 @@ const VitrineDetalhes = () => {
           </div>
         </div>
 
-        {/* Banner com Imagem */}
+        {/* Banner */}
         <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
-          <img 
-            src={projeto.imagem} 
-            alt={projeto.titulo}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <Badge className={`absolute top-4 right-4 ${config.color} text-white border-0`}>
+          <img src={projeto.imagem} alt={projeto.titulo} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+          {/* Badge de tipo */}
+          <Badge className={`absolute top-4 left-4 ${config.color} text-white border-0 flex items-center gap-1`}>
             {config.icon}
             <span className="ml-1">{config.label}</span>
           </Badge>
+
+          {/* AffinityScore no banner */}
+          <div className="absolute top-4 right-4">
+            <AffinityScore score={projeto.affinityScore} size={72} />
+          </div>
+
+          {/* Título sobre o banner */}
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            {projeto.areaCultural && (
+              <Badge variant="secondary" className="mb-2 bg-white/20 text-white border-white/30">
+                {projeto.areaCultural}
+              </Badge>
+            )}
+            <h1 className="text-3xl font-bold text-white drop-shadow">{projeto.titulo}</h1>
+            <div className="flex flex-wrap gap-4 mt-2 text-sm text-white/80">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4" />
+                {projeto.local}
+              </div>
+              {projeto.dataEvento && (
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(projeto.dataEvento).toLocaleDateString("pt-BR")}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Conteúdo Principal */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Título e Info */}
-            <div>
-              {projeto.areaCultural && (
-                <Badge variant="secondary" className="mb-3">
-                  {projeto.areaCultural}
-                </Badge>
-              )}
-              <h1 className="text-3xl font-bold">{projeto.titulo}</h1>
-              
-              <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
-                {projeto.local && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {projeto.local}
-                  </div>
-                )}
-                {projeto.tipo === "oficina" && projeto.dataInicio && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    {new Date(projeto.dataInicio).toLocaleDateString("pt-BR")} - {new Date(projeto.dataFim).toLocaleDateString("pt-BR")}
-                  </div>
-                )}
-                {projeto.tipo !== "oficina" && projeto.dataEvento && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    {new Date(projeto.dataEvento).toLocaleDateString("pt-BR")}
-                  </div>
-                )}
-                {projeto.horario && (
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    {projeto.horario}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Descrição */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -263,216 +435,79 @@ const VitrineDetalhes = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {projeto.descricao || "Descrição não disponível."}
-                </p>
+                <p className="text-muted-foreground leading-relaxed">{projeto.descricao}</p>
               </CardContent>
             </Card>
 
-            {/* Detalhes específicos de Oficina */}
-            {projeto.tipo === "oficina" && (
-              <>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <GraduationCap className="h-5 w-5" />
-                      Detalhes da Oficina
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      {projeto.cargaHoraria && (
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Carga horária:</strong> {projeto.cargaHoraria}h</span>
-                        </div>
-                      )}
-                      {projeto.numEncontros && (
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Encontros:</strong> {projeto.numEncontros}</span>
-                        </div>
-                      )}
-                      {projeto.nivel && (
-                        <div className="flex items-center gap-2">
-                          <Target className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Nível:</strong> {projeto.nivel}</span>
-                        </div>
-                      )}
-                      {projeto.modalidade && (
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Modalidade:</strong> {projeto.modalidade}</span>
-                        </div>
-                      )}
-                      {projeto.emiteCertificado !== undefined && (
-                        <div className="flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Certificado:</strong> {projeto.emiteCertificado ? "Sim" : "Não"}</span>
-                        </div>
-                      )}
-                      {projeto.diasSemana && projeto.diasSemana.length > 0 && (
-                        <div className="flex items-center gap-2 col-span-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span><strong>Dias:</strong> {projeto.diasSemana.join(", ")}</span>
-                        </div>
-                      )}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-amber-500" />
+                  Por que {projeto.affinityScore}% de afinidade?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {Object.values(projeto.affinityBreakdown).map((dim) => {
+                  const color =
+                    dim.value > 80
+                      ? "text-emerald-600"
+                      : dim.value >= 60
+                      ? "text-amber-600"
+                      : "text-red-600";
+                  const progressColor =
+                    dim.value > 80
+                      ? "[&>div]:bg-emerald-500"
+                      : dim.value >= 60
+                      ? "[&>div]:bg-amber-500"
+                      : "[&>div]:bg-red-500";
+                  return (
+                    <div key={dim.label} className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{dim.label}</span>
+                        <span className={`text-sm font-bold ${color}`}>{dim.value}%</span>
+                      </div>
+                      <Progress value={dim.value} className={`h-2 ${progressColor}`} />
+                      <p className="text-xs text-muted-foreground">{dim.descricao}</p>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {projeto.publicoAlvo && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Users className="h-5 w-5 text-primary" />
-                        Público Alvo
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{projeto.publicoAlvo}</p>
-                    </CardContent>
-                  </Card>
+                  );
+                })}
+                {projeto.vagas > 0 && (
+                  <div className="pt-2 border-t flex items-center gap-2 text-sm text-muted-foreground">
+                    <Users className="h-4 w-4 shrink-0" />
+                    <span>Público esperado: <strong className="text-foreground">{projeto.vagas} pessoas</strong></span>
+                  </div>
                 )}
-
-                {projeto.prerequisitos && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <FileText className="h-5 w-5 text-amber-500" />
-                        Pré-requisitos
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{projeto.prerequisitos}</p>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {projeto.facilitadorNome && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Facilitador(a)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback>{projeto.facilitadorNome.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{projeto.facilitadorNome}</p>
-                          <p className="text-sm text-muted-foreground">{projeto.criadorNome}</p>
-                        </div>
-                      </div>
-                      {projeto.facilitadorBio && (
-                        <p className="text-sm text-muted-foreground">{projeto.facilitadorBio}</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-              </>
-            )}
-
-            {/* Detalhes específicos de Oportunidade (vaga, evento, etc) */}
-            {projeto.tipo !== "oficina" && (
-              <>
-                {projeto.requisitos && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <FileText className="h-5 w-5 text-amber-500" />
-                        Requisitos
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">{projeto.requisitos}</p>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {(projeto.vagas || projeto.remuneracao || projeto.cenaCoins) && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Briefcase className="h-5 w-5" />
-                        Informações da Vaga
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid sm:grid-cols-3 gap-4">
-                        {projeto.vagas && (
-                          <div className="text-center p-4 bg-muted/50 rounded-lg">
-                            <Users className="h-5 w-5 mx-auto mb-2 text-primary" />
-                            <p className="text-xl font-bold">{projeto.vagas}</p>
-                            <p className="text-xs text-muted-foreground">vagas</p>
-                          </div>
-                        )}
-                        {projeto.remuneracao && projeto.remuneracao > 0 && (
-                          <div className="text-center p-4 bg-muted/50 rounded-lg">
-                            <DollarSign className="h-5 w-5 mx-auto mb-2 text-emerald-500" />
-                            <p className="text-xl font-bold">R$ {projeto.remuneracao.toLocaleString("pt-BR")}</p>
-                            <p className="text-xs text-muted-foreground">remuneração</p>
-                          </div>
-                        )}
-                        {projeto.cenaCoins && projeto.cenaCoins > 0 && (
-                          <div className="text-center p-4 bg-muted/50 rounded-lg">
-                            <Sparkles className="h-5 w-5 mx-auto mb-2 text-amber-500" />
-                            <p className="text-xl font-bold">{projeto.cenaCoins}</p>
-                            <p className="text-xs text-muted-foreground">Cena Coins</p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </>
-            )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
-            {/* Card de Financiamento */}
             <Card className="border-primary/30 sticky top-20">
               <CardContent className="p-6 space-y-4">
-                {projeto.mostrarProgresso && projeto.metaCaptacao > 0 ? (
-                  <>
-                    <div className="text-center">
-                      <p className="text-3xl font-bold text-emerald-500">
-                        R$ {projeto.valorCaptado.toLocaleString("pt-BR")}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        captado de R$ {projeto.metaCaptacao.toLocaleString("pt-BR")}
-                      </p>
-                    </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-emerald-500">
+                    R$ {projeto.captacaoAtual.toLocaleString("pt-BR")}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    captado de R$ {projeto.metaCaptacao.toLocaleString("pt-BR")}
+                  </p>
+                </div>
 
-                    <Progress value={Math.min(percentCaptado, 100)} className="h-3" />
+                <Progress value={Math.min(percentCaptado, 100)} className="h-3" />
 
-                    <div className="grid grid-cols-2 text-center">
-                      <div>
-                        <p className="text-lg font-bold">{percentCaptado.toFixed(0)}%</p>
-                        <p className="text-xs text-muted-foreground">financiado</p>
-                      </div>
-                      <div>
-                        <p className="text-lg font-bold">{projeto.totalPropostas}</p>
-                        <p className="text-xs text-muted-foreground">propostas</p>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-4">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Heart className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold">{projeto.totalPropostas}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">propostas de apoio recebidas</p>
+                <div className="grid grid-cols-2 text-center">
+                  <div>
+                    <p className="text-lg font-bold">{percentCaptado.toFixed(0)}%</p>
+                    <p className="text-xs text-muted-foreground">financiado</p>
                   </div>
-                )}
+                  <div>
+                    <p className="text-lg font-bold">{projeto.totalPropostas}</p>
+                    <p className="text-xs text-muted-foreground">propostas</p>
+                  </div>
+                </div>
 
-                <Button 
-                  className="w-full gap-2" 
-                  size="lg"
-                  onClick={() => setShowInvestDialog(true)}
-                >
+                <Button className="w-full gap-2" size="lg" onClick={handleOpenDialog}>
                   <DollarSign className="h-5 w-5" />
                   Investir neste Projeto
                 </Button>
@@ -483,17 +518,14 @@ const VitrineDetalhes = () => {
               </CardContent>
             </Card>
 
-            {/* Card do Responsável */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Responsável pelo Projeto</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarFallback>
-                      {projeto.criadorNome?.charAt(0).toUpperCase() || "?"}
-                    </AvatarFallback>
+                    <AvatarFallback>{projeto.criadorNome.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium">{projeto.criadorNome}</p>
@@ -507,20 +539,62 @@ const VitrineDetalhes = () => {
       </div>
 
       {/* Dialog de Investimento */}
-      {projeto && (
-        <InvestmentProposalDialog
-          open={showInvestDialog}
-          onOpenChange={setShowInvestDialog}
-          projeto={{
-            id: projeto.id!,
-            titulo: projeto.titulo!,
-            metaFinanciamento: projeto.metaCaptacao,
-            arrecadado: projeto.valorCaptado,
-            criadorId: tipo === "oficina" ? oficina?.criador_id || "" : oportunidade?.criador_id || "",
-            isOficina: tipo === "oficina",
-          }}
-        />
-      )}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-primary" />
+              Investir em {projeto.titulo}
+            </DialogTitle>
+            <DialogDescription>
+              Passo {step} de {totalSteps}: {stepTitles[step - 1]}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Barra de progresso */}
+          <div className="py-1">
+            <Progress value={(step / totalSteps) * 100} className="h-1.5" />
+            <div className="flex justify-between mt-1.5">
+              {stepTitles.map((title, idx) => (
+                <span
+                  key={idx}
+                  className={`text-[10px] ${idx + 1 <= step ? "text-primary font-medium" : "text-muted-foreground"}`}
+                >
+                  {idx + 1}. {title}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {renderStep()}
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            {step > 1 && (
+              <Button variant="outline" onClick={() => setStep(step - 1)}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+            )}
+            {step < totalSteps ? (
+              <Button onClick={() => setStep(step + 1)} disabled={!canAdvance()}>
+                Próximo
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            ) : (
+              <Button onClick={handleSubmit} disabled={!canAdvance() || enviando}>
+                {enviando ? (
+                  "Enviando..."
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Enviar Proposta
+                  </>
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

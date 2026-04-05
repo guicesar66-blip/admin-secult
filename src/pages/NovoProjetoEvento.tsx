@@ -25,8 +25,6 @@ import {
   Loader2,
   Rocket,
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCreateOportunidade } from "@/hooks/useOportunidades";
 import { toast } from "sonner";
 import { 
   EventoWizardData, 
@@ -72,9 +70,7 @@ const STEP_ICONS: Record<string, React.ReactNode> = {
 
 const NovoProjetoEvento = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const createOportunidade = useCreateOportunidade();
-  
+
   const [wizardData, setWizardData] = useState<EventoWizardData>(EVENTO_WIZARD_INITIAL_STATE);
   const [currentStep, setCurrentStep] = useState(1);
   const [highestStepReached, setHighestStepReached] = useState(1);
@@ -107,52 +103,11 @@ const NovoProjetoEvento = () => {
   };
 
   const handlePublish = async () => {
-    if (!user) {
-      toast.error("Você precisa estar logado para publicar");
-      return;
-    }
-
     setIsPublishing(true);
-    try {
-      // Calcular orçamento total
-      const orcamentoTotal = wizardData.itens_custo?.reduce((acc, item) => acc + (item.total || 0), 0) || 0;
-      
-      // Construir a duração de forma segura
-      const duracao = wizardData.horario_inicio && wizardData.horario_termino
-        ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}`
-        : "A definir";
-      
-      const eventoData = {
-        titulo: wizardData.nome_evento || "Novo Evento",
-        descricao: wizardData.descricao_evento || null,
-        tipo: "evento",
-        local: wizardData.nome_local || null,
-        municipio: wizardData.bairro || null,
-        data_evento: wizardData.data_evento || wizardData.data_inicio || null,
-        horario: wizardData.horario_inicio || null,
-        duracao: duracao,
-        vagas: wizardData.publico_esperado || null,
-        remuneracao: wizardData.itens_custo?.find(i => i.categoria === "artistica")?.total || 0,
-        requisitos: wizardData.descricao_geral_vagas || null,
-        area_cultural: wizardData.linguagem_principal || null,
-        criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
-        criador_id: user.id,
-        status: "inscricoes_abertas",
-        exibir_vitrine: exibirVitrine,
-        mostrar_progresso: mostrarProgresso,
-        meta_captacao: orcamentoTotal > 0 ? orcamentoTotal : null,
-        captacao_atual: 0,
-      };
-
-      const result = await createOportunidade.mutateAsync(eventoData);
-      toast.success("Evento publicado com sucesso!");
-      navigate(`/oportunidades/${result.id}`);
-    } catch (error) {
-      console.error("Erro ao publicar:", error);
-      toast.error("Erro ao publicar evento. Verifique os dados e tente novamente.");
-    } finally {
-      setIsPublishing(false);
-    }
+    await new Promise((r) => setTimeout(r, 1000));
+    setIsPublishing(false);
+    toast.success("Evento publicado com sucesso na Vitrine!");
+    navigate("/oportunidades");
   };
 
   const canGoNext = isStepValid(currentStep);
@@ -174,42 +129,11 @@ const NovoProjetoEvento = () => {
   };
 
   const handleSaveDraft = async () => {
-    if (!user) {
-      toast.error("Você precisa estar logado para salvar");
-      return;
-    }
-
     setIsSaving(true);
-    try {
-      const duracao = wizardData.horario_inicio && wizardData.horario_termino 
-        ? `${wizardData.horario_inicio} - ${wizardData.horario_termino}` 
-        : "A definir";
-
-      const eventoData = {
-        titulo: wizardData.nome_evento || "Rascunho - Novo Evento",
-        descricao: wizardData.descricao_evento || null,
-        tipo: "evento",
-        local: wizardData.nome_local || null,
-        municipio: wizardData.bairro || null,
-        data_evento: wizardData.data_evento || wizardData.data_inicio || null,
-        horario: wizardData.horario_inicio || null,
-        duracao: duracao,
-        vagas: wizardData.publico_esperado || null,
-        area_cultural: wizardData.linguagem_principal || null,
-        criador_nome: user.user_metadata?.nome_completo || user.email || "Organizador",
-        criador_id: user.id,
-        status: "rascunho",
-      };
-
-      const result = await createOportunidade.mutateAsync(eventoData);
-      toast.success("Rascunho salvo com sucesso!");
-      navigate(`/oportunidades/${result.id}`);
-    } catch (error) {
-      console.error("Erro ao salvar rascunho:", error);
-      toast.error("Erro ao salvar rascunho. Verifique os dados e tente novamente.");
-    } finally {
-      setIsSaving(false);
-    }
+    await new Promise((r) => setTimeout(r, 800));
+    setIsSaving(false);
+    toast.success("Rascunho salvo com sucesso!");
+    navigate("/oportunidades");
   };
 
   const renderCurrentStep = () => {
@@ -279,20 +203,16 @@ const NovoProjetoEvento = () => {
                 {EVENTO_WIZARD_STEPS.map((step) => {
                   const isCompleted = step.id < currentStep && isStepValid(step.id);
                   const isCurrent = step.id === currentStep;
-                  const isAccessible = step.id <= highestStepReached;
                   const hasError = step.id < currentStep && !isStepValid(step.id);
                   
                   return (
                     <button
                       key={step.id}
-                      onClick={() => isAccessible && setCurrentStep(step.id)}
-                      disabled={!isAccessible}
+                      onClick={() => setCurrentStep(step.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
-                        isCurrent 
-                          ? "bg-blue-500/10 border border-blue-500/30" 
-                          : !isAccessible 
-                            ? "opacity-50 cursor-not-allowed" 
-                            : hasError
+                        isCurrent
+                          ? "bg-blue-500/10 border border-blue-500/30"
+                          : hasError
                               ? "hover:bg-red-500/5 border border-red-500/20"
                               : "hover:bg-muted"
                       }`}
@@ -358,7 +278,7 @@ const NovoProjetoEvento = () => {
                   <Button
                     variant="outline"
                     onClick={handleSaveDraft}
-                    disabled={isSaving || !wizardData.nome_evento}
+                    disabled={isSaving}
                     className="gap-2"
                   >
                     {isSaving ? (

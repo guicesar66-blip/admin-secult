@@ -27,8 +27,6 @@ import {
   Eye,
   Rocket,
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCreateOficina } from "@/hooks/useOficinas";
 import { toast } from "sonner";
 import { 
   OficinaWizardData, 
@@ -78,9 +76,7 @@ const STEP_ICONS: Record<string, React.ReactNode> = {
 
 const NovoProjetoOficina = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const createOficina = useCreateOficina();
-  
+
   const [wizardData, setWizardData] = useState<OficinaWizardData>(OFICINA_WIZARD_INITIAL_STATE);
   const [currentStep, setCurrentStep] = useState(1);
   const [highestStepReached, setHighestStepReached] = useState(1);
@@ -114,92 +110,11 @@ const NovoProjetoOficina = () => {
   };
 
   const handlePublish = async () => {
-    if (!user) {
-      toast.error("Você precisa estar logado para publicar");
-      return;
-    }
-
     setIsPublishing(true);
-    try {
-      const oficinaData = {
-        titulo: wizardData.titulo,
-        descricao: wizardData.justificativa,
-        area_artistica: wizardData.linguagem_artistica,
-        categoria: "oficina",
-        nivel: "iniciante" as const,
-        modalidade: wizardData.modalidade,
-        dias_semana: ["Sábado"],
-        horario: "14:00 - 17:00",
-        local: wizardData.local,
-        data_inicio: wizardData.periodo_oficinas_inicio || new Date().toISOString().split("T")[0],
-        data_fim: wizardData.periodo_oficinas_fim || new Date().toISOString().split("T")[0],
-        inscricao_fim: wizardData.periodo_inscricoes_fim || new Date().toISOString().split("T")[0],
-        carga_horaria: wizardData.etapas_encontros.reduce((acc, e) => acc + e.duracao_horas, 0) || 12,
-        num_encontros: wizardData.etapas_encontros.length || 4,
-        vagas_total: wizardData.quantidade_participantes || 30,
-        publico_alvo: wizardData.perfil_participante,
-        prerequisitos: wizardData.prerequisitos,
-        facilitador_nome: user.user_metadata?.nome_completo || user.email || "Facilitador",
-        organizacao: user.user_metadata?.nome_coletivo || user.user_metadata?.nome_completo || "Organização",
-        emite_certificado: true,
-        criador_id: user.id,
-        // Campos do wizard completo
-        justificativa: wizardData.justificativa,
-        linguagem_artistica: wizardData.linguagem_artistica,
-        territorios: wizardData.territorios,
-        objetivo_geral: wizardData.objetivo_geral,
-        objetivos_especificos: wizardData.objetivos_especificos,
-        metodologia_descricao: wizardData.metodologia_descricao,
-        etapas_encontros: wizardData.etapas_encontros,
-        endereco_completo: wizardData.endereco_completo,
-        canais_divulgacao: wizardData.canais_divulgacao,
-        descricao_divulgacao: wizardData.descricao_divulgacao,
-        marcas_parceiras: wizardData.marcas_parceiras,
-        estrategia_campanha: wizardData.estrategia_campanha,
-        parcerias_midia: wizardData.parcerias_midia,
-        cobertura_evento: wizardData.cobertura_evento,
-        recursos_acessibilidade: wizardData.recursos_acessibilidade,
-        descricao_acolhimento: wizardData.descricao_acolhimento,
-        equipamentos_materiais: wizardData.equipamentos_materiais,
-        quantidade_participantes: wizardData.quantidade_participantes,
-        faixa_etaria_min: wizardData.faixa_etaria_min,
-        faixa_etaria_max: wizardData.faixa_etaria_max,
-        perfil_participante: wizardData.perfil_participante,
-        equipe_instrutores: wizardData.equipe_instrutores,
-        equipe_apoio: wizardData.equipe_apoio,
-        periodo_inscricoes_inicio: wizardData.periodo_inscricoes_inicio,
-        periodo_inscricoes_fim: wizardData.periodo_inscricoes_fim,
-        periodo_oficinas_inicio: wizardData.periodo_oficinas_inicio,
-        periodo_oficinas_fim: wizardData.periodo_oficinas_fim,
-        periodo_producao_inicio: wizardData.periodo_producao_inicio,
-        periodo_producao_fim: wizardData.periodo_producao_fim,
-        data_evento_final: wizardData.data_evento_final,
-        tamanho_grupos: wizardData.tamanho_grupos,
-        itens_custo: wizardData.itens_custo,
-        reserva_tecnica_percentual: wizardData.reserva_tecnica_percentual,
-        orcamento_total: wizardData.orcamento_total,
-        resultados_quantitativos: wizardData.resultados_quantitativos,
-        resultados_qualitativos: wizardData.resultados_qualitativos,
-        indicadores_sucesso: wizardData.indicadores_sucesso,
-        // Publicação
-        status: "inscricoes_abertas",
-        status_wizard: "publicado",
-        step_atual: 12,
-        exibir_vitrine: exibirVitrine,
-        mostrar_progresso: mostrarProgresso,
-        meta_captacao: wizardData.orcamento_total,
-        captacao_atual: 0,
-      };
-
-      const result = await createOficina.mutateAsync(oficinaData);
-      toast.success("Projeto publicado com sucesso na Vitrine!");
-      navigate(`/oportunidades/${result.id}`);
-    } catch (error) {
-      console.error("Erro ao publicar:", error);
-      toast.error("Erro ao publicar projeto");
-    } finally {
-      setIsPublishing(false);
-    }
+    await new Promise((r) => setTimeout(r, 1000));
+    setIsPublishing(false);
+    toast.success("Oficina publicada com sucesso na Vitrine!");
+    navigate("/oportunidades");
   };
 
   const canGoNext = isStepValid(currentStep);
@@ -221,52 +136,11 @@ const NovoProjetoOficina = () => {
   };
 
   const handleSaveDraft = async () => {
-    if (!user) {
-      toast.error("Você precisa estar logado para salvar");
-      return;
-    }
-
     setIsSaving(true);
-    try {
-      // Preparar dados para salvar como rascunho
-      const hoje = new Date();
-      const dataInicio = new Date(hoje.getTime() + 30 * 24 * 60 * 60 * 1000);
-      const dataFim = new Date(dataInicio.getTime() + 60 * 24 * 60 * 60 * 1000);
-      const inscricaoFim = new Date(dataInicio.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-      const oficinaData = {
-        titulo: wizardData.titulo || "Rascunho - Nova Oficina",
-        descricao: wizardData.justificativa,
-        area_artistica: wizardData.linguagem_artistica || "Formação Cultural",
-        categoria: "oficina",
-        nivel: "iniciante" as const,
-        modalidade: wizardData.modalidade,
-        dias_semana: ["Sábado"],
-        horario: "14:00 - 17:00",
-        local: wizardData.local,
-        data_inicio: dataInicio.toISOString().split("T")[0],
-        data_fim: dataFim.toISOString().split("T")[0],
-        inscricao_fim: inscricaoFim.toISOString().split("T")[0],
-        carga_horaria: wizardData.etapas_encontros.reduce((acc, e) => acc + e.duracao_horas, 0) || 12,
-        num_encontros: wizardData.etapas_encontros.length || 4,
-        vagas_total: wizardData.quantidade_participantes || 30,
-        publico_alvo: wizardData.perfil_participante,
-        prerequisitos: wizardData.prerequisitos,
-        facilitador_nome: user.user_metadata?.nome_completo || user.email || "Facilitador",
-        organizacao: user.user_metadata?.nome_coletivo || user.user_metadata?.nome_completo || "Organização",
-        emite_certificado: true,
-        criador_id: user.id,
-      };
-
-      const result = await createOficina.mutateAsync(oficinaData);
-      toast.success("Rascunho salvo com sucesso!");
-      navigate(`/oportunidades/${result.id}`);
-    } catch (error) {
-      console.error("Erro ao salvar rascunho:", error);
-      toast.error("Erro ao salvar rascunho");
-    } finally {
-      setIsSaving(false);
-    }
+    await new Promise((r) => setTimeout(r, 800));
+    setIsSaving(false);
+    toast.success("Rascunho salvo com sucesso!");
+    navigate("/oportunidades");
   };
 
   const renderCurrentStep = () => {
@@ -329,20 +203,16 @@ const NovoProjetoOficina = () => {
                 {WIZARD_STEPS.map((step) => {
                   const isCompleted = step.id < currentStep && isStepValid(step.id);
                   const isCurrent = step.id === currentStep;
-                  const isAccessible = step.id <= highestStepReached;
                   const hasError = step.id < currentStep && !isStepValid(step.id);
                   
                   return (
                     <button
                       key={step.id}
-                      onClick={() => isAccessible && setCurrentStep(step.id)}
-                      disabled={!isAccessible}
+                      onClick={() => setCurrentStep(step.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
-                        isCurrent 
-                          ? "bg-amber-500/10 border border-amber-500/30" 
-                          : !isAccessible 
-                            ? "opacity-50 cursor-not-allowed" 
-                            : hasError
+                        isCurrent
+                          ? "bg-amber-500/10 border border-amber-500/30"
+                          : hasError
                               ? "hover:bg-red-500/5 border border-red-500/20"
                               : "hover:bg-muted"
                       }`}
@@ -408,7 +278,7 @@ const NovoProjetoOficina = () => {
                   <Button
                     variant="outline"
                     onClick={handleSaveDraft}
-                    disabled={isSaving || !wizardData.titulo}
+                    disabled={isSaving}
                     className="gap-2"
                   >
                     {isSaving ? (

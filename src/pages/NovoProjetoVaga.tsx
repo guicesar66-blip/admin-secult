@@ -10,7 +10,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Briefcase,
-  Calendar,
   Check,
   ClipboardList,
   Clock,
@@ -22,8 +21,6 @@ import {
   Save,
   Users,
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCreateOportunidade } from "@/hooks/useOportunidades";
 import { toast } from "sonner";
 import {
   VagaWizardData,
@@ -58,8 +55,6 @@ const STEP_ICONS: Record<string, React.ReactNode> = {
 
 const NovoProjetoVaga = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const createOportunidade = useCreateOportunidade();
 
   const [wizardData, setWizardData] = useState<VagaWizardData>(VAGA_WIZARD_INITIAL_STATE);
   const [currentStep, setCurrentStep] = useState(1);
@@ -88,11 +83,6 @@ const NovoProjetoVaga = () => {
   const isCurrentStepValid = getStepValidation(currentStep).isValid;
 
   const handleNext = () => {
-    const validation = getStepValidation(currentStep);
-    if (!validation.isValid) {
-      toast.error("Por favor, preencha os campos obrigatórios antes de continuar.");
-      return;
-    }
     const next = currentStep + 1;
     setCurrentStep(next);
     if (next > highestStepReached) setHighestStepReached(next);
@@ -103,63 +93,15 @@ const NovoProjetoVaga = () => {
   };
 
   const handleStepClick = (stepId: number) => {
-    if (stepId <= highestStepReached) setCurrentStep(stepId);
+    setCurrentStep(stepId);
   };
 
   const handleSave = async () => {
-    const allValidations = [1, 2, 3, 4, 5, 6].map((s) => getStepValidation(s));
-    const hasErrors = allValidations.some((v) => !v.isValid);
-    if (hasErrors) {
-      toast.error("Há informações incompletas. Revise as etapas antes de salvar.");
-      return;
-    }
-
     setIsSaving(true);
-    try {
-      const localStr = wizardData.modalidade === "Remoto"
-        ? wizardData.local || "Remoto"
-        : [wizardData.local, wizardData.bairro, wizardData.municipio]
-            .filter(Boolean)
-            .join(", ");
-
-      const remuneracao = wizardData.remuneracao_a_combinar ? 0 : (wizardData.remuneracao_valor ?? 0);
-
-      const requisitosCompletos = [
-        wizardData.requisitos_obrigatorios,
-        wizardData.requisitos_desejaveis
-          ? `\n\nDesejáveis:\n${wizardData.requisitos_desejaveis}`
-          : "",
-        wizardData.habilidades.length > 0
-          ? `\n\nHabilidades: ${wizardData.habilidades.join(", ")}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("");
-
-      await createOportunidade.mutateAsync({
-        titulo: wizardData.titulo,
-        descricao: wizardData.descricao,
-        tipo: "vaga",
-        local: localStr,
-        municipio: wizardData.municipio || wizardData.local,
-        horario: wizardData.horario_trabalho,
-        duracao: wizardData.regime_jornada,
-        vagas: wizardData.num_vagas,
-        remuneracao: remuneracao,
-        requisitos: requisitosCompletos,
-        prazo_inscricao: wizardData.prazo_inscricao || undefined,
-        area_cultural: wizardData.area_cultural,
-        criador_nome: user?.email || "Admin",
-        criador_id: user?.id,
-      });
-
-      toast.success("Vaga publicada com sucesso!");
-      navigate("/oportunidades");
-    } catch (error) {
-      console.error("Erro ao salvar vaga:", error);
-      toast.error("Erro ao salvar a vaga. Tente novamente.");
-      setIsSaving(false);
-    }
+    await new Promise((r) => setTimeout(r, 1000));
+    setIsSaving(false);
+    toast.success("Vaga publicada com sucesso!");
+    navigate("/oportunidades");
   };
 
   const renderStep = () => {
@@ -204,7 +146,6 @@ const NovoProjetoVaga = () => {
                 {VAGA_WIZARD_STEPS.map((step) => {
                   const isCompleted = step.id < currentStep;
                   const isCurrent = step.id === currentStep;
-                  const isAccessible = step.id <= highestStepReached;
                   const stepValidation = step.id < currentStep ? getStepValidation(step.id) : null;
                   const hasError = stepValidation && !stepValidation.isValid;
 
@@ -213,13 +154,10 @@ const NovoProjetoVaga = () => {
                       key={step.id}
                       type="button"
                       onClick={() => handleStepClick(step.id)}
-                      disabled={!isAccessible}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                         isCurrent
                           ? "bg-emerald-500/10 text-emerald-700 font-medium"
-                          : isAccessible
-                          ? "hover:bg-muted cursor-pointer text-foreground"
-                          : "opacity-40 cursor-not-allowed text-muted-foreground"
+                          : "hover:bg-muted cursor-pointer text-foreground"
                       }`}
                     >
                       <div
