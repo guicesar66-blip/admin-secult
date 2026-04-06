@@ -742,10 +742,10 @@ export default function Configuracoes() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Total Distribuído</CardTitle>
-                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <TrendingUp className="h-4 w-4 text-success" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">{trocadosStats.totalDistribuido.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-success">{trocadosStats.totalDistribuido.toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground">trocados creditados</p>
                   </CardContent>
                 </Card>
@@ -753,10 +753,10 @@ export default function Configuracoes() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Total Resgatado</CardTitle>
-                    <TrendingDown className="h-4 w-4 text-orange-500" />
+                    <TrendingDown className="h-4 w-4 text-warning" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-orange-600">{trocadosStats.totalResgatado.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-warning">{trocadosStats.totalResgatado.toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground">trocados utilizados</p>
                   </CardContent>
                 </Card>
@@ -764,7 +764,7 @@ export default function Configuracoes() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Recompensas</CardTitle>
-                    <Gift className="h-4 w-4 text-purple-500" />
+                    <Gift className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{trocadosStats.recompensas}</div>

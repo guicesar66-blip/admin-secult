@@ -363,20 +363,20 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-muted-foreground">Receitas</div>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-success">
                   R$ {totalReceitas.toLocaleString("pt-BR")}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {propostasAprovadas.length > 0 && `${propostasAprovadas.length} aprovado(s)`}
                   {propostasPendentes.length > 0 && (
-                    <span className="text-amber-600 font-medium">
+                    <span className="text-accent-dark font-medium">
                       {propostasAprovadas.length > 0 ? " · " : ""}{propostasPendentes.length} pendente(s)
                     </span>
                   )}
                 </div>
               </div>
-              <div className="p-2 bg-green-100 rounded-full">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-pe-green-light rounded-full">
+                <TrendingUp className="h-5 w-5 text-success" />
               </div>
             </div>
           </CardContent>
@@ -387,7 +387,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-muted-foreground">Despesas</div>
-                <div className="text-2xl font-bold text-red-600">
+                <div className="text-2xl font-bold text-error">
                   R$ {totalDespesas.toLocaleString("pt-BR")}
                 </div>
                 {tipoEntidade === "oficina" && itensCusto.length > 0 && (
@@ -396,8 +396,8 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                   </div>
                 )}
               </div>
-              <div className="p-2 bg-red-100 rounded-full">
-                <TrendingDown className="h-5 w-5 text-red-600" />
+              <div className="p-2 bg-pe-red-light rounded-full">
+                <TrendingDown className="h-5 w-5 text-error" />
               </div>
             </div>
           </CardContent>
@@ -408,12 +408,12 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-muted-foreground">Balanço</div>
-                <div className={`text-2xl font-bold ${balanco >= 0 ? "text-green-600" : "text-red-600"}`}>
+                <div className={`text-2xl font-bold ${balanco >= 0 ? "text-success" : "text-error"}`}>
                   R$ {balanco.toLocaleString("pt-BR")}
                 </div>
               </div>
-              <div className={`p-2 rounded-full ${balanco >= 0 ? "bg-green-100" : "bg-red-100"}`}>
-                <DollarSign className={`h-5 w-5 ${balanco >= 0 ? "text-green-600" : "text-red-600"}`} />
+              <div className={`p-2 rounded-full ${balanco >= 0 ? "bg-pe-green-light" : "bg-pe-red-light"}`}>
+                <DollarSign className={`h-5 w-5 ${balanco >= 0 ? "text-success" : "text-error"}`} />
               </div>
             </div>
           </CardContent>
@@ -424,12 +424,12 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-muted-foreground">Cena Coins</div>
-                <div className="text-2xl font-bold text-amber-600">
+                <div className="text-2xl font-bold text-accent-dark">
                   {cenaCoins || 0}
                 </div>
               </div>
-              <div className="p-2 bg-amber-100 rounded-full">
-                <Users className="h-5 w-5 text-amber-600" />
+              <div className="p-2 bg-pe-yellow-light rounded-full">
+                <Users className="h-5 w-5 text-accent-dark" />
               </div>
             </div>
           </CardContent>
@@ -539,7 +539,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
       {/* Receitas - Investimentos Aprovados */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-green-600">
+          <CardTitle className="flex items-center gap-2 text-success">
             <ArrowUpRight className="h-5 w-5" />
             Receitas
           </CardTitle>
@@ -548,7 +548,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             if (open) setLancamentoForm(prev => ({ ...prev, tipo: "receita" }));
           }}>
             <DialogTrigger asChild>
-              <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50">
+              <Button size="sm" variant="outline" className="text-success border-green-600 hover:bg-pe-green-lighter">
                 <Plus className="h-4 w-4 mr-1" />
                 Adicionar
               </Button>
@@ -634,13 +634,13 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
               <TableBody>
                 {/* Propostas pendentes (destaque amarelo) */}
                 {propostasPendentes.map((proposta) => (
-                  <TableRow key={proposta.id} className="bg-amber-50/50 hover:bg-amber-100/50 cursor-pointer" onClick={() => {
+                  <TableRow key={proposta.id} className="bg-pe-yellow-lighter/50 hover:bg-pe-yellow-light/50 cursor-pointer" onClick={() => {
                     setSelectedProposta(proposta);
                     setPropostaDialogOpen(true);
                   }}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-amber-600" />
+                        <Clock className="h-4 w-4 text-accent-dark" />
                         {proposta.tipo_apoio === "financeiro" 
                           ? "Investimento Financeiro"
                           : proposta.tipo_apoio === "servico"
@@ -650,16 +650,16 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">
+                      <Badge variant="outline" className="bg-pe-yellow-light text-accent-dark border-accent/30">
                         {tipoApoioLabels[proposta.tipo_apoio]}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="bg-amber-200 text-amber-800">
+                      <Badge variant="secondary" className="bg-amber-200 text-pe-orange-dark">
                         Aguardando análise
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right text-amber-600 font-medium">
+                    <TableCell className="text-right text-accent-dark font-medium">
                       {proposta.tipo_apoio === "financeiro" 
                         ? `R$ ${(proposta.valor_financeiro || 0).toLocaleString("pt-BR")}`
                         : "—"
@@ -669,7 +669,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 text-amber-600 border-amber-300 hover:bg-amber-50"
+                        className="h-7 text-accent-dark border-amber-300 hover:bg-pe-yellow-lighter"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedProposta(proposta);
@@ -685,13 +685,13 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
 
                 {/* Propostas aprovadas */}
                 {propostasAprovadas.map((proposta) => (
-                  <TableRow key={proposta.id} className="bg-green-50/50 hover:bg-green-100/50 cursor-pointer" onClick={() => {
+                  <TableRow key={proposta.id} className="bg-pe-green-lighter/50 hover:bg-pe-green-light/50 cursor-pointer" onClick={() => {
                     setSelectedProposta(proposta);
                     setPropostaDialogOpen(true);
                   }}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-success" />
                         {proposta.tipo_apoio === "financeiro" 
                           ? "Investimento Financeiro"
                           : proposta.tipo_apoio === "servico"
@@ -701,14 +701,14 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
+                      <Badge variant="outline" className="bg-pe-green-light text-pe-green-dark border-success/30">
                         {tipoApoioLabels[proposta.tipo_apoio]}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className="bg-green-500">Aprovado</Badge>
+                      <Badge className="bg-success">Aprovado</Badge>
                     </TableCell>
-                    <TableCell className="text-right text-green-600 font-medium">
+                    <TableCell className="text-right text-success font-medium">
                       {proposta.tipo_apoio === "financeiro" 
                         ? `R$ ${(proposta.valor_financeiro || 0).toLocaleString("pt-BR")}`
                         : "—"
@@ -741,7 +741,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       <div className="flex items-center gap-2">
                         {proposta.status === "rejeitada" || proposta.status === "cancelada" 
                           ? <XCircle className="h-4 w-4 text-destructive" />
-                          : <MessageSquare className="h-4 w-4 text-blue-600" />
+                          : <MessageSquare className="h-4 w-4 text-primary" />
                         }
                         {proposta.tipo_apoio === "financeiro" 
                           ? "Investimento Financeiro"
@@ -802,7 +802,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                         {statusLancamentoLabels[receita.status]}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right text-green-600 font-medium">
+                    <TableCell className="text-right text-success font-medium">
                       R$ {Number(receita.valor).toLocaleString("pt-BR")}
                     </TableCell>
                     <TableCell>
@@ -826,7 +826,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
       {/* Despesas - Itens de Custo + Manuais */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-red-600">
+          <CardTitle className="flex items-center gap-2 text-error">
             <ArrowDownRight className="h-5 w-5" />
             Despesas
           </CardTitle>
@@ -835,7 +835,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
             if (open) setLancamentoForm(prev => ({ ...prev, tipo: "despesa" }));
           }}>
             <DialogTrigger asChild>
-              <Button size="sm" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">
+              <Button size="sm" variant="outline" className="text-error border-red-600 hover:bg-pe-red-lighter">
                 <Plus className="h-4 w-4 mr-1" />
                 Adicionar
               </Button>
@@ -916,11 +916,11 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
               <TableBody>
                 {/* Itens de custo da oficina */}
                 {itensCusto.map((item) => (
-                  <TableRow key={item.id} className="bg-blue-50/50">
+                  <TableRow key={item.id} className="bg-neutral-50/50">
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {item.fonte === "automatico" && (
-                          <Sparkles className="h-4 w-4 text-blue-600" />
+                          <Sparkles className="h-4 w-4 text-primary" />
                         )}
                         {item.item}
                       </div>
@@ -934,7 +934,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                     <TableCell className="text-right text-muted-foreground">
                       R$ {item.valor_unitario.toLocaleString("pt-BR")}
                     </TableCell>
-                    <TableCell className="text-right text-red-600 font-medium">
+                    <TableCell className="text-right text-error font-medium">
                       R$ {item.total.toLocaleString("pt-BR")}
                     </TableCell>
                     <TableCell></TableCell>
@@ -942,16 +942,16 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                 ))}
                 {/* Reserva técnica */}
                 {reservaTecnica > 0 && (
-                  <TableRow className="bg-amber-50/50">
+                  <TableRow className="bg-pe-yellow-lighter/50">
                     <TableCell className="font-medium">Reserva Técnica ({reservaTecnicaPercent}%)</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">
+                      <Badge variant="outline" className="bg-pe-yellow-light text-accent-dark border-accent/30">
                         Reserva
                       </Badge>
                     </TableCell>
                     <TableCell>1</TableCell>
                     <TableCell className="text-right text-muted-foreground">—</TableCell>
-                    <TableCell className="text-right text-red-600 font-medium">
+                    <TableCell className="text-right text-error font-medium">
                       R$ {reservaTecnica.toLocaleString("pt-BR")}
                     </TableCell>
                     <TableCell></TableCell>
@@ -972,7 +972,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                     </TableCell>
                     <TableCell>1</TableCell>
                     <TableCell className="text-right text-muted-foreground">—</TableCell>
-                    <TableCell className="text-right text-red-600 font-medium">
+                    <TableCell className="text-right text-error font-medium">
                       R$ {Number(despesa.valor).toLocaleString("pt-BR")}
                     </TableCell>
                     <TableCell>

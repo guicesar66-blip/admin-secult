@@ -141,7 +141,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
                 variant={atracao.tipo === opt.value ? "default" : "outline"}
                 size="sm"
                 onClick={() => onUpdate({ tipo: opt.value as Atracao["tipo"] })}
-                className={atracao.tipo === opt.value ? "bg-purple-600" : ""}
+                className={atracao.tipo === opt.value ? "bg-primary-dark" : ""}
               >
                 <opt.icon className="h-3 w-3 mr-1" />
                 {opt.label}
@@ -253,7 +253,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
         </div>
 
         {atracao.tipo === "a_contratar_cena" && (
-          <div className="flex items-center gap-4 p-3 rounded-lg bg-purple-50 border border-purple-200">
+          <div className="flex items-center gap-4 p-3 rounded-lg bg-neutral-50 border border-primary/30">
             <div className="space-y-1">
               <Label>Quantidade de Vagas</Label>
               <Input
@@ -264,7 +264,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
                 className="w-20"
               />
             </div>
-            <div className="flex-1 text-sm text-purple-700">
+            <div className="flex-1 text-sm text-pe-blue-dark">
               <Users className="h-4 w-4 inline mr-1" />
               Esta vaga aparecerá como oportunidade de trabalho para artistas da base CENA
             </div>
@@ -278,8 +278,8 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-purple-500/10">
-          <Music className="h-6 w-6 text-purple-600" />
+        <div className="p-3 rounded-xl bg-primary/10">
+          <Music className="h-6 w-6 text-pe-blue-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Programação e Atrações</h2>
@@ -290,11 +290,11 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
       </div>
 
       {/* Dica */}
-      <Card className="border-purple-200 bg-purple-50/50">
+      <Card className="border-primary/30 bg-neutral-50/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5" />
-            <div className="text-sm text-purple-700">
+            <Lightbulb className="h-5 w-5 text-pe-blue-dark mt-0.5" />
+            <div className="text-sm text-pe-blue-dark">
               <p className="font-medium">Tipos de Atração:</p>
               <ul className="mt-1 space-y-1">
                 <li><strong>Confirmada:</strong> Artista já definido</li>
@@ -416,7 +416,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
                       </Button>
                     </div>
 
-                    <div className="pl-4 border-l-2 border-purple-200 space-y-4">
+                    <div className="pl-4 border-l-2 border-primary/30 space-y-4">
                       {palco.atracoes.map((atracao) => 
                         renderAtracaoCard(
                           atracao,
@@ -444,7 +444,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
 
       {/* Validação */}
       {!validation.isValid && data.estrutura_programacao && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

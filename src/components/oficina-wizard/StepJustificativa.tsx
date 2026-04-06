@@ -28,8 +28,8 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-amber-500/20">
-          <FileText className="h-5 w-5 text-amber-600" />
+        <div className="p-2 rounded-lg bg-accent/20">
+          <FileText className="h-5 w-5 text-accent-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Step 1: Justificativa</h2>
@@ -78,7 +78,7 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
         />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Mínimo 200 caracteres</span>
-          <span className={charCountJustificativa < 200 ? "text-amber-600" : charCountJustificativa > 2000 ? "text-destructive" : "text-green-600"}>
+          <span className={charCountJustificativa < 200 ? "text-accent-dark" : charCountJustificativa > 2000 ? "text-destructive" : "text-success"}>
             {charCountJustificativa}/2000
           </span>
         </div>
@@ -108,9 +108,9 @@ export function StepJustificativa({ data, onChange }: StepJustificativaProps) {
 
       {/* Validação visual */}
       {!validation.isValid && data.titulo && (
-        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-sm font-medium text-amber-700 mb-2">Pendências:</p>
-          <ul className="text-sm text-amber-600 list-disc list-inside space-y-1">
+        <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+          <p className="text-sm font-medium text-accent-dark mb-2">Pendências:</p>
+          <ul className="text-sm text-accent-dark list-disc list-inside space-y-1">
             {validation.errors.map((error, i) => (
               <li key={i}>{error}</li>
             ))}

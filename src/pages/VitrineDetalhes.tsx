@@ -48,15 +48,15 @@ import { getProjetoById } from "@/data/mockVitrine";
 import AffinityScore from "@/components/AffinityScore";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento:    { label: "Evento",    icon: <Calendar className="h-5 w-5" />,      color: "bg-orange-500" },
-  vaga:      { label: "Vaga",      icon: <Briefcase className="h-5 w-5" />,     color: "bg-blue-500" },
+  evento:    { label: "Evento",    icon: <Calendar className="h-5 w-5" />,      color: "bg-warning" },
+  vaga:      { label: "Vaga",      icon: <Briefcase className="h-5 w-5" />,     color: "bg-primary" },
   oficina:   { label: "Oficina",   icon: <GraduationCap className="h-5 w-5" />, color: "bg-emerald-500" },
-  bairro:    { label: "Bairro",    icon: <Building className="h-5 w-5" />,      color: "bg-purple-500" },
+  bairro:    { label: "Bairro",    icon: <Building className="h-5 w-5" />,      color: "bg-primary" },
   ep:        { label: "EP/Álbum",  icon: <Music className="h-5 w-5" />,         color: "bg-pink-500" },
   filme:     { label: "Filme/Doc", icon: <Film className="h-5 w-5" />,          color: "bg-cyan-500" },
   festival:  { label: "Festival",  icon: <Users className="h-5 w-5" />,         color: "bg-violet-500" },
   exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />,       color: "bg-emerald-500" },
-  teatro:    { label: "Teatro",    icon: <Theater className="h-5 w-5" />,       color: "bg-amber-500" },
+  teatro:    { label: "Teatro",    icon: <Theater className="h-5 w-5" />,       color: "bg-accent" },
 };
 
 const contrapartidasOptions = [
@@ -249,8 +249,8 @@ const VitrineDetalhes = () => {
               >
                 {([
                   { v: "financeiro", icon: <DollarSign className="h-6 w-6 text-emerald-500" />, label: "Financeiro" },
-                  { v: "servico",    icon: <Briefcase className="h-6 w-6 text-blue-500" />,    label: "Serviço" },
-                  { v: "misto",      icon: <Sparkles className="h-6 w-6 text-amber-500" />,    label: "Misto" },
+                  { v: "servico",    icon: <Briefcase className="h-6 w-6 text-primary" />,    label: "Serviço" },
+                  { v: "misto",      icon: <Sparkles className="h-6 w-6 text-accent" />,    label: "Misto" },
                 ] as const).map(({ v, icon, label }) => (
                   <Label
                     key={v}
@@ -380,7 +380,7 @@ const VitrineDetalhes = () => {
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" size="icon" onClick={() => setLiked(!liked)}>
-              <Heart className={`h-4 w-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+              <Heart className={`h-4 w-4 ${liked ? "fill-red-500 text-error" : ""}`} />
             </Button>
             <Button variant="outline" size="icon">
               <Share2 className="h-4 w-4" />
@@ -462,8 +462,8 @@ const VitrineDetalhes = () => {
                         </Badge>
                       ))}
                     </div>
-                    <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
-                      <p className="text-xs text-blue-700">
+                    <div className="mt-4 p-3 rounded-lg bg-neutral-50 border border-neutral-200">
+                      <p className="text-xs text-pe-blue-dark">
                         <strong>Dica:</strong> Estas leis permitem que pessoas físicas e empresas façam deduções fiscais ao investir em projetos culturais enquadrados.
                       </p>
                     </div>
@@ -475,7 +475,7 @@ const VitrineDetalhes = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-amber-500" />
+                  <Sparkles className="h-5 w-5 text-accent" />
                   Por que {projeto.affinityScore}% de afinidade?
                 </CardTitle>
               </CardHeader>
@@ -485,14 +485,14 @@ const VitrineDetalhes = () => {
                     dim.value > 80
                       ? "text-emerald-600"
                       : dim.value >= 60
-                      ? "text-amber-600"
-                      : "text-red-600";
+                      ? "text-accent-dark"
+                      : "text-error";
                   const progressColor =
                     dim.value > 80
                       ? "[&>div]:bg-emerald-500"
                       : dim.value >= 60
-                      ? "[&>div]:bg-amber-500"
-                      : "[&>div]:bg-red-500";
+                      ? "[&>div]:bg-accent"
+                      : "[&>div]:bg-error";
                   return (
                     <div key={dim.label} className="space-y-1.5">
                       <div className="flex items-center justify-between">

@@ -13,15 +13,15 @@ import { ptBR } from 'date-fns/locale';
 const getNotificationIcon = (type: Notification['type']) => {
   switch (type) {
     case 'reward':
-      return <Gift className="h-4 w-4 text-purple-500" />;
+      return <Gift className="h-4 w-4 text-primary" />;
     case 'balance':
-      return <Wallet className="h-4 w-4 text-green-500" />;
+      return <Wallet className="h-4 w-4 text-success" />;
     case 'success':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-success" />;
     case 'warning':
       return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
     default:
-      return <Info className="h-4 w-4 text-blue-500" />;
+      return <Info className="h-4 w-4 text-primary" />;
   }
 };
 

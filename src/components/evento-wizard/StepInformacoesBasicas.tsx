@@ -32,8 +32,8 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-purple-500/10">
-          <FileText className="h-6 w-6 text-purple-600" />
+        <div className="p-3 rounded-xl bg-primary/10">
+          <FileText className="h-6 w-6 text-pe-blue-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Informações Básicas do Evento</h2>
@@ -44,13 +44,13 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
       </div>
 
       {/* Dicas */}
-      <Card className="border-purple-200 bg-purple-50/50">
+      <Card className="border-primary/30 bg-neutral-50/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5" />
+            <Lightbulb className="h-5 w-5 text-pe-blue-dark mt-0.5" />
             <div className="text-sm space-y-2">
               <p className="font-medium text-purple-900">Dicas para um bom evento:</p>
-              <ul className="list-disc list-inside text-purple-700 space-y-1">
+              <ul className="list-disc list-inside text-pe-blue-dark space-y-1">
                 <li>Escolha um nome memorável e que reflita a identidade do evento</li>
                 <li>A descrição deve informar claramente o que o público pode esperar</li>
                 <li>A linguagem artística principal ajuda no matching com artistas da base CENA</li>
@@ -77,7 +77,7 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>Nome único e memorável</span>
-            <span className={data.nome_evento.length > 90 ? "text-amber-600" : ""}>
+            <span className={data.nome_evento.length > 90 ? "text-accent-dark" : ""}>
               {data.nome_evento.length}/100
             </span>
           </div>
@@ -163,8 +163,8 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
                     variant={isSelected ? "default" : "outline"}
                     className={`cursor-pointer transition-all ${
                       isSelected 
-                        ? "bg-purple-600 hover:bg-purple-700" 
-                        : "hover:bg-purple-50 hover:border-purple-300"
+                        ? "bg-primary-dark hover:bg-purple-700" 
+                        : "hover:bg-neutral-50 hover:border-purple-300"
                     }`}
                     onClick={() => handleLinguagemSecundariaToggle(linguagem)}
                   >
@@ -190,13 +190,13 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
             maxLength={2000}
           />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span className={data.descricao_evento.length < 200 ? "text-amber-600" : "text-green-600"}>
+            <span className={data.descricao_evento.length < 200 ? "text-accent-dark" : "text-success"}>
               {data.descricao_evento.length < 200 
                 ? `Mínimo 200 caracteres (faltam ${200 - data.descricao_evento.length})`
                 : "✓ Mínimo atingido"
               }
             </span>
-            <span className={data.descricao_evento.length > 1800 ? "text-amber-600" : ""}>
+            <span className={data.descricao_evento.length > 1800 ? "text-accent-dark" : ""}>
               {data.descricao_evento.length}/2000
             </span>
           </div>
@@ -205,7 +205,7 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
 
       {/* Validação */}
       {!validation.isValid && data.nome_evento && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

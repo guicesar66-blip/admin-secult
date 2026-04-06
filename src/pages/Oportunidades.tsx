@@ -67,24 +67,24 @@ import { cn } from "@/lib/utils";
 
 const PROJETO_STATUS_CONFIG: Record<ProjetoStatus, { label: string; color: string }> = {
   rascunho:          { label: "Rascunho",         color: "bg-zinc-500/15 text-zinc-600 border-zinc-500/30" },
-  submetido:         { label: "Submetido",         color: "bg-blue-500/15 text-blue-600 border-blue-500/30" },
+  submetido:         { label: "Submetido",         color: "bg-primary/15 text-primary border-primary/30" },
   em_analise:        { label: "Em Análise",        color: "bg-violet-500/15 text-violet-700 border-violet-500/30" },
   aprovado:          { label: "Aprovado",          color: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
   em_execucao:       { label: "Em Execução",       color: "bg-sky-500/15 text-sky-700 border-sky-500/30" },
-  prestacao_enviada: { label: "Prestação Enviada", color: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
-  concluido:         { label: "Concluído",         color: "bg-green-500/15 text-green-700 border-green-500/30" },
+  prestacao_enviada: { label: "Prestação Enviada", color: "bg-accent/15 text-accent-dark border-accent/30" },
+  concluido:         { label: "Concluído",         color: "bg-success/15 text-pe-green-dark border-success/30" },
 };
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500/20 text-blue-600" },
+  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-primary/20 text-primary" },
   vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
-  oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600" },
+  oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-accent/20 text-accent-dark" },
   festival: { label: "Festival", icon: <Users className="h-4 w-4" />, color: "bg-violet-500/20 text-violet-600" },
   filme: { label: "Filme/Doc", icon: <Film className="h-4 w-4" />, color: "bg-cyan-500/20 text-cyan-600" },
   exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
-  teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600" },
+  teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-accent/20 text-accent-dark" },
   ep: { label: "EP/Álbum", icon: <Music className="h-4 w-4" />, color: "bg-pink-500/20 text-pink-600" },
-  projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-purple-500/20 text-purple-600" },
+  projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-primary/20 text-pe-blue-dark" },
 };
 
 // Interfaces para Aprovações
@@ -308,7 +308,7 @@ const Oportunidades = () => {
                 onClick={() => navigate("/oportunidades/novo/evento")}
                 className="gap-3 cursor-pointer"
               >
-                <Calendar className="h-4 w-4 text-blue-500" />
+                <Calendar className="h-4 w-4 text-primary" />
                 <div>
                   <p className="font-medium">Eventos</p>
                   <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
@@ -328,7 +328,7 @@ const Oportunidades = () => {
                 onClick={() => navigate("/oportunidades/novo/oficina")}
                 className="gap-3 cursor-pointer"
               >
-                <GraduationCap className="h-4 w-4 text-amber-500" />
+                <GraduationCap className="h-4 w-4 text-accent" />
                 <div>
                   <p className="font-medium">Oficinas</p>
                   <p className="text-xs text-muted-foreground">Cursos, workshops, formações</p>
@@ -338,7 +338,7 @@ const Oportunidades = () => {
                 onClick={() => navigate("/oportunidades/novo/espaco")}
                 className="gap-3 cursor-pointer"
               >
-                <Building2 className="h-4 w-4 text-purple-500" />
+                <Building2 className="h-4 w-4 text-primary" />
                 <div>
                   <p className="font-medium">Espaço Cultural</p>
                   <p className="text-xs text-muted-foreground">Teatros, museus, galerias, estúdios</p>
@@ -359,7 +359,7 @@ const Oportunidades = () => {
                 onClick={() => navigate("/oportunidades/novo/pesquisa")}
                 className="gap-3 cursor-pointer"
               >
-                <Lightbulb className="h-4 w-4 text-amber-500" />
+                <Lightbulb className="h-4 w-4 text-accent" />
                 <div>
                   <p className="font-medium">Pesquisa & Ideias</p>
                   <p className="text-xs text-muted-foreground">Sondagens, votações e ideias</p>
@@ -563,7 +563,7 @@ const Oportunidades = () => {
                   {aprovacoesEmPendente.map((item) => (
                     <Card 
                       key={item.id} 
-                      className="border-amber-200/50 hover:shadow-md transition-shadow cursor-pointer"
+                      className="border-accent/30/50 hover:shadow-md transition-shadow cursor-pointer"
                       onClick={() => {
                         setItemDetalhes(item);
                         setDialogDetalhesAberto(true);
@@ -573,7 +573,7 @@ const Oportunidades = () => {
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className={item.tipo === "projeto" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-purple-50 text-purple-700 border-purple-200"}>
+                              <Badge variant="outline" className={item.tipo === "projeto" ? "bg-neutral-50 text-pe-blue-dark border-neutral-200" : "bg-neutral-50 text-pe-blue-dark border-primary/30"}>
                                 {item.tipo === "projeto" ? "📁 Projeto" : "📋 Edital"}
                               </Badge>
                             </div>
@@ -674,7 +674,7 @@ const Oportunidades = () => {
                               className={
                                 aprovacao.resultado === "aprovado"
                                   ? "bg-emerald-50 text-emerald-700 border-emerald-200 ml-2"
-                                  : "bg-red-50 text-red-700 border-red-200 ml-2"
+                                  : "bg-pe-red-lighter text-pe-red-dark border-error/30 ml-2"
                               }
                             >
                               {aprovacao.resultado === "aprovado" ? "✓ Aprovado" : "✕ Recusado"}
@@ -696,7 +696,7 @@ const Oportunidades = () => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-amber-600" />
+              <MessageSquare className="h-5 w-5 text-accent-dark" />
               Justificar Recusa
             </DialogTitle>
             <DialogDescription>
@@ -748,7 +748,7 @@ const Oportunidades = () => {
             <div className="flex items-center gap-2">
               <Badge 
                 variant="outline" 
-                className={itemDetalhes?.tipo === "projeto" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-purple-50 text-purple-700 border-purple-200"}
+                className={itemDetalhes?.tipo === "projeto" ? "bg-neutral-50 text-pe-blue-dark border-neutral-200" : "bg-neutral-50 text-pe-blue-dark border-primary/30"}
               >
                 {itemDetalhes?.tipo === "projeto" ? "📁 Projeto" : "📋 Edital"}
               </Badge>
@@ -808,12 +808,12 @@ const Oportunidades = () => {
               </div>
 
               {/* Observações Importantes */}
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded">
+              <div className="bg-pe-yellow-lighter border border-accent/30 p-3 rounded">
                 <div className="flex gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 text-accent-dark flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-semibold text-amber-900">Próximas ações:</p>
-                    <p className="text-xs text-amber-800 mt-1">Revise cuidadosamente as informações antes de aprovar ou recusar. Cada decisão será registrada no histórico.</p>
+                    <p className="text-xs text-pe-orange-dark mt-1">Revise cuidadosamente as informações antes de aprovar ou recusar. Cada decisão será registrada no histórico.</p>
                   </div>
                 </div>
               </div>

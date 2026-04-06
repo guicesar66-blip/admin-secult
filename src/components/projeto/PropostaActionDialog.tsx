@@ -161,7 +161,7 @@ export function PropostaActionDialog({
             {proposta.tipo_apoio === "financeiro" && proposta.valor_financeiro && (
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Valor oferecido</span>
-                <span className="font-bold text-green-600 text-lg">
+                <span className="font-bold text-success text-lg">
                   R$ {proposta.valor_financeiro.toLocaleString("pt-BR")}
                 </span>
               </div>
@@ -194,8 +194,8 @@ export function PropostaActionDialog({
 
             {proposta.motivo_rejeicao && (
               <div>
-                <span className="text-sm text-muted-foreground text-red-600">Motivo da rejeição</span>
-                <p className="mt-1 text-sm bg-red-50 text-red-700 p-3 rounded-md">{proposta.motivo_rejeicao}</p>
+                <span className="text-sm text-muted-foreground text-error">Motivo da rejeição</span>
+                <p className="mt-1 text-sm bg-pe-red-lighter text-pe-red-dark p-3 rounded-md">{proposta.motivo_rejeicao}</p>
               </div>
             )}
           </div>

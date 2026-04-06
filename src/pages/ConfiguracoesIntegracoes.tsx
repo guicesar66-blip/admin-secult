@@ -61,8 +61,8 @@ const integracoes = [
 ];
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  conectado: { label: "Conectado", color: "bg-green-100 text-green-700", icon: CheckCircle2 },
-  desconectado: { label: "Desconectado", color: "bg-gray-100 text-gray-700", icon: XCircle },
+  conectado: { label: "Conectado", color: "bg-pe-green-light text-pe-green-dark", icon: CheckCircle2 },
+  desconectado: { label: "Desconectado", color: "bg-neutral-100 text-neutral-700", icon: XCircle },
   parcial: { label: "Parcial", color: "bg-yellow-100 text-yellow-700", icon: Settings },
 };
 
@@ -102,8 +102,8 @@ export default function ConfiguracoesIntegracoes() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-success" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Conectadas</p>
@@ -115,8 +115,8 @@ export default function ConfiguracoesIntegracoes() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gray-500/10 flex items-center justify-center">
-                  <XCircle className="h-5 w-5 text-gray-500" />
+                <div className="h-10 w-10 rounded-full bg-neutral-500/10 flex items-center justify-center">
+                  <XCircle className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Desconectadas</p>

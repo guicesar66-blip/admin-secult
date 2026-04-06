@@ -31,10 +31,10 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
   className = '',
 }) => {
   const corClasses = {
-    blue: 'border-blue-200 bg-blue-50',
-    green: 'border-green-200 bg-green-50',
-    orange: 'border-orange-200 bg-orange-50',
-    red: 'border-red-200 bg-red-50',
+    blue: 'border-neutral-200 bg-neutral-50',
+    green: 'border-success/30 bg-pe-green-lighter',
+    orange: 'border-orange-200 bg-pe-orange-lighter',
+    red: 'border-error/30 bg-pe-red-lighter',
   };
 
   const textCorClasses = {
@@ -47,11 +47,11 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
   const getTrendIcon = (tendencia: 'up' | 'down' | 'stable') => {
     switch (tendencia) {
       case 'up':
-        return <TrendingUp className="w-4 h-4 text-green-600" />;
+        return <TrendingUp className="w-4 h-4 text-success" />;
       case 'down':
-        return <TrendingDown className="w-4 h-4 text-red-600" />;
+        return <TrendingDown className="w-4 h-4 text-error" />;
       case 'stable':
-        return <Minus className="w-4 h-4 text-gray-600" />;
+        return <Minus className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
@@ -59,8 +59,8 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
     <div className={`border rounded-lg p-4 ${corClasses[cor]} ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-700">{titulo}</h3>
-        {icon && <div className="text-gray-500">{icon}</div>}
+        <h3 className="text-sm font-semibold text-neutral-700">{titulo}</h3>
+        {icon && <div className="text-muted-foreground">{icon}</div>}
       </div>
 
       {/* Valor Principal */}
@@ -73,30 +73,30 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
 
       {/* Variação */}
       {variacao && (
-        <div className="mb-2 pb-2 border-b border-gray-200 border-opacity-50">
+        <div className="mb-2 pb-2 border-b border-border border-opacity-50">
           <div className="flex items-center gap-2">
             {getTrendIcon(variacao.tendencia)}
             <span className={`text-sm font-medium ${
-              variacao.tendencia === 'up' ? 'text-green-600' : 
-              variacao.tendencia === 'down' ? 'text-red-600' : 
-              'text-gray-600'
+              variacao.tendencia === 'up' ? 'text-success' : 
+              variacao.tendencia === 'down' ? 'text-error' : 
+              'text-muted-foreground'
             }`}>
               {variacao.tendencia === 'up' ? '+' : variacao.tendencia === 'down' ? '-' : ''}
               {Math.abs(variacao.percentual)}% vs. período anterior
             </span>
           </div>
-          <span className="text-xs text-gray-600">Anterior: {variacao.anterior}</span>
+          <span className="text-xs text-muted-foreground">Anterior: {variacao.anterior}</span>
         </div>
       )}
 
       {/* Referência */}
       {referencia && (
         <div className="text-xs">
-          <span className="text-gray-600">{referencia.label}: </span>
+          <span className="text-muted-foreground">{referencia.label}: </span>
           <span className={`font-semibold ${
-            referencia.indicador === 'acima' ? 'text-green-600' :
-            referencia.indicador === 'abaixo' ? 'text-orange-600' :
-            'text-gray-600'
+            referencia.indicador === 'acima' ? 'text-success' :
+            referencia.indicador === 'abaixo' ? 'text-warning' :
+            'text-muted-foreground'
           }`}>
             {referencia.valor}
             {referencia.indicador && ` (${referencia.indicador} da média)`}

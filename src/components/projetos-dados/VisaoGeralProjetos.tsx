@@ -33,7 +33,7 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
               <div>
                 <p className="text-xs text-muted-foreground">Projetos Ativos</p>
                 <p className="text-2xl font-bold">{kpis.projetosAtivos}</p>
-                <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.ativos} vs. ant.</Badge>
+                <Badge variant="outline" className="text-[10px] mt-1 text-success">+{kpis.variações.ativos} vs. ant.</Badge>
               </div>
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><Briefcase className="h-5 w-5 text-primary" /></div>
             </div>
@@ -45,9 +45,9 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
               <div>
                 <p className="text-xs text-muted-foreground">Concluídos</p>
                 <p className="text-2xl font-bold">{kpis.projetosConcluidos}</p>
-                <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.concluidos}</Badge>
+                <Badge variant="outline" className="text-[10px] mt-1 text-success">+{kpis.variações.concluidos}</Badge>
               </div>
-              <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center"><CheckCircle className="h-5 w-5 text-green-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center"><CheckCircle className="h-5 w-5 text-success" /></div>
             </div>
           </CardContent>
         </Card>
@@ -59,7 +59,7 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
                 <p className="text-2xl font-bold">{kpis.comPendencia}</p>
                 {percentPendencia > 10 && <Badge variant="destructive" className="text-[10px] mt-1">⚠ {percentPendencia}%</Badge>}
               </div>
-              <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center"><AlertTriangle className="h-5 w-5 text-amber-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center"><AlertTriangle className="h-5 w-5 text-accent-dark" /></div>
             </div>
           </CardContent>
         </Card>
@@ -69,9 +69,9 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
               <div>
                 <p className="text-xs text-muted-foreground">Recursos em Execução</p>
                 <p className="text-2xl font-bold">{formatCurrency(kpis.totalRecursos)}</p>
-                <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.recursos}%</Badge>
+                <Badge variant="outline" className="text-[10px] mt-1 text-success">+{kpis.variações.recursos}%</Badge>
               </div>
-              <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center"><DollarSign className="h-5 w-5 text-blue-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><DollarSign className="h-5 w-5 text-primary" /></div>
             </div>
           </CardContent>
         </Card>
@@ -85,7 +85,7 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
                   {kpis.eficienciaRepasse <= 30 ? "✓ Meta" : "⚠ Meta ≤30d"}
                 </Badge>
               </div>
-              <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center"><Clock className="h-5 w-5 text-amber-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center"><Clock className="h-5 w-5 text-accent-dark" /></div>
             </div>
           </CardContent>
         </Card>
@@ -95,9 +95,9 @@ export function VisaoGeralProjetos({ filtroLinguagem = "todas", filtroCidades = 
               <div>
                 <p className="text-xs text-muted-foreground">Retorno Social</p>
                 <p className="text-2xl font-bold">{(kpis.totalPublico / 1000).toFixed(0)}k</p>
-                <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.publico}%</Badge>
+                <Badge variant="outline" className="text-[10px] mt-1 text-success">+{kpis.variações.publico}%</Badge>
               </div>
-              <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center"><Users className="h-5 w-5 text-purple-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><Users className="h-5 w-5 text-pe-blue-dark" /></div>
             </div>
           </CardContent>
         </Card>

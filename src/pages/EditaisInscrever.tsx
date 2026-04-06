@@ -284,7 +284,7 @@ function Etapa1({ projeto, setProjeto, edital }: Etapa1Props) {
                 projeto.orcamento > 0 && projeto.orcamento <= 50000
                   ? "bg-emerald-50 text-emerald-700"
                   : projeto.orcamento > 50000
-                  ? "bg-amber-50 text-amber-700"
+                  ? "bg-pe-yellow-lighter text-accent-dark"
                   : "bg-muted text-muted-foreground"
               )}
             >
@@ -436,7 +436,7 @@ function Etapa2({ documentos, setDocumentos, edital }: Etapa2Props) {
           "flex items-center gap-2 text-sm font-medium p-4 rounded-lg border",
           obrigatoriosCompletos
             ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-            : "bg-amber-50 text-amber-700 border-amber-200"
+            : "bg-pe-yellow-lighter text-accent-dark border-accent/30"
         )}
       >
         {obrigatoriosCompletos ? (

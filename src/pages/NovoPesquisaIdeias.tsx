@@ -92,11 +92,11 @@ export default function NovoPesquisaIdeias() {
           <h3 className="font-semibold">Qual tipo?</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {(Object.entries(TIPOS_PESQUISA) as [TipoPesquisa, typeof TIPOS_PESQUISA[TipoPesquisa]][]).map(([key, cfg]) => (
-              <Card key={key} className={cn("cursor-pointer border-2", tipo === key ? "border-violet-600 bg-violet-50" : "border-gray-200")} onClick={() => setTipo(key)}>
+              <Card key={key} className={cn("cursor-pointer border-2", tipo === key ? "border-violet-600 bg-violet-50" : "border-border")} onClick={() => setTipo(key)}>
                 <CardContent className="pt-4 text-center">
                   <div className="text-3xl mb-2">{cfg.icon}</div>
                   <h4 className="font-semibold text-sm">{cfg.label}</h4>
-                  <p className="text-xs text-gray-600 mt-1">{cfg.descricao}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{cfg.descricao}</p>
                 </CardContent>
               </Card>
             ))}
@@ -119,12 +119,12 @@ export default function NovoPesquisaIdeias() {
           <div>
             <Label>Descrição *</Label>
             <Textarea placeholder="Descreva a pesquisa" value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} className="mt-1" />
-            <p className="text-xs text-gray-500 mt-1">Mínimo 20 caracteres</p>
+            <p className="text-xs text-muted-foreground mt-1">Mínimo 20 caracteres</p>
           </div>
           <div>
             <Label>Contexto *</Label>
             <Textarea placeholder="Por que essa pesquisa?" value={contexto} onChange={(e) => setContexto(e.target.value)} rows={3} className="mt-1" />
-            <p className="text-xs text-gray-500 mt-1">Mínimo 20 caracteres</p>
+            <p className="text-xs text-muted-foreground mt-1">Mínimo 20 caracteres</p>
           </div>
         </div>
       );
@@ -174,7 +174,7 @@ export default function NovoPesquisaIdeias() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-neutral-50 p-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -182,13 +182,13 @@ export default function NovoPesquisaIdeias() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold">Pesquisa & Ideias</h1>
-            <p className="text-sm text-gray-600">Etapa {etapa}/4</p>
+            <p className="text-sm text-muted-foreground">Etapa {etapa}/4</p>
           </div>
         </div>
 
         <div className="flex gap-2 mb-6">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className={cn("flex-1 h-1 rounded transition-colors", n <= etapa ? (n < etapa ? "bg-emerald-500" : "bg-violet-600") : "bg-gray-200")} />
+            <div key={n} className={cn("flex-1 h-1 rounded transition-colors", n <= etapa ? (n < etapa ? "bg-emerald-500" : "bg-violet-600") : "bg-neutral-200")} />
           ))}
         </div>
 
@@ -199,7 +199,7 @@ export default function NovoPesquisaIdeias() {
             </CardTitle>
           </CardHeader>
           <CardContent>{renderEtapa()}</CardContent>
-          <div className="flex gap-2 justify-between p-4 border-t bg-gray-50">
+          <div className="flex gap-2 justify-between p-4 border-t bg-neutral-50">
             <Button variant="outline" onClick={() => etapa > 1 && setEtapa(etapa - 1)} disabled={etapa === 1}>
               Anterior
             </Button>

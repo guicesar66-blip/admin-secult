@@ -299,7 +299,7 @@ export const InvestmentProposalDialog = ({
                   }`}
                 >
                   <RadioGroupItem value="servico" id="servico" className="sr-only" />
-                  <Briefcase className="h-6 w-6 text-blue-500" />
+                  <Briefcase className="h-6 w-6 text-primary" />
                   <span className="text-sm font-medium">Serviço</span>
                 </Label>
                 <Label
@@ -311,7 +311,7 @@ export const InvestmentProposalDialog = ({
                   }`}
                 >
                   <RadioGroupItem value="misto" id="misto" className="sr-only" />
-                  <Sparkles className="h-6 w-6 text-amber-500" />
+                  <Sparkles className="h-6 w-6 text-accent" />
                   <span className="text-sm font-medium">Misto</span>
                 </Label>
               </RadioGroup>

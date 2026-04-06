@@ -39,15 +39,15 @@ import { vagasMock, Vaga } from "@/data/mockVagas";
 import AffinityScore from "@/components/AffinityScore";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento:    { label: "Evento",    icon: <Calendar className="h-4 w-4" />,      color: "bg-orange-500/20 text-orange-600 border-orange-500/30" },
-  vaga:      { label: "Vaga",      icon: <Briefcase className="h-4 w-4" />,     color: "bg-blue-500/20 text-blue-600 border-blue-500/30" },
+  evento:    { label: "Evento",    icon: <Calendar className="h-4 w-4" />,      color: "bg-warning/20 text-warning border-orange-500/30" },
+  vaga:      { label: "Vaga",      icon: <Briefcase className="h-4 w-4" />,     color: "bg-primary/20 text-primary border-primary/30" },
   oficina:   { label: "Oficina",   icon: <GraduationCap className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30" },
-  bairro:    { label: "Bairro",    icon: <Building className="h-4 w-4" />,      color: "bg-purple-500/20 text-purple-600 border-purple-500/30" },
+  bairro:    { label: "Bairro",    icon: <Building className="h-4 w-4" />,      color: "bg-primary/20 text-pe-blue-dark border-purple-500/30" },
   ep:        { label: "EP/Álbum",  icon: <Music className="h-4 w-4" />,         color: "bg-pink-500/20 text-pink-600 border-pink-500/30" },
   filme:     { label: "Filme/Doc", icon: <Film className="h-4 w-4" />,          color: "bg-cyan-500/20 text-cyan-600 border-cyan-500/30" },
   festival:  { label: "Festival",  icon: <Users className="h-4 w-4" />,         color: "bg-violet-500/20 text-violet-600 border-violet-500/30" },
   exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />,       color: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30" },
-  teatro:    { label: "Teatro",    icon: <Theater className="h-4 w-4" />,       color: "bg-amber-500/20 text-amber-600 border-amber-500/30" },
+  teatro:    { label: "Teatro",    icon: <Theater className="h-4 w-4" />,       color: "bg-accent/20 text-accent-dark border-accent/30" },
 };
 
 const MarketplaceExplorar = () => {
@@ -126,7 +126,7 @@ const MarketplaceExplorar = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
 
           {featured && (
-            <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500 text-white text-xs font-medium">
+            <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full bg-warning text-white text-xs font-medium">
               <Flame className="h-3 w-3" />
               Em Alta
             </div>
@@ -135,7 +135,7 @@ const MarketplaceExplorar = () => {
           {/* Badge de tipo — canto inferior esquerdo */}
           <Badge
             variant="outline"
-            className={`absolute bottom-3 left-3 ${config.color} bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm`}
+            className={`absolute bottom-3 left-3 ${config.color} bg-white/80 dark:bg-pe-dark/80 backdrop-blur-sm`}
           >
             {config.label}
           </Badge>
@@ -177,7 +177,7 @@ const MarketplaceExplorar = () => {
                 </Badge>
               ))}
               {projeto.incentivosLeis.length > 2 && (
-                <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-gray-100 text-gray-600 border-gray-300">
+                <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-neutral-100 text-muted-foreground border-border">
                   +{projeto.incentivosLeis.length - 2}
                 </Badge>
               )}
@@ -286,8 +286,8 @@ const MarketplaceExplorar = () => {
         {/* Em Alta */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-orange-500/10">
-              <TrendingUp className="h-5 w-5 text-orange-500" />
+            <div className="p-2 rounded-lg bg-warning/10">
+              <TrendingUp className="h-5 w-5 text-warning" />
             </div>
             <div>
               <h2 className="text-xl font-semibold">Em Alta</h2>
@@ -454,7 +454,7 @@ const MarketplaceExplorar = () => {
                       </div>
                       <div className="col-span-2">
                         <p className="text-xs text-muted-foreground">Prazo</p>
-                        <p className="font-semibold text-amber-600">{edital.dataLimiteInscricao}</p>
+                        <p className="font-semibold text-accent-dark">{edital.dataLimiteInscricao}</p>
                       </div>
                     </div>
 
@@ -532,8 +532,8 @@ const MarketplaceExplorar = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {vagasFiltradas.map((vaga: Vaga) => {
                 const tipoColor = {
-                  presencial: "bg-blue-500/10 text-blue-600",
-                  remoto: "bg-purple-500/10 text-purple-600",
+                  presencial: "bg-primary/10 text-primary",
+                  remoto: "bg-primary/10 text-pe-blue-dark",
                   hibrido: "bg-emerald-500/10 text-emerald-600",
                 };
 
@@ -549,7 +549,7 @@ const MarketplaceExplorar = () => {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            {vaga.featured && <Flame className="h-4 w-4 text-orange-500" />}
+                            {vaga.featured && <Flame className="h-4 w-4 text-warning" />}
                             <Badge variant="outline" className={tipoColor[vaga.tipo as keyof typeof tipoColor]}>
                               {vaga.tipo}
                             </Badge>
@@ -588,7 +588,7 @@ const MarketplaceExplorar = () => {
                         <span className="text-xs text-muted-foreground">{vaga.candidatos || 0} candidatos</span>
                       </div>
 
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700" size="sm">
+                      <Button className="w-full bg-primary hover:bg-blue-700" size="sm">
                         Candidatar →
                       </Button>
                     </CardContent>

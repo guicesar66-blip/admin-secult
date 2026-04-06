@@ -303,10 +303,10 @@ const SistemaTrocados = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Distribuído</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{totalDistribuido.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-success">{totalDistribuido.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">trocados creditados</p>
             </CardContent>
           </Card>
@@ -314,10 +314,10 @@ const SistemaTrocados = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Resgatado</CardTitle>
-              <TrendingDown className="h-4 w-4 text-orange-500" />
+              <TrendingDown className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{totalResgatado.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-warning">{totalResgatado.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">trocados utilizados</p>
             </CardContent>
           </Card>
@@ -325,7 +325,7 @@ const SistemaTrocados = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Recompensas</CardTitle>
-              <Gift className="h-4 w-4 text-purple-500" />
+              <Gift className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{recompensasData.length}</div>
@@ -390,7 +390,7 @@ const SistemaTrocados = () => {
                           <TableCell className="hidden md:table-cell text-muted-foreground">{oportunidade.responsavel}</TableCell>
                           <TableCell>R$ {oportunidade.valorTotal.toLocaleString()}</TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            <span className={oportunidade.valorPago === oportunidade.valorTotal ? "text-green-600" : oportunidade.valorPago > 0 ? "text-orange-600" : "text-muted-foreground"}>
+                            <span className={oportunidade.valorPago === oportunidade.valorTotal ? "text-success" : oportunidade.valorPago > 0 ? "text-warning" : "text-muted-foreground"}>
                               R$ {oportunidade.valorPago.toLocaleString()}
                             </span>
                           </TableCell>
@@ -399,10 +399,10 @@ const SistemaTrocados = () => {
                               variant="secondary"
                               className={
                                 oportunidade.status === "pago" 
-                                  ? "bg-green-100 text-green-700" 
+                                  ? "bg-pe-green-light text-pe-green-dark" 
                                   : oportunidade.status === "parcial" 
                                     ? "bg-orange-100 text-orange-700" 
-                                    : "bg-gray-100 text-gray-700"
+                                    : "bg-neutral-100 text-neutral-700"
                               }
                             >
                               {oportunidade.status === "pago" ? "Pago" : oportunidade.status === "parcial" ? "Parcial" : "Pendente"}
@@ -458,10 +458,10 @@ const SistemaTrocados = () => {
                         <TableCell className="text-right">
                           <span className="font-bold text-primary">{usuario.saldo.toLocaleString()}</span>
                         </TableCell>
-                        <TableCell className="text-right hidden md:table-cell text-green-600">
+                        <TableCell className="text-right hidden md:table-cell text-success">
                           +{usuario.totalGanho.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right hidden md:table-cell text-orange-600">
+                        <TableCell className="text-right hidden md:table-cell text-warning">
                           -{usuario.totalGasto.toLocaleString()}
                         </TableCell>
                       </TableRow>

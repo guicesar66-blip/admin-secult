@@ -54,7 +54,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
             <div 
               key={recurso} 
               className={`flex items-center space-x-3 p-2 rounded-lg transition-colors ${
-                isSelected ? "bg-green-50 border border-green-200" : "hover:bg-muted/50"
+                isSelected ? "bg-pe-green-lighter border border-success/30" : "hover:bg-muted/50"
               }`}
             >
               <Checkbox
@@ -64,11 +64,11 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
               />
               <label 
                 htmlFor={recurso} 
-                className={`text-sm cursor-pointer flex-1 ${isSelected ? "text-green-700 font-medium" : ""}`}
+                className={`text-sm cursor-pointer flex-1 ${isSelected ? "text-pe-green-dark font-medium" : ""}`}
               >
                 {recurso}
               </label>
-              {isSelected && <Check className="h-4 w-4 text-green-600" />}
+              {isSelected && <Check className="h-4 w-4 text-success" />}
             </div>
           );
         })}
@@ -102,9 +102,9 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
       )}
 
       {data.publico_esperado > 500 && (
-        <Alert className="bg-amber-50 border-amber-200">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
+        <Alert className="bg-pe-yellow-lighter border-accent/30">
+          <AlertCircle className="h-4 w-4 text-accent-dark" />
+          <AlertDescription className="text-pe-orange-dark">
             Eventos com mais de 500 pessoas devem ter no mínimo <strong>5 recursos de acessibilidade</strong>.
           </AlertDescription>
         </Alert>
@@ -181,7 +181,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
           maxLength={500}
         />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span className={data.descricao_acessibilidade.length < 50 ? "text-amber-600" : "text-green-600"}>
+          <span className={data.descricao_acessibilidade.length < 50 ? "text-accent-dark" : "text-success"}>
             {data.descricao_acessibilidade.length < 50 
               ? `Mínimo 50 caracteres (faltam ${50 - data.descricao_acessibilidade.length})`
               : "✓ Mínimo atingido"
@@ -211,7 +211,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
 
       {/* Validação */}
       {!validation.isValid && data.recursos_acessibilidade.length > 0 && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

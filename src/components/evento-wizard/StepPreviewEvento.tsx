@@ -23,7 +23,7 @@ export function StepPreviewEvento({ data, exibirVitrine, setExibirVitrine, mostr
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-green-500/10"><Eye className="h-6 w-6 text-green-600" /></div>
+        <div className="p-3 rounded-xl bg-success/10"><Eye className="h-6 w-6 text-success" /></div>
         <div><h2 className="text-xl font-semibold">Preview e Publicação</h2><p className="text-muted-foreground mt-1">Revise as informações antes de publicar.</p></div>
       </div>
 
@@ -40,8 +40,8 @@ export function StepPreviewEvento({ data, exibirVitrine, setExibirVitrine, mostr
             </div>
             <div className="flex gap-2">
               <Badge>{data.linguagem_principal}</Badge>
-              {!data.evento_com_ingresso && <Badge className="bg-green-600">Gratuito</Badge>}
-              {temVagas && <Badge className="bg-amber-600">Vagas Abertas</Badge>}
+              {!data.evento_com_ingresso && <Badge className="bg-success">Gratuito</Badge>}
+              {temVagas && <Badge className="bg-accent">Vagas Abertas</Badge>}
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
@@ -58,7 +58,7 @@ export function StepPreviewEvento({ data, exibirVitrine, setExibirVitrine, mostr
           <CardContent className="pt-4 space-y-3">
             <h4 className="font-semibold flex items-center gap-2"><Music className="h-4 w-4" /> Programação</h4>
             <p className="text-sm text-muted-foreground">{data.atracoes.length + data.palcos.reduce((a, p) => a + p.atracoes.length, 0)} atração(ões)</p>
-            {temVagas && <p className="text-sm text-amber-600">{data.vagas_artistas.length} vaga(s) para artistas CENA</p>}
+            {temVagas && <p className="text-sm text-accent-dark">{data.vagas_artistas.length} vaga(s) para artistas CENA</p>}
           </CardContent>
         </Card>
         <Card>

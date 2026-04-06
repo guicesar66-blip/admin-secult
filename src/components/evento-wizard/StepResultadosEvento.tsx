@@ -47,7 +47,7 @@ export function StepResultadosEvento({ data, onChange }: StepResultadosEventoPro
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-amber-500/10"><Trophy className="h-6 w-6 text-amber-600" /></div>
+        <div className="p-3 rounded-xl bg-accent/10"><Trophy className="h-6 w-6 text-accent-dark" /></div>
         <div><h2 className="text-xl font-semibold">Resultados Esperados</h2><p className="text-muted-foreground mt-1">Defina os resultados e impacto esperado do evento.</p></div>
       </div>
 
@@ -70,7 +70,7 @@ export function StepResultadosEvento({ data, onChange }: StepResultadosEventoPro
         <Label className="text-base font-medium">Resultados Qualitativos <span className="text-destructive">*</span></Label>
         <Textarea placeholder="Descreva os resultados qualitativos esperados..." value={data.resultados_qualitativos} onChange={e => onChange({ resultados_qualitativos: e.target.value })} className="min-h-[120px] resize-none" maxLength={1000} />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span className={data.resultados_qualitativos.length < 100 ? "text-amber-600" : "text-green-600"}>{data.resultados_qualitativos.length < 100 ? `Mínimo 100 (faltam ${100 - data.resultados_qualitativos.length})` : "✓ Mínimo atingido"}</span>
+          <span className={data.resultados_qualitativos.length < 100 ? "text-accent-dark" : "text-success"}>{data.resultados_qualitativos.length < 100 ? `Mínimo 100 (faltam ${100 - data.resultados_qualitativos.length})` : "✓ Mínimo atingido"}</span>
           <span>{data.resultados_qualitativos.length}/1000</span>
         </div>
       </div>
@@ -110,7 +110,7 @@ export function StepResultadosEvento({ data, onChange }: StepResultadosEventoPro
         </CardContent>
       </Card>
 
-      {!validation.isValid && data.resultados_qualitativos && <Alert variant="destructive" className="bg-red-50 border-red-200"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
+      {!validation.isValid && data.resultados_qualitativos && <Alert variant="destructive" className="bg-pe-red-lighter border-error/30"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
     </div>
   );
 }

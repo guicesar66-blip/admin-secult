@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getVagaById } from "@/data/mockVagas";
 
 const tipoColor = {
-  presencial: "bg-blue-500/20 text-blue-600 border-blue-500/30",
-  remoto: "bg-purple-500/20 text-purple-600 border-purple-500/30",
+  presencial: "bg-primary/20 text-primary border-primary/30",
+  remoto: "bg-primary/20 text-pe-blue-dark border-purple-500/30",
   hibrido: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30",
 };
 
@@ -60,7 +60,7 @@ export default function VagaDetalhes() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4">
               {vaga.local && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Local</p>
                     <p className="font-semibold">{vaga.local}</p>
@@ -80,7 +80,7 @@ export default function VagaDetalhes() {
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-amber-600 flex-shrink-0" />
+                <Calendar className="h-5 w-5 text-accent-dark flex-shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">Prazo</p>
                   <p className="font-semibold">{vaga.dataLimite}</p>
@@ -88,7 +88,7 @@ export default function VagaDetalhes() {
               </div>
               {vaga.candidatos && (
                 <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-purple-600 flex-shrink-0" />
+                  <Users className="h-5 w-5 text-pe-blue-dark flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Candidatos</p>
                     <p className="font-semibold">{vaga.candidatos}</p>
@@ -141,7 +141,7 @@ export default function VagaDetalhes() {
             <ul className="space-y-3">
               {vaga.requisitos.map((req, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <div className="h-5 w-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                  <div className="h-5 w-5 rounded-full bg-neutral-100 text-primary flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
                     ✓
                   </div>
                   <span>{req}</span>
@@ -181,7 +181,7 @@ export default function VagaDetalhes() {
           >
             ← Voltar às vagas
           </Button>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+          <Button size="lg" className="bg-primary hover:bg-blue-700">
             Candidatar-se agora →
           </Button>
         </div>

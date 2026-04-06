@@ -74,7 +74,7 @@ export default function ProjetoImpactoDetalhes() {
   }));
 
   const getConformidadeColor = (s: number) => s >= 80 ? "hsl(142, 71%, 45%)" : s >= 50 ? "hsl(45, 93%, 47%)" : "hsl(0, 84%, 60%)";
-  const getCheckIcon = (s: string) => s === "ok" ? <CheckCircle className="h-4 w-4 text-green-600" /> : s === "pendente" ? <AlertTriangle className="h-4 w-4 text-amber-500" /> : <XCircle className="h-4 w-4 text-destructive" />;
+  const getCheckIcon = (s: string) => s === "ok" ? <CheckCircle className="h-4 w-4 text-success" /> : s === "pendente" ? <AlertTriangle className="h-4 w-4 text-accent" /> : <XCircle className="h-4 w-4 text-destructive" />;
 
   return (
     <DashboardLayout>
@@ -215,7 +215,7 @@ export default function ProjetoImpactoDetalhes() {
                         <span className="text-xs text-muted-foreground ml-auto">{new Date(c.data).toLocaleDateString("pt-BR")}</span>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">"{c.texto}"</p>
-                      <div className="flex gap-0.5 mt-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-amber-500 fill-amber-500" : "text-muted-foreground/30"}`} />)}</div>
+                      <div className="flex gap-0.5 mt-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-accent fill-amber-500" : "text-muted-foreground/30"}`} />)}</div>
                     </div>
                   </div>
                 ))}

@@ -21,19 +21,19 @@ export const BlocoSocioeconômico: React.FC<BlocoSocioeconômicoProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`border border-gray-200 rounded-lg p-4 bg-white ${className}`}>
+    <div className={`border border-border rounded-lg p-4 bg-white ${className}`}>
       {/* Header com toggle */}
       <button
         onClick={onToggleExpandir}
-        className="w-full flex items-start justify-between hover:bg-gray-50 p-2 -m-2 rounded transition-colors"
+        className="w-full flex items-start justify-between hover:bg-neutral-50 p-2 -m-2 rounded transition-colors"
       >
         <div className="flex-1 text-left">
-          <h3 className="text-lg font-semibold text-gray-900">{titulo}</h3>
-          {descricao && <p className="text-sm text-gray-600 mt-1">{descricao}</p>}
+          <h3 className="text-lg font-semibold text-foreground">{titulo}</h3>
+          {descricao && <p className="text-sm text-muted-foreground mt-1">{descricao}</p>}
         </div>
         {onToggleExpandir && (
           <ChevronDown
-            className={`w-5 h-5 text-gray-400 transition-transform ${expandido ? 'rotate-0' : '-rotate-90'}`}
+            className={`w-5 h-5 text-neutral-400 transition-transform ${expandido ? 'rotate-0' : '-rotate-90'}`}
           />
         )}
       </button>
@@ -43,7 +43,7 @@ export const BlocoSocioeconômico: React.FC<BlocoSocioeconômicoProps> = ({
         <div className="mt-4">
           {/* Card resumido (opcional) */}
           {cardResumo && (
-            <div className="mb-4 pb-4 border-b border-gray-100">
+            <div className="mb-4 pb-4 border-b border-neutral-100">
               {cardResumo}
             </div>
           )}

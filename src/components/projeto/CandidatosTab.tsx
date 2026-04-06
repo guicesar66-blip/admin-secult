@@ -46,12 +46,12 @@ interface CandidatosTabProps {
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   aguardando: { label: "Aguardando", color: "bg-yellow-500/20 text-yellow-600" },
-  enviada: { label: "Enviada", color: "bg-blue-500/20 text-blue-600" },
-  inscrito: { label: "Inscrito", color: "bg-blue-500/20 text-blue-600" },
-  aprovada: { label: "Aprovado", color: "bg-green-500/20 text-green-600" },
-  confirmada: { label: "Confirmado", color: "bg-green-500/20 text-green-600" },
-  reprovada: { label: "Reprovado", color: "bg-red-500/20 text-red-600" },
-  cancelada: { label: "Cancelado", color: "bg-red-500/20 text-red-600" },
+  enviada: { label: "Enviada", color: "bg-primary/20 text-primary" },
+  inscrito: { label: "Inscrito", color: "bg-primary/20 text-primary" },
+  aprovada: { label: "Aprovado", color: "bg-success/20 text-success" },
+  confirmada: { label: "Confirmado", color: "bg-success/20 text-success" },
+  reprovada: { label: "Reprovado", color: "bg-error/20 text-error" },
+  cancelada: { label: "Cancelado", color: "bg-error/20 text-error" },
 };
 
 export function CandidatosTab({
@@ -120,13 +120,13 @@ export function CandidatosTab({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">{estatisticas.aprovados}</div>
+            <div className="text-2xl font-bold text-success">{estatisticas.aprovados}</div>
             <div className="text-sm text-muted-foreground">Aprovados</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-red-600">{estatisticas.reprovados}</div>
+            <div className="text-2xl font-bold text-error">{estatisticas.reprovados}</div>
             <div className="text-sm text-muted-foreground">Reprovados</div>
           </CardContent>
         </Card>
@@ -232,7 +232,7 @@ export function CandidatosTab({
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                className="text-success hover:text-pe-green-dark hover:bg-pe-green-lighter"
                                 onClick={() => onAprovar(candidatura.id)}
                                 disabled={isUpdating}
                                 title="Aprovar"
@@ -242,7 +242,7 @@ export function CandidatosTab({
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                className="text-error hover:text-pe-red-dark hover:bg-pe-red-lighter"
                                 onClick={() => handleReprovarClick(candidatura)}
                                 disabled={isUpdating}
                                 title="Reprovar"

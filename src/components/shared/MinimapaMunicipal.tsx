@@ -42,9 +42,9 @@ export const MinimapaMunicipal: React.FC<MinimapaMunicipalProps> = ({
 
   return (
     <div className={className}>
-      {titulo && <h4 className="text-sm font-semibold text-gray-900 mb-2">{titulo}</h4>}
+      {titulo && <h4 className="text-sm font-semibold text-foreground mb-2">{titulo}</h4>}
 
-      <div className={`border border-gray-200 rounded-lg overflow-hidden bg-white ${altura}`}>
+      <div className={`border border-border rounded-lg overflow-hidden bg-white ${altura}`}>
         <MapContainer
           center={center}
           zoom={8}
@@ -79,7 +79,7 @@ export const MinimapaMunicipal: React.FC<MinimapaMunicipalProps> = ({
               <Tooltip>
                 <div className="text-xs">
                   <p className="font-semibold">{municipio.municipio}</p>
-                  <p className="text-gray-600">{municipio.valor} entidades</p>
+                  <p className="text-muted-foreground">{municipio.valor} entidades</p>
                 </div>
               </Tooltip>
             </CircleMarker>
@@ -90,16 +90,16 @@ export const MinimapaMunicipal: React.FC<MinimapaMunicipalProps> = ({
       {mostrarLegenda && (
         <div className="mt-2 flex gap-2 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-gray-600">Alta densidade (≥70%)</span>
+            <div className="w-3 h-3 rounded-full bg-success" />
+            <span className="text-muted-foreground">Alta densidade (≥70%)</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <span className="text-gray-600">Média (40-69%)</span>
+            <span className="text-muted-foreground">Média (40-69%)</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-red-600" />
-            <span className="text-gray-600">Baixa (&lt;40%)</span>
+            <div className="w-3 h-3 rounded-full bg-error" />
+            <span className="text-muted-foreground">Baixa (&lt;40%)</span>
           </div>
         </div>
       )}

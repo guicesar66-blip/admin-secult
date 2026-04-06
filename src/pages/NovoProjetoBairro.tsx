@@ -250,8 +250,8 @@ const NovoProjetoBairro = () => {
             <CardHeader className="border-b bg-gradient-to-r from-purple-500/10 to-purple-500/5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-purple-500/20">
-                    <MapPin className="h-5 w-5 text-purple-600" />
+                  <div className="p-2 rounded-full bg-primary/20">
+                    <MapPin className="h-5 w-5 text-pe-blue-dark" />
                   </div>
                   <div>
                     <CardTitle className="text-lg">Criar Projeto de Bairro</CardTitle>
@@ -282,14 +282,14 @@ const NovoProjetoBairro = () => {
                     >
                       <div
                         className={`p-2 rounded-full h-8 w-8 flex items-center justify-center shrink-0 ${
-                          message.role === "assistant" ? "bg-purple-500/20 text-purple-600" : "bg-muted"
+                          message.role === "assistant" ? "bg-primary/20 text-pe-blue-dark" : "bg-muted"
                         }`}
                       >
                         {message.role === "assistant" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
                       </div>
                       <div
                         className={`rounded-2xl px-4 py-3 max-w-[80%] ${
-                          message.role === "assistant" ? "bg-muted" : "bg-purple-600 text-white"
+                          message.role === "assistant" ? "bg-muted" : "bg-primary-dark text-white"
                         }`}
                       >
                         <p className="text-sm whitespace-pre-wrap">
@@ -301,7 +301,7 @@ const NovoProjetoBairro = () => {
 
                   {isTyping && (
                     <div className="flex gap-3">
-                      <div className="p-2 rounded-full h-8 w-8 flex items-center justify-center bg-purple-500/20 text-purple-600">
+                      <div className="p-2 rounded-full h-8 w-8 flex items-center justify-center bg-primary/20 text-pe-blue-dark">
                         <Bot className="h-4 w-4" />
                       </div>
                       <div className="rounded-2xl px-4 py-3 bg-muted">
@@ -327,12 +327,12 @@ const NovoProjetoBairro = () => {
                       className="flex-1 min-h-[60px] resize-none"
                       disabled={isTyping}
                     />
-                    <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping} className="bg-purple-600 hover:bg-purple-700">
+                    <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping} className="bg-primary-dark hover:bg-purple-700">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
                 ) : (
-                  <Button onClick={finalizarProjeto} disabled={isSaving} className="w-full gap-2 bg-purple-600 hover:bg-purple-700">
+                  <Button onClick={finalizarProjeto} disabled={isSaving} className="w-full gap-2 bg-primary-dark hover:bg-purple-700">
                     {isSaving ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -353,9 +353,9 @@ const NovoProjetoBairro = () => {
 
         <div className="w-80 shrink-0">
           <Card className="h-full overflow-hidden">
-            <CardHeader className="border-b bg-purple-500/10">
+            <CardHeader className="border-b bg-primary/10">
               <CardTitle className="text-lg flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-purple-600" />
+                <MapPin className="h-5 w-5 text-pe-blue-dark" />
                 Estrutura do Projeto
               </CardTitle>
             </CardHeader>
@@ -370,7 +370,7 @@ const NovoProjetoBairro = () => {
                       <div
                         key={etapa.id}
                         className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
-                          isComplete ? "bg-emerald-500/10 text-emerald-600" : isCurrent ? "bg-purple-500/10 text-purple-600" : "text-muted-foreground"
+                          isComplete ? "bg-emerald-500/10 text-emerald-600" : isCurrent ? "bg-primary/10 text-pe-blue-dark" : "text-muted-foreground"
                         }`}
                       >
                         {isComplete ? <CheckCircle2 className="h-4 w-4" /> : etapa.icon}

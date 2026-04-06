@@ -81,7 +81,7 @@ export function StepResultados({ data, onChange }: StepResultadosProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Trophy className="h-6 w-6 text-amber-600" />
+          <Trophy className="h-6 w-6 text-accent-dark" />
           Resultados Esperados
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -91,10 +91,10 @@ export function StepResultados({ data, onChange }: StepResultadosProps) {
 
       {/* Sugestões */}
       {data.resultados_quantitativos.length === 0 && (
-        <Card className="bg-amber-500/5 border-amber-500/30">
+        <Card className="bg-accent/5 border-accent/30">
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-amber-600" />
+              <Lightbulb className="h-4 w-4 text-accent-dark" />
               Sugestões baseadas no seu projeto
             </CardTitle>
           </CardHeader>
@@ -297,9 +297,9 @@ export function StepResultados({ data, onChange }: StepResultadosProps) {
       </Card>
 
       {/* Dicas Finais */}
-      <Card className="bg-green-500/5 border-green-500/30">
+      <Card className="bg-success/5 border-success/30">
         <CardContent className="pt-4">
-          <h4 className="font-medium text-sm mb-2 flex items-center gap-2 text-green-700">
+          <h4 className="font-medium text-sm mb-2 flex items-center gap-2 text-pe-green-dark">
             🎉 Você está quase lá!
           </h4>
           <p className="text-sm text-muted-foreground">

@@ -69,7 +69,7 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
     <div className="space-y-6">
       {/* Card de Contexto */}
       {filters && filters.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-900">
+        <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3 text-sm text-blue-900">
           Dados filtrados por: {filters.map(f => f.name).join(', ')}
         </div>
       )}
@@ -198,9 +198,9 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
           </ResponsiveContainer>
         }
         cardResumo={
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-muted-foreground">
             <p>
-              Taxa de informalidade: <strong className="text-gray-900">{
+              Taxa de informalidade: <strong className="text-foreground">{
                 Math.round((demografiaAtual.formalização.informal / demografiaAtual.totalAgentes) * 100)
               }%</strong>
             </p>
@@ -209,7 +209,7 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
       />
 
       {/* Informação contextual */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs text-gray-600">
+      <div className="bg-neutral-50 border border-border rounded-lg p-4 text-xs text-muted-foreground">
         <p>
           Dados coletados com consentimento conforme LGPD. Uso restrito à gestão cultural. Última atualização: {new Date().toLocaleDateString('pt-BR')}
         </p>

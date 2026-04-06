@@ -292,7 +292,7 @@ export default function Projetos() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/evento")} className="gap-3 cursor-pointer">
-                  <Film className="h-4 w-4 text-blue-500" />
+                  <Film className="h-4 w-4 text-primary" />
                   <div>
                     <p className="font-medium">Evento</p>
                     <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
@@ -306,14 +306,14 @@ export default function Projetos() {
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/oficina")} className="gap-3 cursor-pointer">
-                  <GraduationCap className="h-4 w-4 text-amber-500" />
+                  <GraduationCap className="h-4 w-4 text-accent" />
                   <div>
                     <p className="font-medium">Oficinas</p>
                     <p className="text-xs text-muted-foreground">Cursos, workshops, formações</p>
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/espaco")} className="gap-3 cursor-pointer">
-                  <Building2 className="h-4 w-4 text-purple-500" />
+                  <Building2 className="h-4 w-4 text-primary" />
                   <div>
                     <p className="font-medium">Espaço Cultural</p>
                     <p className="text-xs text-muted-foreground">Teatros, museus, galerias, estúdios</p>
@@ -328,7 +328,7 @@ export default function Projetos() {
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/pesquisa")} className="gap-3 cursor-pointer">
-                  <Lightbulb className="h-4 w-4 text-amber-500" />
+                  <Lightbulb className="h-4 w-4 text-accent" />
                   <div>
                     <p className="font-medium">Pesquisa & Ideias</p>
                     <p className="text-xs text-muted-foreground">Sondagens, votações e ideias</p>
@@ -402,7 +402,7 @@ export default function Projetos() {
                 variant={filtro === "em-analise" ? "default" : "outline"}
                 onClick={() => setFiltro("em-analise")}
                 className={cn(
-                  filtro === "em-analise" && "bg-amber-500 hover:bg-amber-600"
+                  filtro === "em-analise" && "bg-accent hover:bg-accent"
                 )}
               >
                 Em Análise ({contarPorStatus("em-analise")})
@@ -553,7 +553,7 @@ export default function Projetos() {
                   {aprovacoesEmPendente.map((item) => (
                     <Card 
                       key={item.id} 
-                      className="border-amber-200/50 hover:shadow-md transition-shadow cursor-pointer"
+                      className="border-accent/30/50 hover:shadow-md transition-shadow cursor-pointer"
                       onClick={() => {
                         setItemDetalhes(item);
                         setDialogDetalhesAberto(true);
@@ -563,7 +563,7 @@ export default function Projetos() {
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className={item.tipo === "projeto" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-purple-50 text-purple-700 border-purple-200"}>
+                              <Badge variant="outline" className={item.tipo === "projeto" ? "bg-neutral-50 text-pe-blue-dark border-neutral-200" : "bg-neutral-50 text-pe-blue-dark border-primary/30"}>
                                 {item.tipo === "projeto" ? "📁 Projeto" : "📋 Edital"}
                               </Badge>
                             </div>
@@ -664,7 +664,7 @@ export default function Projetos() {
                               className={
                                 aprovacao.resultado === "aprovado"
                                   ? "bg-emerald-50 text-emerald-700 border-emerald-200 ml-2"
-                                  : "bg-red-50 text-red-700 border-red-200 ml-2"
+                                  : "bg-pe-red-lighter text-pe-red-dark border-error/30 ml-2"
                               }
                             >
                               {aprovacao.resultado === "aprovado" ? "✓ Aprovado" : "✕ Recusado"}
@@ -686,7 +686,7 @@ export default function Projetos() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-amber-600" />
+              <MessageSquare className="h-5 w-5 text-accent-dark" />
               Justificar Recusa
             </DialogTitle>
             <DialogDescription>
@@ -738,7 +738,7 @@ export default function Projetos() {
             <div className="flex items-center gap-2">
               <Badge 
                 variant="outline" 
-                className={itemDetalhes?.tipo === "projeto" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-purple-50 text-purple-700 border-purple-200"}
+                className={itemDetalhes?.tipo === "projeto" ? "bg-neutral-50 text-pe-blue-dark border-neutral-200" : "bg-neutral-50 text-pe-blue-dark border-primary/30"}
               >
                 {itemDetalhes?.tipo === "projeto" ? "📁 Projeto" : "📋 Edital"}
               </Badge>
@@ -798,12 +798,12 @@ export default function Projetos() {
               </div>
 
               {/* Observações Importantes */}
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded">
+              <div className="bg-pe-yellow-lighter border border-accent/30 p-3 rounded">
                 <div className="flex gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 text-accent-dark flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-semibold text-amber-900">Próximas ações:</p>
-                    <p className="text-xs text-amber-800 mt-1">Revise cuidadosamente as informações antes de aprovar ou recusar. Cada decisão será registrada no histórico.</p>
+                    <p className="text-xs text-pe-orange-dark mt-1">Revise cuidadosamente as informações antes de aprovar ou recusar. Cada decisão será registrada no histórico.</p>
                   </div>
                 </div>
               </div>

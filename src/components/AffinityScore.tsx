@@ -15,7 +15,7 @@ const AffinityScore = ({ score, size = 64 }: AffinityScoreProps) => {
   return (
     <div className="flex flex-col items-center gap-0.5">
       <div
-        className="relative rounded-full bg-white/90 dark:bg-gray-900/90 shadow"
+        className="relative rounded-full bg-white/90 dark:bg-pe-dark/90 shadow"
         style={{ width: size, height: size }}
       >
         <svg

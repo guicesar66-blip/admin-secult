@@ -18,8 +18,8 @@ export function StepObjetivoGeral({ data, onChange }: StepObjetivoGeralProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-amber-500/20">
-          <Target className="h-5 w-5 text-amber-600" />
+        <div className="p-2 rounded-lg bg-accent/20">
+          <Target className="h-5 w-5 text-accent-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Step 2: Objetivo Geral</h2>
@@ -30,12 +30,12 @@ export function StepObjetivoGeral({ data, onChange }: StepObjetivoGeralProps) {
       </div>
 
       {/* Dicas de preenchimento */}
-      <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+      <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
         <div className="flex items-start gap-3">
-          <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5 shrink-0" />
+          <Lightbulb className="h-5 w-5 text-primary mt-0.5 shrink-0" />
           <div className="space-y-2">
-            <p className="text-sm font-medium text-blue-700">Dicas de preenchimento:</p>
-            <ul className="text-sm text-blue-600 space-y-1">
+            <p className="text-sm font-medium text-pe-blue-dark">Dicas de preenchimento:</p>
+            <ul className="text-sm text-primary space-y-1">
               <li>• O objetivo geral deve responder: <strong>O QUE</strong> o projeto vai fazer e <strong>PARA QUEM</strong></li>
               <li>• Use verbos de ação no infinitivo: Capacitar, Formar, Promover, Desenvolver</li>
               <li>• Mencione a quantidade de beneficiários esperada</li>
@@ -59,7 +59,7 @@ export function StepObjetivoGeral({ data, onChange }: StepObjetivoGeralProps) {
         />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Entre 50 e 500 caracteres</span>
-          <span className={charCount < 50 ? "text-amber-600" : charCount > 500 ? "text-destructive" : "text-green-600"}>
+          <span className={charCount < 50 ? "text-accent-dark" : charCount > 500 ? "text-destructive" : "text-success"}>
             {charCount}/500
           </span>
         </div>
@@ -72,17 +72,17 @@ export function StepObjetivoGeral({ data, onChange }: StepObjetivoGeralProps) {
           "Capacitar 40 iniciantes em audiovisual, explorando técnicas tradicionais e uso de celulares, resultando na produção de 5 a 10 vídeos coletivos."
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-700">✓ Verbo de ação</span>
-          <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-700">✓ Quantidade definida</span>
-          <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-700">✓ Resultado mensurável</span>
+          <span className="text-xs px-2 py-1 rounded bg-success/20 text-pe-green-dark">✓ Verbo de ação</span>
+          <span className="text-xs px-2 py-1 rounded bg-success/20 text-pe-green-dark">✓ Quantidade definida</span>
+          <span className="text-xs px-2 py-1 rounded bg-success/20 text-pe-green-dark">✓ Resultado mensurável</span>
         </div>
       </div>
 
       {/* Validação visual */}
       {!validation.isValid && data.objetivo_geral && (
-        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-sm font-medium text-amber-700 mb-2">Pendências:</p>
-          <ul className="text-sm text-amber-600 list-disc list-inside space-y-1">
+        <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+          <p className="text-sm font-medium text-accent-dark mb-2">Pendências:</p>
+          <ul className="text-sm text-accent-dark list-disc list-inside space-y-1">
             {validation.errors.map((error, i) => (
               <li key={i}>{error}</li>
             ))}

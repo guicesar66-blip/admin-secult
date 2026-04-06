@@ -166,12 +166,12 @@ const oportunidadesData: Record<string, OportunidadeDetalhes> = {
 };
 
 const tipoConfig: Record<TipoOportunidade, { label: string; icon: React.ReactNode; color: string }> = {
-  evento: { label: "Evento", icon: <Calendar className="h-5 w-5" />, color: "bg-orange-500" },
+  evento: { label: "Evento", icon: <Calendar className="h-5 w-5" />, color: "bg-warning" },
   ep: { label: "EP/Álbum", icon: <Music className="h-5 w-5" />, color: "bg-pink-500" },
   filme: { label: "Filme/Doc", icon: <Film className="h-5 w-5" />, color: "bg-cyan-500" },
   festival: { label: "Festival", icon: <Users className="h-5 w-5" />, color: "bg-violet-500" },
   exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />, color: "bg-emerald-500" },
-  teatro: { label: "Teatro", icon: <Theater className="h-5 w-5" />, color: "bg-amber-500" },
+  teatro: { label: "Teatro", icon: <Theater className="h-5 w-5" />, color: "bg-accent" },
 };
 
 // Fallback para oportunidades não encontradas
@@ -225,7 +225,7 @@ const OportunidadePublica = () => {
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" size="icon" onClick={() => setLiked(!liked)}>
-              <Heart className={`h-4 w-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+              <Heart className={`h-4 w-4 ${liked ? "fill-red-500 text-error" : ""}`} />
             </Button>
             <Button variant="outline" size="icon">
               <Share2 className="h-4 w-4" />
@@ -307,7 +307,7 @@ const OportunidadePublica = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <Sparkles className="h-5 w-5 text-amber-500" />
+                    <Sparkles className="h-5 w-5 text-accent" />
                     Impacto Cultural
                   </CardTitle>
                 </CardHeader>
@@ -435,7 +435,7 @@ const OportunidadePublica = () => {
                   <div>
                     <p className="font-medium">{oportunidade.responsavel.nome}</p>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Star className="h-3 w-3 text-amber-500" />
+                      <Star className="h-3 w-3 text-accent" />
                       {oportunidade.responsavel.projetos} projetos realizados
                     </div>
                   </div>

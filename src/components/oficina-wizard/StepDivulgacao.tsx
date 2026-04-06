@@ -49,7 +49,7 @@ export function StepDivulgacao({ data, onChange }: StepDivulgacaoProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Megaphone className="h-6 w-6 text-amber-600" />
+          <Megaphone className="h-6 w-6 text-accent-dark" />
           Divulgação e Marca
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -85,9 +85,9 @@ export function StepDivulgacao({ data, onChange }: StepDivulgacaoProps) {
           </div>
 
           {showRedesSociaisWarning && (
-            <Alert className="mt-4 border-amber-500/50 bg-amber-500/10">
-              <AlertCircle className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-amber-800">
+            <Alert className="mt-4 border-accent/50 bg-accent/10">
+              <AlertCircle className="h-4 w-4 text-accent-dark" />
+              <AlertDescription className="text-pe-orange-dark">
                 Para divulgação em redes sociais, prepare conteúdo visual atraente (imagens, vídeos curtos).
               </AlertDescription>
             </Alert>
@@ -140,8 +140,8 @@ export function StepDivulgacao({ data, onChange }: StepDivulgacaoProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Marca CENA automática */}
-          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm">
+          <div className="p-3 rounded-lg bg-accent/10 border border-accent/30 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">
               C
             </div>
             <div className="flex-1">
@@ -196,9 +196,9 @@ export function StepDivulgacao({ data, onChange }: StepDivulgacaoProps) {
               </div>
 
               {marca.tipo === "patrocinador" && !marca.logo_url && (
-                <Alert className="border-amber-500/50 bg-amber-500/10">
-                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                  <AlertDescription className="text-amber-800 text-xs">
+                <Alert className="border-accent/50 bg-accent/10">
+                  <AlertCircle className="h-4 w-4 text-accent-dark" />
+                  <AlertDescription className="text-pe-orange-dark text-xs">
                     Patrocinadores devem ter logo. Upload será disponibilizado em breve.
                   </AlertDescription>
                 </Alert>

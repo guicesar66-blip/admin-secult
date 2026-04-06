@@ -58,7 +58,7 @@ export function StepPublicoCronograma({ data, onChange }: StepPublicoCronogramaP
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Users className="h-6 w-6 text-amber-600" />
+          <Users className="h-6 w-6 text-accent-dark" />
           Público e Cronograma
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -154,9 +154,9 @@ export function StepPublicoCronograma({ data, onChange }: StepPublicoCronogramaP
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Equipe do Projeto</CardTitle>
           {instrutoresAtuais < instrutoresSugeridos && (
-            <Alert className="mt-2 border-amber-500/50 bg-amber-500/10">
-              <Lightbulb className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-amber-800 text-sm">
+            <Alert className="mt-2 border-accent/50 bg-accent/10">
+              <Lightbulb className="h-4 w-4 text-accent-dark" />
+              <AlertDescription className="text-pe-orange-dark text-sm">
                 Sugestão: Para {data.quantidade_participantes} participantes, recomendamos pelo menos {instrutoresSugeridos} instrutor{instrutoresSugeridos > 1 ? "es" : ""}.
               </AlertDescription>
             </Alert>
