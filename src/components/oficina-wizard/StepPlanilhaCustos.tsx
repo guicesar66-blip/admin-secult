@@ -30,8 +30,8 @@ const CATEGORIA_COLORS: Record<string, string> = {
   equipamento: "bg-success",
   locacao: "bg-primary",
   producao: "bg-warning",
-  divulgacao: "bg-pink-500",
-  acessibilidade: "bg-cyan-500",
+  divulgacao: "bg-secondary",
+  acessibilidade: "bg-primary",
   outros: "bg-neutral-500",
 };
 

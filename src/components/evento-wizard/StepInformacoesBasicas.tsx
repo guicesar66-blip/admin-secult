@@ -164,7 +164,7 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
                     className={`cursor-pointer transition-all ${
                       isSelected 
                         ? "bg-primary-dark hover:bg-primary-dark" 
-                        : "hover:bg-neutral-50 hover:border-purple-300"
+                        : "hover:bg-neutral-50 hover:border-primary/40"
                     }`}
                     onClick={() => handleLinguagemSecundariaToggle(linguagem)}
                   >

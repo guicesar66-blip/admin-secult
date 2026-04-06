@@ -80,8 +80,8 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-teal-500/10">
-          <Accessibility className="h-6 w-6 text-teal-600" />
+        <div className="p-3 rounded-xl bg-success/10">
+          <Accessibility className="h-6 w-6 text-success" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Acessibilidade</h2>
@@ -93,9 +93,9 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
 
       {/* Alertas de Regras de Negócio */}
       {isPresencial && (
-        <Alert className="bg-teal-50 border-teal-200">
-          <Lightbulb className="h-4 w-4 text-teal-600" />
-          <AlertDescription className="text-teal-800">
+        <Alert className="bg-pe-green-lighter border-success/30">
+          <Lightbulb className="h-4 w-4 text-success" />
+          <AlertDescription className="text-success-dark">
             Para eventos presenciais, recomenda-se pelo menos <strong>2 recursos de acessibilidade física</strong>.
           </AlertDescription>
         </Alert>
@@ -115,7 +115,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
         <CardContent className="pt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Recursos de Acessibilidade <span className="text-destructive">*</span></h3>
-            <Badge variant="outline" className="text-teal-700 border-teal-300">
+            <Badge variant="outline" className="text-success-dark border-success/40">
               {data.recursos_acessibilidade.length} selecionado(s)
             </Badge>
           </div>
@@ -131,7 +131,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
 
       {/* Momentos com Interpretação em Libras */}
       {temLibras && (
-        <Card className="border-teal-200 bg-teal-50/30">
+        <Card className="border-success/30 bg-pe-green-lighter/30">
           <CardContent className="pt-6 space-y-4">
             <h3 className="font-semibold">Momentos com Interpretação em Libras <span className="text-destructive">*</span></h3>
             <p className="text-sm text-muted-foreground">
@@ -149,7 +149,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
                   <div 
                     key={momento} 
                     className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
-                      isSelected ? "bg-teal-100 border border-teal-300" : "bg-card border"
+                      isSelected ? "bg-pe-green-light border border-success/40" : "bg-card border"
                     }`}
                   >
                     <Checkbox
@@ -192,11 +192,11 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
       </div>
 
       {/* Dicas */}
-      <Card className="border-teal-200 bg-teal-50/50">
+      <Card className="border-success/30 bg-pe-green-lighter/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-teal-600 mt-0.5" />
-            <div className="text-sm text-teal-700 space-y-2">
+            <Lightbulb className="h-5 w-5 text-success mt-0.5" />
+            <div className="text-sm text-success-dark space-y-2">
               <p className="font-medium">Dicas para um evento mais inclusivo:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Comunique os recursos de acessibilidade na divulgação</li>

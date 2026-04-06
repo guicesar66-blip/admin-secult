@@ -52,13 +52,13 @@ const STATUS_CONFIG: Record<
 > = {
   rascunho: {
     label: "Rascunho",
-    badgeColor: "bg-zinc-500/15 text-zinc-600 border-zinc-500/30",
-    cardBorder: "border-zinc-400/30",
-    cardBg: "bg-zinc-500/5",
-    titleColor: "text-zinc-700 dark:text-zinc-300",
+    badgeColor: "bg-muted/80 text-muted-foreground border-border",
+    cardBorder: "border-border",
+    cardBg: "bg-muted/5",
+    titleColor: "text-muted-foreground",
     emoji: "✏️",
     descricao: "Seu projeto foi criado mas ainda não foi submetido a nenhum edital.",
-    pingColor: "bg-zinc-500",
+    pingColor: "bg-muted-foreground",
   },
   submetido: {
     label: "Submetido",
@@ -72,33 +72,33 @@ const STATUS_CONFIG: Record<
   },
   em_analise: {
     label: "Em Análise",
-    badgeColor: "bg-violet-500/15 text-violet-700 border-violet-500/30",
-    cardBorder: "border-violet-500/30",
-    cardBg: "bg-violet-500/5",
-    titleColor: "text-violet-800 dark:text-violet-300",
+    badgeColor: "bg-primary/15 text-primary border-primary/30",
+    cardBorder: "border-primary/30",
+    cardBg: "bg-primary/5",
+    titleColor: "text-primary dark:text-primary",
     emoji: "🔍",
     descricao: "Sua inscrição foi recebida pela SECULT Recife e está sendo avaliada.",
-    pingColor: "bg-violet-500",
+    pingColor: "bg-primary",
   },
   aprovado: {
     label: "Aprovado",
-    badgeColor: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
-    cardBorder: "border-emerald-500/30",
-    cardBg: "bg-emerald-500/5",
-    titleColor: "text-emerald-800 dark:text-emerald-300",
+    badgeColor: "bg-success/15 text-success-dark border-success/30",
+    cardBorder: "border-success/30",
+    cardBg: "bg-success/5",
+    titleColor: "text-success dark:text-success",
     emoji: "✅",
     descricao: "Parabéns! Seu projeto foi selecionado para financiamento pelo edital.",
-    pingColor: "bg-emerald-500",
+    pingColor: "bg-success",
   },
   em_execucao: {
     label: "Em Execução",
-    badgeColor: "bg-sky-500/15 text-sky-700 border-sky-500/30",
-    cardBorder: "border-sky-500/30",
-    cardBg: "bg-sky-500/5",
-    titleColor: "text-sky-800 dark:text-sky-300",
+    badgeColor: "bg-primary/15 text-primary border-primary/30",
+    cardBorder: "border-primary/30",
+    cardBg: "bg-primary/5",
+    titleColor: "text-primary dark:text-primary",
     emoji: "🎵",
     descricao: "Seu projeto está em andamento. Registre as atividades conforme o cronograma aprovado.",
-    pingColor: "bg-sky-500",
+    pingColor: "bg-primary",
   },
   prestacao_enviada: {
     label: "Prestação Enviada",
@@ -367,7 +367,7 @@ const ProjetoDetalhes = () => {
                       {/* Indicador circular */}
                       <div className="z-10 shrink-0">
                         {isCompleted ? (
-                          <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                          <div className="w-9 h-9 rounded-full bg-success text-white flex items-center justify-center shadow-sm">
                             <Check className="h-4 w-4" />
                           </div>
                         ) : isCurrent ? (
@@ -440,7 +440,7 @@ const ProjetoDetalhes = () => {
                         {/* Ação especial do step Concluído */}
                         {step.id === 7 && isCurrent && (
                           <div className="mt-3 flex items-center gap-2 flex-wrap">
-                            <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white text-xs">
+                            <Badge className="bg-success hover:bg-pe-green-lighter0 text-white text-xs">
                               ✓ Concluído com sucesso
                             </Badge>
                             <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
@@ -511,7 +511,7 @@ const ProjetoDetalhes = () => {
                     </div>
                     <Badge
                       variant="outline"
-                      className="shrink-0 ml-3 text-emerald-600 border-emerald-500/30 bg-emerald-500/10 text-xs"
+                      className="shrink-0 ml-3 text-success border-success/30 bg-success/10 text-xs"
                     >
                       ✓ {doc.status}
                     </Badge>
@@ -560,9 +560,9 @@ const ProjetoDetalhes = () => {
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
                 isDragging
-                  ? "border-violet-500 bg-violet-500/5"
+                  ? "border-primary bg-primary/5"
                   : uploadFile
-                  ? "border-emerald-500 bg-emerald-500/5"
+                  ? "border-success bg-success/5"
                   : "border-border hover:border-muted-foreground/50"
               }`}
               onClick={() => fileInputRef.current?.click()}
@@ -590,7 +590,7 @@ const ProjetoDetalhes = () => {
               />
               {uploadFile ? (
                 <div className="flex flex-col items-center gap-2">
-                  <FileText className="h-8 w-8 text-emerald-500" />
+                  <FileText className="h-8 w-8 text-success" />
                   <p className="text-sm font-medium">{uploadFile.name}</p>
                   <p className="text-xs text-muted-foreground">
                     {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
@@ -631,7 +631,7 @@ const ProjetoDetalhes = () => {
             <Button
               disabled={!uploadFile || isSending}
               onClick={handleUploadSubmit}
-              className="bg-violet-600 hover:bg-violet-700"
+              className="bg-primary hover:bg-primary-dark"
             >
               {isSending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               Enviar documento

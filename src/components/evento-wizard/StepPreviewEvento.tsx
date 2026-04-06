@@ -29,7 +29,7 @@ export function StepPreviewEvento({ data, exibirVitrine, setExibirVitrine, mostr
 
       {/* Card Preview */}
       <Card className="overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+        <div className="h-32 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
           <span className="text-white text-4xl">🎭</span>
         </div>
         <CardContent className="pt-4">

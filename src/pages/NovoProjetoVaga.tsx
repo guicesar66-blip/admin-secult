@@ -125,10 +125,10 @@ const NovoProjetoVaga = () => {
         {/* Sidebar de navegação */}
         <div className="w-72 shrink-0">
           <Card className="h-full overflow-hidden">
-            <CardHeader className="border-b bg-emerald-500/10 pb-4">
+            <CardHeader className="border-b bg-success/10 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-emerald-500/20">
-                  <Briefcase className="h-5 w-5 text-emerald-600" />
+                <div className="p-2 rounded-full bg-success/20">
+                  <Briefcase className="h-5 w-5 text-success" />
                 </div>
                 <div>
                   <p className="font-semibold text-sm">Nova Vaga de Emprego</p>
@@ -156,7 +156,7 @@ const NovoProjetoVaga = () => {
                       onClick={() => handleStepClick(step.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                         isCurrent
-                          ? "bg-emerald-500/10 text-emerald-700 font-medium"
+                          ? "bg-success/10 text-success-dark font-medium"
                           : "hover:bg-muted cursor-pointer text-foreground"
                       }`}
                     >
@@ -165,9 +165,9 @@ const NovoProjetoVaga = () => {
                           hasError
                             ? "bg-pe-red-light text-error"
                             : isCompleted
-                            ? "bg-emerald-500 text-white"
+                            ? "bg-success text-white"
                             : isCurrent
-                            ? "bg-emerald-600 text-white"
+                            ? "bg-success text-white"
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
@@ -195,7 +195,7 @@ const NovoProjetoVaga = () => {
             <CardHeader className="border-b shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600">
+                  <div className="p-2 rounded-lg bg-success/10 text-success">
                     {STEP_ICONS[currentStepInfo.icon]}
                   </div>
                   <div>
@@ -233,7 +233,7 @@ const NovoProjetoVaga = () => {
                     <Button
                       onClick={handleNext}
                       disabled={!isCurrentStepValid}
-                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                      className="gap-2 bg-success hover:bg-success-dark"
                     >
                       Próximo
                       <ArrowRight className="h-4 w-4" />
@@ -242,7 +242,7 @@ const NovoProjetoVaga = () => {
                     <Button
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                      className="gap-2 bg-success hover:bg-success-dark"
                     >
                       {isSaving ? (
                         <>

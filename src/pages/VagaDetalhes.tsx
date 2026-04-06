@@ -7,8 +7,8 @@ import { getVagaById } from "@/data/mockVagas";
 
 const tipoColor = {
   presencial: "bg-primary/20 text-primary border-primary/30",
-  remoto: "bg-primary/20 text-pe-blue-dark border-purple-500/30",
-  hibrido: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30",
+  remoto: "bg-primary/20 text-pe-blue-dark border-primary/30",
+  hibrido: "bg-success/20 text-success border-success/30",
 };
 
 export default function VagaDetalhes() {
@@ -69,7 +69,7 @@ export default function VagaDetalhes() {
               )}
               {vaga.salario && (
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                  <DollarSign className="h-5 w-5 text-success flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Salário</p>
                     <p className="font-semibold text-sm">
@@ -161,7 +161,7 @@ export default function VagaDetalhes() {
               <ul className="space-y-3">
                 {vaga.beneficios.map((ben, idx) => (
                   <li key={idx} className="flex items-start gap-3">
-                    <div className="h-5 w-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                    <div className="h-5 w-5 rounded-full bg-pe-green-light text-success flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
                       ★
                     </div>
                     <span>{ben}</span>

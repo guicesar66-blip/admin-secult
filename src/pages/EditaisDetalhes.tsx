@@ -53,13 +53,13 @@ export function EditaisDetalhes() {
         <Card
           className={cn(
             "border-2 bg-gradient-to-br from-purple-50 to-violet-50",
-            "border-purple-300 shadow-lg"
+            "border-primary/40 shadow-lg"
           )}
         >
           <CardContent className="pt-6 space-y-6">
             {/* Badge e título */}
             <div className="space-y-3">
-              <Badge className="bg-violet-600 text-white hover:bg-violet-700">
+              <Badge className="bg-primary text-white hover:bg-primary-dark">
                 Inscrições abertas
               </Badge>
               <h2 className="text-3xl font-bold text-foreground">
@@ -175,7 +175,7 @@ export function EditaisDetalhes() {
         <div className="max-w-5xl mx-auto">
           <Button
             onClick={handleInscrever}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white h-12 text-base font-semibold"
+            className="w-full bg-primary hover:bg-primary-dark text-white h-12 text-base font-semibold"
           >
             Inscrever meu projeto →
           </Button>

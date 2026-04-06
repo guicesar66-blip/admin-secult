@@ -18,8 +18,8 @@ export function StepCargaHoraria({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-emerald-500/10">
-          <Clock className="h-6 w-6 text-emerald-600" />
+        <div className="p-3 rounded-xl bg-success/10">
+          <Clock className="h-6 w-6 text-success" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Carga Horária e Período</h2>
@@ -29,13 +29,13 @@ export function StepCargaHoraria({ data, onChange }: Props) {
         </div>
       </div>
 
-      <Card className="border-emerald-200 bg-emerald-50/50">
+      <Card className="border-success/30 bg-pe-green-lighter/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
+            <Lightbulb className="h-5 w-5 text-success mt-0.5 shrink-0" />
             <div className="text-sm space-y-1">
-              <p className="font-medium text-emerald-900">Dica:</p>
-              <p className="text-emerald-700">
+              <p className="font-medium text-foreground">Dica:</p>
+              <p className="text-success-dark">
                 Informe com clareza o regime de trabalho. Candidatos da área cultural frequentemente
                 buscam flexibilidade — seja transparente sobre as expectativas.
               </p>

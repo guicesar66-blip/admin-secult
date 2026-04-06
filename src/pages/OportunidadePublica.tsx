@@ -167,10 +167,10 @@ const oportunidadesData: Record<string, OportunidadeDetalhes> = {
 
 const tipoConfig: Record<TipoOportunidade, { label: string; icon: React.ReactNode; color: string }> = {
   evento: { label: "Evento", icon: <Calendar className="h-5 w-5" />, color: "bg-warning" },
-  ep: { label: "EP/Álbum", icon: <Music className="h-5 w-5" />, color: "bg-pink-500" },
-  filme: { label: "Filme/Doc", icon: <Film className="h-5 w-5" />, color: "bg-cyan-500" },
-  festival: { label: "Festival", icon: <Users className="h-5 w-5" />, color: "bg-violet-500" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />, color: "bg-emerald-500" },
+  ep: { label: "EP/Álbum", icon: <Music className="h-5 w-5" />, color: "bg-secondary" },
+  filme: { label: "Filme/Doc", icon: <Film className="h-5 w-5" />, color: "bg-primary" },
+  festival: { label: "Festival", icon: <Users className="h-5 w-5" />, color: "bg-primary" },
+  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />, color: "bg-success" },
   teatro: { label: "Teatro", icon: <Theater className="h-5 w-5" />, color: "bg-accent" },
 };
 
@@ -356,7 +356,7 @@ const OportunidadePublica = () => {
                     {oportunidade.timeline.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          item.concluida ? "bg-emerald-500 text-white" : "bg-muted text-muted-foreground"
+                          item.concluida ? "bg-success text-white" : "bg-muted text-muted-foreground"
                         }`}>
                           {item.concluida ? <CheckCircle2 className="h-4 w-4" /> : idx + 1}
                         </div>
@@ -380,7 +380,7 @@ const OportunidadePublica = () => {
             <Card className="border-primary/30 sticky top-20">
               <CardContent className="p-6 space-y-4">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-emerald-500">
+                  <p className="text-3xl font-bold text-success">
                     R$ {oportunidade.arrecadado.toLocaleString("pt-BR")}
                   </p>
                   <p className="text-sm text-muted-foreground">

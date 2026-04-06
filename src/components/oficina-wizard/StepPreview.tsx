@@ -148,8 +148,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Megaphone,
       title: "Divulgação e Marca",
-      color: "text-pink-600",
-      bgColor: "bg-pink-50",
+      color: "text-secondary",
+      bgColor: "bg-pe-red-lighter",
       content: (
         <div className="space-y-2">
           <div className="flex flex-wrap gap-1">
@@ -175,8 +175,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Radio,
       title: "Plano de Mídia",
-      color: "text-cyan-600",
-      bgColor: "bg-cyan-50",
+      color: "text-primary",
+      bgColor: "bg-pe-blue-lighter",
       content: (
         <div className="space-y-2">
           <p className="text-sm line-clamp-2">
@@ -195,8 +195,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Accessibility,
       title: "Acessibilidade",
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
+      color: "text-primary",
+      bgColor: "bg-pe-blue-lighter",
       content: (
         <div className="space-y-2">
           <div className="flex flex-wrap gap-1">
@@ -236,8 +236,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Users,
       title: "Público e Cronograma",
-      color: "text-teal-600",
-      bgColor: "bg-teal-50",
+      color: "text-success",
+      bgColor: "bg-pe-green-lighter",
       content: (
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-2 text-sm">
@@ -276,11 +276,11 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: DollarSign,
       title: "Orçamento",
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
+      color: "text-success",
+      bgColor: "bg-pe-green-lighter",
       content: (
         <div className="space-y-2">
-          <div className="text-2xl font-bold text-emerald-600">
+          <div className="text-2xl font-bold text-success">
             {formatCurrency(data.orcamento_total)}
           </div>
           <div className="text-sm text-muted-foreground">
@@ -335,7 +335,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-accent to-warning flex items-center justify-center">
           <Eye className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -347,7 +347,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
       </div>
 
       {/* Título destacado */}
-      <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-accent/30">
+      <Card className="bg-gradient-to-r from-accent/10 to-warning/10 border-accent/30">
         <CardContent className="py-6">
           <h1 className="text-3xl font-bold text-center">{data.titulo || "Projeto sem título"}</h1>
           <div className="flex items-center justify-center gap-3 mt-3">
@@ -384,7 +384,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
       <Separator />
 
       {/* Opções de publicação */}
-      <Card className="border-2 border-dashed border-amber-300 bg-pe-yellow-lighter/50">
+      <Card className="border-2 border-dashed border-accent/50 bg-pe-yellow-lighter/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-accent-dark" />

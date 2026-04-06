@@ -33,7 +33,7 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
   const corClasses = {
     blue: 'border-neutral-200 bg-neutral-50',
     green: 'border-success/30 bg-pe-green-lighter',
-    orange: 'border-orange-200 bg-pe-orange-lighter',
+    orange: 'border-warning/30 bg-pe-orange-lighter',
     red: 'border-error/30 bg-pe-red-lighter',
   };
 

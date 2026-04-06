@@ -191,7 +191,7 @@ export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [], f
             <CardTitle className="text-base font-semibold flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Comentários da Comunidade</CardTitle>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm">
-                <Star className="h-4 w-4 text-accent fill-amber-500" />
+                <Star className="h-4 w-4 text-accent fill-accent" />
                 <span>Artistas: <strong>{avaliacaoArtistas.media}/5</strong> ({avaliacaoArtistas.total})</span>
                 <span className="text-muted-foreground">·</span>
                 <span>Cidadãos: <strong>{avaliacaoCidadaos.media}/5</strong> ({avaliacaoCidadaos.total})</span>
@@ -229,7 +229,7 @@ export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [], f
                     <p className="text-sm text-muted-foreground mt-1">"{c.texto}"</p>
                     <div className="flex items-center gap-0.5 mt-1">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-accent fill-amber-500" : "text-muted-foreground/30"}`} />
+                        <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-accent fill-accent" : "text-muted-foreground/30"}`} />
                       ))}
                     </div>
                   </div>

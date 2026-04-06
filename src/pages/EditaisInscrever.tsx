@@ -105,9 +105,9 @@ function ProgressBar({ currentStep, onStepClick }: ProgressBarProps) {
             className={cn(
               "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
               currentStep > step.id
-                ? "bg-emerald-500 text-white shadow-sm cursor-pointer hover:bg-emerald-600"
+                ? "bg-success text-white shadow-sm cursor-pointer hover:bg-success"
                 : currentStep === step.id
-                ? "bg-violet-600 text-white shadow-md"
+                ? "bg-primary text-white shadow-md"
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             )}
           >
@@ -117,7 +117,7 @@ function ProgressBar({ currentStep, onStepClick }: ProgressBarProps) {
             <div
               className={cn(
                 "flex-1 h-0.5 mt-4 mx-2 transition-all",
-                currentStep > step.id ? "bg-emerald-500" : "bg-border"
+                currentStep > step.id ? "bg-success" : "bg-border"
               )}
             />
           )}
@@ -179,7 +179,7 @@ function Etapa1({ projeto, setProjeto, edital }: Etapa1Props) {
               <span
                 className={cn(
                   "font-medium",
-                  descricaoAtingeMinimoEmaximo ? "text-emerald-600" : "text-muted-foreground"
+                  descricaoAtingeMinimoEmaximo ? "text-success" : "text-muted-foreground"
                 )}
               >
                 {projeto.descricao.length} caracteres
@@ -204,7 +204,7 @@ function Etapa1({ projeto, setProjeto, edital }: Etapa1Props) {
                 className="text-base bg-muted cursor-not-allowed"
               />
               <div className="absolute top-3 right-3">
-                <Badge className="bg-violet-100 text-violet-700 border-0">
+                <Badge className="bg-pe-blue-light text-primary border-0">
                   Herdado do edital
                 </Badge>
               </div>
@@ -237,7 +237,7 @@ function Etapa1({ projeto, setProjeto, edital }: Etapa1Props) {
               {ODS_LIST.map((ods) => (
                 <label
                   key={ods.id}
-                  className="flex items-center gap-2 p-3 rounded border border-border cursor-pointer hover:bg-violet-50 transition-colors"
+                  className="flex items-center gap-2 p-3 rounded border border-border cursor-pointer hover:bg-pe-blue-lighter transition-colors"
                 >
                   <Checkbox
                     checked={projeto.ods.includes(ods.id)}
@@ -282,7 +282,7 @@ function Etapa1({ projeto, setProjeto, edital }: Etapa1Props) {
               className={cn(
                 "flex items-center gap-2 text-sm font-medium p-3 rounded mt-2",
                 projeto.orcamento > 0 && projeto.orcamento <= 50000
-                  ? "bg-emerald-50 text-emerald-700"
+                  ? "bg-pe-green-lighter text-success-dark"
                   : projeto.orcamento > 50000
                   ? "bg-pe-yellow-lighter text-accent-dark"
                   : "bg-muted text-muted-foreground"
@@ -357,7 +357,7 @@ function Etapa2({ documentos, setDocumentos, edital }: Etapa2Props) {
         {documentos.map((doc) => (
           <Card
             key={doc.id}
-            className="border-2 border-dashed border-border hover:border-violet-400 transition-colors"
+            className="border-2 border-dashed border-border hover:border-primary/50 transition-colors"
           >
             <CardContent className="pt-6">
               <div className="space-y-4">
@@ -376,9 +376,9 @@ function Etapa2({ documentos, setDocumentos, edital }: Etapa2Props) {
                 </div>
 
                 {doc.arquivo ? (
-                  <div className="flex items-center justify-between p-3 rounded bg-emerald-50 border border-emerald-200">
+                  <div className="flex items-center justify-between p-3 rounded bg-pe-green-lighter border border-success/30">
                     <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-emerald-600" />
+                      <Check className="h-5 w-5 text-success" />
                       <div>
                         <p className="text-sm font-medium text-foreground">
                           {doc.arquivo.name}
@@ -435,7 +435,7 @@ function Etapa2({ documentos, setDocumentos, edital }: Etapa2Props) {
         className={cn(
           "flex items-center gap-2 text-sm font-medium p-4 rounded-lg border",
           obrigatoriosCompletos
-            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+            ? "bg-pe-green-lighter text-success-dark border-success/30"
             : "bg-pe-yellow-lighter text-accent-dark border-accent/30"
         )}
       >
@@ -536,7 +536,7 @@ function Etapa3({ projeto, documentos, edital, termos, setTermos }: Etapa3Props)
               R$ {projeto.orcamento.toLocaleString("pt-BR")}
             </p>
             {projeto.orcamento <= 50000 && (
-              <p className="text-xs text-emerald-600 font-medium mt-1">
+              <p className="text-xs text-success font-medium mt-1">
                 ✓ Dentro do limite
               </p>
             )}
@@ -557,7 +557,7 @@ function Etapa3({ projeto, documentos, edital, termos, setTermos }: Etapa3Props)
                   key={doc.id}
                   className="flex items-center gap-2 text-sm text-foreground"
                 >
-                  <Check className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                  <Check className="h-4 w-4 text-success flex-shrink-0" />
                   {doc.arquivo?.name}
                 </li>
               ))}
@@ -567,7 +567,7 @@ function Etapa3({ projeto, documentos, edital, termos, setTermos }: Etapa3Props)
       )}
 
       {/* Checkbox de termos */}
-      <Card className="border-violet-200 bg-violet-50/50">
+      <Card className="border-primary/30 bg-pe-blue-lighter/50">
         <CardContent className="pt-6">
           <label className="flex items-start gap-3 cursor-pointer">
             <Checkbox
@@ -605,8 +605,8 @@ function Etapa4({ projeto, edital, protocol }: Etapa4Props) {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       {/* Ícone de sucesso */}
       <div className="mb-8 animate-in zoom-in duration-500">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center">
-          <Check className="h-10 w-10 text-emerald-600" />
+        <div className="w-20 h-20 rounded-full bg-pe-green-light flex items-center justify-center">
+          <Check className="h-10 w-10 text-success" />
         </div>
       </div>
 
@@ -623,7 +623,7 @@ function Etapa4({ projeto, edital, protocol }: Etapa4Props) {
         </div>
 
         {/* Card de protocolo */}
-        <Card className="border-l-4 border-l-emerald-500 bg-emerald-50/30">
+        <Card className="border-l-4 border-l-emerald-500 bg-pe-green-lighter/30">
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground mb-1">Protocolo de inscrição</p>
             <p className="text-3xl font-bold text-foreground mb-4 font-mono">{protocol}</p>
@@ -645,7 +645,7 @@ function Etapa4({ projeto, edital, protocol }: Etapa4Props) {
           <p className="text-sm font-semibold text-foreground mb-4">O que acontece agora:</p>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
-              <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+              <Check className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-foreground">Inscrição recebida</p>
                 <p className="text-xs text-muted-foreground">
@@ -686,7 +686,7 @@ function Etapa4({ projeto, edital, protocol }: Etapa4Props) {
           {/* Botão final */}
         <Button
           onClick={() => navigate("/projetos")}
-          className="w-full bg-violet-600 hover:bg-violet-700 text-white h-11 text-base font-semibold mt-6"
+          className="w-full bg-primary hover:bg-primary-dark text-white h-11 text-base font-semibold mt-6"
         >
           Voltar aos meus projetos
         </Button>
@@ -814,7 +814,7 @@ export function EditaisInscrever() {
 
             {/* Step Title and Badge */}
             <div className="space-y-2">
-              <Badge variant="outline" className="bg-violet-100 text-violet-700 border-0">
+              <Badge variant="outline" className="bg-pe-blue-light text-primary border-0">
                 {edital.titulo}
               </Badge>
             </div>
@@ -863,7 +863,7 @@ export function EditaisInscrever() {
             {currentStep < 3 && (
               <Button
                 onClick={handleProximaEtapa}
-                className="bg-violet-600 hover:bg-violet-700 text-white gap-2"
+                className="bg-primary hover:bg-primary-dark text-white gap-2"
               >
                 Próxima etapa
                 <ArrowLeft className="h-4 w-4 rotate-180" />
@@ -873,7 +873,7 @@ export function EditaisInscrever() {
               <Button
                 onClick={handleEnviarInscricao}
                 disabled={!termos || enviando}
-                className="bg-violet-600 hover:bg-violet-700 text-white gap-2"
+                className="bg-primary hover:bg-primary-dark text-white gap-2"
               >
                 {enviando && <Loader2 className="h-4 w-4 animate-spin" />}
                 {enviando ? "Enviando..." : "Enviar inscrição"}
