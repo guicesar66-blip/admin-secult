@@ -52,7 +52,7 @@ import {
 } from "@/hooks/useFinanceiro";
 import { usePropostasByOportunidade, PropostaInvestimento } from "@/hooks/usePropostasInvestimento";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/supabase/untyped";
 import { PropostaActionDialog } from "./PropostaActionDialog";
 import { Progress } from "@/components/ui/progress";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
