@@ -10,6 +10,16 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import logoMainDefault from "@/assets/logo-caran.jpg";
 
+function PEArcs() {
+  return (
+    <svg viewBox="0 0 400 400" className="absolute bottom-0 left-0 w-80 h-80 opacity-20">
+      <path d="M 0 400 A 350 350 0 0 1 350 50" fill="none" stroke="#C41200" strokeWidth="8" />
+      <path d="M 0 400 A 290 290 0 0 1 290 110" fill="none" stroke="#FFBD0C" strokeWidth="8" />
+      <path d="M 0 400 A 230 230 0 0 1 230 170" fill="none" stroke="#00A84F" strokeWidth="8" />
+    </svg>
+  );
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -17,22 +27,20 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const { config } = useWhiteLabel();
-  
-  const logoMain = config.logoMain || logoMainDefault;
-  const clientName = config.clientName || 'Cenna';
 
-  // Check if user is already logged in
+  const logoMain = config.logoMain || logoMainDefault;
+  const clientName = config.clientName || "Cenna";
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          // Check if user is admin
-          checkAdminRole(session.user.id);
-        } else {
-          setCheckingAuth(false);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      } else {
+        setCheckingAuth(false);
       }
-    );
+    });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -48,47 +56,40 @@ export default function Login() {
   const checkAdminRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
         .single();
 
       if (error) {
-        console.error('Error checking role:', error);
         setCheckingAuth(false);
         return;
       }
 
-      if (data?.role === 'admin') {
+      if (data?.role === "admin") {
         navigate("/dashboard", { replace: true });
       } else {
-        // User exists but is not admin
         toast.error("Acesso restrito a administradores");
         await supabase.auth.signOut();
         setCheckingAuth(false);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
       setCheckingAuth(false);
     }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!email || !password) {
       toast.error("Por favor, preencha todos os campos");
       return;
     }
-
     setLoading(true);
-
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
-
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
           toast.error("Email ou senha incorretos");
@@ -100,13 +101,11 @@ export default function Login() {
         setLoading(false);
         return;
       }
-
       if (data.user) {
-        // Check if user has admin role
         const { data: roleData, error: roleError } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', data.user.id)
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
           .single();
 
         if (roleError || !roleData) {
@@ -115,19 +114,16 @@ export default function Login() {
           setLoading(false);
           return;
         }
-
-        if (roleData.role !== 'admin') {
-          toast.error("Acesso restrito a administradores. Esta área é apenas para gestores da plataforma.");
+        if (roleData.role !== "admin") {
+          toast.error("Acesso restrito a administradores.");
           await supabase.auth.signOut();
           setLoading(false);
           return;
         }
-
         toast.success("Login realizado com sucesso!");
         navigate("/dashboard", { replace: true });
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
       toast.error("Erro ao fazer login. Tente novamente.");
       setLoading(false);
     }
@@ -135,101 +131,100 @@ export default function Login() {
 
   if (checkingAuth) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background">
+      <div className="flex min-h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-4">
-      <div className="w-full max-w-md">
-        {/* Logo e Título */}
-        <div className="mb-8 text-center">
-          <div className="mb-6 flex justify-center">
-            <img 
-              src={logoMain} 
-              alt={clientName} 
-              className="h-48 w-auto"
-            />
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Plataforma de Gestão Cultural
+    <div className="flex min-h-screen w-full">
+      {/* Left — Visual / Hero */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center"
+        style={{ background: "linear-gradient(160deg, #1A2A4A 0%, #3567C4 60%, #C41200 100%)" }}
+      >
+        <PEArcs />
+        <div className="relative z-10 text-center px-12">
+          <h1 className="text-4xl font-bold text-white mb-4">Das Raízes aos Dados</h1>
+          <p className="text-white/75 text-lg max-w-md mx-auto">
+            Plataforma de Gestão Cultural do Estado de Pernambuco
           </p>
         </div>
+        {/* Star decoration */}
+        <svg viewBox="0 0 100 100" className="absolute top-12 right-12 w-16 h-16 opacity-30">
+          <polygon points="50,5 61,35 95,35 67,55 78,90 50,70 22,90 33,55 5,35 39,35" fill="#FFBD0C" />
+        </svg>
+      </div>
 
-        {/* Card de Login */}
-        <div className="rounded-lg border border-border bg-card p-8 shadow-elevated">
-          <h2 className="mb-6 text-xl font-semibold text-card-foreground">
-            Acesso Administrativo
-          </h2>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email Institucional</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-                className="mt-1.5"
-              />
+      {/* Right — Form */}
+      <div className="flex-1 flex items-center justify-center bg-card p-8">
+        <div className="w-full max-w-md">
+          <div className="mb-8 text-center">
+            <div className="mb-6 flex justify-center">
+              <img src={logoMain} alt={clientName} className="h-48 w-auto" />
             </div>
+            <p className="text-sm text-muted-foreground">Plataforma de Gestão Cultural</p>
+          </div>
 
-            <div>
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                className="mt-1.5"
-              />
-            </div>
+          <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
+            <h2 className="mb-6 text-xl font-semibold text-foreground">Acesso Administrativo</h2>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox id="remember" disabled={loading} />
-              <label
-                htmlFor="remember"
-                className="text-sm text-muted-foreground cursor-pointer"
-              >
-                Lembrar-me
-              </label>
-            </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email Institucional</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="mt-1.5"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="remember" disabled={loading} />
+                <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+                  Lembrar-me
+                </label>
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Entrando...
+                  </>
+                ) : (
+                  "Entrar"
+                )}
+              </Button>
+              <div className="text-center">
+                <a href="#" className="text-sm text-primary hover:text-primary-hover transition-smooth">
+                  Esqueci minha senha
+                </a>
+              </div>
+            </form>
+          </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Entrando...
-                </>
-              ) : (
-                "Entrar"
-              )}
-            </Button>
-
-            <div className="text-center">
-              <a
-                href="#"
-                className="text-sm text-primary hover:text-primary-hover transition-smooth"
-              >
-                Esqueci minha senha
-              </a>
-            </div>
-          </form>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <span>© 2025 {clientName}</span>
-          <span>•</span>
-          <span>Todos os direitos reservados</span>
+          <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <span>© 2025 {clientName}</span>
+            <span>•</span>
+            <span>Todos os direitos reservados</span>
+          </div>
         </div>
       </div>
     </div>
