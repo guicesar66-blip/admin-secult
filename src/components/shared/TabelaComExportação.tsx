@@ -53,7 +53,7 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
   const totalPaginas = Math.ceil(dados.length / itensPorPagina);
 
   return (
-    <div className={`border border-border rounded-lg bg-white ${className}`}>
+    <div className={`border border-border rounded-lg bg-card ${className}`}>
       {/* Header */}
       {(titulo || onExportar || busca) && (
         <div className="p-4 border-b border-border">
@@ -62,7 +62,7 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
             {onExportar && (
               <button
                 onClick={onExportar}
-                className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-neutral-700 bg-white border border-border rounded hover:bg-neutral-50 transition-colors"
+                className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-neutral-700 bg-card border border-border rounded hover:bg-neutral-50 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Exportar CSV

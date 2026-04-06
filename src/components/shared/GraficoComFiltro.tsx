@@ -31,7 +31,7 @@ export const GraficoComFiltro: React.FC<GraficoComFiltroProps> = ({
 
   if (carregando) {
     return (
-      <div className={`border border-border rounded-lg p-8 bg-white flex items-center justify-center ${className}`}>
+      <div className={`border border-border rounded-lg p-8 bg-card flex items-center justify-center ${className}`}>
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-border border-t-blue-600" />
           <p className="mt-2 text-sm text-muted-foreground">Carregando dados...</p>
@@ -41,7 +41,7 @@ export const GraficoComFiltro: React.FC<GraficoComFiltroProps> = ({
   }
 
   return (
-    <div className={`border border-border rounded-lg p-4 bg-white ${className}`}>
+    <div className={`border border-border rounded-lg p-4 bg-card ${className}`}>
       {/* Header */}
       {(titulo || descricao) && (
         <div className="mb-4 pb-4 border-b border-neutral-100">

@@ -149,7 +149,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
                   <div 
                     key={momento} 
                     className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
-                      isSelected ? "bg-teal-100 border border-teal-300" : "bg-white border"
+                      isSelected ? "bg-teal-100 border border-teal-300" : "bg-card border"
                     }`}
                   >
                     <Checkbox

@@ -33,7 +33,7 @@ export const LegendaDinamica: React.FC<LegendaDinamicaProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg border border-border p-4 ${posiçãoClasses[posicao]} ${className}`}
+      className={`bg-card rounded-lg shadow-lg border border-border p-4 ${posiçãoClasses[posicao]} ${className}`}
     >
       {/* Título */}
       <div className="mb-3 pb-2 border-b border-border">

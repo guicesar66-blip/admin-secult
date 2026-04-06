@@ -427,7 +427,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
                 />
               </div>
 
-              <div className="rounded-lg bg-white p-4 border">
+              <div className="rounded-lg bg-card p-4 border">
                 <p className="text-sm font-medium mb-2">Meta de Captação</p>
                 <p className="text-2xl font-bold text-accent-dark">
                   {formatCurrency(data.orcamento_total)}

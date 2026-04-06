@@ -21,7 +21,7 @@ export const BlocoSocioeconômico: React.FC<BlocoSocioeconômicoProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`border border-border rounded-lg p-4 bg-white ${className}`}>
+    <div className={`border border-border rounded-lg p-4 bg-card ${className}`}>
       {/* Header com toggle */}
       <button
         onClick={onToggleExpandir}

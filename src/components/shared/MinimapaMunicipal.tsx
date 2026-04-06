@@ -44,7 +44,7 @@ export const MinimapaMunicipal: React.FC<MinimapaMunicipalProps> = ({
     <div className={className}>
       {titulo && <h4 className="text-sm font-semibold text-foreground mb-2">{titulo}</h4>}
 
-      <div className={`border border-border rounded-lg overflow-hidden bg-white ${altura}`}>
+      <div className={`border border-border rounded-lg overflow-hidden bg-card ${altura}`}>
         <MapContainer
           center={center}
           zoom={8}

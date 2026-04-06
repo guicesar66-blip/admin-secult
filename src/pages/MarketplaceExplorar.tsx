@@ -135,7 +135,7 @@ const MarketplaceExplorar = () => {
           {/* Badge de tipo — canto inferior esquerdo */}
           <Badge
             variant="outline"
-            className={`absolute bottom-3 left-3 ${config.color} bg-white/80 dark:bg-pe-dark/80 backdrop-blur-sm`}
+            className={`absolute bottom-3 left-3 ${config.color} bg-card/80 dark:bg-pe-dark/80 backdrop-blur-sm`}
           >
             {config.label}
           </Badge>

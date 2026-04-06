@@ -407,7 +407,7 @@ const VitrineDetalhes = () => {
           {/* Título sobre o banner */}
           <div className="absolute bottom-0 left-0 right-0 p-6">
             {projeto.areaCultural && (
-              <Badge variant="secondary" className="mb-2 bg-white/20 text-white border-white/30">
+              <Badge variant="secondary" className="mb-2 bg-card/20 text-white border-white/30">
                 {projeto.areaCultural}
               </Badge>
             )}

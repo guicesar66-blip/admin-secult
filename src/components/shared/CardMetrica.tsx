@@ -25,7 +25,7 @@ export const CardMetrica: React.FC<CardMetricaProps> = ({
   className = '',
 }) => {
   const statusClasses = {
-    normal: 'border-border bg-white',
+    normal: 'border-border bg-card',
     alerta: 'border-orange-200 bg-pe-orange-lighter',
     crítico: 'border-error/30 bg-pe-red-lighter',
   };
