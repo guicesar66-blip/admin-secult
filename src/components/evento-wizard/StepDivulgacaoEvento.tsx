@@ -313,7 +313,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
 
       {/* Validação */}
       {!validation.isValid && data.canais_divulgacao.length > 0 && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

@@ -405,7 +405,7 @@ const NovoEdital = () => {
           onChange={(e) => update({ descricao: e.target.value })}
         />
         {data.descricao.length > 0 && data.descricao.length < 100 && (
-          <p className="text-xs text-amber-600">
+          <p className="text-xs text-accent-dark">
             Faltam {100 - data.descricao.length} caracteres para o mínimo.
           </p>
         )}
@@ -693,7 +693,7 @@ const NovoEdital = () => {
 
         {/* Aviso de período curto */}
         {periodoAlerta && !encrAtAbr && (
-          <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-700 dark:text-amber-400">
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-accent/10 border border-accent/20 text-sm text-accent-dark dark:text-accent">
             <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
             Recomendamos pelo menos 15 dias para inscrições. O período atual
             é de {diasInscricao} {diasInscricao === 1 ? "dia" : "dias"}.

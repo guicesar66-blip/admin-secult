@@ -59,7 +59,7 @@ export function StepCustosEvento({ data, onChange }: StepCustosEventoProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-green-500/10"><DollarSign className="h-6 w-6 text-green-600" /></div>
+        <div className="p-3 rounded-xl bg-success/10"><DollarSign className="h-6 w-6 text-success" /></div>
         <div><h2 className="text-xl font-semibold">Planilha de Custos</h2><p className="text-muted-foreground mt-1">Consolide todos os custos do evento.</p></div>
       </div>
 
@@ -71,7 +71,7 @@ export function StepCustosEvento({ data, onChange }: StepCustosEventoProps) {
           </div>
           <div className="space-y-2">
             {data.itens_custo.map(item => (
-              <div key={item.id} className={`flex gap-2 items-center p-2 rounded ${item.fonte === "automatico" ? "bg-blue-50" : ""}`}>
+              <div key={item.id} className={`flex gap-2 items-center p-2 rounded ${item.fonte === "automatico" ? "bg-neutral-50" : ""}`}>
                 <Input placeholder="Item" value={item.item} onChange={e => handleUpdateItem(item.id, { item: e.target.value })} className="flex-1" disabled={item.fonte === "automatico"} />
                 <Select value={item.categoria} onValueChange={v => handleUpdateItem(item.id, { categoria: v as any })} disabled={item.fonte === "automatico"}>
                   <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
@@ -112,14 +112,14 @@ export function StepCustosEvento({ data, onChange }: StepCustosEventoProps) {
               ))}
               <div className="flex justify-between pt-4 border-t">
                 <span>Total Receitas: R$ {totalReceitas.toLocaleString()}</span>
-                <span className={totalReceitas >= totalCustos + reservaTecnica ? "text-green-600" : "text-red-600"}>Saldo: R$ {(totalReceitas - totalCustos - reservaTecnica).toLocaleString()}</span>
+                <span className={totalReceitas >= totalCustos + reservaTecnica ? "text-success" : "text-error"}>Saldo: R$ {(totalReceitas - totalCustos - reservaTecnica).toLocaleString()}</span>
               </div>
             </>
           )}
         </CardContent>
       </Card>
 
-      {!validation.isValid && <Alert variant="destructive" className="bg-red-50 border-red-200"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
+      {!validation.isValid && <Alert variant="destructive" className="bg-pe-red-lighter border-error/30"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
     </div>
   );
 }

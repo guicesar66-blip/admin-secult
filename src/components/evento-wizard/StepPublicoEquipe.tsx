@@ -100,11 +100,11 @@ export function StepPublicoEquipe({ data, onChange }: StepPublicoEquipeProps) {
       {renderEquipeSection("Equipe de Apoio", "apoio", FUNCOES_APOIO)}
 
       {data.publico_esperado > 500 && (
-        <Alert className="bg-amber-50 border-amber-200"><AlertCircle className="h-4 w-4 text-amber-600" /><AlertDescription>Eventos com mais de 500 pessoas devem ter brigadista na equipe.</AlertDescription></Alert>
+        <Alert className="bg-pe-yellow-lighter border-accent/30"><AlertCircle className="h-4 w-4 text-accent-dark" /><AlertDescription>Eventos com mais de 500 pessoas devem ter brigadista na equipe.</AlertDescription></Alert>
       )}
 
       {!validation.isValid && data.perfil_publico && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>
       )}
     </div>
   );

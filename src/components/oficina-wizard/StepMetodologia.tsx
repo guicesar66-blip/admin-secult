@@ -70,8 +70,8 @@ export function StepMetodologia({ data, onChange }: StepMetodologiaProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-amber-500/20">
-          <BookOpen className="h-5 w-5 text-amber-600" />
+        <div className="p-2 rounded-lg bg-accent/20">
+          <BookOpen className="h-5 w-5 text-accent-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Step 4: Metodologia</h2>
@@ -121,7 +121,7 @@ export function StepMetodologia({ data, onChange }: StepMetodologiaProps) {
         />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Mínimo 200 caracteres</span>
-          <span className={charCount < 200 ? "text-amber-600" : charCount > 2000 ? "text-destructive" : "text-green-600"}>
+          <span className={charCount < 200 ? "text-accent-dark" : charCount > 2000 ? "text-destructive" : "text-success"}>
             {charCount}/2000
           </span>
         </div>
@@ -186,7 +186,7 @@ export function StepMetodologia({ data, onChange }: StepMetodologiaProps) {
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/20 text-amber-600 text-sm font-medium">
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/20 text-accent-dark text-sm font-medium">
                         {index + 1}
                       </span>
                       <div>
@@ -274,9 +274,9 @@ export function StepMetodologia({ data, onChange }: StepMetodologiaProps) {
 
       {/* Validação visual */}
       {!validation.isValid && (data.metodologia_descricao || data.etapas_encontros.length > 0) && (
-        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-sm font-medium text-amber-700 mb-2">Pendências:</p>
-          <ul className="text-sm text-amber-600 list-disc list-inside space-y-1">
+        <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+          <p className="text-sm font-medium text-accent-dark mb-2">Pendências:</p>
+          <ul className="text-sm text-accent-dark list-disc list-inside space-y-1">
             {validation.errors.map((error, i) => (
               <li key={i}>{error}</li>
             ))}

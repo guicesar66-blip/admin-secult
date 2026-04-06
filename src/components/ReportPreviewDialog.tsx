@@ -266,7 +266,7 @@ export function ReportPreviewDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 p-6 bg-white text-black rounded-lg border-2">
+        <div className="mt-4 p-6 bg-card text-black rounded-lg border-2">
           {getReportContent()}
         </div>
 

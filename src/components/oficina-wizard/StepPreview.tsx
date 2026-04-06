@@ -58,8 +58,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: FileText,
       title: "Justificativa",
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-primary",
+      bgColor: "bg-neutral-50",
       content: (
         <div className="space-y-3">
           <div>
@@ -67,7 +67,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
             <p className="font-medium">{data.titulo || "—"}</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="bg-amber-50">
+            <Badge variant="outline" className="bg-pe-yellow-lighter">
               {data.linguagem_artistica || "Linguagem não definida"}
             </Badge>
             {data.territorios.map(t => (
@@ -86,8 +86,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Target,
       title: "Objetivo Geral",
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-success",
+      bgColor: "bg-pe-green-lighter",
       content: (
         <p className="text-sm">{data.objetivo_geral || "—"}</p>
       )
@@ -95,8 +95,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: ListChecks,
       title: "Objetivos Específicos",
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      color: "text-pe-blue-dark",
+      bgColor: "bg-neutral-50",
       content: (
         <div className="space-y-2">
           {data.objetivos_especificos.slice(0, 5).map((obj, idx) => (
@@ -119,8 +119,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: BookOpen,
       title: "Metodologia",
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      color: "text-warning",
+      bgColor: "bg-pe-orange-lighter",
       content: (
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
@@ -215,8 +215,8 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
     {
       icon: Package,
       title: "Equipamentos",
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
+      color: "text-accent-dark",
+      bgColor: "bg-pe-yellow-lighter",
       content: (
         <div className="space-y-2">
           <p className="text-sm">
@@ -322,7 +322,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
           </div>
           {data.resultados_quantitativos.slice(0, 2).map(r => (
             <div key={r.id} className="flex items-center gap-2 text-sm">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <CheckCircle2 className="h-4 w-4 text-success" />
               <span>{r.descricao}: <strong>{r.meta_numerica} {r.unidade}</strong></span>
             </div>
           ))}
@@ -347,11 +347,11 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
       </div>
 
       {/* Título destacado */}
-      <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200">
+      <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-accent/30">
         <CardContent className="py-6">
           <h1 className="text-3xl font-bold text-center">{data.titulo || "Projeto sem título"}</h1>
           <div className="flex items-center justify-center gap-3 mt-3">
-            <Badge className="bg-amber-600">{data.linguagem_artistica}</Badge>
+            <Badge className="bg-accent">{data.linguagem_artistica}</Badge>
             <Badge variant="outline" className="capitalize">{data.modalidade}</Badge>
             <Badge variant="secondary">
               <Clock className="h-3 w-3 mr-1" />
@@ -384,10 +384,10 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
       <Separator />
 
       {/* Opções de publicação */}
-      <Card className="border-2 border-dashed border-amber-300 bg-amber-50/50">
+      <Card className="border-2 border-dashed border-amber-300 bg-pe-yellow-lighter/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Megaphone className="h-5 w-5 text-amber-600" />
+            <Megaphone className="h-5 w-5 text-accent-dark" />
             Opções de Publicação
           </CardTitle>
         </CardHeader>
@@ -427,9 +427,9 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
                 />
               </div>
 
-              <div className="rounded-lg bg-white p-4 border">
+              <div className="rounded-lg bg-card p-4 border">
                 <p className="text-sm font-medium mb-2">Meta de Captação</p>
-                <p className="text-2xl font-bold text-amber-600">
+                <p className="text-2xl font-bold text-accent-dark">
                   {formatCurrency(data.orcamento_total)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -439,12 +439,12 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
             </>
           )}
 
-          <div className="rounded-lg bg-green-50 border border-green-200 p-4">
+          <div className="rounded-lg bg-pe-green-lighter border border-success/30 p-4">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+              <CheckCircle2 className="h-5 w-5 text-success mt-0.5" />
               <div>
-                <p className="font-medium text-green-800">Projeto pronto para publicação</p>
-                <p className="text-sm text-green-700 mt-1">
+                <p className="font-medium text-pe-green-dark">Projeto pronto para publicação</p>
+                <p className="text-sm text-pe-green-dark mt-1">
                   Todas as 11 etapas foram preenchidas corretamente. Clique em "Publicar na Vitrine" 
                   para disponibilizar seu projeto para investidores.
                 </p>

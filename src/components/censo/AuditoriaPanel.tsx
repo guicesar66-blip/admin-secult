@@ -16,15 +16,15 @@ interface AuditoriaPanelProps {
 
 export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], filterProdutoras = [] }: AuditoriaPanelProps) {
   const statusIcon = {
-    verde: <CheckCircle2 className="h-4 w-4 text-green-500" />,
-    amarelo: <AlertTriangle className="h-4 w-4 text-amber-500" />,
-    vermelho: <XCircle className="h-4 w-4 text-red-500" />,
+    verde: <CheckCircle2 className="h-4 w-4 text-success" />,
+    amarelo: <AlertTriangle className="h-4 w-4 text-accent" />,
+    vermelho: <XCircle className="h-4 w-4 text-error" />,
   };
 
   const statusBadge = {
-    verde: "bg-green-500/10 text-green-600 border-green-500/20",
-    amarelo: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    vermelho: "bg-red-500/10 text-red-600 border-red-500/20",
+    verde: "bg-success/10 text-success border-success/20",
+    amarelo: "bg-accent/10 text-accent-dark border-accent/20",
+    vermelho: "bg-error/10 text-error border-error/20",
   };
 
   // Apply global filters
@@ -62,7 +62,7 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], 
         </Card>
         <Card>
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
-            <CheckCircle2 className="h-8 w-8 text-green-500" />
+            <CheckCircle2 className="h-8 w-8 text-success" />
             <div>
               <p className="text-2xl font-bold">{emDia}</p>
               <p className="text-xs text-muted-foreground">Em dia</p>
@@ -71,7 +71,7 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], 
         </Card>
         <Card>
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
-            <AlertTriangle className="h-8 w-8 text-amber-500" />
+            <AlertTriangle className="h-8 w-8 text-accent" />
             <div>
               <p className="text-2xl font-bold">{pendencias}</p>
               <p className="text-xs text-muted-foreground">Pendências</p>
@@ -80,7 +80,7 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], 
         </Card>
         <Card>
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
-            <XCircle className="h-8 w-8 text-red-500" />
+            <XCircle className="h-8 w-8 text-error" />
             <div>
               <p className="text-2xl font-bold">{atrasados}</p>
               <p className="text-xs text-muted-foreground">Atrasados</p>

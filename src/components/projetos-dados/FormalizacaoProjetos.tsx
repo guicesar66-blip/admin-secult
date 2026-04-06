@@ -23,7 +23,7 @@ export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades 
             <p className="text-xs text-muted-foreground">Taxa de Informalidade Atual</p>
             <p className="text-2xl font-bold">44%</p>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className="text-[10px] text-green-600">-0,6 p.p.</Badge>
+              <Badge variant="outline" className="text-[10px] text-success">-0,6 p.p.</Badge>
               <span className="text-xs text-muted-foreground">Nacional: 44,6% (IBGE SIIC 2024)</span>
             </div>
             {hasFilter && <p className="text-[10px] text-muted-foreground mt-1 italic">Filtro ativo — {dados.length} projetos</p>}

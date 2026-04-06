@@ -60,9 +60,9 @@ const roleLabels: Record<string, string> = {
 
 const roleColors: Record<string, string> = {
   owner: "bg-yellow-100 text-yellow-700",
-  admin: "bg-purple-100 text-purple-700",
-  editor: "bg-blue-100 text-blue-700",
-  viewer: "bg-gray-100 text-gray-700"
+  admin: "bg-neutral-100 text-pe-blue-dark",
+  editor: "bg-neutral-100 text-pe-blue-dark",
+  viewer: "bg-neutral-100 text-neutral-700"
 };
 
 const roleIcons: Record<string, React.ElementType> = {
@@ -166,7 +166,7 @@ export default function ConfiguracoesEquipe() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Shield className="h-8 w-8 text-purple-500" />
+                <Shield className="h-8 w-8 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">Administradores</p>
                   <p className="text-2xl font-bold text-foreground">
@@ -179,7 +179,7 @@ export default function ConfiguracoesEquipe() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Mail className="h-8 w-8 text-orange-500" />
+                <Mail className="h-8 w-8 text-warning" />
                 <div>
                   <p className="text-sm text-muted-foreground">Convites Pendentes</p>
                   <p className="text-2xl font-bold text-foreground">
@@ -192,7 +192,7 @@ export default function ConfiguracoesEquipe() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Edit className="h-8 w-8 text-blue-500" />
+                <Edit className="h-8 w-8 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">Editores</p>
                   <p className="text-2xl font-bold text-foreground">
@@ -223,7 +223,7 @@ export default function ConfiguracoesEquipe() {
               </div>
               <div className="p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-5 w-5 text-purple-600" />
+                  <Shield className="h-5 w-5 text-pe-blue-dark" />
                   <span className="font-semibold">Administrador</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -232,7 +232,7 @@ export default function ConfiguracoesEquipe() {
               </div>
               <div className="p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-2 mb-2">
-                  <Edit className="h-5 w-5 text-blue-600" />
+                  <Edit className="h-5 w-5 text-primary" />
                   <span className="font-semibold">Editor</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -241,7 +241,7 @@ export default function ConfiguracoesEquipe() {
               </div>
               <div className="p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-2 mb-2">
-                  <Eye className="h-5 w-5 text-gray-600" />
+                  <Eye className="h-5 w-5 text-muted-foreground" />
                   <span className="font-semibold">Visualizador</span>
                 </div>
                 <p className="text-sm text-muted-foreground">

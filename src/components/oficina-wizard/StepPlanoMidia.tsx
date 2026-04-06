@@ -56,7 +56,7 @@ export function StepPlanoMidia({ data, onChange }: StepPlanoMidiaProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Radio className="h-6 w-6 text-amber-600" />
+          <Radio className="h-6 w-6 text-accent-dark" />
           Plano de Mídia
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -196,9 +196,9 @@ PÓS-EVENTO: Publicação do vídeo documentário, galeria de fotos e resultados
           </div>
 
           {showTransmissaoWarning && (
-            <Alert className="mt-4 border-blue-500/50 bg-blue-500/10">
-              <Video className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800">
+            <Alert className="mt-4 border-primary/50 bg-primary/10">
+              <Video className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-pe-blue-dark">
                 A transmissão ao vivo será incluída automaticamente nos custos do projeto (Step 10).
               </AlertDescription>
             </Alert>

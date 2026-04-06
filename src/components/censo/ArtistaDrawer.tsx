@@ -98,7 +98,7 @@ export function ArtistaDrawer({ artista, open, onOpenChange }: ArtistaDrawerProp
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium flex items-center gap-1">
-                <Star className="h-4 w-4 text-amber-500" /> Score de Reputação
+                <Star className="h-4 w-4 text-accent" /> Score de Reputação
               </p>
               <span className="text-lg font-bold">{artista.scoreReputacao}</span>
             </div>

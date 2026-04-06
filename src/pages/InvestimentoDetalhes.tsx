@@ -149,8 +149,8 @@ export default function InvestimentoDetalhes() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "concluido": return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      case "em_andamento": return <Clock className="h-5 w-5 text-amber-500" />;
+      case "concluido": return <CheckCircle2 className="h-5 w-5 text-success" />;
+      case "em_andamento": return <Clock className="h-5 w-5 text-accent" />;
       default: return <AlertCircle className="h-5 w-5 text-muted-foreground" />;
     }
   };
@@ -200,12 +200,12 @@ export default function InvestimentoDetalhes() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-green-500" />
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-success" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Retorno Esperado</p>
-                  <p className="text-xl font-bold text-green-600">R$ {investimento.retornoEsperado.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-success">R$ {investimento.retornoEsperado.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
@@ -213,8 +213,8 @@ export default function InvestimentoDetalhes() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-blue-500" />
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Data de Retorno</p>
@@ -226,8 +226,8 @@ export default function InvestimentoDetalhes() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <Target className="h-5 w-5 text-purple-500" />
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Progresso Geral</p>
@@ -269,7 +269,7 @@ export default function InvestimentoDetalhes() {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                         <span>Previsto: {new Date(etapa.dataPrevista).toLocaleDateString("pt-BR")}</span>
                         {etapa.dataConclusao && (
-                          <span className="text-green-600">
+                          <span className="text-success">
                             Concluído: {new Date(etapa.dataConclusao).toLocaleDateString("pt-BR")}
                           </span>
                         )}
@@ -321,7 +321,7 @@ export default function InvestimentoDetalhes() {
                   <DollarSign className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p className="text-sm text-muted-foreground">Lucro Estimado</p>
-                    <p className="font-medium text-green-600">
+                    <p className="font-medium text-success">
                       R$ {(investimento.retornoEsperado - investimento.valorInvestido).toLocaleString()}
                     </p>
                   </div>
@@ -338,7 +338,7 @@ export default function InvestimentoDetalhes() {
                 {investimento.atualizacoes.map((atualizacao, index) => (
                   <div key={index} className="flex gap-3">
                     <div className={`h-2 w-2 rounded-full mt-2 flex-shrink-0 ${
-                      atualizacao.tipo === "sucesso" ? "bg-green-500" : "bg-blue-500"
+                      atualizacao.tipo === "sucesso" ? "bg-success" : "bg-primary"
                     }`} />
                     <div>
                       <p className="text-sm">{atualizacao.texto}</p>

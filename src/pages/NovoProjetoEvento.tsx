@@ -182,8 +182,8 @@ const NovoProjetoEvento = () => {
           <Card className="h-full overflow-hidden">
             <CardHeader className="border-b bg-gradient-to-r from-blue-500/10 to-blue-500/5 py-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-blue-500/20">
-                  <Calendar className="h-5 w-5 text-blue-600" />
+                <div className="p-2 rounded-full bg-primary/20">
+                  <Calendar className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h2 className="font-semibold">Novo Evento</h2>
@@ -211,19 +211,19 @@ const NovoProjetoEvento = () => {
                       onClick={() => setCurrentStep(step.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                         isCurrent
-                          ? "bg-blue-500/10 border border-blue-500/30"
+                          ? "bg-primary/10 border border-primary/30"
                           : hasError
-                              ? "hover:bg-red-500/5 border border-red-500/20"
+                              ? "hover:bg-error/5 border border-error/20"
                               : "hover:bg-muted"
                       }`}
                     >
                       <div className={`flex items-center justify-center w-8 h-8 rounded-full shrink-0 ${
                         isCompleted 
-                          ? "bg-green-500 text-white" 
+                          ? "bg-success text-white" 
                           : hasError
-                            ? "bg-red-500 text-white"
+                            ? "bg-error text-white"
                             : isCurrent 
-                              ? "bg-blue-500 text-white" 
+                              ? "bg-primary text-white" 
                               : "bg-muted text-muted-foreground"
                       }`}>
                         {isCompleted ? (
@@ -235,7 +235,7 @@ const NovoProjetoEvento = () => {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className={`text-sm font-medium truncate ${isCurrent ? "text-blue-700" : ""}`}>
+                        <p className={`text-sm font-medium truncate ${isCurrent ? "text-pe-blue-dark" : ""}`}>
                           {step.label}
                         </p>
                       </div>
@@ -293,7 +293,7 @@ const NovoProjetoEvento = () => {
                     <Button
                       onClick={handleNext}
                       disabled={!canGoNext}
-                      className="gap-2 bg-blue-600 hover:bg-blue-700"
+                      className="gap-2 bg-primary hover:bg-primary-dark"
                     >
                       Próximo
                       <ArrowRight className="h-4 w-4" />
@@ -302,7 +302,7 @@ const NovoProjetoEvento = () => {
                     <Button
                       onClick={handlePublish}
                       disabled={isPublishing}
-                      className="gap-2 bg-green-600 hover:bg-green-700"
+                      className="gap-2 bg-success hover:bg-success-dark"
                     >
                       {isPublishing ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

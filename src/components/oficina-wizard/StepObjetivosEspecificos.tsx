@@ -55,8 +55,8 @@ export function StepObjetivosEspecificos({ data, onChange }: StepObjetivosEspeci
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-amber-500/20">
-          <ListChecks className="h-5 w-5 text-amber-600" />
+        <div className="p-2 rounded-lg bg-accent/20">
+          <ListChecks className="h-5 w-5 text-accent-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Step 3: Objetivos Específicos</h2>
@@ -67,12 +67,12 @@ export function StepObjetivosEspecificos({ data, onChange }: StepObjetivosEspeci
       </div>
 
       {/* Dicas */}
-      <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+      <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
         <div className="flex items-start gap-3">
-          <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5 shrink-0" />
+          <Lightbulb className="h-5 w-5 text-primary mt-0.5 shrink-0" />
           <div className="space-y-2">
-            <p className="text-sm font-medium text-blue-700">Dicas:</p>
-            <ul className="text-sm text-blue-600 space-y-1">
+            <p className="text-sm font-medium text-pe-blue-dark">Dicas:</p>
+            <ul className="text-sm text-primary space-y-1">
               <li>• Cada objetivo específico deve ser uma ação concreta e verificável</li>
               <li>• Mínimo de 3 e máximo de 10 objetivos</li>
               <li>• Exemplo: "Introduzir conceitos básicos de roteiro, filmagem e edição"</li>
@@ -172,9 +172,9 @@ export function StepObjetivosEspecificos({ data, onChange }: StepObjetivosEspeci
 
       {/* Validação visual */}
       {!validation.isValid && (
-        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-sm font-medium text-amber-700 mb-2">Pendências:</p>
-          <ul className="text-sm text-amber-600 list-disc list-inside space-y-1">
+        <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+          <p className="text-sm font-medium text-accent-dark mb-2">Pendências:</p>
+          <ul className="text-sm text-accent-dark list-disc list-inside space-y-1">
             {validation.errors.map((error, i) => (
               <li key={i}>{error}</li>
             ))}

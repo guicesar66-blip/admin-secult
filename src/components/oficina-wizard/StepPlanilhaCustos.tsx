@@ -26,13 +26,13 @@ const CATEGORIAS_CUSTO = [
 ] as const;
 
 const CATEGORIA_COLORS: Record<string, string> = {
-  equipe: "bg-blue-500",
-  equipamento: "bg-green-500",
-  locacao: "bg-purple-500",
-  producao: "bg-orange-500",
+  equipe: "bg-primary",
+  equipamento: "bg-success",
+  locacao: "bg-primary",
+  producao: "bg-warning",
   divulgacao: "bg-pink-500",
   acessibilidade: "bg-cyan-500",
-  outros: "bg-gray-500",
+  outros: "bg-neutral-500",
 };
 
 export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) {
@@ -195,7 +195,7 @@ export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) 
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <DollarSign className="h-6 w-6 text-amber-600" />
+          <DollarSign className="h-6 w-6 text-accent-dark" />
           Planilha de Custos
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -205,9 +205,9 @@ export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) 
 
       {/* Alertas */}
       {percentualEquipe > 60 && (
-        <Alert className="border-amber-500/50 bg-amber-500/10">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
+        <Alert className="border-accent/50 bg-accent/10">
+          <AlertCircle className="h-4 w-4 text-accent-dark" />
+          <AlertDescription className="text-pe-orange-dark">
             A categoria "Equipe" representa {percentualEquipe.toFixed(1)}% do orçamento. Recomenda-se não exceder 60%.
           </AlertDescription>
         </Alert>
@@ -227,9 +227,9 @@ export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) 
             R$ {reservaTecnica.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </div>
         </Card>
-        <Card className="p-4 bg-amber-500/10 border-amber-500/30">
-          <div className="text-sm text-amber-700">Total Geral</div>
-          <div className="text-2xl font-bold text-amber-700">
+        <Card className="p-4 bg-accent/10 border-accent/30">
+          <div className="text-sm text-accent-dark">Total Geral</div>
+          <div className="text-2xl font-bold text-accent-dark">
             R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </div>
         </Card>
@@ -278,7 +278,7 @@ export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) 
             <div 
               key={item.id} 
               className={`grid grid-cols-12 gap-3 p-3 rounded-lg items-end ${
-                item.fonte === "automatico" ? "bg-blue-500/5 border border-blue-500/20" : "bg-muted/30"
+                item.fonte === "automatico" ? "bg-primary/5 border border-primary/20" : "bg-muted/30"
               }`}
             >
               <div className="col-span-4">
@@ -393,9 +393,9 @@ export function StepPlanilhaCustos({ data, onChange }: StepPlanilhaCustosProps) 
             )}
           </div>
           {data.reserva_tecnica_percentual === 0 && (
-            <Alert className="mt-3 border-amber-500/50 bg-amber-500/10">
-              <AlertCircle className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-amber-800 text-sm">
+            <Alert className="mt-3 border-accent/50 bg-accent/10">
+              <AlertCircle className="h-4 w-4 text-accent-dark" />
+              <AlertDescription className="text-pe-orange-dark text-sm">
                 Recomendamos incluir uma reserva técnica de 10% para imprevistos.
               </AlertDescription>
             </Alert>

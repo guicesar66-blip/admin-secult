@@ -182,8 +182,8 @@ const NovoProjetoOficina = () => {
           <Card className="h-full overflow-hidden">
             <CardHeader className="border-b bg-gradient-to-r from-amber-500/10 to-amber-500/5 py-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-amber-500/20">
-                  <GraduationCap className="h-5 w-5 text-amber-600" />
+                <div className="p-2 rounded-full bg-accent/20">
+                  <GraduationCap className="h-5 w-5 text-accent-dark" />
                 </div>
                 <div>
                   <h2 className="font-semibold">Nova Oficina</h2>
@@ -211,19 +211,19 @@ const NovoProjetoOficina = () => {
                       onClick={() => setCurrentStep(step.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                         isCurrent
-                          ? "bg-amber-500/10 border border-amber-500/30"
+                          ? "bg-accent/10 border border-accent/30"
                           : hasError
-                              ? "hover:bg-red-500/5 border border-red-500/20"
+                              ? "hover:bg-error/5 border border-error/20"
                               : "hover:bg-muted"
                       }`}
                     >
                       <div className={`flex items-center justify-center w-8 h-8 rounded-full shrink-0 ${
                         isCompleted 
-                          ? "bg-green-500 text-white" 
+                          ? "bg-success text-white" 
                           : hasError
-                            ? "bg-red-500 text-white"
+                            ? "bg-error text-white"
                             : isCurrent 
-                              ? "bg-amber-500 text-white" 
+                              ? "bg-accent text-white" 
                               : "bg-muted text-muted-foreground"
                       }`}>
                         {isCompleted ? (
@@ -235,7 +235,7 @@ const NovoProjetoOficina = () => {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className={`text-sm font-medium truncate ${isCurrent ? "text-amber-700" : ""}`}>
+                        <p className={`text-sm font-medium truncate ${isCurrent ? "text-accent-dark" : ""}`}>
                           {step.label}
                         </p>
                       </div>
@@ -293,7 +293,7 @@ const NovoProjetoOficina = () => {
                     <Button
                       onClick={handleNext}
                       disabled={!canGoNext}
-                      className="gap-2 bg-amber-600 hover:bg-amber-700"
+                      className="gap-2 bg-accent hover:bg-warning"
                     >
                       Próximo
                       <ArrowRight className="h-4 w-4" />
@@ -302,7 +302,7 @@ const NovoProjetoOficina = () => {
                     <Button
                       onClick={handlePublish}
                       disabled={isPublishing}
-                      className="gap-2 bg-green-600 hover:bg-green-700"
+                      className="gap-2 bg-success hover:bg-success-dark"
                     >
                       {isPublishing ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

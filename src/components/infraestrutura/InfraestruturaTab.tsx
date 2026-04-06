@@ -90,7 +90,7 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
                 <p className="text-2xl font-bold">{ativos.length} <span className="text-sm font-normal text-muted-foreground">/ {inativos.length}</span></p>
                 {percentInativos > 20 && <Badge variant="destructive" className="text-[10px] mt-1">⚠ {percentInativos}% inativos</Badge>}
               </div>
-              <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center"><TrendingUp className="h-5 w-5 text-green-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center"><TrendingUp className="h-5 w-5 text-success" /></div>
             </div>
           </CardContent>
         </Card>
@@ -112,7 +112,7 @@ export function InfraestruturaTab({ filtroPeriodo, filtroLinguagem = "todas", fi
                 <p className="text-xs text-muted-foreground">Público (trimestre)</p>
                 <p className="text-2xl font-bold">{(publicoTotal / 1000).toFixed(0)}k</p>
               </div>
-              <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center"><Users className="h-5 w-5 text-amber-600" /></div>
+              <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center"><Users className="h-5 w-5 text-accent-dark" /></div>
             </div>
           </CardContent>
         </Card>

@@ -63,8 +63,8 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-blue-500/10">
-          <MapPin className="h-6 w-6 text-blue-600" />
+        <div className="p-3 rounded-xl bg-primary/10">
+          <MapPin className="h-6 w-6 text-primary" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Data, Local e Formato</h2>
@@ -78,7 +78,7 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
-            <Calendar className="h-5 w-5 text-blue-600" />
+            <Calendar className="h-5 w-5 text-primary" />
             <h3 className="font-semibold">Quando</h3>
           </div>
 
@@ -177,7 +177,7 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
-            <MapPin className="h-5 w-5 text-blue-600" />
+            <MapPin className="h-5 w-5 text-primary" />
             <h3 className="font-semibold">Onde</h3>
           </div>
 
@@ -321,7 +321,7 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
-            <Ticket className="h-5 w-5 text-blue-600" />
+            <Ticket className="h-5 w-5 text-primary" />
             <h3 className="font-semibold">Formato e Ingressos</h3>
           </div>
 
@@ -436,9 +436,9 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
           )}
 
           {!data.evento_com_ingresso && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
-              <Badge className="bg-green-600">Entrada Gratuita</Badge>
-              <span className="text-sm text-green-700">
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-pe-green-lighter border border-success/30">
+              <Badge className="bg-success">Entrada Gratuita</Badge>
+              <span className="text-sm text-pe-green-dark">
                 Este evento aparecerá com a tag "Gratuito" no app
               </span>
             </div>
@@ -448,7 +448,7 @@ export function StepDataLocal({ data, onChange }: StepDataLocalProps) {
 
       {/* Validação */}
       {!validation.isValid && data.modalidade && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

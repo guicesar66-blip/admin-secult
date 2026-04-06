@@ -22,11 +22,11 @@ type StatusProposta = "pendente" | "aprovada" | "rejeitada" | "contraproposta" |
 type TipoApoio = "financeiro" | "servico" | "patrocinio";
 
 const statusConfig: Record<StatusProposta, { label: string; color: string; icon: React.ReactNode }> = {
-  pendente: { label: "Pendente", color: "bg-amber-500/20 text-amber-600", icon: <Clock className="h-3 w-3" /> },
-  aprovada: { label: "Aprovada", color: "bg-green-500/20 text-green-600", icon: <CheckCircle className="h-3 w-3" /> },
-  rejeitada: { label: "Rejeitada", color: "bg-red-500/20 text-red-600", icon: <XCircle className="h-3 w-3" /> },
-  contraproposta: { label: "Contraproposta", color: "bg-blue-500/20 text-blue-600", icon: <MessageSquare className="h-3 w-3" /> },
-  cancelada: { label: "Cancelada", color: "bg-gray-500/20 text-gray-600", icon: <XCircle className="h-3 w-3" /> },
+  pendente: { label: "Pendente", color: "bg-accent/20 text-accent-dark", icon: <Clock className="h-3 w-3" /> },
+  aprovada: { label: "Aprovada", color: "bg-success/20 text-success", icon: <CheckCircle className="h-3 w-3" /> },
+  rejeitada: { label: "Rejeitada", color: "bg-error/20 text-error", icon: <XCircle className="h-3 w-3" /> },
+  contraproposta: { label: "Contraproposta", color: "bg-primary/20 text-primary", icon: <MessageSquare className="h-3 w-3" /> },
+  cancelada: { label: "Cancelada", color: "bg-neutral-500/20 text-muted-foreground", icon: <XCircle className="h-3 w-3" /> },
 };
 
 const tipoApoioConfig: Record<TipoApoio, { label: string; icon: React.ReactNode }> = {
@@ -131,12 +131,12 @@ export default function Investimentos() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-success" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Investido (Aprovado)</p>
-                  <p className="text-xl font-bold text-green-600">
+                  <p className="text-xl font-bold text-success">
                     R$ {totalInvestido.toLocaleString("pt-BR")}
                   </p>
                 </div>
@@ -146,12 +146,12 @@ export default function Investimentos() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-amber-500" />
+                <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-accent" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Pendente de Aprovação</p>
-                  <p className="text-xl font-bold text-amber-600">
+                  <p className="text-xl font-bold text-accent-dark">
                     R$ {totalPendente.toLocaleString("pt-BR")}
                   </p>
                 </div>
@@ -161,8 +161,8 @@ export default function Investimentos() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Target className="h-5 w-5 text-blue-500" />
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Propostas Aprovadas</p>
@@ -174,8 +174,8 @@ export default function Investimentos() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <Wallet className="h-5 w-5 text-purple-500" />
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Propostas Pendentes</p>
@@ -225,7 +225,7 @@ export default function Investimentos() {
                         </div>
                         <div>
                           <p className="text-muted-foreground">Valor</p>
-                          <p className="font-medium text-green-600">
+                          <p className="font-medium text-success">
                             {proposta.valor_financeiro
                               ? `R$ ${proposta.valor_financeiro.toLocaleString("pt-BR")}`
                               : proposta.descricao_servico
@@ -262,12 +262,12 @@ export default function Investimentos() {
                       )}
 
                       {proposta.status === "rejeitada" && proposta.motivo_rejeicao && (
-                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                          <p className="text-sm text-red-600 font-medium flex items-center gap-1">
+                        <div className="mt-3 p-3 bg-pe-red-lighter border border-error/30 rounded-lg">
+                          <p className="text-sm text-error font-medium flex items-center gap-1">
                             <AlertCircle className="h-4 w-4" />
                             Motivo da rejeição:
                           </p>
-                          <p className="text-sm text-red-700 mt-1">{proposta.motivo_rejeicao}</p>
+                          <p className="text-sm text-pe-red-dark mt-1">{proposta.motivo_rejeicao}</p>
                         </div>
                       )}
 

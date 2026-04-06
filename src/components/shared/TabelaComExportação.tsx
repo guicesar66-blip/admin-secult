@@ -53,16 +53,16 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
   const totalPaginas = Math.ceil(dados.length / itensPorPagina);
 
   return (
-    <div className={`border border-gray-200 rounded-lg bg-white ${className}`}>
+    <div className={`border border-border rounded-lg bg-card ${className}`}>
       {/* Header */}
       {(titulo || onExportar || busca) && (
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between mb-3">
-            {titulo && <h3 className="text-lg font-semibold text-gray-900">{titulo}</h3>}
+            {titulo && <h3 className="text-lg font-semibold text-foreground">{titulo}</h3>}
             {onExportar && (
               <button
                 onClick={onExportar}
-                className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-neutral-700 bg-card border border-border rounded hover:bg-neutral-50 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Exportar CSV
@@ -72,12 +72,12 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
 
           {busca?.ativo && (
             <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
               <input
                 type="text"
                 placeholder={busca.placeholder}
                 onChange={(e) => busca.onMudar(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           )}
@@ -90,12 +90,12 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           {/* Header */}
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-neutral-50 border-b border-border">
             <tr>
               {colunas.map((coluna) => (
                 <th
                   key={coluna.key}
-                  className={`px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider ${
+                  className={`px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider ${
                     coluna.largura || 'w-auto'
                   }`}
                 >
@@ -110,13 +110,13 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
             {carregando ? (
               <tr>
                 <td colSpan={colunas.length} className="px-4 py-8 text-center">
-                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-border border-t-blue-600" />
                 </td>
               </tr>
             ) : vazio || dados.length === 0 ? (
               <tr>
                 <td colSpan={colunas.length} className="px-4 py-8 text-center">
-                  <p className="text-sm text-gray-600">{mensagemVazia}</p>
+                  <p className="text-sm text-muted-foreground">{mensagemVazia}</p>
                 </td>
               </tr>
             ) : (
@@ -124,12 +124,12 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
                 <tr
                   key={idx}
                   onClick={() => onCliqueLinha?.(linha)}
-                  className={`border-b border-gray-200 ${
-                    onCliqueLinha ? 'hover:bg-gray-50 cursor-pointer' : ''
+                  className={`border-b border-border ${
+                    onCliqueLinha ? 'hover:bg-neutral-50 cursor-pointer' : ''
                   } transition-colors`}
                 >
                   {colunas.map((coluna) => (
-                    <td key={coluna.key} className="px-4 py-3 text-sm text-gray-900">
+                    <td key={coluna.key} className="px-4 py-3 text-sm text-foreground">
                       {coluna.renderizador
                         ? coluna.renderizador(linha[coluna.key], linha)
                         : linha[coluna.key]}
@@ -144,8 +144,8 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
 
       {/* Paginação */}
       {mostrarPaginacao && totalPaginas > 1 && (
-        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-600">
+        <div className="p-4 border-t border-border flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
             {dados.length} resultado(s) encontrado(s)
           </div>
 
@@ -153,19 +153,19 @@ export const TabelaComExportação: React.FC<TabelaComExportaçãoProps> = ({
             <button
               onClick={() => paginacao?.onMudarPagina(Math.max(1, paginaAtual - 1))}
               disabled={paginaAtual === 1}
-              className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-2 py-1 text-sm border border-border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50"
             >
               ← Anterior
             </button>
 
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               Página {paginaAtual} de {totalPaginas}
             </div>
 
             <button
               onClick={() => paginacao?.onMudarPagina(Math.min(totalPaginas, paginaAtual + 1))}
               disabled={paginaAtual === totalPaginas}
-              className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-2 py-1 text-sm border border-border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50"
             >
               Próxima →
             </button>

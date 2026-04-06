@@ -71,21 +71,21 @@ export function EditaisDetalhes() {
             </div>
 
             {/* Grid de 3 métricas */}
-            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-purple-200">
+            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-primary/30">
               <div className="text-center">
-                <p className="text-3xl font-bold text-purple-700">
+                <p className="text-3xl font-bold text-pe-blue-dark">
                   R$ {(edital.valorTotal / 1000).toFixed(0)}k
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Valor total</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-purple-700">
+                <p className="text-3xl font-bold text-pe-blue-dark">
                   {edital.projetosSelecionados}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Projetos selecionados</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-purple-700">
+                <p className="text-3xl font-bold text-pe-blue-dark">
                   {edital.dataLimiteInscricao}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Prazo final</p>
@@ -136,7 +136,7 @@ export function EditaisDetalhes() {
                   <p className="text-sm font-medium text-foreground">
                     {criterio.criterio}
                   </p>
-                  <span className="text-sm font-bold text-purple-700">
+                  <span className="text-sm font-bold text-pe-blue-dark">
                     {criterio.peso}%
                   </span>
                 </div>
@@ -158,7 +158,7 @@ export function EditaisDetalhes() {
             <div className="flex items-center justify-between text-sm">
               {edital.prazos.map((prazo, idx) => (
                 <div key={idx} className="text-center flex-1">
-                  <p className="font-bold text-purple-700">{prazo.data}</p>
+                  <p className="font-bold text-pe-blue-dark">{prazo.data}</p>
                   <p className="text-xs text-muted-foreground">{prazo.evento}</p>
                   {idx < edital.prazos.length - 1 && (
                     <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-purple-300 to-transparent transform -translate-y-1/2" />

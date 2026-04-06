@@ -163,7 +163,7 @@ const NovoProjetoVaga = () => {
                       <div
                         className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-all ${
                           hasError
-                            ? "bg-red-100 text-red-600"
+                            ? "bg-pe-red-light text-error"
                             : isCompleted
                             ? "bg-emerald-500 text-white"
                             : isCurrent

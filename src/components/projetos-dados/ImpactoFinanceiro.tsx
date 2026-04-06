@@ -37,21 +37,21 @@ export function ImpactoFinanceiro({ filtroLinguagem = "todas", filtroCidades = [
           <CardContent className="pt-5 pb-4">
             <p className="text-xs text-muted-foreground">Volume Movimentado</p>
             <p className="text-2xl font-bold">{formatCurrency(kpis.totalRecursos)}</p>
-            <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+18%</Badge>
+            <Badge variant="outline" className="text-[10px] mt-1 text-success">+18%</Badge>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-5 pb-4">
             <p className="text-xs text-muted-foreground">Empregos/Contratos</p>
             <p className="text-2xl font-bold">{kpis.totalEmpregos}</p>
-            <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+{kpis.variações.empregos}</Badge>
+            <Badge variant="outline" className="text-[10px] mt-1 text-success">+{kpis.variações.empregos}</Badge>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-5 pb-4">
             <p className="text-xs text-muted-foreground">Alavancagem</p>
             <p className="text-2xl font-bold">R$ 2,3 : 1</p>
-            <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+0,4</Badge>
+            <Badge variant="outline" className="text-[10px] mt-1 text-success">+0,4</Badge>
           </CardContent>
         </Card>
         <Card>

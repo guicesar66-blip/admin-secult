@@ -75,8 +75,8 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-amber-500/10">
-            <Users className="h-6 w-6 text-amber-600" />
+          <div className="p-3 rounded-xl bg-accent/10">
+            <Users className="h-6 w-6 text-accent-dark" />
           </div>
           <div>
             <h2 className="text-xl font-semibold">Vagas para Artistas CENA</h2>
@@ -86,9 +86,9 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
           </div>
         </div>
 
-        <Alert className="bg-amber-50 border-amber-200">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
+        <Alert className="bg-pe-yellow-lighter border-accent/30">
+          <AlertCircle className="h-4 w-4 text-accent-dark" />
+          <AlertDescription className="text-pe-orange-dark">
             <strong>Nenhuma vaga para artistas CENA definida.</strong>
             <p className="mt-1">
               Para criar oportunidades de trabalho, volte ao passo anterior (Programação) e 
@@ -104,8 +104,8 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-amber-500/10">
-          <Users className="h-6 w-6 text-amber-600" />
+        <div className="p-3 rounded-xl bg-accent/10">
+          <Users className="h-6 w-6 text-accent-dark" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Vagas para Artistas CENA</h2>
@@ -116,11 +116,11 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
       </div>
 
       {/* Info */}
-      <Card className="border-amber-200 bg-amber-50/50">
+      <Card className="border-accent/30 bg-pe-yellow-lighter/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Star className="h-5 w-5 text-amber-600 mt-0.5" />
-            <div className="text-sm text-amber-700">
+            <Star className="h-5 w-5 text-accent-dark mt-0.5" />
+            <div className="text-sm text-accent-dark">
               <p className="font-medium">As vagas definidas aqui aparecerão no Superapp como oportunidades de trabalho!</p>
               <p className="mt-1">Artistas com perfil compatível receberão notificações push sobre estas vagas.</p>
             </div>
@@ -141,7 +141,7 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
           maxLength={500}
         />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span className={data.descricao_geral_vagas.length < 100 ? "text-amber-600" : "text-green-600"}>
+          <span className={data.descricao_geral_vagas.length < 100 ? "text-accent-dark" : "text-success"}>
             {data.descricao_geral_vagas.length < 100 
               ? `Mínimo 100 caracteres (faltam ${100 - data.descricao_geral_vagas.length})`
               : "✓ Mínimo atingido"
@@ -174,7 +174,7 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
               <Card key={vaga.id} className="border-l-4 border-l-amber-500">
                 <CardContent className="pt-4 space-y-4">
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-amber-700 border-amber-300">
+                    <Badge variant="outline" className="text-accent-dark border-amber-300">
                       Vaga para Artista CENA
                     </Badge>
                     <Button
@@ -276,7 +276,7 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <Calendar className="h-5 w-5 text-amber-600" />
+            <Calendar className="h-5 w-5 text-accent-dark" />
             <h3 className="font-semibold">Período de Inscrições</h3>
           </div>
 
@@ -349,7 +349,7 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
 
       {/* Validação */}
       {!validation.isValid && data.descricao_geral_vagas && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

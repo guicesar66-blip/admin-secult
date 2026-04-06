@@ -57,7 +57,7 @@ export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = []
               <div>
                 <p className="text-xs text-muted-foreground">Total Investido em Cultura</p>
                 <p className="text-2xl font-bold">{formatCurrency(totalInvestido)}</p>
-                <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+8% vs. trimestre ant.</Badge>
+                <Badge variant="outline" className="text-[10px] mt-1 text-success">+8% vs. trimestre ant.</Badge>
               </div>
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><DollarSign className="h-5 w-5 text-primary" /></div>
             </div>
@@ -67,7 +67,7 @@ export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = []
           <CardContent className="pt-5 pb-4">
             <p className="text-xs text-muted-foreground">Alavancagem Público/Privado</p>
             <p className="text-2xl font-bold">R$ 2,3 : R$ 1,00</p>
-            <Badge variant="outline" className="text-[10px] mt-1 text-green-600">+0,4 vs. anterior</Badge>
+            <Badge variant="outline" className="text-[10px] mt-1 text-success">+0,4 vs. anterior</Badge>
           </CardContent>
         </Card>
       </div>

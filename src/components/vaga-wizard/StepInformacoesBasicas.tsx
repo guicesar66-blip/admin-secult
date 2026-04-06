@@ -60,7 +60,7 @@ export function StepInformacoesBasicas({ data, onChange }: Props) {
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>Nome claro e específico da função</span>
-            <span className={data.titulo.length > 85 ? "text-amber-600" : ""}>
+            <span className={data.titulo.length > 85 ? "text-accent-dark" : ""}>
               {data.titulo.length}/100
             </span>
           </div>
@@ -103,12 +103,12 @@ export function StepInformacoesBasicas({ data, onChange }: Props) {
             maxLength={3000}
           />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span className={data.descricao.length < 100 ? "text-amber-600" : "text-green-600"}>
+            <span className={data.descricao.length < 100 ? "text-accent-dark" : "text-success"}>
               {data.descricao.length < 100
                 ? `Mínimo 100 caracteres (faltam ${100 - data.descricao.length})`
                 : "✓ Mínimo atingido"}
             </span>
-            <span className={data.descricao.length > 2700 ? "text-amber-600" : ""}>
+            <span className={data.descricao.length > 2700 ? "text-accent-dark" : ""}>
               {data.descricao.length}/3000
             </span>
           </div>
@@ -116,7 +116,7 @@ export function StepInformacoesBasicas({ data, onChange }: Props) {
       </div>
 
       {!validation.isValid && data.titulo && (
-        <Alert variant="destructive" className="bg-red-50 border-red-200">
+        <Alert variant="destructive" className="bg-pe-red-lighter border-error/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <ul className="list-disc list-inside space-y-1">

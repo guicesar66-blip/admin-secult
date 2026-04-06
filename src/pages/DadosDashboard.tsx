@@ -220,8 +220,8 @@ export default function DadosDashboard() {
                   <p className="text-xs text-muted-foreground">Projetos Ativos</p>
                   <p className="text-2xl font-bold">{projetosKPIs.projetosAtivos}</p>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <Briefcase className="h-5 w-5 text-green-600" />
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-success" />
                 </div>
               </div>
             </CardContent>
@@ -233,8 +233,8 @@ export default function DadosDashboard() {
                   <p className="text-xs text-muted-foreground">R$ Investido</p>
                   <p className="text-2xl font-bold">{formatCurrency(projetosKPIs.totalRecursos)}</p>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-amber-600" />
+                <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-accent-dark" />
                 </div>
               </div>
             </CardContent>
@@ -246,8 +246,8 @@ export default function DadosDashboard() {
                   <p className="text-xs text-muted-foreground">Alcance Populacional</p>
                   <p className="text-2xl font-bold">{(projetosKPIs.totalPublico / 1000).toFixed(0)}k</p>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-primary" />
                 </div>
               </div>
             </CardContent>

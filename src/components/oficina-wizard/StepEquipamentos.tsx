@@ -107,7 +107,7 @@ export function StepEquipamentos({ data, onChange }: StepEquipamentosProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Package className="h-6 w-6 text-amber-600" />
+          <Package className="h-6 w-6 text-accent-dark" />
           Equipamentos e Materiais
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -117,10 +117,10 @@ export function StepEquipamentos({ data, onChange }: StepEquipamentosProps) {
 
       {/* Sugestões de Categorias */}
       {data.equipamentos_materiais.length === 0 && (
-        <Card className="bg-amber-500/5 border-amber-500/30">
+        <Card className="bg-accent/5 border-accent/30">
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-amber-600" />
+              <Lightbulb className="h-4 w-4 text-accent-dark" />
               Sugestões para {data.linguagem_artistica || "seu projeto"}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ export function StepEquipamentos({ data, onChange }: StepEquipamentosProps) {
           </Card>
           <Card className="flex-1 p-4">
             <div className="text-sm text-muted-foreground">Custo Estimado</div>
-            <div className="text-2xl font-bold text-amber-600">
+            <div className="text-2xl font-bold text-accent-dark">
               R$ {totalCusto.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </div>
           </Card>

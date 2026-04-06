@@ -38,7 +38,7 @@ export function StepAcessibilidade({ data, onChange }: StepAcessibilidadeProps) 
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Accessibility className="h-6 w-6 text-amber-600" />
+          <Accessibility className="h-6 w-6 text-accent-dark" />
           Acessibilidade e Acolhimento
         </h2>
         <p className="text-muted-foreground mt-1">
@@ -57,9 +57,9 @@ export function StepAcessibilidade({ data, onChange }: StepAcessibilidadeProps) 
       )}
 
       {showMinimoRecursos && (
-        <Alert className="border-amber-500/50 bg-amber-500/10">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
+        <Alert className="border-accent/50 bg-accent/10">
+          <AlertCircle className="h-4 w-4 text-accent-dark" />
+          <AlertDescription className="text-pe-orange-dark">
             Projetos com mais de 20 participantes devem ter pelo menos 3 recursos de acessibilidade.
           </AlertDescription>
         </Alert>
@@ -88,7 +88,7 @@ export function StepAcessibilidade({ data, onChange }: StepAcessibilidadeProps) 
                   key={recurso}
                   className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
                     data.recursos_acessibilidade.includes(recurso)
-                      ? "bg-amber-500/10 border-amber-500/30"
+                      ? "bg-accent/10 border-accent/30"
                       : "hover:bg-muted/50"
                   } ${isRequired && !data.recursos_acessibilidade.includes(recurso) ? "border-destructive/50" : ""}`}
                 >
@@ -111,9 +111,9 @@ export function StepAcessibilidade({ data, onChange }: StepAcessibilidadeProps) 
           </div>
 
           {showLibrasWarning && (
-            <Alert className="mt-4 border-blue-500/50 bg-blue-500/10">
-              <AlertCircle className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800">
+            <Alert className="mt-4 border-primary/50 bg-primary/10">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-pe-blue-dark">
                 O custo de intérprete de Libras será sugerido automaticamente na planilha de custos (Step 10).
               </AlertDescription>
             </Alert>

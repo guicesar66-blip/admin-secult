@@ -29,7 +29,7 @@ export function StepInfraestrutura({ data, onChange }: StepInfraestruturaProps) 
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-slate-500/10"><Building className="h-6 w-6 text-slate-600" /></div>
+        <div className="p-3 rounded-xl bg-neutral-500/10"><Building className="h-6 w-6 text-muted-foreground" /></div>
         <div><h2 className="text-xl font-semibold">Infraestrutura e Logística</h2><p className="text-muted-foreground mt-1">Detalhe a estrutura física e logística necessária.</p></div>
       </div>
 
@@ -86,10 +86,10 @@ export function StepInfraestrutura({ data, onChange }: StepInfraestruturaProps) 
       </Card>
 
       {data.publico_esperado > 1000 && !data.alvaras_necessarios.includes("Auto de Vistoria do Corpo de Bombeiros (AVCB)") && (
-        <Alert className="bg-amber-50 border-amber-200"><AlertCircle className="h-4 w-4 text-amber-600" /><AlertDescription>Eventos com mais de 1000 pessoas devem ter AVCB.</AlertDescription></Alert>
+        <Alert className="bg-pe-yellow-lighter border-accent/30"><AlertCircle className="h-4 w-4 text-accent-dark" /><AlertDescription>Eventos com mais de 1000 pessoas devem ter AVCB.</AlertDescription></Alert>
       )}
 
-      {!validation.isValid && data.responsavel_documentacao && <Alert variant="destructive" className="bg-red-50 border-red-200"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
+      {!validation.isValid && data.responsavel_documentacao && <Alert variant="destructive" className="bg-pe-red-lighter border-error/30"><AlertCircle className="h-4 w-4" /><AlertDescription><ul className="list-disc list-inside">{validation.errors.map((e, i) => <li key={i}>{e}</li>)}</ul></AlertDescription></Alert>}
     </div>
   );
 }
