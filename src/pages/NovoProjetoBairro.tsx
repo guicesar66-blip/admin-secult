@@ -327,12 +327,12 @@ const NovoProjetoBairro = () => {
                       className="flex-1 min-h-[60px] resize-none"
                       disabled={isTyping}
                     />
-                    <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping} className="bg-primary-dark hover:bg-purple-700">
+                    <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping} className="bg-primary-dark hover:bg-primary-dark">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
                 ) : (
-                  <Button onClick={finalizarProjeto} disabled={isSaving} className="w-full gap-2 bg-primary-dark hover:bg-purple-700">
+                  <Button onClick={finalizarProjeto} disabled={isSaving} className="w-full gap-2 bg-primary-dark hover:bg-primary-dark">
                     {isSaving ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />

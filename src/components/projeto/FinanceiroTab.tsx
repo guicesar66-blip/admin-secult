@@ -655,7 +655,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="bg-amber-200 text-pe-orange-dark">
+                      <Badge variant="secondary" className="bg-pe-yellow-light text-pe-orange-dark">
                         Aguardando análise
                       </Badge>
                     </TableCell>

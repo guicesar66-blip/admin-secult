@@ -181,7 +181,7 @@ export default function VagaDetalhes() {
           >
             ← Voltar às vagas
           </Button>
-          <Button size="lg" className="bg-primary hover:bg-blue-700">
+          <Button size="lg" className="bg-primary hover:bg-primary-dark">
             Candidatar-se agora →
           </Button>
         </div>

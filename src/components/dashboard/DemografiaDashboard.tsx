@@ -69,7 +69,7 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
     <div className="space-y-6">
       {/* Card de Contexto */}
       {filters && filters.length > 0 && (
-        <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3 text-sm text-blue-900">
+        <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3 text-sm text-pe-dark">
           Dados filtrados por: {filters.map(f => f.name).join(', ')}
         </div>
       )}

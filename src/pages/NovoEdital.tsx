@@ -693,7 +693,7 @@ const NovoEdital = () => {
 
         {/* Aviso de período curto */}
         {periodoAlerta && !encrAtAbr && (
-          <div className="flex items-start gap-2 p-3 rounded-lg bg-accent/10 border border-accent/20 text-sm text-accent-dark dark:text-amber-400">
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-accent/10 border border-accent/20 text-sm text-accent-dark dark:text-accent">
             <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
             Recomendamos pelo menos 15 dias para inscrições. O período atual
             é de {diasInscricao} {diasInscricao === 1 ? "dia" : "dias"}.

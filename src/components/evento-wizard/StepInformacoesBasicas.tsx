@@ -49,7 +49,7 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
           <div className="flex items-start gap-3">
             <Lightbulb className="h-5 w-5 text-pe-blue-dark mt-0.5" />
             <div className="text-sm space-y-2">
-              <p className="font-medium text-purple-900">Dicas para um bom evento:</p>
+              <p className="font-medium text-pe-dark">Dicas para um bom evento:</p>
               <ul className="list-disc list-inside text-pe-blue-dark space-y-1">
                 <li>Escolha um nome memorável e que reflita a identidade do evento</li>
                 <li>A descrição deve informar claramente o que o público pode esperar</li>
@@ -163,7 +163,7 @@ export function StepInformacoesBasicas({ data, onChange }: StepInformacoesBasica
                     variant={isSelected ? "default" : "outline"}
                     className={`cursor-pointer transition-all ${
                       isSelected 
-                        ? "bg-primary-dark hover:bg-purple-700" 
+                        ? "bg-primary-dark hover:bg-primary-dark" 
                         : "hover:bg-neutral-50 hover:border-purple-300"
                     }`}
                     onClick={() => handleLinguagemSecundariaToggle(linguagem)}

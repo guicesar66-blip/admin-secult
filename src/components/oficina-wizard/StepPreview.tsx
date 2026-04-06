@@ -443,7 +443,7 @@ export function StepPreview({ data, onChange }: StepPreviewProps) {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-success mt-0.5" />
               <div>
-                <p className="font-medium text-green-800">Projeto pronto para publicação</p>
+                <p className="font-medium text-pe-green-dark">Projeto pronto para publicação</p>
                 <p className="text-sm text-pe-green-dark mt-1">
                   Todas as 11 etapas foram preenchidas corretamente. Clique em "Publicar na Vitrine" 
                   para disponibilizar seu projeto para investidores.

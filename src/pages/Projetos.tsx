@@ -802,7 +802,7 @@ export default function Projetos() {
                 <div className="flex gap-2">
                   <AlertCircle className="h-4 w-4 text-accent-dark flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-amber-900">Próximas ações:</p>
+                    <p className="text-xs font-semibold text-pe-orange-dark">Próximas ações:</p>
                     <p className="text-xs text-pe-orange-dark mt-1">Revise cuidadosamente as informações antes de aprovar ou recusar. Cada decisão será registrada no histórico.</p>
                   </div>
                 </div>

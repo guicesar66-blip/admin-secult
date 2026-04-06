@@ -33,7 +33,7 @@ export const CardMetrica: React.FC<CardMetricaProps> = ({
   const statusTextClasses = {
     normal: 'text-foreground',
     alerta: 'text-orange-900',
-    crítico: 'text-red-900',
+    crítico: 'text-pe-red-dark',
   };
 
   const variationColor = variacao?.tipo === 'up' ? 'text-success' : 

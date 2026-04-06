@@ -293,7 +293,7 @@ const NovoProjetoEvento = () => {
                     <Button
                       onClick={handleNext}
                       disabled={!canGoNext}
-                      className="gap-2 bg-primary hover:bg-blue-700"
+                      className="gap-2 bg-primary hover:bg-primary-dark"
                     >
                       Próximo
                       <ArrowRight className="h-4 w-4" />
@@ -302,7 +302,7 @@ const NovoProjetoEvento = () => {
                     <Button
                       onClick={handlePublish}
                       disabled={isPublishing}
-                      className="gap-2 bg-success hover:bg-green-700"
+                      className="gap-2 bg-success hover:bg-success-dark"
                     >
                       {isPublishing ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

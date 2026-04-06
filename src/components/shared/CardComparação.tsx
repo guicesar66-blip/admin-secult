@@ -38,10 +38,10 @@ export const CardComparação: React.FC<CardComparaçãoProps> = ({
   };
 
   const textCorClasses = {
-    blue: 'text-blue-900',
-    green: 'text-green-900',
+    blue: 'text-pe-dark',
+    green: 'text-pe-green-dark',
     orange: 'text-orange-900',
-    red: 'text-red-900',
+    red: 'text-pe-red-dark',
   };
 
   const getTrendIcon = (tendencia: 'up' | 'down' | 'stable') => {

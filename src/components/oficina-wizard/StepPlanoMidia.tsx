@@ -198,7 +198,7 @@ PÓS-EVENTO: Publicação do vídeo documentário, galeria de fotos e resultados
           {showTransmissaoWarning && (
             <Alert className="mt-4 border-primary/50 bg-primary/10">
               <Video className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-blue-800">
+              <AlertDescription className="text-pe-blue-dark">
                 A transmissão ao vivo será incluída automaticamente nos custos do projeto (Step 10).
               </AlertDescription>
             </Alert>

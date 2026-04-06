@@ -588,7 +588,7 @@ const MarketplaceExplorar = () => {
                         <span className="text-xs text-muted-foreground">{vaga.candidatos || 0} candidatos</span>
                       </div>
 
-                      <Button className="w-full bg-primary hover:bg-blue-700" size="sm">
+                      <Button className="w-full bg-primary hover:bg-primary-dark" size="sm">
                         Candidatar →
                       </Button>
                     </CardContent>
