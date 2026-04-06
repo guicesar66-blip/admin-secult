@@ -719,15 +719,15 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Certificado */}
           {oficina.emite_certificado && (
             <Card>
-              <CardHeader className="py-3 bg-lime-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-lime-600">
+              <CardHeader className="py-3 bg-pe-green-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-success">
                   <Award className="h-4 w-4" />
                   Certificação
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-3">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-lime-600" />
+                  <CheckCircle2 className="h-5 w-5 text-success" />
                   <span className="text-sm">Este curso emite certificado de conclusão</span>
                 </div>
               </CardContent>

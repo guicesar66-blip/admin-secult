@@ -115,7 +115,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
         <CardContent className="pt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Recursos de Acessibilidade <span className="text-destructive">*</span></h3>
-            <Badge variant="outline" className="text-teal-700 border-teal-300">
+            <Badge variant="outline" className="text-teal-700 border-success/40">
               {data.recursos_acessibilidade.length} selecionado(s)
             </Badge>
           </div>
@@ -149,7 +149,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
                   <div 
                     key={momento} 
                     className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
-                      isSelected ? "bg-teal-100 border border-teal-300" : "bg-card border"
+                      isSelected ? "bg-pe-green-light border border-success/40" : "bg-card border"
                     }`}
                   >
                     <Checkbox
