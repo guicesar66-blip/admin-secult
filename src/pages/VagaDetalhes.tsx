@@ -7,7 +7,7 @@ import { getVagaById } from "@/data/mockVagas";
 
 const tipoColor = {
   presencial: "bg-primary/20 text-primary border-primary/30",
-  remoto: "bg-primary/20 text-pe-blue-dark border-purple-500/30",
+  remoto: "bg-primary/20 text-pe-blue-dark border-primary/30",
   hibrido: "bg-success/20 text-success border-success/30",
 };
 

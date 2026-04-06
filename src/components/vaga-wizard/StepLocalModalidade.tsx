@@ -69,7 +69,7 @@ export function StepLocalModalidade({ data, onChange }: Props) {
                 onClick={() => onChange({ modalidade })}
                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-medium ${
                   data.modalidade === modalidade
-                    ? "border-emerald-500 bg-pe-green-lighter text-success-dark"
+                    ? "border-success bg-pe-green-lighter text-success-dark"
                     : "border-border hover:border-success/40 hover:bg-pe-green-lighter/30"
                 }`}
               >

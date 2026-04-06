@@ -184,7 +184,7 @@ const ProgressBar = ({ currentStep }: { currentStep: number }) => (
           <span
             className={`text-xs font-medium text-center whitespace-nowrap ${
               currentStep === s.id
-                ? "text-primary dark:text-violet-400"
+                ? "text-primary dark:text-primary"
                 : "text-muted-foreground"
             }`}
           >
@@ -312,7 +312,7 @@ const NovoEdital = () => {
           onClick={() => update({ tipo: "publico" })}
           className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-primary/50 hover:bg-primary/3 ${
             data.tipo === "publico"
-              ? "border-violet-500 bg-primary/5"
+              ? "border-primary bg-primary/5"
               : "border-border bg-card"
           }`}
         >
@@ -334,7 +334,7 @@ const NovoEdital = () => {
           onClick={() => update({ tipo: "privado" })}
           className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-primary/50 hover:bg-primary/3 ${
             data.tipo === "privado"
-              ? "border-violet-500 bg-primary/5"
+              ? "border-primary bg-primary/5"
               : "border-border bg-card"
           }`}
         >
@@ -464,7 +464,7 @@ const NovoEdital = () => {
               key={ods.id}
               className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors text-sm ${
                 data.ods.includes(ods.id)
-                  ? "border-violet-500 bg-primary/5 text-primary"
+                  ? "border-primary bg-primary/5 text-primary"
                   : "border-border hover:bg-muted/50"
               }`}
             >
@@ -608,7 +608,7 @@ const NovoEdital = () => {
 
         {/* Cálculo dinâmico */}
         {possiveisProjetos !== null && (
-          <div className="p-3 rounded-lg bg-primary/5 border border-violet-500/20 text-sm text-primary dark:text-violet-400">
+          <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 text-sm text-primary dark:text-primary">
             Com {formatBRLDisplay(data.valorTotal)} total e máximo{" "}
             {formatBRLDisplay(data.valorMaxProjeto)} por projeto, é possível
             financiar até{" "}

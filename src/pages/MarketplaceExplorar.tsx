@@ -42,9 +42,9 @@ const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: 
   evento:    { label: "Evento",    icon: <Calendar className="h-4 w-4" />,      color: "bg-warning/20 text-warning border-warning/30" },
   vaga:      { label: "Vaga",      icon: <Briefcase className="h-4 w-4" />,     color: "bg-primary/20 text-primary border-primary/30" },
   oficina:   { label: "Oficina",   icon: <GraduationCap className="h-4 w-4" />, color: "bg-success/20 text-success border-success/30" },
-  bairro:    { label: "Bairro",    icon: <Building className="h-4 w-4" />,      color: "bg-primary/20 text-pe-blue-dark border-purple-500/30" },
+  bairro:    { label: "Bairro",    icon: <Building className="h-4 w-4" />,      color: "bg-primary/20 text-pe-blue-dark border-primary/30" },
   ep:        { label: "EP/Álbum",  icon: <Music className="h-4 w-4" />,         color: "bg-secondary/20 text-secondary border-secondary/30" },
-  filme:     { label: "Filme/Doc", icon: <Film className="h-4 w-4" />,          color: "bg-primary/20 text-primary border-cyan-500/30" },
+  filme:     { label: "Filme/Doc", icon: <Film className="h-4 w-4" />,          color: "bg-primary/20 text-primary border-primary/30" },
   festival:  { label: "Festival",  icon: <Users className="h-4 w-4" />,         color: "bg-primary/20 text-primary border-primary/30" },
   exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />,       color: "bg-success/20 text-success border-success/30" },
   teatro:    { label: "Teatro",    icon: <Theater className="h-4 w-4" />,       color: "bg-accent/20 text-accent-dark border-accent/30" },
@@ -541,7 +541,7 @@ const MarketplaceExplorar = () => {
                   <Card
                     key={vaga.id}
                     className={`cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1 ${
-                      vaga.featured ? "border-violet-300 border-2" : ""
+                      vaga.featured ? "border-primary/30 border-2" : ""
                     }`}
                     onClick={() => navigate(`/vaga/${vaga.id}`)}
                   >

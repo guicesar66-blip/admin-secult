@@ -115,7 +115,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
         <CardContent className="pt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Recursos de Acessibilidade <span className="text-destructive">*</span></h3>
-            <Badge variant="outline" className="text-teal-700 border-success/40">
+            <Badge variant="outline" className="text-success-dark border-success/40">
               {data.recursos_acessibilidade.length} selecionado(s)
             </Badge>
           </div>
@@ -196,7 +196,7 @@ export function StepAcessibilidadeEvento({ data, onChange }: StepAcessibilidadeE
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
             <Lightbulb className="h-5 w-5 text-success mt-0.5" />
-            <div className="text-sm text-teal-700 space-y-2">
+            <div className="text-sm text-success-dark space-y-2">
               <p className="font-medium">Dicas para um evento mais inclusivo:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Comunique os recursos de acessibilidade na divulgação</li>

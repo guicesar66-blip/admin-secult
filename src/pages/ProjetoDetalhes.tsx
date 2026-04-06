@@ -75,7 +75,7 @@ const STATUS_CONFIG: Record<
     badgeColor: "bg-primary/15 text-primary border-primary/30",
     cardBorder: "border-primary/30",
     cardBg: "bg-primary/5",
-    titleColor: "text-violet-800 dark:text-violet-300",
+    titleColor: "text-primary dark:text-primary",
     emoji: "🔍",
     descricao: "Sua inscrição foi recebida pela SECULT Recife e está sendo avaliada.",
     pingColor: "bg-primary",
@@ -85,7 +85,7 @@ const STATUS_CONFIG: Record<
     badgeColor: "bg-success/15 text-success-dark border-success/30",
     cardBorder: "border-success/30",
     cardBg: "bg-success/5",
-    titleColor: "text-emerald-800 dark:text-emerald-300",
+    titleColor: "text-success dark:text-success",
     emoji: "✅",
     descricao: "Parabéns! Seu projeto foi selecionado para financiamento pelo edital.",
     pingColor: "bg-success",
@@ -560,9 +560,9 @@ const ProjetoDetalhes = () => {
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
                 isDragging
-                  ? "border-violet-500 bg-primary/5"
+                  ? "border-primary bg-primary/5"
                   : uploadFile
-                  ? "border-emerald-500 bg-success/5"
+                  ? "border-success bg-success/5"
                   : "border-border hover:border-muted-foreground/50"
               }`}
               onClick={() => fileInputRef.current?.click()}
