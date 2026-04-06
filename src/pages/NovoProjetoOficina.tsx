@@ -180,7 +180,7 @@ const NovoProjetoOficina = () => {
         {/* Sidebar - Navegação dos Steps */}
         <div className="w-72 shrink-0">
           <Card className="h-full overflow-hidden">
-            <CardHeader className="border-b bg-gradient-to-r from-amber-500/10 to-amber-500/5 py-4">
+            <CardHeader className="border-b bg-gradient-to-r from-accent/10 to-accent/5 py-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-accent/20">
                   <GraduationCap className="h-5 w-5 text-accent-dark" />

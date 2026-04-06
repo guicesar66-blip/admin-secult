@@ -126,7 +126,7 @@ export function StepProgramacao({ data, onChange }: StepProgramacaoProps) {
     onUpdate: (updates: Partial<Atracao>) => void,
     onRemove: () => void
   ) => (
-    <Card key={atracao.id} className="border-l-4 border-l-purple-500">
+    <Card key={atracao.id} className="border-l-4 border-l-primary">
       <CardContent className="pt-4 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex gap-2">

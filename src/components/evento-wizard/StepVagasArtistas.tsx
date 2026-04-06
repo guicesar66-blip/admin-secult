@@ -171,10 +171,10 @@ export function StepVagasArtistas({ data, onChange }: StepVagasArtistasProps) {
         ) : (
           <div className="space-y-4">
             {data.vagas_artistas.map((vaga) => (
-              <Card key={vaga.id} className="border-l-4 border-l-amber-500">
+              <Card key={vaga.id} className="border-l-4 border-l-accent">
                 <CardContent className="pt-4 space-y-4">
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-accent-dark border-amber-300">
+                    <Badge variant="outline" className="text-accent-dark border-accent/50">
                       Vaga para Artista CENA
                     </Badge>
                     <Button

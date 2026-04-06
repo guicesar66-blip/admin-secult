@@ -287,7 +287,7 @@ export const InvestmentProposalDialog = ({
                   }`}
                 >
                   <RadioGroupItem value="financeiro" id="financeiro" className="sr-only" />
-                  <DollarSign className="h-6 w-6 text-emerald-500" />
+                  <DollarSign className="h-6 w-6 text-success" />
                   <span className="text-sm font-medium">Financeiro</span>
                 </Label>
                 <Label
@@ -421,7 +421,7 @@ export const InvestmentProposalDialog = ({
                 {proposta.valorFinanceiro && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Valor:</span>
-                    <span className="font-medium text-emerald-500">R$ {proposta.valorFinanceiro}</span>
+                    <span className="font-medium text-success">R$ {proposta.valorFinanceiro}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-start">

@@ -50,12 +50,12 @@ import AffinityScore from "@/components/AffinityScore";
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   evento:    { label: "Evento",    icon: <Calendar className="h-5 w-5" />,      color: "bg-warning" },
   vaga:      { label: "Vaga",      icon: <Briefcase className="h-5 w-5" />,     color: "bg-primary" },
-  oficina:   { label: "Oficina",   icon: <GraduationCap className="h-5 w-5" />, color: "bg-emerald-500" },
+  oficina:   { label: "Oficina",   icon: <GraduationCap className="h-5 w-5" />, color: "bg-success" },
   bairro:    { label: "Bairro",    icon: <Building className="h-5 w-5" />,      color: "bg-primary" },
-  ep:        { label: "EP/Álbum",  icon: <Music className="h-5 w-5" />,         color: "bg-pink-500" },
-  filme:     { label: "Filme/Doc", icon: <Film className="h-5 w-5" />,          color: "bg-cyan-500" },
-  festival:  { label: "Festival",  icon: <Users className="h-5 w-5" />,         color: "bg-violet-500" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />,       color: "bg-emerald-500" },
+  ep:        { label: "EP/Álbum",  icon: <Music className="h-5 w-5" />,         color: "bg-secondary" },
+  filme:     { label: "Filme/Doc", icon: <Film className="h-5 w-5" />,          color: "bg-primary" },
+  festival:  { label: "Festival",  icon: <Users className="h-5 w-5" />,         color: "bg-primary" },
+  exposicao: { label: "Exposição", icon: <Palette className="h-5 w-5" />,       color: "bg-success" },
   teatro:    { label: "Teatro",    icon: <Theater className="h-5 w-5" />,       color: "bg-accent" },
 };
 
@@ -248,7 +248,7 @@ const VitrineDetalhes = () => {
                 className="grid grid-cols-3 gap-3"
               >
                 {([
-                  { v: "financeiro", icon: <DollarSign className="h-6 w-6 text-emerald-500" />, label: "Financeiro" },
+                  { v: "financeiro", icon: <DollarSign className="h-6 w-6 text-success" />, label: "Financeiro" },
                   { v: "servico",    icon: <Briefcase className="h-6 w-6 text-primary" />,    label: "Serviço" },
                   { v: "misto",      icon: <Sparkles className="h-6 w-6 text-accent" />,    label: "Misto" },
                 ] as const).map(({ v, icon, label }) => (
@@ -339,7 +339,7 @@ const VitrineDetalhes = () => {
                 {proposta.valorFinanceiro && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Valor:</span>
-                    <span className="font-medium text-emerald-500">R$ {proposta.valorFinanceiro}</span>
+                    <span className="font-medium text-success">R$ {proposta.valorFinanceiro}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-start">
@@ -457,7 +457,7 @@ const VitrineDetalhes = () => {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {projeto.incentivosLeis.map((lei) => (
-                        <Badge key={lei.id} variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100 transition-colors">
+                        <Badge key={lei.id} variant="outline" className="bg-pe-blue-lighter text-primary border-primary/30 hover:bg-pe-blue-light transition-colors">
                           {lei.label}
                         </Badge>
                       ))}
@@ -483,13 +483,13 @@ const VitrineDetalhes = () => {
                 {Object.values(projeto.affinityBreakdown).map((dim) => {
                   const color =
                     dim.value > 80
-                      ? "text-emerald-600"
+                      ? "text-success"
                       : dim.value >= 60
                       ? "text-accent-dark"
                       : "text-error";
                   const progressColor =
                     dim.value > 80
-                      ? "[&>div]:bg-emerald-500"
+                      ? "[&>div]:bg-success"
                       : dim.value >= 60
                       ? "[&>div]:bg-accent"
                       : "[&>div]:bg-error";
@@ -519,7 +519,7 @@ const VitrineDetalhes = () => {
             <Card className="border-primary/30 sticky top-20">
               <CardContent className="p-6 space-y-4">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-emerald-500">
+                  <p className="text-3xl font-bold text-success">
                     R$ {projeto.captacaoAtual.toLocaleString("pt-BR")}
                   </p>
                   <p className="text-sm text-muted-foreground">

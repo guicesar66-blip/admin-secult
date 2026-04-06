@@ -89,8 +89,8 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-pink-500/10">
-          <Megaphone className="h-6 w-6 text-pink-600" />
+        <div className="p-3 rounded-xl bg-secondary/10">
+          <Megaphone className="h-6 w-6 text-secondary" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Divulgação e Comunicação</h2>
@@ -125,7 +125,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
           {data.canais_divulgacao.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
               {data.canais_divulgacao.map((canal) => (
-                <Badge key={canal} variant="secondary" className="bg-pink-100 text-pink-700">
+                <Badge key={canal} variant="secondary" className="bg-pe-red-light text-secondary">
                   {canal}
                 </Badge>
               ))}
@@ -139,7 +139,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-pink-600" />
+              <Calendar className="h-5 w-5 text-secondary" />
               <h3 className="font-semibold">Cronograma de Divulgação <span className="text-destructive">*</span></h3>
             </div>
             <Button type="button" variant="outline" size="sm" onClick={handleAddFase} className="gap-1">
@@ -159,7 +159,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
           ) : (
             <div className="space-y-4">
               {data.fases_divulgacao.map((fase, index) => (
-                <Card key={fase.id} className="border-l-4 border-l-pink-500">
+                <Card key={fase.id} className="border-l-4 border-l-secondary">
                   <CardContent className="pt-4 space-y-4">
                     <div className="flex items-center justify-between">
                       <Badge variant="outline">Fase {index + 1}</Badge>
@@ -219,7 +219,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
                             <Badge
                               key={canal}
                               variant={isSelected ? "default" : "outline"}
-                              className={`cursor-pointer ${isSelected ? "bg-pink-600" : ""}`}
+                              className={`cursor-pointer ${isSelected ? "bg-secondary" : ""}`}
                               onClick={() => {
                                 const updated = isSelected
                                   ? fase.canais.filter(c => c !== canal)
@@ -246,7 +246,7 @@ export function StepDivulgacaoEvento({ data, onChange }: StepDivulgacaoEventoPro
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Image className="h-5 w-5 text-pink-600" />
+              <Image className="h-5 w-5 text-secondary" />
               <h3 className="font-semibold">Marcas e Logos</h3>
             </div>
             <Button type="button" variant="outline" size="sm" onClick={handleAddMarca} className="gap-1">

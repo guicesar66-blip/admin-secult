@@ -103,7 +103,7 @@ export default function NovoEspacoCultural() {
           <h3 className="font-semibold">Que tipo de espaço cultural?</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {(Object.entries(TIPOS_ESPACO) as [TipoEspaco, typeof TIPOS_ESPACO[TipoEspaco]][]).map(([key, cfg]) => (
-              <Card key={key} className={cn("cursor-pointer border-2", tipo === key ? "border-violet-600 bg-violet-50" : "border-border")} onClick={() => setTipo(key)}>
+              <Card key={key} className={cn("cursor-pointer border-2", tipo === key ? "border-primary bg-pe-blue-lighter" : "border-border")} onClick={() => setTipo(key)}>
                 <CardContent className="pt-4 text-center">
                   <div className="text-3xl mb-2">{cfg.icon}</div>
                   <h4 className="font-semibold text-sm">{cfg.label}</h4>
@@ -121,7 +121,7 @@ export default function NovoEspacoCultural() {
         <div className="space-y-4">
           <div>
             <Label>Tipo</Label>
-            <Badge className="mt-2 bg-violet-600">{TIPOS_ESPACO[tipo].label}</Badge>
+            <Badge className="mt-2 bg-primary">{TIPOS_ESPACO[tipo].label}</Badge>
           </div>
           <div>
             <Label>Nome do Espaço *</Label>
@@ -233,7 +233,7 @@ export default function NovoEspacoCultural() {
 
         <div className="flex gap-2 mb-6">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className={cn("flex-1 h-1 rounded transition-colors", n <= etapa ? (n < etapa ? "bg-emerald-500" : "bg-violet-600") : "bg-neutral-200")} />
+            <div key={n} className={cn("flex-1 h-1 rounded transition-colors", n <= etapa ? (n < etapa ? "bg-success" : "bg-primary") : "bg-neutral-200")} />
           ))}
         </div>
 
@@ -249,11 +249,11 @@ export default function NovoEspacoCultural() {
               Anterior
             </Button>
             {etapa < 4 ? (
-              <Button onClick={handleProxima} className="bg-violet-600 hover:bg-violet-700">
+              <Button onClick={handleProxima} className="bg-primary hover:bg-primary-dark">
                 Próxima
               </Button>
             ) : (
-              <Button onClick={handlePublicar} disabled={processando} className="bg-emerald-600 hover:bg-emerald-700">
+              <Button onClick={handlePublicar} disabled={processando} className="bg-success hover:bg-success-dark">
                 {processando ? "Registrando..." : "Registrar"}
               </Button>
             )}
@@ -263,14 +263,14 @@ export default function NovoEspacoCultural() {
 
       <Dialog open={showSucesso} onOpenChange={setShowSucesso}>
         <DialogContent className="text-center">
-          <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto" />
+          <CheckCircle className="w-16 h-16 text-success mx-auto" />
           <DialogTitle>Espaço Registrado!</DialogTitle>
           <DialogDescription className="mt-2">
             Seu espaço cultural foi registrado com sucesso.
             <br />
             Protocolo: <span className="font-mono font-bold">{protocolo}</span>
           </DialogDescription>
-          <Button onClick={() => navigate("/projetos")} className="w-full bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={() => navigate("/projetos")} className="w-full bg-success hover:bg-success-dark">
             Voltar
           </Button>
         </DialogContent>

@@ -42,8 +42,8 @@ export function StepPreviewVaga({ data }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-emerald-500/10">
-          <Eye className="h-6 w-6 text-emerald-600" />
+        <div className="p-3 rounded-xl bg-success/10">
+          <Eye className="h-6 w-6 text-success" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Revisão e Publicação</h2>
@@ -54,14 +54,14 @@ export function StepPreviewVaga({ data }: Props) {
       </div>
 
       {/* Cabeçalho da vaga */}
-      <Card className="border-emerald-200">
+      <Card className="border-success/30">
         <CardHeader className="pb-3 bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 rounded-t-xl">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
               <CardTitle className="text-2xl">{data.titulo || "Título não informado"}</CardTitle>
               <div className="flex flex-wrap gap-2">
                 {data.area_cultural && (
-                  <Badge className="bg-emerald-600">{data.area_cultural}</Badge>
+                  <Badge className="bg-success">{data.area_cultural}</Badge>
                 )}
                 {data.modalidade && (
                   <Badge variant="outline">{data.modalidade}</Badge>
@@ -72,7 +72,7 @@ export function StepPreviewVaga({ data }: Props) {
               </div>
             </div>
             <div className="text-right shrink-0">
-              <p className="text-2xl font-bold text-emerald-600">{remuneracaoDisplay}</p>
+              <p className="text-2xl font-bold text-success">{remuneracaoDisplay}</p>
               <p className="text-xs text-muted-foreground">{data.regime_jornada}</p>
             </div>
           </div>
@@ -112,7 +112,7 @@ export function StepPreviewVaga({ data }: Props) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-emerald-600" />
+              <Briefcase className="h-4 w-4 text-success" />
               Sobre a Vaga
             </CardTitle>
           </CardHeader>
@@ -127,7 +127,7 @@ export function StepPreviewVaga({ data }: Props) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Users className="h-4 w-4 text-emerald-600" />
+              <Users className="h-4 w-4 text-success" />
               Perfil do Candidato
             </CardTitle>
           </CardHeader>
@@ -166,7 +166,7 @@ export function StepPreviewVaga({ data }: Props) {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-emerald-600" />
+            <DollarSign className="h-4 w-4 text-success" />
             Remuneração e Benefícios
           </CardTitle>
         </CardHeader>
@@ -192,7 +192,7 @@ export function StepPreviewVaga({ data }: Props) {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-emerald-600" />
+            <Calendar className="h-4 w-4 text-success" />
             Processo Seletivo
           </CardTitle>
         </CardHeader>
@@ -206,7 +206,7 @@ export function StepPreviewVaga({ data }: Props) {
               <div className="flex flex-wrap gap-1 items-center">
                 {data.etapas_selecao.map((etapa, i) => (
                   <span key={etapa} className="flex items-center gap-1">
-                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">
+                    <span className="text-xs bg-pe-green-light text-success-dark px-2 py-0.5 rounded-full font-medium">
                       {i + 1}. {etapa}
                     </span>
                     {i < data.etapas_selecao.length - 1 && (
@@ -240,7 +240,7 @@ export function StepPreviewVaga({ data }: Props) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Clock className="h-4 w-4 text-emerald-600" />
+              <Clock className="h-4 w-4 text-success" />
               Período de Atuação
             </CardTitle>
           </CardHeader>

@@ -39,14 +39,14 @@ import { vagasMock, Vaga } from "@/data/mockVagas";
 import AffinityScore from "@/components/AffinityScore";
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento:    { label: "Evento",    icon: <Calendar className="h-4 w-4" />,      color: "bg-warning/20 text-warning border-orange-500/30" },
+  evento:    { label: "Evento",    icon: <Calendar className="h-4 w-4" />,      color: "bg-warning/20 text-warning border-warning/30" },
   vaga:      { label: "Vaga",      icon: <Briefcase className="h-4 w-4" />,     color: "bg-primary/20 text-primary border-primary/30" },
-  oficina:   { label: "Oficina",   icon: <GraduationCap className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30" },
+  oficina:   { label: "Oficina",   icon: <GraduationCap className="h-4 w-4" />, color: "bg-success/20 text-success border-success/30" },
   bairro:    { label: "Bairro",    icon: <Building className="h-4 w-4" />,      color: "bg-primary/20 text-pe-blue-dark border-purple-500/30" },
-  ep:        { label: "EP/Álbum",  icon: <Music className="h-4 w-4" />,         color: "bg-pink-500/20 text-pink-600 border-pink-500/30" },
-  filme:     { label: "Filme/Doc", icon: <Film className="h-4 w-4" />,          color: "bg-cyan-500/20 text-cyan-600 border-cyan-500/30" },
-  festival:  { label: "Festival",  icon: <Users className="h-4 w-4" />,         color: "bg-violet-500/20 text-violet-600 border-violet-500/30" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />,       color: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30" },
+  ep:        { label: "EP/Álbum",  icon: <Music className="h-4 w-4" />,         color: "bg-secondary/20 text-secondary border-secondary/30" },
+  filme:     { label: "Filme/Doc", icon: <Film className="h-4 w-4" />,          color: "bg-primary/20 text-primary border-cyan-500/30" },
+  festival:  { label: "Festival",  icon: <Users className="h-4 w-4" />,         color: "bg-primary/20 text-primary border-primary/30" },
+  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />,       color: "bg-success/20 text-success border-success/30" },
   teatro:    { label: "Teatro",    icon: <Theater className="h-4 w-4" />,       color: "bg-accent/20 text-accent-dark border-accent/30" },
 };
 
@@ -172,7 +172,7 @@ const MarketplaceExplorar = () => {
           {projeto.incentivosLeis && projeto.incentivosLeis.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {projeto.incentivosLeis.slice(0, 2).map((lei) => (
-                <Badge key={lei.id} variant="outline" className="text-[9px] px-1.5 py-0 bg-violet-50 text-violet-700 border-violet-200">
+                <Badge key={lei.id} variant="outline" className="text-[9px] px-1.5 py-0 bg-pe-blue-lighter text-primary border-primary/30">
                   {lei.label}
                 </Badge>
               ))}
@@ -187,7 +187,7 @@ const MarketplaceExplorar = () => {
           {projeto.mostrarProgresso && projeto.metaCaptacao > 0 && (
             <div className="pt-2 border-t space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold text-emerald-500">
+                <span className="text-sm font-semibold text-success">
                   R$ {projeto.captacaoAtual.toLocaleString("pt-BR")}
                 </span>
                 <span className="text-xs text-muted-foreground">
@@ -278,7 +278,7 @@ const MarketplaceExplorar = () => {
             <span className="text-sm font-medium">{projetosVitrine.length} projetos</span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/50">
-            <DollarSign className="h-4 w-4 text-emerald-500" />
+            <DollarSign className="h-4 w-4 text-success" />
             <span className="text-sm font-medium">{totalPropostas} propostas</span>
           </div>
         </div>
@@ -434,7 +434,7 @@ const MarketplaceExplorar = () => {
                 >
                   <CardContent className="p-6 space-y-4">
                     <div>
-                      <Badge className="mb-2 bg-violet-600 hover:bg-violet-700">{edital.linguagem}</Badge>
+                      <Badge className="mb-2 bg-primary hover:bg-primary-dark">{edital.linguagem}</Badge>
                       <h3 className="font-semibold text-lg line-clamp-2">{edital.titulo}</h3>
                       <p className="text-xs text-muted-foreground mt-1">{edital.organizador}</p>
                     </div>
@@ -444,7 +444,7 @@ const MarketplaceExplorar = () => {
                     <div className="grid grid-cols-2 gap-3 pt-4 border-t">
                       <div>
                         <p className="text-xs text-muted-foreground">Valor total</p>
-                        <p className="font-semibold text-emerald-600">
+                        <p className="font-semibold text-success">
                           R$ {(edital.valorTotal / 1000).toFixed(0)}K
                         </p>
                       </div>
@@ -458,7 +458,7 @@ const MarketplaceExplorar = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-violet-600 hover:bg-violet-700" size="sm">
+                    <Button className="w-full bg-primary hover:bg-primary-dark" size="sm">
                       Inscrever →
                     </Button>
                   </CardContent>
@@ -534,7 +534,7 @@ const MarketplaceExplorar = () => {
                 const tipoColor = {
                   presencial: "bg-primary/10 text-primary",
                   remoto: "bg-primary/10 text-pe-blue-dark",
-                  hibrido: "bg-emerald-500/10 text-emerald-600",
+                  hibrido: "bg-success/10 text-success",
                 };
 
                 return (
@@ -570,7 +570,7 @@ const MarketplaceExplorar = () => {
                         )}
                         {vaga.salario && (
                           <div className="flex items-center gap-2 text-sm">
-                            <DollarSign className="h-3 w-3 text-emerald-600" />
+                            <DollarSign className="h-3 w-3 text-success" />
                             <span className="font-semibold">
                               R$ {vaga.salario.minimo.toLocaleString("pt-BR")} - R${" "}
                               {vaga.salario.maximo.toLocaleString("pt-BR")}

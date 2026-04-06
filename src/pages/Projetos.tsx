@@ -284,7 +284,7 @@ export default function Projetos() {
           {abaAtiva === "meus-projetos" && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="gap-2 bg-violet-600 hover:bg-violet-700">
+                <Button className="gap-2 bg-primary hover:bg-primary-dark">
                   <Plus className="h-4 w-4" />
                   Novo projeto
                   <ChevronDown className="h-4 w-4" />
@@ -299,7 +299,7 @@ export default function Projetos() {
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/vaga")} className="gap-3 cursor-pointer">
-                  <Briefcase className="h-4 w-4 text-emerald-500" />
+                  <Briefcase className="h-4 w-4 text-success" />
                   <div>
                     <p className="font-medium">Vaga de Trabalho</p>
                     <p className="text-xs text-muted-foreground">Emprego, freelancer, cachê</p>
@@ -321,7 +321,7 @@ export default function Projetos() {
                 </DropdownMenuItem>
                 <Separator className="my-1" />
                 <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/edital")} className="gap-3 cursor-pointer">
-                  <ScrollText className="h-4 w-4 text-violet-500" />
+                  <ScrollText className="h-4 w-4 text-primary" />
                   <div>
                     <p className="font-medium">Edital / Chamada</p>
                     <p className="text-xs text-muted-foreground">Editais públicos ou patrocínio privado</p>
@@ -347,7 +347,7 @@ export default function Projetos() {
               className={cn(
                 "rounded-none border-b-2 h-12 px-4",
                 abaAtiva === "meus-projetos"
-                  ? "bg-transparent border-b-violet-600 text-violet-600 hover:bg-transparent"
+                  ? "bg-transparent border-b-violet-600 text-primary hover:bg-transparent"
                   : "border-b-transparent text-muted-foreground hover:bg-transparent"
               )}
               onClick={() => setAbaAtiva("meus-projetos")}
@@ -359,7 +359,7 @@ export default function Projetos() {
               className={cn(
                 "rounded-none border-b-2 h-12 px-4 flex items-center gap-2",
                 abaAtiva === "aprovacoes"
-                  ? "bg-transparent border-b-violet-600 text-violet-600 hover:bg-transparent"
+                  ? "bg-transparent border-b-violet-600 text-primary hover:bg-transparent"
                   : "border-b-transparent text-muted-foreground hover:bg-transparent"
               )}
               onClick={() => setAbaAtiva("aprovacoes")}
@@ -384,7 +384,7 @@ export default function Projetos() {
                 variant={filtro === "todos" ? "default" : "outline"}
                 onClick={() => setFiltro("todos")}
                 className={cn(
-                  filtro === "todos" && "bg-violet-600 hover:bg-violet-700"
+                  filtro === "todos" && "bg-primary hover:bg-primary-dark"
                 )}
               >
                 Todos ({projetos.length})
@@ -430,7 +430,7 @@ export default function Projetos() {
                 </p>
                 <Button
                   onClick={() => navigate("/oportunidades/novo")}
-                  className="bg-violet-600 hover:bg-violet-700"
+                  className="bg-primary hover:bg-primary-dark"
                 >
                   Criar projeto
                 </Button>
@@ -534,7 +534,7 @@ export default function Projetos() {
             {/* Aba de Gestão de Aprovações */}
             {aprovacoesEmPendente.length === 0 ? (
               <div className="text-center py-16">
-                <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
+                <CheckCircle className="h-12 w-12 text-success mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">
                   Nenhuma aprovação pendente
                 </h3>
@@ -596,7 +596,7 @@ export default function Projetos() {
                           </div>
                           <div>
                             <p className="text-muted-foreground text-xs">Orçamento</p>
-                            <p className="font-medium text-emerald-600">R$ {item.orcamento.toLocaleString("pt-BR")}</p>
+                            <p className="font-medium text-success">R$ {item.orcamento.toLocaleString("pt-BR")}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground text-xs">Documentos</p>
@@ -624,7 +624,7 @@ export default function Projetos() {
                           </Button>
                           <Button
                             size="sm"
-                            className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                            className="flex-1 bg-success hover:bg-success-dark"
                             onClick={() => handleAprovar(item)}
                             disabled={processandoAprovacao}
                           >
@@ -663,7 +663,7 @@ export default function Projetos() {
                               variant="outline"
                               className={
                                 aprovacao.resultado === "aprovado"
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 ml-2"
+                                  ? "bg-pe-green-lighter text-success-dark border-success/30 ml-2"
                                   : "bg-pe-red-lighter text-pe-red-dark border-error/30 ml-2"
                               }
                             >
@@ -777,7 +777,7 @@ export default function Projetos() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Orçamento</p>
-                    <p className="text-sm font-medium text-emerald-600 mt-1">R$ {itemDetalhes.orcamento.toLocaleString("pt-BR")}</p>
+                    <p className="text-sm font-medium text-success mt-1">R$ {itemDetalhes.orcamento.toLocaleString("pt-BR")}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Documentos Anexos</p>
@@ -832,7 +832,7 @@ export default function Projetos() {
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-success hover:bg-success-dark"
               onClick={() => {
                 setDialogDetalhesAberto(false);
                 if (itemDetalhes) handleAprovar(itemDetalhes);

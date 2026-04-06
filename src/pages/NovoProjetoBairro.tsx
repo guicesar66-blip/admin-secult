@@ -370,7 +370,7 @@ const NovoProjetoBairro = () => {
                       <div
                         key={etapa.id}
                         className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
-                          isComplete ? "bg-emerald-500/10 text-emerald-600" : isCurrent ? "bg-primary/10 text-pe-blue-dark" : "text-muted-foreground"
+                          isComplete ? "bg-success/10 text-success" : isCurrent ? "bg-primary/10 text-pe-blue-dark" : "text-muted-foreground"
                         }`}
                       >
                         {isComplete ? <CheckCircle2 className="h-4 w-4" /> : etapa.icon}

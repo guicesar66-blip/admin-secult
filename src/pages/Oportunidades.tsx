@@ -68,24 +68,24 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const PROJETO_STATUS_CONFIG: Record<ProjetoStatus, { label: string; color: string }> = {
-  rascunho:          { label: "Rascunho",         color: "bg-zinc-500/15 text-zinc-600 border-zinc-500/30" },
+  rascunho:          { label: "Rascunho",         color: "bg-muted/80 text-muted-foreground border-border" },
   submetido:         { label: "Submetido",         color: "bg-primary/15 text-primary border-primary/30" },
-  em_analise:        { label: "Em Análise",        color: "bg-violet-500/15 text-violet-700 border-violet-500/30" },
-  aprovado:          { label: "Aprovado",          color: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
-  em_execucao:       { label: "Em Execução",       color: "bg-sky-500/15 text-sky-700 border-sky-500/30" },
+  em_analise:        { label: "Em Análise",        color: "bg-primary/15 text-primary border-primary/30" },
+  aprovado:          { label: "Aprovado",          color: "bg-success/15 text-success-dark border-success/30" },
+  em_execucao:       { label: "Em Execução",       color: "bg-primary/15 text-primary border-primary/30" },
   prestacao_enviada: { label: "Prestação Enviada", color: "bg-accent/15 text-accent-dark border-accent/30" },
   concluido:         { label: "Concluído",         color: "bg-success/15 text-pe-green-dark border-success/30" },
 };
 
 const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-primary/20 text-primary" },
-  vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
+  vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-success/20 text-success" },
   oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-accent/20 text-accent-dark" },
-  festival: { label: "Festival", icon: <Users className="h-4 w-4" />, color: "bg-violet-500/20 text-violet-600" },
-  filme: { label: "Filme/Doc", icon: <Film className="h-4 w-4" />, color: "bg-cyan-500/20 text-cyan-600" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
+  festival: { label: "Festival", icon: <Users className="h-4 w-4" />, color: "bg-primary/20 text-primary" },
+  filme: { label: "Filme/Doc", icon: <Film className="h-4 w-4" />, color: "bg-primary/20 text-primary" },
+  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />, color: "bg-success/20 text-success" },
   teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-accent/20 text-accent-dark" },
-  ep: { label: "EP/Álbum", icon: <Music className="h-4 w-4" />, color: "bg-pink-500/20 text-pink-600" },
+  ep: { label: "EP/Álbum", icon: <Music className="h-4 w-4" />, color: "bg-secondary/20 text-secondary" },
   projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-primary/20 text-pe-blue-dark" },
 };
 
@@ -141,7 +141,7 @@ interface Aprovacao {
 
 const TIPO_APROVACAO_CONFIG: Record<TipoAprovacao, { label: string; icon: React.ReactNode; cor: string; bgCor: string }> = {
   projeto:  { label: "Projetos",          icon: <FileText className="h-4 w-4" />,   cor: "text-primary",      bgCor: "bg-primary/10 border-primary/30" },
-  edital:   { label: "Editais",           icon: <ScrollText className="h-4 w-4" />, cor: "text-violet-600",   bgCor: "bg-violet-500/10 border-violet-500/30" },
+  edital:   { label: "Editais",           icon: <ScrollText className="h-4 w-4" />, cor: "text-primary",   bgCor: "bg-primary/10 border-primary/30" },
   espaco:   { label: "Espaços Culturais", icon: <Building2 className="h-4 w-4" />,  cor: "text-success",      bgCor: "bg-success/10 border-success/30" },
   pesquisa: { label: "Pesquisas",         icon: <Lightbulb className="h-4 w-4" />,  cor: "text-accent-dark",  bgCor: "bg-accent/10 border-accent/30" },
 };
@@ -738,7 +738,7 @@ const Oportunidades = () => {
               </DropdownMenuItem>
               <Separator className="my-1" />
               <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/edital")} className="gap-3 cursor-pointer">
-                <ScrollText className="h-4 w-4 text-violet-500" />
+                <ScrollText className="h-4 w-4 text-primary" />
                 <div>
                   <p className="font-medium">Edital / Chamada</p>
                   <p className="text-xs text-muted-foreground">Editais públicos ou patrocínio privado</p>

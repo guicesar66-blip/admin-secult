@@ -213,7 +213,7 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
     return (
       <div className="space-y-6">
         {/* Header com título destacado */}
-        <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-accent/30">
+        <Card className="bg-gradient-to-r from-accent/10 to-warning/10 border-accent/30">
           <CardContent className="py-6">
             <h2 className="text-2xl font-bold text-center">{oficina.titulo}</h2>
             <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
@@ -375,8 +375,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
 
           {/* Facilitador e Organização */}
           <Card>
-            <CardHeader className="py-3 bg-indigo-50">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-indigo-600">
+            <CardHeader className="py-3 bg-pe-blue-lighter">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary">
                 <User className="h-4 w-4" />
                 Facilitador & Organização
               </CardTitle>
@@ -409,8 +409,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Divulgação */}
           {canaisDivulgacao.length > 0 && (
             <Card>
-              <CardHeader className="py-3 bg-pink-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-pink-600">
+              <CardHeader className="py-3 bg-pe-red-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-secondary">
                   <Megaphone className="h-4 w-4" />
                   Divulgação e Marca
                 </CardTitle>
@@ -443,8 +443,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Plano de Mídia */}
           {(oficina.estrategia_campanha || coberturaEvento.length > 0) && (
             <Card>
-              <CardHeader className="py-3 bg-cyan-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-cyan-600">
+              <CardHeader className="py-3 bg-pe-blue-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary">
                   <Radio className="h-4 w-4" />
                   Plano de Mídia
                 </CardTitle>
@@ -467,8 +467,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Acessibilidade */}
           {(recursosAcessibilidade.length > 0 || oficina.descricao_acolhimento) && (
             <Card>
-              <CardHeader className="py-3 bg-violet-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-violet-600">
+              <CardHeader className="py-3 bg-pe-blue-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary">
                   <Accessibility className="h-4 w-4" />
                   Acessibilidade
                 </CardTitle>
@@ -516,8 +516,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
 
           {/* Público e Cronograma */}
           <Card>
-            <CardHeader className="py-3 bg-teal-50">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-teal-600">
+            <CardHeader className="py-3 bg-pe-green-lighter">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-success">
                 <Users className="h-4 w-4" />
                 Público e Cronograma
               </CardTitle>
@@ -593,8 +593,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Equipe */}
           {totalEquipe > 0 && (
             <Card>
-              <CardHeader className="py-3 bg-rose-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-rose-600">
+              <CardHeader className="py-3 bg-pe-red-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-secondary">
                   <Users className="h-4 w-4" />
                   Equipe ({totalEquipe})
                 </CardTitle>
@@ -629,14 +629,14 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
           {/* Orçamento */}
           {(itensCusto.length > 0 || oficina.orcamento_total) && (
             <Card>
-              <CardHeader className="py-3 bg-emerald-50">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-emerald-600">
+              <CardHeader className="py-3 bg-pe-green-lighter">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-success">
                   <DollarSign className="h-4 w-4" />
                   Orçamento
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-3 space-y-3">
-                <div className="text-2xl font-bold text-emerald-600">
+                <div className="text-2xl font-bold text-success">
                   {formatCurrency(oficina.orcamento_total)}
                 </div>
                 {itensCusto.length > 0 && (
@@ -821,15 +821,15 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
 
         {/* Remuneração */}
         <Card>
-          <CardHeader className="py-3 bg-emerald-50">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-emerald-600">
+          <CardHeader className="py-3 bg-pe-green-lighter">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-success">
               <DollarSign className="h-4 w-4" />
               Remuneração
             </CardTitle>
           </CardHeader>
           <CardContent className="py-3 space-y-3">
             {(oportunidade.remuneracao && oportunidade.remuneracao > 0) && (
-              <div className="text-2xl font-bold text-emerald-600">
+              <div className="text-2xl font-bold text-success">
                 {formatCurrency(oportunidade.remuneracao)}
               </div>
             )}
@@ -848,8 +848,8 @@ export function ProjetoInfoCompleta({ projeto, isOficina }: ProjetoInfoCompletaP
 
         {/* Responsável */}
         <Card>
-          <CardHeader className="py-3 bg-indigo-50">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-indigo-600">
+          <CardHeader className="py-3 bg-pe-blue-lighter">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary">
               <User className="h-4 w-4" />
               Responsável
             </CardTitle>

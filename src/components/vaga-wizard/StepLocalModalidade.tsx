@@ -30,8 +30,8 @@ export function StepLocalModalidade({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-emerald-500/10">
-          <MapPin className="h-6 w-6 text-emerald-600" />
+        <div className="p-3 rounded-xl bg-success/10">
+          <MapPin className="h-6 w-6 text-success" />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Local e Modalidade de Trabalho</h2>
@@ -41,13 +41,13 @@ export function StepLocalModalidade({ data, onChange }: Props) {
         </div>
       </div>
 
-      <Card className="border-emerald-200 bg-emerald-50/50">
+      <Card className="border-success/30 bg-pe-green-lighter/50">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
+            <Lightbulb className="h-5 w-5 text-success mt-0.5 shrink-0" />
             <div className="text-sm space-y-1">
-              <p className="font-medium text-emerald-900">Dica:</p>
-              <p className="text-emerald-700">
+              <p className="font-medium text-foreground">Dica:</p>
+              <p className="text-success-dark">
                 A modalidade de trabalho é um dos fatores mais importantes para candidatos.
                 Seja claro sobre as expectativas de presença física.
               </p>
@@ -69,11 +69,11 @@ export function StepLocalModalidade({ data, onChange }: Props) {
                 onClick={() => onChange({ modalidade })}
                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-medium ${
                   data.modalidade === modalidade
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                    : "border-border hover:border-emerald-300 hover:bg-emerald-50/30"
+                    ? "border-emerald-500 bg-pe-green-lighter text-success-dark"
+                    : "border-border hover:border-success/40 hover:bg-pe-green-lighter/30"
                 }`}
               >
-                <span className={data.modalidade === modalidade ? "text-emerald-600" : "text-muted-foreground"}>
+                <span className={data.modalidade === modalidade ? "text-success" : "text-muted-foreground"}>
                   {MODALIDADE_ICONS[modalidade]}
                 </span>
                 {modalidade}

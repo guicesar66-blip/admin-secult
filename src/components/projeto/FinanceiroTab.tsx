@@ -669,7 +669,7 @@ export function FinanceiroTab({ projetoId, tipoEntidade, remuneracao, vagas, cen
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 text-accent-dark border-amber-300 hover:bg-pe-yellow-lighter"
+                        className="h-7 text-accent-dark border-accent/50 hover:bg-pe-yellow-lighter"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedProposta(proposta);

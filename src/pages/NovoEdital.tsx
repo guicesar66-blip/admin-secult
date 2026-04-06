@@ -173,9 +173,9 @@ const ProgressBar = ({ currentStep }: { currentStep: number }) => (
           <div
             className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
               currentStep > s.id
-                ? "bg-emerald-500 text-white shadow-sm"
+                ? "bg-success text-white shadow-sm"
                 : currentStep === s.id
-                ? "bg-violet-600 text-white shadow-md"
+                ? "bg-primary text-white shadow-md"
                 : "bg-muted text-muted-foreground"
             }`}
           >
@@ -184,7 +184,7 @@ const ProgressBar = ({ currentStep }: { currentStep: number }) => (
           <span
             className={`text-xs font-medium text-center whitespace-nowrap ${
               currentStep === s.id
-                ? "text-violet-700 dark:text-violet-400"
+                ? "text-primary dark:text-violet-400"
                 : "text-muted-foreground"
             }`}
           >
@@ -194,7 +194,7 @@ const ProgressBar = ({ currentStep }: { currentStep: number }) => (
         {i < STEPS.length - 1 && (
           <div
             className={`flex-1 h-0.5 mt-4 mx-2 transition-all ${
-              currentStep > s.id ? "bg-emerald-500" : "bg-border"
+              currentStep > s.id ? "bg-success" : "bg-border"
             }`}
           />
         )}
@@ -310,9 +310,9 @@ const NovoEdital = () => {
         <button
           type="button"
           onClick={() => update({ tipo: "publico" })}
-          className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-violet-400 hover:bg-violet-500/3 ${
+          className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-primary/50 hover:bg-primary/3 ${
             data.tipo === "publico"
-              ? "border-violet-500 bg-violet-500/5"
+              ? "border-violet-500 bg-primary/5"
               : "border-border bg-card"
           }`}
         >
@@ -332,9 +332,9 @@ const NovoEdital = () => {
         <button
           type="button"
           onClick={() => update({ tipo: "privado" })}
-          className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-violet-400 hover:bg-violet-500/3 ${
+          className={`text-left p-5 rounded-xl border-2 transition-all space-y-3 hover:border-primary/50 hover:bg-primary/3 ${
             data.tipo === "privado"
-              ? "border-violet-500 bg-violet-500/5"
+              ? "border-violet-500 bg-primary/5"
               : "border-border bg-card"
           }`}
         >
@@ -352,7 +352,7 @@ const NovoEdital = () => {
       </div>
 
       <Button
-        className="w-full gap-2 bg-violet-600 hover:bg-violet-700"
+        className="w-full gap-2 bg-primary hover:bg-primary-dark"
         disabled={!data.tipo}
         onClick={() => setStep(1)}
       >
@@ -389,7 +389,7 @@ const NovoEdital = () => {
             className={`text-xs ${
               data.descricao.length < 100
                 ? "text-muted-foreground"
-                : "text-emerald-600"
+                : "text-success"
             }`}
           >
             {data.descricao.length}/2000
@@ -464,7 +464,7 @@ const NovoEdital = () => {
               key={ods.id}
               className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors text-sm ${
                 data.ods.includes(ods.id)
-                  ? "border-violet-500 bg-violet-500/5 text-violet-700"
+                  ? "border-violet-500 bg-primary/5 text-primary"
                   : "border-border hover:bg-muted/50"
               }`}
             >
@@ -608,7 +608,7 @@ const NovoEdital = () => {
 
         {/* Cálculo dinâmico */}
         {possiveisProjetos !== null && (
-          <div className="p-3 rounded-lg bg-violet-500/5 border border-violet-500/20 text-sm text-violet-700 dark:text-violet-400">
+          <div className="p-3 rounded-lg bg-primary/5 border border-violet-500/20 text-sm text-primary dark:text-violet-400">
             Com {formatBRLDisplay(data.valorTotal)} total e máximo{" "}
             {formatBRLDisplay(data.valorMaxProjeto)} por projeto, é possível
             financiar até{" "}
@@ -761,7 +761,7 @@ const NovoEdital = () => {
                   <Badge
                     key={id}
                     variant="outline"
-                    className="text-xs bg-violet-500/10 border-violet-500/30 text-violet-700"
+                    className="text-xs bg-primary/10 border-primary/30 text-primary"
                   >
                     ODS {id}
                   </Badge>
@@ -799,7 +799,7 @@ const NovoEdital = () => {
                   <button
                     type="button"
                     onClick={() => setShowAllDocs((v) => !v)}
-                    className="text-xs text-violet-600 hover:underline mt-1"
+                    className="text-xs text-primary hover:underline mt-1"
                   >
                     {showAllDocs
                       ? "ver menos"
@@ -896,7 +896,7 @@ const NovoEdital = () => {
           <Button
             onClick={handlePublish}
             disabled={isPublishing}
-            className="gap-2 bg-violet-600 hover:bg-violet-700"
+            className="gap-2 bg-primary hover:bg-primary-dark"
           >
             {isPublishing ? (
               <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -918,7 +918,7 @@ const NovoEdital = () => {
         <Button
           onClick={() => setStep((s) => s + 1)}
           disabled={!canGoNext}
-          className="gap-2 bg-violet-600 hover:bg-violet-700"
+          className="gap-2 bg-primary hover:bg-primary-dark"
         >
           Próxima etapa
           <ArrowRight className="h-4 w-4" />
@@ -934,8 +934,8 @@ const NovoEdital = () => {
       <DialogContent className="sm:max-w-md text-center">
         <div className="flex flex-col items-center gap-4 py-4">
           {/* Ícone */}
-          <div className="w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center">
-            <CheckCircle2 className="h-9 w-9 text-emerald-500" />
+          <div className="w-16 h-16 rounded-full bg-success/15 flex items-center justify-center">
+            <CheckCircle2 className="h-9 w-9 text-success" />
           </div>
 
           {/* Título */}
@@ -974,7 +974,7 @@ const NovoEdital = () => {
           {/* Ações */}
           <div className="flex flex-col gap-2 w-full">
             <Button
-              className="w-full bg-violet-600 hover:bg-violet-700"
+              className="w-full bg-primary hover:bg-primary-dark"
               onClick={() => {
                 setSuccessOpen(false);
                 navigate("/oportunidades");

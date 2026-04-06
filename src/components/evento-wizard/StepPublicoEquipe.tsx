@@ -70,7 +70,7 @@ export function StepPublicoEquipe({ data, onChange }: StepPublicoEquipeProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-indigo-500/10"><Users className="h-6 w-6 text-indigo-600" /></div>
+        <div className="p-3 rounded-xl bg-primary/10"><Users className="h-6 w-6 text-primary" /></div>
         <div><h2 className="text-xl font-semibold">Público e Equipe</h2><p className="text-muted-foreground mt-1">Defina o público esperado e a equipe necessária.</p></div>
       </div>
 

@@ -215,7 +215,7 @@ export default function ProjetoImpactoDetalhes() {
                         <span className="text-xs text-muted-foreground ml-auto">{new Date(c.data).toLocaleDateString("pt-BR")}</span>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">"{c.texto}"</p>
-                      <div className="flex gap-0.5 mt-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-accent fill-amber-500" : "text-muted-foreground/30"}`} />)}</div>
+                      <div className="flex gap-0.5 mt-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`h-3 w-3 ${i < c.avaliacao ? "text-accent fill-accent" : "text-muted-foreground/30"}`} />)}</div>
                     </div>
                   </div>
                 ))}
