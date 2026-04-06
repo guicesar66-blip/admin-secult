@@ -18,15 +18,15 @@ const publicoPorLinguagem = [
 
 const publicoFaixaEtariaGeral = [
   { name: "< 18 anos", value: 12, color: "hsl(var(--primary))" },
-  { name: "18-35 anos", value: 38, color: "hsl(142, 71%, 45%)" },
-  { name: "36-50 anos", value: 31, color: "hsl(45, 93%, 47%)" },
-  { name: "51+ anos", value: 19, color: "hsl(270, 50%, 55%)" },
+  { name: "18-35 anos", value: 38, color: "#00A84F" },
+  { name: "36-50 anos", value: 31, color: "#FFBD0C" },
+  { name: "51+ anos", value: 19, color: "#1A2A4A" },
 ];
 
 const publicoGeneroGeral = [
-  { name: "Feminino", value: 57, color: "hsl(330, 60%, 55%)" },
-  { name: "Masculino", value: 40, color: "hsl(215, 60%, 50%)" },
-  { name: "Outros", value: 3, color: "hsl(45, 93%, 47%)" },
+  { name: "Feminino", value: 57, color: "#C41200" },
+  { name: "Masculino", value: 40, color: "#3567C4" },
+  { name: "Outros", value: 3, color: "#FFBD0C" },
 ];
 
 function MiniDonut({ data, size = 120 }: { data: { name: string; value: number; color: string }[]; size?: number }) {
@@ -149,7 +149,7 @@ export function AlcanceSocial({ filtroLinguagem = "todas", filtroCidades = [], f
                 <p className="text-lg font-bold">94</p>
               </div>
             </div>
-            <ChartContainer config={{ valor: { label: "R$", color: "hsl(var(--primary))" }, apoiadores: { label: "Apoiadores", color: "hsl(142, 71%, 45%)" } }} className="h-[180px] w-full">
+            <ChartContainer config={{ valor: { label: "R$", color: "hsl(var(--primary))" }, apoiadores: { label: "Apoiadores", color: "#00A84F" } }} className="h-[180px] w-full">
               <LineChart data={evolucaoCrowdfundingMensal} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                 <XAxis dataKey="mes" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />

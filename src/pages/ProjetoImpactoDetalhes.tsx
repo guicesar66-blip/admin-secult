@@ -20,7 +20,7 @@ const orcCategoriaLabels: Record<string, string> = {
   divulgacao: "Divulgação",
   administrativo: "Administrativo",
 };
-const orcCores = ["hsl(var(--primary))", "hsl(215, 60%, 50%)", "hsl(45, 93%, 47%)", "hsl(142, 71%, 45%)", "hsl(270, 50%, 55%)"];
+const orcCores = ["hsl(var(--primary))", "#3567C4", "#FFBD0C", "#00A84F", "#1A2A4A"];
 
 function MiniDonut({ data, size = 100 }: { data: { name: string; value: number; color: string }[]; size?: number }) {
   return (

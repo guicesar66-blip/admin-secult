@@ -76,21 +76,21 @@ export function QualidadeEspacos({ filtroLinguagem = "todas", filtroCidades = []
     <div className="space-y-6">
       {/* Conservação */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <DonutChart title="Status de Conservação" data={conservacao} colors={["#22c55e", "#eab308", "#f97316", "#ef4444"]} />
+        <DonutChart title="Status de Conservação" data={conservacao} colors={["#00A84F", "#FFBD0C", "#C85A1A", "#C41200"]} />
 
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Evolução da Conservação (trimestral)</CardTitle></CardHeader>
           <CardContent>
-            <ChartContainer config={{ Excelente: { label: "Excelente", color: "#22c55e" }, Bom: { label: "Bom", color: "#eab308" }, Regular: { label: "Regular", color: "#f97316" }, Precário: { label: "Precário", color: "#ef4444" } }} className="h-[220px] w-full">
+            <ChartContainer config={{ Excelente: { label: "Excelente", color: "#00A84F" }, Bom: { label: "Bom", color: "#FFBD0C" }, Regular: { label: "Regular", color: "#C85A1A" }, Precário: { label: "Precário", color: "#C41200" } }} className="h-[220px] w-full">
               <AreaChart data={evolucaoConservacaoTrimestral} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                 <XAxis dataKey="trimestre" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Area type="monotone" dataKey="Excelente" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="Bom" stackId="1" stroke="#eab308" fill="#eab308" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="Regular" stackId="1" stroke="#f97316" fill="#f97316" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="Precário" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="Excelente" stackId="1" stroke="#00A84F" fill="#00A84F" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="Bom" stackId="1" stroke="#FFBD0C" fill="#FFBD0C" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="Regular" stackId="1" stroke="#C85A1A" fill="#C85A1A" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="Precário" stackId="1" stroke="#C41200" fill="#C41200" fillOpacity={0.6} />
               </AreaChart>
             </ChartContainer>
           </CardContent>

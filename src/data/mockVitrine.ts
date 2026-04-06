@@ -24,6 +24,12 @@ export type ProjetoStatus =
   | "prestacao_enviada"
   | "concluido";
 
+export interface IncentuvoLei {
+  id: string;
+  label: string;
+  descricao: string;
+}
+
 export interface ProjetoVitrineMock {
   id: string;
   titulo: string;
@@ -44,6 +50,7 @@ export interface ProjetoVitrineMock {
   projetoStatus: ProjetoStatus;
   vagas: number;
   affinityScore: number;
+  incentivosLeis?: IncentuvoLei[];
   affinityBreakdown: {
     geolocalizacao: AffinityDimension;
     persona: AffinityDimension;
@@ -74,6 +81,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "em_analise",
     vagas: 80,
     affinityScore: 95,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 95, descricao: "Empresa em Recife, projeto em Recife" },
       persona:        { label: "Persona",         value: 90, descricao: "Público jovem adulto — alinha com seus clientes" },
@@ -102,6 +113,11 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "aprovado",
     vagas: 500,
     affinityScore: 87,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-turismo", label: "Lei de Incentivo ao Turismo", descricao: "Incentivos para patrimônio cultural" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 92, descricao: "Festival no Recife Antigo — alta visibilidade regional" },
       persona:        { label: "Persona",         value: 85, descricao: "Público amplo e diverso — compatível com marca de consumo" },
@@ -130,6 +146,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "em_execucao",
     vagas: 0,
     affinityScore: 82,
+    incentivosLeis: [
+      { id: "lei-audiovisual", label: "Lei do Audiovisual", descricao: "Incentivo fiscal para audiovisual" },
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 78, descricao: "Produção no Sertão — distribuição nacional e streaming" },
       persona:        { label: "Persona",         value: 80, descricao: "Audiência adulta engajada com cultura e identidade nordestina" },
@@ -158,6 +178,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "submetido",
     vagas: 200,
     affinityScore: 78,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 88, descricao: "Espetáculo no Recife — público local qualificado" },
       persona:        { label: "Persona",         value: 75, descricao: "Público jovem e adulto urbano com perfil cultural" },
@@ -186,6 +210,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "rascunho",
     vagas: 150,
     affinityScore: 71,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 85, descricao: "Intervenções no centro e bairros do Recife" },
       persona:        { label: "Persona",         value: 70, descricao: "Público diverso — alcance massivo em espaços públicos" },
@@ -214,6 +242,11 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "concluido",
     vagas: 120,
     affinityScore: 65,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+      { id: "lei-inclusao", label: "Lei de Incentivo à Inclusão", descricao: "Projetos com foco em acessibilidade" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 72, descricao: "Caruaru — distância da sua operação principal" },
       persona:        { label: "Persona",         value: 62, descricao: "Público familiar e educacional — parcialmente alinhado" },
@@ -242,6 +275,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "prestacao_enviada",
     vagas: 0,
     affinityScore: 74,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-procultura", label: "PROCULTURA", descricao: "Programa de Fomento à Cultura PE" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 80, descricao: "Artista e lançamento no Recife — mercado local ativo" },
       persona:        { label: "Persona",         value: 78, descricao: "Público jovem de 18–30 anos — audiência digital forte" },
@@ -270,6 +307,10 @@ export const PROJETOS_VITRINE_MOCK: ProjetoVitrineMock[] = [
     projetoStatus: "aprovado",
     vagas: 0,
     affinityScore: 69,
+    incentivosLeis: [
+      { id: "lei-rouanet", label: "Lei Rouanet", descricao: "Incentivo Fiscal à Cultura" },
+      { id: "lei-patrimonio", label: "Lei de Patrimônio Cultural", descricao: "Preservação do patrimônio imaterial" },
+    ],
     affinityBreakdown: {
       geolocalizacao: { label: "Geolocalização", value: 65, descricao: "Caruaru — fora do seu território prioritário" },
       persona:        { label: "Persona",         value: 72, descricao: "Público adulto regional — coincide com presença no interior" },

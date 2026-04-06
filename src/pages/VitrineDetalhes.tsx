@@ -66,6 +66,9 @@ const contrapartidasOptions = [
   { id: "networking",    label: "Acesso a eventos de networking" },
   { id: "relatorio",     label: "Relatório de impacto personalizado" },
   { id: "mencao_midia",  label: "Menção em entrevistas e mídia" },
+  { id: "estande_venda", label: "Estande de venda" },
+  { id: "compra_exclusiva", label: "Compra exclusiva de fornecedor" },
+  { id: "divulgacao_marca", label: "Divulgação de marca no evento" },
 ];
 
 type TipoInvestidor = "pessoa_fisica" | "empresa" | "instituicao";
@@ -438,6 +441,36 @@ const VitrineDetalhes = () => {
                 <p className="text-muted-foreground leading-relaxed">{projeto.descricao}</p>
               </CardContent>
             </Card>
+
+            {projeto.incentivosLeis && projeto.incentivosLeis.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Building2 className="h-5 w-5" />
+                    Leis de Incentivo
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Este projeto se enquadra nas seguintes leis de incentivo cultural:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {projeto.incentivosLeis.map((lei) => (
+                        <Badge key={lei.id} variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100 transition-colors">
+                          {lei.label}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                      <p className="text-xs text-blue-700">
+                        <strong>Dica:</strong> Estas leis permitem que pessoas físicas e empresas façam deduções fiscais ao investir em projetos culturais enquadrados.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <Card>
               <CardHeader>

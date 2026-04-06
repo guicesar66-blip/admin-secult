@@ -22,7 +22,7 @@ interface MinimapaMunicipalProps {
 
 const getCorPadrao = (valor: number, maxValor: number): string => {
   const percentual = (valor / maxValor) * 100;
-  if (percentual >= 70) return '#00AD4A'; // Verde
+  if (percentual >= 70) return '#00A84F'; // Verde PE
   if (percentual >= 40) return '#FFB511'; // Amarelo
   return '#C34342'; // Vermelho
 };

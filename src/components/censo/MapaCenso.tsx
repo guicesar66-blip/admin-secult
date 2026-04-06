@@ -31,10 +31,10 @@ import { useMapFilter, type FilterEntityType } from "@/contexts/MapFilterContext
 
 // ===== Cores das camadas conforme spec =====
 const CORES_CAMADA = {
-  produtores: "#3155A4",
-  projetos: "#00AD4A",
-  espacos: "#FFB511",
-  desertos: "#C34342",
+  produtores: "#3567C4",
+  projetos: "#00A84F",
+  espacos: "#FFBD0C",
+  desertos: "#C41200",
 };
 
 // ===== Tile URLs =====

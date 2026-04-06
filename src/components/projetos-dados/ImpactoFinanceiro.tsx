@@ -78,9 +78,9 @@ export function ImpactoFinanceiro({ filtroLinguagem = "todas", filtroCidades = [
                 <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v/1000).toFixed(0)}k`} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="fomento" stackId="a" fill="hsl(var(--primary))" />
-                <Bar dataKey="patrocinio" stackId="a" fill="hsl(142, 71%, 45%)" />
-                <Bar dataKey="marketplace" stackId="a" fill="hsl(45, 93%, 47%)" />
-                <Bar dataKey="crowdfunding" stackId="a" fill="hsl(270, 50%, 55%)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="patrocinio" stackId="a" fill="#00A84F" />
+                <Bar dataKey="marketplace" stackId="a" fill="#FFBD0C" />
+                <Bar dataKey="crowdfunding" stackId="a" fill="#1A2A4A" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
           </CardContent>

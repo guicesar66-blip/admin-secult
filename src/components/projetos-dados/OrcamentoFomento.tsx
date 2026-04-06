@@ -123,8 +123,8 @@ export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = []
                 <XAxis dataKey="instrumento" tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1000000).toFixed(0)}M`} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="planejado" fill="hsl(215, 60%, 80%)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="empenhado" fill="hsl(215, 60%, 60%)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="planejado" fill="#D4DFF0" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="empenhado" fill="#8A9BB5" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="pago" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
@@ -162,13 +162,13 @@ export function OrcamentoFomento({ filtroLinguagem = "todas", filtroCidades = []
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Projetos por Instrumento de Fomento</CardTitle></CardHeader>
         <CardContent>
-          <ChartContainer config={{ value: { label: "Projetos", color: "hsl(270, 50%, 55%)" } }} className="h-[220px] w-full">
+          <ChartContainer config={{ value: { label: "Projetos", color: "#1A2A4A" } }} className="h-[220px] w-full">
             <BarChart data={projetosPorInstrumento} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
               <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="instrumento" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} width={120} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="projetos" fill="hsl(270, 50%, 55%)" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="projetos" fill="#1A2A4A" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ChartContainer>
         </CardContent>

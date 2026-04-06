@@ -1,57 +1,17 @@
 import { useState } from "react";
-import { DashboardLayout } from "@/components/DashboardLayout";
+import { ArrowLeft, Plus, FileText, Clock, CheckCircle, XCircle, MessageSquare, Building2, AlertCircle, Calendar, Briefcase, GraduationCap, Lightbulb, ChevronDown, Film, ScrollText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Plus,
-  Search,
-  Filter,
-  Calendar,
-  Users,
-  GraduationCap,
-  Briefcase,
-  Building2,
-  ChevronDown,
-  Film,
-  Palette,
-  Theater,
-  Music,
-  ScrollText,
-  CheckCircle,
-  XCircle,
-  MessageSquare,
-  Clock,
-  AlertCircle,
-  FileText,
-  Lightbulb,
-  MapPin,
-} from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router-dom";
-import { PROJETOS_VITRINE_MOCK, type ProjetoStatus } from "@/data/mockVitrine";
 import {
   Dialog,
   DialogContent,
@@ -63,31 +23,20 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
-const PROJETO_STATUS_CONFIG: Record<ProjetoStatus, { label: string; color: string }> = {
-  rascunho:          { label: "Rascunho",         color: "bg-zinc-500/15 text-zinc-600 border-zinc-500/30" },
-  submetido:         { label: "Submetido",         color: "bg-blue-500/15 text-blue-600 border-blue-500/30" },
-  em_analise:        { label: "Em Análise",        color: "bg-violet-500/15 text-violet-700 border-violet-500/30" },
-  aprovado:          { label: "Aprovado",          color: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
-  em_execucao:       { label: "Em Execução",       color: "bg-sky-500/15 text-sky-700 border-sky-500/30" },
-  prestacao_enviada: { label: "Prestação Enviada", color: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
-  concluido:         { label: "Concluído",         color: "bg-green-500/15 text-green-700 border-green-500/30" },
-};
+// Mock de projetos e inscrições
+interface Projeto {
+  id: string;
+  nome: string;
+  linguagem: string;
+  territorio: string;
+  orcamento: number;
+  dataInscricao?: string;
+  protocolo?: string;
+  edital?: string;
+  status: "ativo" | "rascunho" | "em-analise" | "aprovado" | "rejeitado";
+}
 
-const tipoConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  evento: { label: "Evento", icon: <Calendar className="h-4 w-4" />, color: "bg-blue-500/20 text-blue-600" },
-  vaga: { label: "Vaga", icon: <Briefcase className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
-  oficina: { label: "Oficina", icon: <GraduationCap className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600" },
-  festival: { label: "Festival", icon: <Users className="h-4 w-4" />, color: "bg-violet-500/20 text-violet-600" },
-  filme: { label: "Filme/Doc", icon: <Film className="h-4 w-4" />, color: "bg-cyan-500/20 text-cyan-600" },
-  exposicao: { label: "Exposição", icon: <Palette className="h-4 w-4" />, color: "bg-emerald-500/20 text-emerald-600" },
-  teatro: { label: "Teatro", icon: <Theater className="h-4 w-4" />, color: "bg-amber-500/20 text-amber-600" },
-  ep: { label: "EP/Álbum", icon: <Music className="h-4 w-4" />, color: "bg-pink-500/20 text-pink-600" },
-  projeto_bairro: { label: "Projeto de Bairro", icon: <MapPin className="h-4 w-4" />, color: "bg-purple-500/20 text-purple-600" },
-};
-
-// Interfaces para Aprovações
 interface ProjetoAprovacao {
   id: string;
   tipo: "projeto" | "edital";
@@ -112,7 +61,54 @@ interface Aprovacao {
   servidor: string;
 }
 
-// Dados mock de aprovações
+const projetosMock: Projeto[] = [
+  {
+    id: "proj-1",
+    nome: "Orquestra Periférica do Recife",
+    linguagem: "Música",
+    territorio: "Recife",
+    orcamento: 35000,
+    status: "ativo",
+  },
+  {
+    id: "proj-2",
+    nome: "Festival de Teatro Comunitário",
+    linguagem: "Teatro",
+    territorio: "Olinda",
+    orcamento: 45000,
+    status: "ativo",
+  },
+];
+
+const statusConfig = {
+  "ativo": {
+    label: "Ativo",
+    color: "bg-success/10 text-success border-success/20",
+    icon: "✓",
+  },
+  "rascunho": {
+    label: "Rascunho",
+    color: "bg-muted text-muted-foreground border-border",
+    icon: "−",
+  },
+  "em-analise": {
+    label: "Em Análise",
+    color: "bg-amber/10 text-amber border-amber/20",
+    icon: "⏳",
+  },
+  "aprovado": {
+    label: "Aprovado",
+    color: "bg-success/10 text-success border-success/20",
+    icon: "✓",
+  },
+  "rejeitado": {
+    label: "Rejeitado",
+    color: "bg-destructive/10 text-destructive border-destructive/20",
+    icon: "✕",
+  },
+};
+
+// Dados mock de aprovações pendentes
 const aprovacoesEmPendenteMock: ProjetoAprovacao[] = [
   {
     id: "apr-1",
@@ -181,10 +177,10 @@ const aprovacoesEmPendenteMock: ProjetoAprovacao[] = [
   },
 ];
 
-const Oportunidades = () => {
+export default function Projetos() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [projetos, setProjetos] = useState<Projeto[]>(projetosMock);
+  const [filtro, setFiltro] = useState<string>("todos");
   const [abaAtiva, setAbaAtiva] = useState<"meus-projetos" | "aprovacoes">("meus-projetos");
   
   // Estados para aprovações
@@ -197,35 +193,16 @@ const Oportunidades = () => {
   const [motivo, setMotivo] = useState("");
   const [processandoAprovacao, setProcessandoAprovacao] = useState(false);
 
-  const projetos = PROJETOS_VITRINE_MOCK.map((p) => ({
-    id: p.id,
-    titulo: p.titulo,
-    tipo: p.tipo,
-    local: p.local,
-    data: p.dataEvento,
-    vagas: p.vagas,
-    projetoStatus: p.projetoStatus,
-    isOficina: p.isOficina,
-  }));
+  const projetosFiltrados =
+    filtro === "todos" ? projetos : projetos.filter((p) => p.status === filtro);
 
-  const projetosFiltrados = projetos.filter((projeto) => {
-    const matchSearch = projeto.titulo.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchTipo = filtroTipo === "todos" || projeto.tipo === filtroTipo;
-    return matchSearch && matchTipo;
-  });
-
-  const estatisticas = {
-    total: projetos.length,
-    evento: projetos.filter((p) => p.tipo === "evento").length,
-    festival: projetos.filter((p) => p.tipo === "festival").length,
-    filme: projetos.filter((p) => p.tipo === "filme").length,
-    exposicao: projetos.filter((p) => p.tipo === "exposicao").length,
-    teatro: projetos.filter((p) => p.tipo === "teatro").length,
-    ep: projetos.filter((p) => p.tipo === "ep").length,
+  const contarPorStatus = (status: string) => {
+    return projetos.filter((p) => p.status === status).length;
   };
 
   const handleAprovar = async (item: ProjetoAprovacao) => {
     setProcessandoAprovacao(true);
+    // Simular processamento
     await new Promise((r) => setTimeout(r, 1000));
     
     setAprovacoesFinalizadas([
@@ -288,89 +265,82 @@ const Oportunidades = () => {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Meus Projetos</h1>
-            <p className="text-muted-foreground mt-1">Gerencie seus projetos culturais em todas as fases</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-background border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/dashboard")}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-2xl font-bold text-foreground">
+              {abaAtiva === "meus-projetos" ? "Meus Projetos" : "Gestão de Aprovações"}
+            </h1>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Novo Projeto
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-popover z-50">
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/evento")}
-                className="gap-3 cursor-pointer"
-              >
-                <Calendar className="h-4 w-4 text-blue-500" />
-                <div>
-                  <p className="font-medium">Eventos</p>
-                  <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/vaga")}
-                className="gap-3 cursor-pointer"
-              >
-                <Briefcase className="h-4 w-4 text-emerald-500" />
-                <div>
-                  <p className="font-medium">Vaga de Trabalho</p>
-                  <p className="text-xs text-muted-foreground">Emprego, freelancer, cachê</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/oficina")}
-                className="gap-3 cursor-pointer"
-              >
-                <GraduationCap className="h-4 w-4 text-amber-500" />
-                <div>
-                  <p className="font-medium">Oficinas</p>
-                  <p className="text-xs text-muted-foreground">Cursos, workshops, formações</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/espaco")}
-                className="gap-3 cursor-pointer"
-              >
-                <Building2 className="h-4 w-4 text-purple-500" />
-                <div>
-                  <p className="font-medium">Espaço Cultural</p>
-                  <p className="text-xs text-muted-foreground">Teatros, museus, galerias, estúdios</p>
-                </div>
-              </DropdownMenuItem>
-              <Separator className="my-1" />
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/edital")}
-                className="gap-3 cursor-pointer"
-              >
-                <ScrollText className="h-4 w-4 text-violet-500" />
-                <div>
-                  <p className="font-medium">Edital / Chamada</p>
-                  <p className="text-xs text-muted-foreground">Editais públicos ou patrocínio privado</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/oportunidades/novo/pesquisa")}
-                className="gap-3 cursor-pointer"
-              >
-                <Lightbulb className="h-4 w-4 text-amber-500" />
-                <div>
-                  <p className="font-medium">Pesquisa & Ideias</p>
-                  <p className="text-xs text-muted-foreground">Sondagens, votações e ideias</p>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {abaAtiva === "meus-projetos" && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-2 bg-violet-600 hover:bg-violet-700">
+                  <Plus className="h-4 w-4" />
+                  Novo projeto
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/evento")} className="gap-3 cursor-pointer">
+                  <Film className="h-4 w-4 text-blue-500" />
+                  <div>
+                    <p className="font-medium">Evento</p>
+                    <p className="text-xs text-muted-foreground">Shows, festivais, apresentações</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/vaga")} className="gap-3 cursor-pointer">
+                  <Briefcase className="h-4 w-4 text-emerald-500" />
+                  <div>
+                    <p className="font-medium">Vaga de Trabalho</p>
+                    <p className="text-xs text-muted-foreground">Emprego, freelancer, cachê</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/oficina")} className="gap-3 cursor-pointer">
+                  <GraduationCap className="h-4 w-4 text-amber-500" />
+                  <div>
+                    <p className="font-medium">Oficinas</p>
+                    <p className="text-xs text-muted-foreground">Cursos, workshops, formações</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/espaco")} className="gap-3 cursor-pointer">
+                  <Building2 className="h-4 w-4 text-purple-500" />
+                  <div>
+                    <p className="font-medium">Espaço Cultural</p>
+                    <p className="text-xs text-muted-foreground">Teatros, museus, galerias, estúdios</p>
+                  </div>
+                </DropdownMenuItem>
+                <Separator className="my-1" />
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/edital")} className="gap-3 cursor-pointer">
+                  <ScrollText className="h-4 w-4 text-violet-500" />
+                  <div>
+                    <p className="font-medium">Edital / Chamada</p>
+                    <p className="text-xs text-muted-foreground">Editais públicos ou patrocínio privado</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/oportunidades/novo/pesquisa")} className="gap-3 cursor-pointer">
+                  <Lightbulb className="h-4 w-4 text-amber-500" />
+                  <div>
+                    <p className="font-medium">Pesquisa & Ideias</p>
+                    <p className="text-xs text-muted-foreground">Sondagens, votações e ideias</p>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Abas */}
-        <div className="border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 border-t border-border">
           <div className="flex items-center gap-0">
             <Button
               variant={abaAtiva === "meus-projetos" ? "default" : "ghost"}
@@ -396,148 +366,168 @@ const Oportunidades = () => {
             >
               <span>Gestão de Aprovações</span>
               {aprovacoesEmPendente.length > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="rounded-full h-5 w-5 flex items-center justify-center p-0 text-xs ml-1"
-                >
+                <Badge variant="destructive" className="rounded-full h-5 w-5 flex items-center justify-center p-0 text-xs ml-1">
                   {aprovacoesEmPendente.length}
                 </Badge>
               )}
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Conteúdo Condicional */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
         {abaAtiva === "meus-projetos" ? (
           <>
-            {/* Estatísticas */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-card/50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{estatisticas.total}</div>
-                  <div className="text-sm text-muted-foreground">Total</div>
-                </CardContent>
-              </Card>
-              {(["evento", "festival", "filme", "teatro"] as const).map((tipo) => (
-                <Card key={tipo} className="bg-card/50">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2">
-                      <div className={`p-1.5 rounded ${tipoConfig[tipo].color}`}>{tipoConfig[tipo].icon}</div>
-                      <div>
-                        <div className="text-xl font-bold">{estatisticas[tipo] || 0}</div>
-                        <div className="text-xs text-muted-foreground">{tipoConfig[tipo].label}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+            {/* Filtros */}
+            <div className="flex items-center gap-2 mb-8 pb-4 border-b border-border overflow-auto">
+              <Button
+                variant={filtro === "todos" ? "default" : "outline"}
+                onClick={() => setFiltro("todos")}
+                className={cn(
+                  filtro === "todos" && "bg-violet-600 hover:bg-violet-700"
+                )}
+              >
+                Todos ({projetos.length})
+              </Button>
+              <Button
+                variant={filtro === "ativo" ? "default" : "outline"}
+                onClick={() => setFiltro("ativo")}
+                className={cn(
+                  filtro === "ativo" && "bg-success hover:bg-success/90"
+                )}
+              >
+                Ativos ({contarPorStatus("ativo")})
+              </Button>
+              <Button
+                variant={filtro === "em-analise" ? "default" : "outline"}
+                onClick={() => setFiltro("em-analise")}
+                className={cn(
+                  filtro === "em-analise" && "bg-amber-500 hover:bg-amber-600"
+                )}
+              >
+                Em Análise ({contarPorStatus("em-analise")})
+              </Button>
+              <Button
+                variant={filtro === "aprovado" ? "default" : "outline"}
+                onClick={() => setFiltro("aprovado")}
+                className={cn(
+                  filtro === "aprovado" && "bg-success hover:bg-success/90"
+                )}
+              >
+                Aprovados ({contarPorStatus("aprovado")})
+              </Button>
             </div>
 
-            {/* Filtros */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Buscar projetos..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                    <SelectTrigger className="w-full sm:w-[180px]">
-                      <Filter className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todos">Todos os tipos</SelectItem>
-                      <SelectItem value="evento">Eventos</SelectItem>
-                      <SelectItem value="festival">Festivais</SelectItem>
-                      <SelectItem value="filme">Filmes/Docs</SelectItem>
-                      <SelectItem value="exposicao">Exposições</SelectItem>
-                      <SelectItem value="teatro">Teatro</SelectItem>
-                      <SelectItem value="ep">EP/Álbum</SelectItem>
-                      <SelectItem value="oficina">Oficinas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tabela */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Projetos ({projetosFiltrados.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
+            {/* Grid de projetos */}
             {projetosFiltrados.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Nenhum projeto encontrado.
+              <div className="text-center py-16">
+                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Nenhum projeto encontrado
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Crie seu primeiro projeto para começar
+                </p>
+                <Button
+                  onClick={() => navigate("/oportunidades/novo")}
+                  className="bg-violet-600 hover:bg-violet-700"
+                >
+                  Criar projeto
+                </Button>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Projeto</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Local</TableHead>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Público</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {projetosFiltrados.map((projeto) => {
-                    const config = tipoConfig[projeto.tipo] || tipoConfig.evento;
-                    return (
-                      <TableRow
-                        key={projeto.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() =>
-                          navigate(`/oportunidades/${projeto.id}`)
-                        }
-                      >
-                        <TableCell>
-                          <div className="font-medium">{projeto.titulo}</div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={config.color}>
-                            <span className="flex items-center gap-1.5">
-                              {config.icon}
-                              {config.label}
-                            </span>
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{projeto.local}</TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {projeto.data
-                            ? new Date(projeto.data).toLocaleDateString("pt-BR")
-                            : "-"}
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={PROJETO_STATUS_CONFIG[projeto.projetoStatus].color}
-                          >
-                            {PROJETO_STATUS_CONFIG[projeto.projetoStatus].label}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-1 text-muted-foreground">
-                            <Users className="h-4 w-4" />
-                            <span>{projeto.vagas || "-"}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {projetosFiltrados.map((projeto) => {
+                  const config = statusConfig[projeto.status as keyof typeof statusConfig];
+                  return (
+                    <Card key={projeto.id} className="hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg line-clamp-2">
+                              {projeto.nome}
+                            </CardTitle>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {projeto.linguagem}
+                            </p>
                           </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                          <Badge
+                            className={cn("whitespace-nowrap flex-shrink-0", config.color)}
+                            variant="outline"
+                          >
+                            {config.icon} {config.label}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {/* Informações */}
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <p className="text-muted-foreground">Território</p>
+                            <p className="font-medium text-foreground">
+                              {projeto.territorio}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Orçamento</p>
+                            <p className="font-medium text-foreground">
+                              R$ {projeto.orcamento.toLocaleString("pt-BR")}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Protocolo (se for inscrição em edital) */}
+                        {projeto.protocolo && (
+                          <div className="p-2 rounded bg-muted/50 border border-border">
+                            <div className="flex items-center gap-2 text-xs">
+                              <FileText className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-muted-foreground">
+                                Protocolo:
+                              </span>
+                              <span className="font-mono font-semibold text-foreground">
+                                {projeto.protocolo}
+                              </span>
+                            </div>
+                            {projeto.dataInscricao && (
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                <Clock className="h-3 w-3" />
+                                Enviado em {projeto.dataInscricao}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Botões */}
+                        <div className="flex gap-2 pt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() =>
+                              navigate(`/oportunidades/${projeto.id}`)
+                            }
+                          >
+                            Ver detalhes
+                          </Button>
+                          {projeto.status === "ativo" && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="flex-1"
+                              onClick={() =>
+                                navigate(`/oportunidades/${projeto.id}`)
+                              }
+                            >
+                              Editar
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             )}
-          </CardContent>
-        </Card>
           </>
         ) : (
           <>
@@ -689,7 +679,7 @@ const Oportunidades = () => {
             )}
           </>
         )}
-      </div>
+      </main>
 
       {/* Dialog de Recusa */}
       <Dialog open={dialogRecusaAberto} onOpenChange={setDialogRecusaAberto}>
@@ -855,8 +845,6 @@ const Oportunidades = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </div>
   );
-};
-
-export default Oportunidades;
+}

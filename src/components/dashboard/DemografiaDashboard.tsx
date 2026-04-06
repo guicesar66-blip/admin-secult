@@ -47,8 +47,8 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
   const variacaoTotal = calcularVariacao(demografiaAtual.totalAgentes, demografiaAnterior.totalAgentes);
 
   // Dados para gráficos
-  const generoDados = formatarParaDonut(demografiaAtual.genero, ['#3B82F6', '#EC4899', '#8B5CF6', '#6B7280']);
-  const racaDados = formatarParaDonut(demografiaAtual.raca, ['#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6', '#10B981', '#6B7280']);
+  const generoDados = formatarParaDonut(demografiaAtual.genero, ['#3567C4', '#C41200', '#00A84F', '#8A9BB5']);
+  const racaDados = formatarParaDonut(demografiaAtual.raca, ['#FFBD0C', '#3567C4', '#C41200', '#00A84F', '#C85A1A', '#8A9BB5']);
   const faixaEtariaDados = [
     { name: '18-24', value: demografiaAtual.faixaEtaria['18-24'] },
     { name: '25-34', value: demografiaAtual.faixaEtaria['25-34'] },
@@ -171,7 +171,7 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
               <XAxis type="number" />
               <YAxis dataKey="name" type="category" width={50} />
               <Tooltip />
-              <Bar dataKey="value" fill="#3155A4" name="Quantidade" />
+              <Bar dataKey="value" fill="#3567C4" name="Quantidade" />
             </BarChart>
           </ResponsiveContainer>
         }
@@ -193,7 +193,7 @@ export const DemografiaDashboard: React.FC<DemografiaDashboardProps> = ({
               <XAxis type="number" />
               <YAxis dataKey="name" type="category" width={80} />
               <Tooltip />
-              <Bar dataKey="value" fill="#00AD4A" name="Quantidade" />
+              <Bar dataKey="value" fill="#00A84F" name="Quantidade" />
             </BarChart>
           </ResponsiveContainer>
         }

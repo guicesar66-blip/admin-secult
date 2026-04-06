@@ -42,11 +42,11 @@ export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades 
         <CardHeader className="pb-2"><CardTitle className="text-base font-semibold">Evolução Trimestral da Formalização</CardTitle></CardHeader>
         <CardContent>
           <ChartContainer config={{
-            Informal: { label: "Informal", color: "hsl(0, 84%, 60%)" },
-            MEI: { label: "MEI", color: "hsl(45, 93%, 47%)" },
-            "Associação": { label: "Associação", color: "hsl(142, 71%, 45%)" },
-            "ME/EPP": { label: "ME/EPP", color: "hsl(215, 60%, 50%)" },
-            projetos: { label: "Projetos", color: "hsl(270, 50%, 55%)" },
+            Informal: { label: "Informal", color: "#C41200" },
+            MEI: { label: "MEI", color: "#FFBD0C" },
+            "Associação": { label: "Associação", color: "#00A84F" },
+            "ME/EPP": { label: "ME/EPP", color: "#3567C4" },
+            projetos: { label: "Projetos", color: "#1A2A4A" },
           }} className="h-[280px] w-full">
             <AreaChart data={evolucaoFormalizacaoTrimestral} margin={{ top: 5, right: 30, left: -10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
@@ -54,11 +54,11 @@ export function FormalizacaoProjetos({ filtroLinguagem = "todas", filtroCidades 
               <YAxis yAxisId="left" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} unit="%" />
               <YAxis yAxisId="right" orientation="right" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Area yAxisId="left" type="monotone" dataKey="Informal" stackId="1" stroke="hsl(0, 84%, 60%)" fill="hsl(0, 84%, 60%)" fillOpacity={0.6} />
-              <Area yAxisId="left" type="monotone" dataKey="MEI" stackId="1" stroke="hsl(45, 93%, 47%)" fill="hsl(45, 93%, 47%)" fillOpacity={0.6} />
-              <Area yAxisId="left" type="monotone" dataKey="Associação" stackId="1" stroke="hsl(142, 71%, 45%)" fill="hsl(142, 71%, 45%)" fillOpacity={0.6} />
-              <Area yAxisId="left" type="monotone" dataKey="ME/EPP" stackId="1" stroke="hsl(215, 60%, 50%)" fill="hsl(215, 60%, 50%)" fillOpacity={0.6} />
-              <Line yAxisId="right" type="monotone" dataKey="projetos" stroke="hsl(270, 50%, 55%)" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
+              <Area yAxisId="left" type="monotone" dataKey="Informal" stackId="1" stroke="#C41200" fill="#C41200" fillOpacity={0.6} />
+              <Area yAxisId="left" type="monotone" dataKey="MEI" stackId="1" stroke="#FFBD0C" fill="#FFBD0C" fillOpacity={0.6} />
+              <Area yAxisId="left" type="monotone" dataKey="Associação" stackId="1" stroke="#00A84F" fill="#00A84F" fillOpacity={0.6} />
+              <Area yAxisId="left" type="monotone" dataKey="ME/EPP" stackId="1" stroke="#3567C4" fill="#3567C4" fillOpacity={0.6} />
+              <Line yAxisId="right" type="monotone" dataKey="projetos" stroke="#1A2A4A" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
             </AreaChart>
           </ChartContainer>
         </CardContent>

@@ -23,6 +23,8 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           hover: "hsl(var(--primary-hover))",
+          dark: "hsl(var(--primary-dark))",
+          darker: "hsl(var(--primary-darker))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -32,10 +34,12 @@ export default {
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
+          dark: "hsl(var(--success-dark))",
         },
         warning: {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
+          dark: "hsl(var(--warning-dark))",
         },
         error: {
           DEFAULT: "hsl(var(--error))",
@@ -52,6 +56,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          dark: "hsl(var(--accent-dark))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -70,6 +75,48 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        /* ═══════════════════════════════════════════════════════
+           CORES CUSTOMIZADAS PERNAMBUCO — Acessíveis via tw-pe-*
+           ═══════════════════════════════════════════════════════ */
+        pe: {
+          blue: "#3567C4",
+          red: "#C41200",
+          green: "#00A84F",
+          yellow: "#FFBD0C",
+          orange: "#C85A1A",
+          white: "#F0F9F9",
+          dark: "#1A2A4A",
+          "blue-dark": "#2A52A3",
+          "red-dark": "#9A0E00",
+          "green-dark": "#007A3A",
+          "orange-dark": "#9A4210",
+          "blue-light": "#EBF2FF",
+          "blue-lighter": "#F5F8FF",
+          "red-light": "#FFF0EE",
+          "red-lighter": "#FFF7F6",
+          "yellow-light": "#FFFBEB",
+          "yellow-lighter": "#FFFDF5",
+          "green-light": "#E6F7EE",
+          "green-lighter": "#F0FBF5",
+          "orange-light": "#FFF3ED",
+          "orange-lighter": "#FFF8F5",
+          gray: "#8A9BB5",
+          "gray-light": "#B8C8E0",
+          "gray-lighter": "#D4DFF0",
+        },
+        /* Neutral palette — Tons de azul escuro PE */
+        neutral: {
+          50: "hsl(var(--neutral-50))",
+          100: "hsl(var(--neutral-100))",
+          200: "hsl(var(--neutral-200))",
+          300: "hsl(var(--neutral-300))",
+          400: "hsl(var(--neutral-400))",
+          500: "hsl(var(--neutral-500))",
+          600: "hsl(var(--neutral-600))",
+          700: "hsl(var(--neutral-700))",
+          800: "hsl(var(--neutral-800))",
+          900: "hsl(var(--neutral-900))",
         },
       },
       borderRadius: {
@@ -94,10 +141,22 @@ export default {
             height: "0",
           },
         },
+        "pulse-ring": {
+          "0%": {
+            boxShadow: "0 0 0 0 rgba(53, 103, 196, 0.7)",
+          },
+          "70%": {
+            boxShadow: "0 0 0 10px rgba(53, 103, 196, 0)",
+          },
+          "100%": {
+            boxShadow: "0 0 0 0 rgba(53, 103, 196, 0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-ring": "pulse-ring 2s infinite",
       },
     },
   },

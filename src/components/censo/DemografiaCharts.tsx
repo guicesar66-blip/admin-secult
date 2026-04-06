@@ -9,32 +9,32 @@ import {
 import type { EcossistemaData } from "@/hooks/useEcossistemaData";
 
 const DONUT_COLORS_GENERO = [
-  "hsl(215, 60%, 50%)",
-  "hsl(340, 65%, 55%)",
-  "hsl(270, 50%, 55%)",
+  "#3567C4",
+  "#C41200",
+  "#1A2A4A",
 ];
 
 const DONUT_COLORS_RACA = [
-  "hsl(24, 77%, 57%)",
-  "hsl(38, 69%, 50%)",
-  "hsl(0, 66%, 48%)",
-  "hsl(215, 20%, 65%)",
-  "hsl(142, 60%, 40%)",
-  "hsl(270, 50%, 55%)",
+  "#C41200",
+  "#C85A1A",
+  "#C41200",
+  "#8A9BB5",
+  "#00A84F",
+  "#1A2A4A",
 ];
 
 const FAIXA_ETARIA_COLORS = [
-  "hsl(215, 60%, 65%)",
-  "hsl(215, 60%, 50%)",
-  "hsl(215, 60%, 40%)",
-  "hsl(215, 50%, 55%)",
-  "hsl(215, 40%, 70%)",
+  "#5A8FD4",
+  "#3567C4",
+  "#1A2A4A",
+  "#2A52A3",
+  "#8A9BB5",
 ];
 
 const LINGUAGEM_COLORS = [
-  "hsl(215, 60%, 50%)", "hsl(24, 77%, 57%)", "hsl(142, 60%, 40%)",
-  "hsl(270, 50%, 55%)", "hsl(38, 69%, 50%)", "hsl(340, 65%, 55%)",
-  "hsl(0, 66%, 48%)", "hsl(195, 60%, 50%)", "hsl(160, 50%, 45%)",
+  "#3567C4", "#C41200", "#00A84F",
+  "#1A2A4A", "#C85A1A", "#FFBD0C",
+  "#9A0E00", "#3567C4", "#007A3A",
 ];
 
 // ===== Reusable DonutChart =====

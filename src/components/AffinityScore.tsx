@@ -10,7 +10,7 @@ const AffinityScore = ({ score, size = 64 }: AffinityScoreProps) => {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   const color =
-    score > 80 ? "#38A169" : score >= 60 ? "#D69E2E" : "#E53E3E";
+    score > 80 ? "#00A84F" : score >= 60 ? "#FFBD0C" : "#C41200";
 
   return (
     <div className="flex flex-col items-center gap-0.5">

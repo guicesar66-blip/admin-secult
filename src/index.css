@@ -8,114 +8,187 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 215 25% 15%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
-
-    --primary: 0 66% 48%;
+    /* ═══════════════════════════════════════════════════════
+       CORES BASE DA BANDEIRA DE PERNAMBUCO
+       ═══════════════════════════════════════════════════════ */
+    
+    /* Primary — Azul PE */
+    --primary: 220 67% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 0 66% 42%;
-
-    --secondary: 24 77% 57%;
+    --primary-hover: 220 58% 41%;
+    --primary-dark: 215 30% 18%;
+    --primary-darker: 215 30% 10%;
+    
+    /* Secondary — Vermelho PE */
+    --secondary: 0 91% 38%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-hover: 24 77% 50%;
-
-    --success: 145 46% 45%;
+    --secondary-hover: 0 91% 30%;
+    
+    /* Accent — Dourado/Amarelo PE */
+    --accent: 44 100% 50%;
+    --accent-foreground: 0 0% 10%;  /* Texto escuro sobre amarelo */
+    --accent-dark: 44 100% 42%;
+    
+    /* Success — Verde PE */
+    --success: 150 100% 33%;
     --success-foreground: 0 0% 100%;
-
-    --warning: 38 69% 50%;
+    --success-dark: 150 100% 24%;
+    
+    /* Warning — Terracota/Orange PE */
+    --warning: 25 76% 40%;
     --warning-foreground: 0 0% 100%;
-
-    --error: 0 71% 57%;
+    --warning-dark: 25 65% 32%;
+    
+    /* Error — Vermelho PE (mesmo que secondary) */
+    --error: 0 91% 38%;
     --error-foreground: 0 0% 100%;
-
-    --muted: 215 20% 95%;
-    --muted-foreground: 215 15% 50%;
-
-    --accent: 215 20% 92%;
-    --accent-foreground: 215 25% 15%;
-
-    --destructive: 0 71% 57%;
+    
+    /* Destructive */
+    --destructive: 0 91% 38%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 215 15% 88%;
-    --input: 215 15% 88%;
-    --ring: 0 66% 48%;
-
+    
+    /* Neutral palette — Tons de azul escuro PE */
+    --neutral-900: 215 30% 18%;   /* #1A2A4A */
+    --neutral-800: 220 28% 22%;   /* #243656 */
+    --neutral-700: 220 25% 26%;   /* #2E4268 */
+    --neutral-600: 220 22% 51%;   /* #3D5A8A */
+    --neutral-500: 220 12% 52%;   /* #5A6A8A */
+    --neutral-400: 220 15% 71%;   /* #8A9BB5 */
+    --neutral-300: 220 30% 84%;   /* #B8C8E0 */
+    --neutral-200: 220 40% 90%;   /* #D4DFF0 */
+    --neutral-100: 220 67% 94%;   /* #EBF2FF */
+    --neutral-50: 220 100% 97%;   /* #F5F8FF */
+    
+    /* Backgrounds and cards */
+    --background: 0 0% 98%;
+    --foreground: 215 30% 18%;    /* #1A2A4A */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 215 30% 18%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 30% 18%;
+    
+    /* Muted and subtly branded */
+    --muted: 220 40% 90%;         /* #D4DFF0 */
+    --muted-foreground: 220 15% 62%;  /* #8A9BB5 */
+    
+    /* Border and input */
+    --border: 220 40% 90%;        /* #D4DFF0 */
+    --input: 220 40% 90%;         /* #D4DFF0 */
+    --ring: 220 67% 50%;          /* Azul PE */
+    
     --radius: 0.5rem;
-
-    --sidebar-background: 215 30% 12%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 0 66% 48%;
+    
+    /* ═══════════════════════════════════════════════════════
+       SIDEBAR ESPECÍFICO — BANDEIRA PE
+       ═══════════════════════════════════════════════════════ */
+    
+    /* Sidebar background — Azul-noite PE */
+    --sidebar-background: 215 30% 18%;      /* #1A2A4A */
+    --sidebar-foreground: 0 0% 95%;         /* #F0F9F9 */
+    --sidebar-primary: 220 67% 50%;         /* Azul PE */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 30% 18%;
-    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-accent: 44 100% 50%;          /* Dourado PE (para items ativos) */
+    --sidebar-accent-foreground: 215 30% 18%;
     --sidebar-border: 215 30% 20%;
-    --sidebar-ring: 0 66% 48%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(0 66% 48%), hsl(24 77% 57%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(215 20% 98%));
-    --shadow-card: 0 2px 8px hsl(215 25% 15% / 0.08);
-    --shadow-elevated: 0 8px 24px hsl(215 25% 15% / 0.12);
+    --sidebar-ring: 220 67% 50%;
+    
+    /* ═══════════════════════════════════════════════════════
+       GRADIENTES — BANDEIRA DE PERNAMBUCO
+       ═══════════════════════════════════════════════════════ */
+    
+    /* Gradient Hero — Inspirado na bandeira (azul, vermelho) */
+    --gradient-hero: linear-gradient(135deg, hsl(215 30% 18%) 0%, hsl(220 67% 50%) 60%, hsl(0 91% 38%) 100%);
+    
+    /* Gradient Blue — Azul PE principal */
+    --gradient-blue: linear-gradient(135deg, hsl(220 67% 50%) 0%, hsl(215 30% 18%) 100%);
+    
+    /* Gradient Flag — Inspirado nas cores da bandeira */
+    --gradient-flag: linear-gradient(180deg, hsl(220 67% 50%) 0%, hsl(220 67% 50%) 50%, hsl(180 45% 95%) 50%, hsl(180 45% 95%) 100%);
+    
+    /* Gradient Warm — Dourado + terracota */
+    --gradient-warm: linear-gradient(135deg, hsl(44 100% 50%) 0%, hsl(25 76% 40%) 100%);
+    
+    /* Gradient Green — Verde PE + azul escuro */
+    --gradient-green: linear-gradient(135deg, hsl(150 100% 33%) 0%, hsl(215 30% 18%) 100%);
+    
+    /* Gradient Card Blue — Cards com toque azul suave */
+    --gradient-card-blue: linear-gradient(160deg, hsl(220 67% 94%) 0%, hsl(220 100% 97%) 100%);
+    
+    /* ═══════════════════════════════════════════════════════
+       SOMBRAS
+       ═══════════════════════════════════════════════════════ */
+    
+    --shadow-card: 0 2px 12px hsl(220 67% 50% / 0.08);
+    --shadow-elevated: 0 8px 24px hsl(220 67% 50% / 0.15);
   }
 
   .dark {
     --background: 215 30% 10%;
     --foreground: 0 0% 95%;
-
-    --card: 215 30% 12%;
+    
+    --card: 220 30% 15%;
     --card-foreground: 0 0% 95%;
-
-    --popover: 215 30% 12%;
+    
+    --popover: 220 30% 15%;
     --popover-foreground: 0 0% 95%;
-
-    --primary: 0 66% 48%;
+    
+    /* Primary — Azul PE (mantém mesmo em dark) */
+    --primary: 220 67% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 0 66% 42%;
-
-    --secondary: 24 77% 57%;
+    --primary-hover: 220 67% 50%;
+    
+    /* Secondary — Vermelho PE */
+    --secondary: 0 91% 45%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-hover: 24 77% 50%;
-
-    --success: 145 46% 45%;
+    --secondary-hover: 0 91% 38%;
+    
+    /* Accent — Dourado/Amarelo PE */
+    --accent: 44 100% 55%;
+    --accent-foreground: 215 30% 18%;
+    
+    /* Success — Verde PE */
+    --success: 150 100% 40%;
     --success-foreground: 0 0% 100%;
-
-    --warning: 38 69% 50%;
+    
+    /* Warning — Terracota PE */
+    --warning: 25 76% 45%;
     --warning-foreground: 0 0% 100%;
-
-    --error: 0 71% 57%;
+    
+    /* Error — Vermelho PE */
+    --error: 0 91% 45%;
     --error-foreground: 0 0% 100%;
-
-    --muted: 215 30% 18%;
-    --muted-foreground: 215 15% 65%;
-
-    --accent: 215 30% 18%;
-    --accent-foreground: 0 0% 95%;
-
-    --destructive: 0 71% 57%;
+    
+    /* Destructive */
+    --destructive: 0 91% 45%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 215 30% 20%;
-    --input: 215 30% 20%;
-    --ring: 0 66% 48%;
-
+    
+    /* Muted e input em dark */
+    --muted: 215 30% 20%;
+    --muted-foreground: 220 15% 70%;
+    
+    --border: 215 30% 22%;
+    --input: 215 30% 22%;
+    --ring: 220 67% 55%;
+    
     --sidebar-background: 215 30% 8%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 0 66% 48%;
+    --sidebar-primary: 220 67% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 30% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 215 30% 18%;
-    --sidebar-ring: 0 66% 48%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(0 66% 48%), hsl(24 77% 57%));
-    --gradient-subtle: linear-gradient(180deg, hsl(215 30% 12%), hsl(215 30% 10%));
-    --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.3);
+    --sidebar-accent: 44 100% 55%;
+    --sidebar-accent-foreground: 215 30% 18%;
+    --sidebar-border: 215 30% 15%;
+    --sidebar-ring: 220 67% 55%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(215 30% 8%) 0%, hsl(220 67% 50%) 60%, hsl(0 91% 40%) 100%);
+    --gradient-blue: linear-gradient(135deg, hsl(220 67% 55%) 0%, hsl(215 30% 8%) 100%);
+    --gradient-flag: linear-gradient(180deg, hsl(220 67% 55%) 0%, hsl(220 67% 55%) 50%, hsl(215 30% 15%) 50%, hsl(215 30% 15%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(44 100% 55%) 0%, hsl(25 76% 45%) 100%);
+    --gradient-green: linear-gradient(135deg, hsl(150 100% 40%) 0%, hsl(215 30% 8%) 100%);
+    --gradient-card-blue: linear-gradient(160deg, hsl(215 30% 18%) 0%, hsl(215 30% 12%) 100%);
+    
+    --shadow-card: 0 2px 12px hsl(0 0% 0% / 0.3);
     --shadow-elevated: 0 8px 24px hsl(0 0% 0% / 0.5);
   }
 }
@@ -136,11 +209,35 @@ All colors MUST be HSL.
 
 @layer utilities {
   .gradient-primary {
-    background: var(--gradient-primary);
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-blue {
+    background: var(--gradient-blue);
+  }
+  
+  .gradient-flag {
+    background: var(--gradient-flag);
+  }
+  
+  .gradient-warm {
+    background: var(--gradient-warm);
+  }
+  
+  .gradient-green {
+    background: var(--gradient-green);
+  }
+  
+  .gradient-card-blue {
+    background: var(--gradient-card-blue);
   }
 
   .gradient-subtle {
-    background: var(--gradient-subtle);
+    background: var(--gradient-card-blue);
   }
 
   .shadow-card {

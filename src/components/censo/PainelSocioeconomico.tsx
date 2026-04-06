@@ -48,8 +48,8 @@ function BlocoRenda({ data }: { data: EcossistemaData }) {
 
 function BlocoEscolaridade({ data }: { data: EcossistemaData }) {
   const donutColors = [
-    "hsl(215, 60%, 50%)", "hsl(270, 50%, 55%)", "hsl(142, 60%, 40%)",
-    "hsl(38, 69%, 50%)", "hsl(340, 65%, 55%)", "hsl(0, 0%, 60%)",
+    "#3567C4", "#1A2A4A", "#00A84F",
+    "#C85A1A", "#C41200", "#8A9BB5",
   ];
 
   const percentSuperior = data.escolaridade

@@ -29,10 +29,17 @@ import Configuracoes from "./pages/Configuracoes";
 import ConfiguracoesEquipe from "./pages/ConfiguracoesEquipe";
 import ConfiguracoesIntegracoes from "./pages/ConfiguracoesIntegracoes";
 import SistemaTrocados from "./pages/SistemaTrocados";
+import NovoEdital from "./pages/NovoEdital";
+import NovoPesquisaIdeias from "./pages/NovoPesquisaIdeias";
+import NovoEspacoCultural from "./pages/NovoEspacoCultural";
 import VitrineDetalhes from "./pages/VitrineDetalhes";
 import ColetivosDetalhes from "./pages/ColetivosDetalhes";
 import EspacoDetalhes from "./pages/EspacoDetalhes";
 import ProjetoImpactoDetalhes from "./pages/ProjetoImpactoDetalhes";
+import EditaisDetalhes from "./pages/EditaisDetalhes";
+import EditaisInscrever from "./pages/EditaisInscrever";
+import Projetos from "./pages/Projetos";
+import VagaDetalhes from "./pages/VagaDetalhes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,17 +55,24 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <Routes>
-                {/* Public route */}
+                {/* Public routes */}
                 <Route path="/" element={<Login />} />
+                <Route path="/editais/:id" element={<EditaisDetalhes />} />
+                <Route path="/editais/:id/inscrever" element={<EditaisInscrever />} />
+                <Route path="/vaga/:id" element={<VagaDetalhes />} />
                 
                 {/* Protected routes - require admin */}
                 <Route path="/dashboard" element={<ProtectedRoute><MarketplaceExplorar /></ProtectedRoute>} />
                 <Route path="/oportunidades" element={<ProtectedRoute><Oportunidades /></ProtectedRoute>} />
+                <Route path="/projetos" element={<ProtectedRoute><Projetos /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo" element={<ProtectedRoute><NovoProjetoConstrucao /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo/evento" element={<ProtectedRoute><NovoProjetoEvento /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo/vaga" element={<ProtectedRoute><NovoProjetoVaga /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo/oficina" element={<ProtectedRoute><NovoProjetoOficina /></ProtectedRoute>} />
                 <Route path="/oportunidades/novo/bairro" element={<ProtectedRoute><NovoProjetoBairro /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/edital" element={<ProtectedRoute><NovoEdital /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/pesquisa" element={<ProtectedRoute><NovoPesquisaIdeias /></ProtectedRoute>} />
+                <Route path="/oportunidades/novo/espaco" element={<ProtectedRoute><NovoEspacoCultural /></ProtectedRoute>} />
                 <Route path="/oportunidades/:id" element={<ProtectedRoute><ProjetoDetalhes /></ProtectedRoute>} />
                 <Route path="/marketplace" element={<ProtectedRoute><MarketplaceExplorar /></ProtectedRoute>} />
                 <Route path="/marketplace/:id" element={<ProtectedRoute><OportunidadePublica /></ProtectedRoute>} />
