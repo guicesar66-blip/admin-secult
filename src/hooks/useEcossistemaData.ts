@@ -155,7 +155,7 @@ export function useEcossistemaData(filtroLinguagem: string, filtroCidades: strin
     const filteredArtistas =
       filterProdutoras.length === 0
         ? afterLinguagemFilter
-        : afterLinguagemFilter.filter((a) => filterProdutoras.includes(a.nome_produtor || ""));
+        : afterLinguagemFilter.filter((a) => filterProdutoras.includes(a.produtora_id || ""));
 
     // Enrich with usuario data (map already built above)
     const artistas: ArtistaEnriquecido[] = filteredArtistas

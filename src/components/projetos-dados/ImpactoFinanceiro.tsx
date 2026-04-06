@@ -22,7 +22,7 @@ interface ImpactoFinanceiroProps {
 }
 
 export function ImpactoFinanceiro({ filtroLinguagem = "todas", filtroCidades = [], filterProjetos = [] }: ImpactoFinanceiroProps) {
-  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades, filterProjetos), [filtroLinguagem, filtroCidades, filterProjetos]);
+  const kpis = useMemo(() => getKPIsProjetos(filtroLinguagem, filtroCidades), [filtroLinguagem, filtroCidades]);
   const formatCurrency = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact" }).format(v);
 
   const rendaFiltrada = useMemo(() => {

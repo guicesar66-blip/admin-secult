@@ -67,7 +67,7 @@ export const LegendaDinamica: React.FC<LegendaDinamicaProps> = ({
 
             {/* Info da camada */}
             <div className="flex-1 text-left">
-              <p className={`text-sm font-medium ${camada.visível ? 'text-gray-900' : 'text-gray-600'}`}>
+              <p className={`text-sm font-medium ${camada.visivel ? 'text-foreground' : 'text-muted-foreground'}`}>
                 {camada.nome}
               </p>
             </div>

@@ -30,7 +30,7 @@ export function AuditoriaPanel({ filtroLinguagem = "todas", filtroCidades = [], 
   // Apply global filters
   const projetosFiltrados = projetosAuditoriaMock.filter(p => {
     // OR logic for produtor filters
-    if (filterProdutoras.length > 0 && !filterProdutoras.includes(p.produtor || "")) return false;
+    if (filterProdutoras.length > 0 && !filterProdutoras.includes(p.artista || "")) return false;
     
     if (filtroLinguagem !== "todas" && p.linguagem !== filtroLinguagem) return false;
     if (filtroCidades.length > 0 && !filtroCidades.includes(p.municipio)) return false;
