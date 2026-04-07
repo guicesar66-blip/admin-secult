@@ -8,7 +8,7 @@ import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import logoMainDefault from "@/assets/logo-caran.jpg";
+import logoMainDefault from "@/assets/979d359e-6e6c-4a17-8c2f-14c392780648.png";
 
 function PEArcs() {
   return (
@@ -167,7 +167,7 @@ export default function Login() {
           </div>
 
           <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-            <h2 className="mb-6 text-xl font-semibold text-foreground">Acesso Administrativo</h2>
+            <h2 className="mb-6 text-xl font-semibold text-foreground">Login</h2>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
