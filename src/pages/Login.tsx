@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import logoMainDefault from "@/assets/979d359e-6e6c-4a17-8c2f-14c392780648.png";
+import cenaLogo from "@/assets/Artboard_1@2x_1_1.png";
 
 function PEArcs() {
   return (
@@ -150,10 +151,8 @@ export default function Login() {
             Plataforma de Gestão Cultural do Estado de Pernambuco
           </p>
         </div>
-        {/* Star decoration */}
-        <svg viewBox="0 0 100 100" className="absolute top-12 right-12 w-16 h-16 opacity-30">
-          <polygon points="50,5 61,35 95,35 67,55 78,90 50,70 22,90 33,55 5,35 39,35" fill="#FFBD0C" />
-        </svg>
+        {/* CENA logo decoration */}
+        <img src={cenaLogo} alt="CENA" className="absolute top-12 right-12 w-24 h-auto opacity-40" />
       </div>
 
       {/* Right — Form */}
