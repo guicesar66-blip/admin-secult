@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { NotificationBell } from "@/components/NotificationBell";
-import logoHorizontalDefault from "@/assets/logo-horizontal.png";
+import logoHorizontalDefault from "@/assets/406583ac-4e2e-42fa-b871-ac69fce319d1.png";
 
 interface DashboardLayoutProps {
   children: ReactNode;
