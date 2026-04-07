@@ -13,9 +13,9 @@ const defaultConfig: WhiteLabelConfig = {
   clientName: 'Cenna',
   logoMain: null,
   logoHorizontal: null,
-  primaryColor: '0 66% 48%',
-  secondaryColor: '24 77% 57%',
-  sidebarBackground: '215 30% 12%',
+  primaryColor: '0 58% 35%',
+  secondaryColor: '232 36% 45%',
+  sidebarBackground: '232 36% 18%',
 };
 
 interface WhiteLabelContextType {
