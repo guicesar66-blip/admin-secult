@@ -85,6 +85,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(["Analytics", "Configurações"]);
   const { config } = useWhiteLabel();
+  const { signOut } = useAuth();
   
   const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
   const clientName = config.clientName || 'Cena';
