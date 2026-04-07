@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { NotificationBell } from "@/components/NotificationBell";
-import logoHorizontalDefault from "@/assets/logo-caran.jpg";
+import logoHorizontalDefault from "@/assets/406583ac-4e2e-42fa-b871-ac69fce319d1.png";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -121,7 +121,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 alt={clientName} 
                 className="h-8 w-auto"
               />
-              <span className="text-xl font-bold text-sidebar-foreground">CENA</span>
+              <span className="text-xl font-bold text-sidebar-foreground">CENNA</span>
             </div>
           ) : (
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
