@@ -167,7 +167,7 @@ export default function Login() {
           </div>
 
           <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-            <h2 className="mb-6 text-xl font-semibold text-foreground">Login</h2>
+            <h2 className="mb-6 text-xl font-semibold text-foreground">​Login</h2>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
