@@ -8,7 +8,7 @@ import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import logoMainDefault from "@/assets/979d359e-6e6c-4a17-8c2f-14c392780648.png";
+import logoMainDefault from "@/assets/a36c2780-9a36-471c-ad69-7ef86010ecd6.png";
 
 function PEArcs() {
   return (
