@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import logoMainDefault from "@/assets/979d359e-6e6c-4a17-8c2f-14c392780648.png";
+import cenaLogo from "@/assets/Artboard_1@2x_1_1.png";
 
 function PEArcs() {
   return (
