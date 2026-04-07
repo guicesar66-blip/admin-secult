@@ -86,7 +86,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { config } = useWhiteLabel();
   
   const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
-  const clientName = config.clientName || 'Cenna';
+  const clientName = config.clientName || 'Cena';
 
   const toggleMenu = (label: string) => {
     setExpandedMenus(prev => 
@@ -121,7 +121,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 alt={clientName} 
                 className="h-8 w-auto"
               />
-              <span className="text-xl font-bold text-sidebar-foreground">CENNA</span>
+              <span className="text-xl font-bold text-sidebar-foreground">CENA</span>
             </div>
           ) : (
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center text-white font-bold text-xs">
