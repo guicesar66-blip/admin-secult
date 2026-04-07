@@ -86,7 +86,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { config } = useWhiteLabel();
   
   const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
-  const clientName = config.clientName || 'Cenna';
+  const clientName = config.clientName || 'Cena';
 
   const toggleMenu = (label: string) => {
     setExpandedMenus(prev => 
