@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { NotificationBell } from "@/components/NotificationBell";
 import logoHorizontalDefault from "@/assets/406583ac-4e2e-42fa-b871-ac69fce319d1.png";
 
@@ -84,6 +85,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(["Analytics", "Configurações"]);
   const { config } = useWhiteLabel();
+  const { signOut } = useAuth();
   
   const logoHorizontal = config.logoHorizontal || logoHorizontalDefault;
   const clientName = config.clientName || 'Cena';
@@ -204,7 +206,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           <button
             className="mt-auto flex items-center gap-2 rounded-md px-3 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-smooth"
-            onClick={() => (window.location.href = "/")}
+            onClick={async () => {
+              await signOut();
+              window.location.href = "/";
+            }}
           >
             <LogOut className="h-4 w-4" />
             {sidebarOpen && <span>Sair</span>}
