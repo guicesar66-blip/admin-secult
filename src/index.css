@@ -12,17 +12,17 @@ All colors MUST be HSL.
        CORES BASE DA BANDEIRA DE PERNAMBUCO
        ═══════════════════════════════════════════════════════ */
     
-    /* Primary — Azul PE */
-    --primary: 220 67% 50%;
+    /* Primary — Vermelho #8E2626 */
+    --primary: 0 58% 35%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 220 58% 41%;
-    --primary-dark: 215 30% 18%;
-    --primary-darker: 215 30% 10%;
+    --primary-hover: 0 58% 28%;
+    --primary-dark: 0 58% 22%;
+    --primary-darker: 0 58% 15%;
     
-    /* Secondary — Vermelho PE */
-    --secondary: 0 91% 38%;
+    /* Secondary — Azul #4A559D */
+    --secondary: 232 36% 45%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-hover: 0 91% 30%;
+    --secondary-hover: 232 36% 38%;
     
     /* Accent — Dourado/Amarelo PE */
     --accent: 44 100% 50%;
@@ -30,21 +30,21 @@ All colors MUST be HSL.
     --accent-dark: 44 100% 42%;
     
     /* Success — Verde PE */
-    --success: 150 100% 33%;
+    --success: 145 54% 30%;
     --success-foreground: 0 0% 100%;
-    --success-dark: 150 100% 24%;
+    --success-dark: 145 54% 22%;
     
     /* Warning — Terracota/Orange PE */
     --warning: 25 76% 40%;
     --warning-foreground: 0 0% 100%;
     --warning-dark: 25 65% 32%;
     
-    /* Error — Vermelho PE (mesmo que secondary) */
-    --error: 0 91% 38%;
+    /* Error — Vermelho */
+    --error: 0 58% 35%;
     --error-foreground: 0 0% 100%;
     
     /* Destructive */
-    --destructive: 0 91% 38%;
+    --destructive: 0 58% 42%;
     --destructive-foreground: 0 0% 100%;
     
     /* Neutral palette — Tons de azul escuro PE */
@@ -76,7 +76,7 @@ All colors MUST be HSL.
     /* Border and input */
     --border: 220 40% 90%;        /* #D4DFF0 */
     --input: 220 40% 90%;         /* #D4DFF0 */
-    --ring: 220 67% 50%;          /* Azul PE */
+    --ring: 0 58% 35%;            /* Vermelho primário */
     
     --radius: 0.5rem;
     
@@ -85,43 +85,43 @@ All colors MUST be HSL.
        ═══════════════════════════════════════════════════════ */
     
     /* Sidebar background — Azul-noite PE */
-    --sidebar-background: 215 30% 18%;      /* #1A2A4A */
-    --sidebar-foreground: 0 0% 95%;         /* #F0F9F9 */
-    --sidebar-primary: 220 67% 50%;         /* Azul PE */
+    --sidebar-background: 232 36% 18%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 58% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 44 100% 50%;          /* Dourado PE (para items ativos) */
-    --sidebar-accent-foreground: 215 30% 18%;
-    --sidebar-border: 215 30% 20%;
-    --sidebar-ring: 220 67% 50%;
+    --sidebar-accent: 44 100% 50%;
+    --sidebar-accent-foreground: 232 36% 18%;
+    --sidebar-border: 232 36% 22%;
+    --sidebar-ring: 0 58% 35%;
     
     /* ═══════════════════════════════════════════════════════
        GRADIENTES — BANDEIRA DE PERNAMBUCO
        ═══════════════════════════════════════════════════════ */
     
-    /* Gradient Hero — Inspirado na bandeira (azul, vermelho) */
-    --gradient-hero: linear-gradient(135deg, hsl(215 30% 18%) 0%, hsl(220 67% 50%) 60%, hsl(0 91% 38%) 100%);
+    /* Gradient Hero — Vermelho + Azul */
+    --gradient-hero: linear-gradient(135deg, hsl(232 36% 18%) 0%, hsl(0 58% 35%) 60%, hsl(232 36% 45%) 100%);
     
-    /* Gradient Blue — Azul PE principal */
-    --gradient-blue: linear-gradient(135deg, hsl(220 67% 50%) 0%, hsl(215 30% 18%) 100%);
+    /* Gradient Blue — Azul */
+    --gradient-blue: linear-gradient(135deg, hsl(232 36% 45%) 0%, hsl(232 36% 18%) 100%);
     
-    /* Gradient Flag — Inspirado nas cores da bandeira */
-    --gradient-flag: linear-gradient(180deg, hsl(220 67% 50%) 0%, hsl(220 67% 50%) 50%, hsl(180 45% 95%) 50%, hsl(180 45% 95%) 100%);
+    /* Gradient Flag */
+    --gradient-flag: linear-gradient(180deg, hsl(0 58% 35%) 0%, hsl(0 58% 35%) 50%, hsl(0 0% 96%) 50%, hsl(0 0% 96%) 100%);
     
     /* Gradient Warm — Dourado + terracota */
     --gradient-warm: linear-gradient(135deg, hsl(44 100% 50%) 0%, hsl(25 76% 40%) 100%);
     
     /* Gradient Green — Verde PE + azul escuro */
-    --gradient-green: linear-gradient(135deg, hsl(150 100% 33%) 0%, hsl(215 30% 18%) 100%);
+    --gradient-green: linear-gradient(135deg, hsl(145 54% 30%) 0%, hsl(232 36% 18%) 100%);
     
-    /* Gradient Card Blue — Cards com toque azul suave */
-    --gradient-card-blue: linear-gradient(160deg, hsl(220 67% 94%) 0%, hsl(220 100% 97%) 100%);
+    /* Gradient Card — Cards com toque suave */
+    --gradient-card-blue: linear-gradient(160deg, hsl(232 36% 94%) 0%, hsl(232 50% 97%) 100%);
     
     /* ═══════════════════════════════════════════════════════
        SOMBRAS
        ═══════════════════════════════════════════════════════ */
     
-    --shadow-card: 0 2px 12px hsl(220 67% 50% / 0.08);
-    --shadow-elevated: 0 8px 24px hsl(220 67% 50% / 0.15);
+    --shadow-card: 0 2px 12px hsl(0 58% 35% / 0.08);
+    --shadow-elevated: 0 8px 24px hsl(0 58% 35% / 0.15);
   }
 
   .dark {
@@ -134,34 +134,34 @@ All colors MUST be HSL.
     --popover: 220 30% 15%;
     --popover-foreground: 0 0% 95%;
     
-    /* Primary — Azul PE (mantém mesmo em dark) */
-    --primary: 220 67% 55%;
+    /* Primary — Vermelho */
+    --primary: 0 58% 42%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 220 67% 50%;
+    --primary-hover: 0 58% 35%;
     
-    /* Secondary — Vermelho PE */
-    --secondary: 0 91% 45%;
+    /* Secondary — Azul */
+    --secondary: 232 36% 52%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-hover: 0 91% 38%;
+    --secondary-hover: 232 36% 45%;
     
     /* Accent — Dourado/Amarelo PE */
     --accent: 44 100% 55%;
     --accent-foreground: 215 30% 18%;
     
     /* Success — Verde PE */
-    --success: 150 100% 40%;
+    --success: 145 54% 38%;
     --success-foreground: 0 0% 100%;
     
-    /* Warning — Terracota PE */
+    /* Warning */
     --warning: 25 76% 45%;
     --warning-foreground: 0 0% 100%;
     
     /* Error — Vermelho PE */
-    --error: 0 91% 45%;
+    --error: 0 58% 42%;
     --error-foreground: 0 0% 100%;
     
     /* Destructive */
-    --destructive: 0 91% 45%;
+    --destructive: 0 58% 48%;
     --destructive-foreground: 0 0% 100%;
     
     /* Muted e input em dark */
@@ -170,23 +170,23 @@ All colors MUST be HSL.
     
     --border: 215 30% 22%;
     --input: 215 30% 22%;
-    --ring: 220 67% 55%;
+    --ring: 0 58% 42%;
     
-    --sidebar-background: 215 30% 8%;
+    --sidebar-background: 232 36% 10%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 220 67% 55%;
+    --sidebar-primary: 0 58% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 44 100% 55%;
-    --sidebar-accent-foreground: 215 30% 18%;
-    --sidebar-border: 215 30% 15%;
-    --sidebar-ring: 220 67% 55%;
+    --sidebar-accent-foreground: 232 36% 18%;
+    --sidebar-border: 232 36% 15%;
+    --sidebar-ring: 0 58% 42%;
     
-    --gradient-hero: linear-gradient(135deg, hsl(215 30% 8%) 0%, hsl(220 67% 50%) 60%, hsl(0 91% 40%) 100%);
-    --gradient-blue: linear-gradient(135deg, hsl(220 67% 55%) 0%, hsl(215 30% 8%) 100%);
-    --gradient-flag: linear-gradient(180deg, hsl(220 67% 55%) 0%, hsl(220 67% 55%) 50%, hsl(215 30% 15%) 50%, hsl(215 30% 15%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(232 36% 10%) 0%, hsl(0 58% 42%) 60%, hsl(232 36% 52%) 100%);
+    --gradient-blue: linear-gradient(135deg, hsl(232 36% 52%) 0%, hsl(232 36% 10%) 100%);
+    --gradient-flag: linear-gradient(180deg, hsl(0 58% 42%) 0%, hsl(0 58% 42%) 50%, hsl(232 36% 15%) 50%, hsl(232 36% 15%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(44 100% 55%) 0%, hsl(25 76% 45%) 100%);
-    --gradient-green: linear-gradient(135deg, hsl(150 100% 40%) 0%, hsl(215 30% 8%) 100%);
-    --gradient-card-blue: linear-gradient(160deg, hsl(215 30% 18%) 0%, hsl(215 30% 12%) 100%);
+    --gradient-green: linear-gradient(135deg, hsl(145 54% 38%) 0%, hsl(232 36% 10%) 100%);
+    --gradient-card-blue: linear-gradient(160deg, hsl(232 36% 18%) 0%, hsl(232 36% 12%) 100%);
     
     --shadow-card: 0 2px 12px hsl(0 0% 0% / 0.3);
     --shadow-elevated: 0 8px 24px hsl(0 0% 0% / 0.5);
