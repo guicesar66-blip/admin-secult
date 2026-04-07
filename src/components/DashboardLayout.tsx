@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { NotificationBell } from "@/components/NotificationBell";
 import logoHorizontalDefault from "@/assets/406583ac-4e2e-42fa-b871-ac69fce319d1.png";
 
