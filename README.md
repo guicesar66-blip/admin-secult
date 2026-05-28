@@ -1,6 +1,10 @@
 # CENA: 
 ## Centro de estímulo a novos artistas 
 
+## Ferramentas de gestão: 
+- Notion: https://app.notion.com/p/CENA-2c41822b063e8084995bc8e41f1f25a8
+- Miro: https://miro.com/app/board/uXjVGTHgnHg=/
+
 ## Sobre o Projeto: CENA (Centro de Estímulo a Novos Artistas)
 
 O CENA é uma iniciativa cultural-tecnológica, nascida em Pernambuco, que surge com o propósito de combater a precarização estrutural dos trabalhadores da cultura no Brasil. Diferente de uma startup convencional, o projeto se posiciona como um movimento que utiliza a tecnologia para e pela comunidade artística.Operando sob a filosofia "comunidade primeiro, tecnologia depois", o CENA funciona como um ecossistema digital integrado que conecta talentos a oportunidades reais de fomento, capacitação e emprego.
