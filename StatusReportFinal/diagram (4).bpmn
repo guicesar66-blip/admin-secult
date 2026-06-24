@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Defs_CENA_TOBE" targetNamespace="http://cena.cultural/tobe" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.16.0">
+  <bpmn:collaboration id="Collab_CENA">
+    <bpmn:participant id="Part_main" name="Ciclo de Vida do Projeto Cultural — CENA (TO-BE)" processRef="Proc_CENA" />
+  </bpmn:collaboration>
+  <bpmn:process id="Proc_CENA" isExecutable="false">
+    <bpmn:laneSet id="LS_Proc_CENA">
+      <bpmn:lane id="Lane_0dt0ww4" name="🏢 Contratante (web)">
+        <bpmn:flowNodeRef>c_start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>c_acc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>c_pub</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_art" name="🎨 Artista (WhatsApp)">
+        <bpmn:flowNodeRef>a_duv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>a_quest</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>a_entr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_067y2wz</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ag" name="🤖 Agente IA CENA">
+        <bpmn:flowNodeRef>ag_ola</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_resp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_op</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_prod</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_mrg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_proj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_estr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_conn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ag_notif</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_prod" name="🎬 Produtora (web)">
+        <bpmn:flowNodeRef>g_par1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_par2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_apto</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_recv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_open</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_orc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_eq</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_kan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_send</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_conf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_doc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_dash</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0m6tyg5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_end</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>p_plan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1l51ep9</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="ag_ola" name="Apresentar-se e acolher o artista">
+      <bpmn:incoming>Flow_0kasytw</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ag_resp" name="Responder dúvidas em linguagem acessível" />
+    <bpmn:serviceTask id="ag_op" name="Sugerir oportunidades que cabem no perfil" />
+    <bpmn:exclusiveGateway id="g_prod" name="Já tem produtor?" />
+    <bpmn:exclusiveGateway id="g_mrg" name="" />
+    <bpmn:serviceTask id="ag_proj" name="Criar o projeto no WhatsApp (modelo do produtor)" />
+    <bpmn:serviceTask id="ag_estr" name="Estruturar respostas no projeto" />
+    <bpmn:userTask id="a_duv" name="Tirar dúvidas (editais, prazos, como funciona)">
+      <bpmn:incoming>f_ag_ola_a_duv</bpmn:incoming>
+      <bpmn:outgoing>f_a_duv_ag_resp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ag_conn" name="Sugerir e conectar um produtor" />
+    <bpmn:userTask id="a_quest" name="Responder perguntas do modelo (áudio/texto)">
+      <bpmn:incoming>f_ag_proj_a_quest</bpmn:incoming>
+      <bpmn:outgoing>f_a_quest_ag_estr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="a_entr" name="Entregar projeto ao produtor">
+      <bpmn:incoming>f_ag_estr_a_entr</bpmn:incoming>
+      <bpmn:outgoing>f_a_entr_p_recv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="g_par1" name="" />
+    <bpmn:parallelGateway id="g_par2" name="" />
+    <bpmn:exclusiveGateway id="g_apto" name="Projeto apto?" />
+    <bpmn:userTask id="p_recv" name="Receber projeto na carteira">
+      <bpmn:incoming>f_a_entr_p_recv</bpmn:incoming>
+      <bpmn:outgoing>f_p_recv_p_open</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_open" name="Abrir e gerir o projeto">
+      <bpmn:incoming>f_p_recv_p_open</bpmn:incoming>
+      <bpmn:incoming>f_g_apto_p_open</bpmn:incoming>
+      <bpmn:outgoing>f_p_open_g_par1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_orc" name="Montar / ajustar orçamento">
+      <bpmn:incoming>f_g_par1_p_orc</bpmn:incoming>
+      <bpmn:outgoing>f_p_orc_g_par2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_eq" name="Montar equipe">
+      <bpmn:incoming>f_g_par1_p_eq</bpmn:incoming>
+      <bpmn:outgoing>f_p_eq_g_par2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_kan" name="Acompanhar no Kanban (tarefas e prazos)">
+      <bpmn:incoming>f_g_par2_p_kan</bpmn:incoming>
+      <bpmn:outgoing>f_p_kan_p_val</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_val" name="Validar projeto (bloqueantes e avisos)">
+      <bpmn:incoming>f_p_kan_p_val</bpmn:incoming>
+      <bpmn:outgoing>f_p_val_g_apto</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_send" name="Inscrever / enviar ao edital">
+      <bpmn:incoming>f_g_apto_p_send</bpmn:incoming>
+      <bpmn:outgoing>f_p_send_p_conf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_conf" name="Receber confirmação de envio">
+      <bpmn:incoming>f_p_send_p_conf</bpmn:incoming>
+      <bpmn:outgoing>f_p_conf_ag_notif</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="p_doc" name="Curadoria documental">
+      <bpmn:incoming>f_g_par1_p_doc</bpmn:incoming>
+      <bpmn:outgoing>f_p_doc_g_par2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ag_notif" name="Notificar artista (entregue + retorno)">
+      <bpmn:incoming>Flow_05z7abf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0aj5k2s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="p_dash" name="Visualizar dashboard / KPIs">
+      <bpmn:incoming>Flow_0y61r8q</bpmn:incoming>
+      <bpmn:outgoing>f_p_dash_p_plan</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_0m6tyg5" name="">
+      <bpmn:incoming>f_p_conf_ag_notif</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y61r8q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05z7abf</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="p_end" name="Projeto inscrito" />
+    <bpmn:userTask id="p_plan" name="Planejar objetivos e metas">
+      <bpmn:incoming>Flow_0ffwgh4</bpmn:incoming>
+      <bpmn:outgoing>f_p_plan_p_end</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_1l51ep9" name="">
+      <bpmn:incoming>f_p_dash_p_plan</bpmn:incoming>
+      <bpmn:incoming>Flow_0aj5k2s</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ffwgh4</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:startEvent id="c_start" name="Quer divulgar oportunidade">
+      <bpmn:outgoing>Flow_0g4o3o8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="c_acc" name="Criar conta / login">
+      <bpmn:incoming>Flow_0g4o3o8</bpmn:incoming>
+      <bpmn:outgoing>Flow_02msssv</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="c_pub" name="Criar e publicar oportunidade (tipo, valor, prazos)">
+      <bpmn:incoming>Flow_02msssv</bpmn:incoming>
+      <bpmn:outgoing>Flow_14xgcay</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateThrowEvent id="Event_067y2wz" name="Artista manda a 1ª mensagem no WhatsApp">
+      <bpmn:incoming>Flow_14xgcay</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kasytw</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0kasytw" sourceRef="Event_067y2wz" targetRef="ag_ola" />
+    <bpmn:sequenceFlow id="f_ag_ola_a_duv" sourceRef="ag_ola" targetRef="a_duv" />
+    <bpmn:sequenceFlow id="f_a_duv_ag_resp" sourceRef="a_duv" targetRef="ag_resp" />
+    <bpmn:sequenceFlow id="f_ag_resp_ag_op" sourceRef="ag_resp" targetRef="ag_op" />
+    <bpmn:sequenceFlow id="f_ag_op_g_prod" sourceRef="ag_op" targetRef="g_prod" />
+    <bpmn:sequenceFlow id="f_g_prod_ag_conn" name="não" sourceRef="g_prod" targetRef="ag_conn" />
+    <bpmn:sequenceFlow id="f_g_prod_g_mrg" name="sim" sourceRef="g_prod" targetRef="g_mrg" />
+    <bpmn:sequenceFlow id="f_ag_conn_g_mrg" sourceRef="ag_conn" targetRef="g_mrg" />
+    <bpmn:sequenceFlow id="f_g_mrg_ag_proj" sourceRef="g_mrg" targetRef="ag_proj" />
+    <bpmn:sequenceFlow id="f_ag_proj_a_quest" sourceRef="ag_proj" targetRef="a_quest" />
+    <bpmn:sequenceFlow id="f_a_quest_ag_estr" sourceRef="a_quest" targetRef="ag_estr" />
+    <bpmn:sequenceFlow id="f_ag_estr_a_entr" sourceRef="ag_estr" targetRef="a_entr" />
+    <bpmn:sequenceFlow id="f_a_entr_p_recv" sourceRef="a_entr" targetRef="p_recv" />
+    <bpmn:sequenceFlow id="f_p_open_g_par1" sourceRef="p_open" targetRef="g_par1" />
+    <bpmn:sequenceFlow id="f_g_par1_p_doc" sourceRef="g_par1" targetRef="p_doc" />
+    <bpmn:sequenceFlow id="f_g_par1_p_orc" sourceRef="g_par1" targetRef="p_orc" />
+    <bpmn:sequenceFlow id="f_g_par1_p_eq" sourceRef="g_par1" targetRef="p_eq" />
+    <bpmn:sequenceFlow id="f_p_doc_g_par2" sourceRef="p_doc" targetRef="g_par2" />
+    <bpmn:sequenceFlow id="f_p_orc_g_par2" sourceRef="p_orc" targetRef="g_par2" />
+    <bpmn:sequenceFlow id="f_p_eq_g_par2" sourceRef="p_eq" targetRef="g_par2" />
+    <bpmn:sequenceFlow id="f_g_par2_p_kan" sourceRef="g_par2" targetRef="p_kan" />
+    <bpmn:sequenceFlow id="f_p_val_g_apto" sourceRef="p_val" targetRef="g_apto" />
+    <bpmn:sequenceFlow id="f_g_apto_p_open" name="não — resolver" sourceRef="g_apto" targetRef="p_open" />
+    <bpmn:sequenceFlow id="f_g_apto_p_send" name="sim" sourceRef="g_apto" targetRef="p_send" />
+    <bpmn:sequenceFlow id="f_p_recv_p_open" sourceRef="p_recv" targetRef="p_open" />
+    <bpmn:sequenceFlow id="f_p_kan_p_val" sourceRef="p_kan" targetRef="p_val" />
+    <bpmn:sequenceFlow id="f_p_send_p_conf" sourceRef="p_send" targetRef="p_conf" />
+    <bpmn:sequenceFlow id="f_p_conf_ag_notif" sourceRef="p_conf" targetRef="Gateway_0m6tyg5" />
+    <bpmn:sequenceFlow id="Flow_05z7abf" sourceRef="Gateway_0m6tyg5" targetRef="ag_notif" />
+    <bpmn:sequenceFlow id="Flow_0aj5k2s" sourceRef="ag_notif" targetRef="Gateway_1l51ep9" />
+    <bpmn:sequenceFlow id="Flow_0y61r8q" sourceRef="Gateway_0m6tyg5" targetRef="p_dash" />
+    <bpmn:sequenceFlow id="f_p_dash_p_plan" sourceRef="p_dash" targetRef="Gateway_1l51ep9" />
+    <bpmn:sequenceFlow id="f_p_plan_p_end" sourceRef="p_plan" targetRef="p_end" />
+    <bpmn:sequenceFlow id="Flow_0ffwgh4" sourceRef="Gateway_1l51ep9" targetRef="p_plan" />
+    <bpmn:sequenceFlow id="Flow_0g4o3o8" sourceRef="c_start" targetRef="c_acc" />
+    <bpmn:sequenceFlow id="Flow_02msssv" sourceRef="c_acc" targetRef="c_pub" />
+    <bpmn:sequenceFlow id="Flow_14xgcay" sourceRef="c_pub" targetRef="Event_067y2wz" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diag">
+    <bpmndi:BPMNPlane id="Plane" bpmnElement="Collab_CENA">
+      <bpmndi:BPMNShape id="Part_main_di" bpmnElement="Part_main" isHorizontal="true">
+        <omgdc:Bounds x="160" y="85" width="6100" height="995" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0dt0ww4_di" bpmnElement="Lane_0dt0ww4" isHorizontal="true">
+        <omgdc:Bounds x="190" y="85" width="6070" height="160" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_art_di" bpmnElement="Lane_art" isHorizontal="true">
+        <omgdc:Bounds x="190" y="245" width="6070" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ag_di" bpmnElement="Lane_ag" isHorizontal="true">
+        <omgdc:Bounds x="190" y="395" width="6070" height="255" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_prod_di" bpmnElement="Lane_prod" isHorizontal="true">
+        <omgdc:Bounds x="190" y="650" width="6070" height="430" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_ola_di" bpmnElement="ag_ola">
+        <omgdc:Bounds x="985" y="453" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_resp_di" bpmnElement="ag_resp">
+        <omgdc:Bounds x="1385" y="453" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_op_di" bpmnElement="ag_op">
+        <omgdc:Bounds x="1585" y="453" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_prod_di" bpmnElement="g_prod" isMarkerVisible="true">
+        <omgdc:Bounds x="1835" y="465" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1818" y="441" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_mrg_di" bpmnElement="g_mrg" isMarkerVisible="true">
+        <omgdc:Bounds x="2235" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_proj_di" bpmnElement="ag_proj">
+        <omgdc:Bounds x="2385" y="453" width="150" height="74" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_estr_di" bpmnElement="ag_estr">
+        <omgdc:Bounds x="2785" y="453" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jhdd25_di" bpmnElement="a_duv">
+        <omgdc:Bounds x="1185" y="283" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_conn_di" bpmnElement="ag_conn">
+        <omgdc:Bounds x="1975" y="533" width="150" height="74" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ich3i3_di" bpmnElement="a_quest">
+        <omgdc:Bounds x="2585" y="283" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08uwweb_di" bpmnElement="a_entr">
+        <omgdc:Bounds x="2985" y="283" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_par1_di" bpmnElement="g_par1">
+        <omgdc:Bounds x="3635" y="842" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_par2_di" bpmnElement="g_par2">
+        <omgdc:Bounds x="4035" y="842" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_apto_di" bpmnElement="g_apto" isMarkerVisible="true">
+        <omgdc:Bounds x="4635" y="842" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="4627" y="818" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1v03jo5_di" bpmnElement="p_recv">
+        <omgdc:Bounds x="3185" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09yp9d2_di" bpmnElement="p_open">
+        <omgdc:Bounds x="3385" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_166ugmg_di" bpmnElement="p_orc">
+        <omgdc:Bounds x="3785" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0acd9u5_di" bpmnElement="p_eq">
+        <omgdc:Bounds x="3785" y="965" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dum1gp_di" bpmnElement="p_kan">
+        <omgdc:Bounds x="4185" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0doziqc_di" bpmnElement="p_val">
+        <omgdc:Bounds x="4385" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ynyb7w_di" bpmnElement="p_send">
+        <omgdc:Bounds x="4785" y="830" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wbiyki_di" bpmnElement="p_conf">
+        <omgdc:Bounds x="4985" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r10djz_di" bpmnElement="p_doc">
+        <omgdc:Bounds x="3785" y="695" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ag_notif_di" bpmnElement="ag_notif">
+        <omgdc:Bounds x="5235" y="453" width="150" height="74" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ejqv8y_di" bpmnElement="p_dash">
+        <omgdc:Bounds x="5240" y="827" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02ldz1e" bpmnElement="Gateway_0m6tyg5">
+        <omgdc:Bounds x="5135" y="845" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="p_end_di" bpmnElement="p_end">
+        <omgdc:Bounds x="6117" y="846" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="6099" y="884" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dsgxd7_di" bpmnElement="p_plan">
+        <omgdc:Bounds x="5860" y="827" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1uhgalb" bpmnElement="Gateway_1l51ep9">
+        <omgdc:Bounds x="5785" y="842" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="c_start_di" bpmnElement="c_start">
+        <omgdc:Bounds x="252" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="237" y="180" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="c_acc_di" bpmnElement="c_acc">
+        <omgdc:Bounds x="345" y="123" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="c_pub_di" bpmnElement="c_pub">
+        <omgdc:Bounds x="555" y="123" width="150" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_067y2wz_di" bpmnElement="Event_067y2wz">
+        <omgdc:Bounds x="872" y="305" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="849" y="348" width="83" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0kasytw_di" bpmnElement="Flow_0kasytw">
+        <omgdi:waypoint x="908" y="323" />
+        <omgdi:waypoint x="947" y="323" />
+        <omgdi:waypoint x="947" y="490" />
+        <omgdi:waypoint x="985" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_ola_a_duv_di" bpmnElement="f_ag_ola_a_duv">
+        <omgdi:waypoint x="1135" y="490" />
+        <omgdi:waypoint x="1160" y="490" />
+        <omgdi:waypoint x="1160" y="320" />
+        <omgdi:waypoint x="1185" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_a_duv_ag_resp_di" bpmnElement="f_a_duv_ag_resp">
+        <omgdi:waypoint x="1285" y="320" />
+        <omgdi:waypoint x="1360" y="320" />
+        <omgdi:waypoint x="1360" y="490" />
+        <omgdi:waypoint x="1385" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_resp_ag_op_di" bpmnElement="f_ag_resp_ag_op">
+        <omgdi:waypoint x="1535" y="490" />
+        <omgdi:waypoint x="1585" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_op_g_prod_di" bpmnElement="f_ag_op_g_prod">
+        <omgdi:waypoint x="1735" y="490" />
+        <omgdi:waypoint x="1835" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_prod_ag_conn_di" bpmnElement="f_g_prod_ag_conn">
+        <omgdi:waypoint x="1860" y="515" />
+        <omgdi:waypoint x="1860" y="570" />
+        <omgdi:waypoint x="1975" y="570" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1909" y="545" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_prod_g_mrg_di" bpmnElement="f_g_prod_g_mrg">
+        <omgdi:waypoint x="1885" y="490" />
+        <omgdi:waypoint x="2235" y="490" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1901" y="473" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_conn_g_mrg_di" bpmnElement="f_ag_conn_g_mrg">
+        <omgdi:waypoint x="2125" y="570" />
+        <omgdi:waypoint x="2260" y="570" />
+        <omgdi:waypoint x="2260" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_mrg_ag_proj_di" bpmnElement="f_g_mrg_ag_proj">
+        <omgdi:waypoint x="2285" y="490" />
+        <omgdi:waypoint x="2385" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_proj_a_quest_di" bpmnElement="f_ag_proj_a_quest">
+        <omgdi:waypoint x="2535" y="490" />
+        <omgdi:waypoint x="2560" y="490" />
+        <omgdi:waypoint x="2560" y="320" />
+        <omgdi:waypoint x="2585" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_a_quest_ag_estr_di" bpmnElement="f_a_quest_ag_estr">
+        <omgdi:waypoint x="2685" y="320" />
+        <omgdi:waypoint x="2760" y="320" />
+        <omgdi:waypoint x="2760" y="490" />
+        <omgdi:waypoint x="2785" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ag_estr_a_entr_di" bpmnElement="f_ag_estr_a_entr">
+        <omgdi:waypoint x="2935" y="490" />
+        <omgdi:waypoint x="2960" y="490" />
+        <omgdi:waypoint x="2960" y="320" />
+        <omgdi:waypoint x="2985" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_a_entr_p_recv_di" bpmnElement="f_a_entr_p_recv">
+        <omgdi:waypoint x="3085" y="320" />
+        <omgdi:waypoint x="3160" y="320" />
+        <omgdi:waypoint x="3160" y="867" />
+        <omgdi:waypoint x="3185" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_open_g_par1_di" bpmnElement="f_p_open_g_par1">
+        <omgdi:waypoint x="3485" y="867" />
+        <omgdi:waypoint x="3635" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_par1_p_doc_di" bpmnElement="f_g_par1_p_doc">
+        <omgdi:waypoint x="3685" y="867" />
+        <omgdi:waypoint x="3735" y="867" />
+        <omgdi:waypoint x="3735" y="732" />
+        <omgdi:waypoint x="3785" y="732" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_par1_p_orc_di" bpmnElement="f_g_par1_p_orc">
+        <omgdi:waypoint x="3685" y="867" />
+        <omgdi:waypoint x="3785" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_par1_p_eq_di" bpmnElement="f_g_par1_p_eq">
+        <omgdi:waypoint x="3685" y="867" />
+        <omgdi:waypoint x="3735" y="867" />
+        <omgdi:waypoint x="3735" y="1002" />
+        <omgdi:waypoint x="3785" y="1002" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_doc_g_par2_di" bpmnElement="f_p_doc_g_par2">
+        <omgdi:waypoint x="3885" y="732" />
+        <omgdi:waypoint x="3985" y="732" />
+        <omgdi:waypoint x="3985" y="867" />
+        <omgdi:waypoint x="4035" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_orc_g_par2_di" bpmnElement="f_p_orc_g_par2">
+        <omgdi:waypoint x="3885" y="867" />
+        <omgdi:waypoint x="4035" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_eq_g_par2_di" bpmnElement="f_p_eq_g_par2">
+        <omgdi:waypoint x="3885" y="1002" />
+        <omgdi:waypoint x="3985" y="1002" />
+        <omgdi:waypoint x="3985" y="867" />
+        <omgdi:waypoint x="4035" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_par2_p_kan_di" bpmnElement="f_g_par2_p_kan">
+        <omgdi:waypoint x="4085" y="867" />
+        <omgdi:waypoint x="4185" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_val_g_apto_di" bpmnElement="f_p_val_g_apto">
+        <omgdi:waypoint x="4485" y="867" />
+        <omgdi:waypoint x="4635" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_apto_p_open_di" bpmnElement="f_g_apto_p_open">
+        <omgdi:waypoint x="4660" y="892" />
+        <omgdi:waypoint x="4660" y="1058" />
+        <omgdi:waypoint x="3460" y="1058" />
+        <omgdi:waypoint x="3460" y="910" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="4023" y="1033" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_g_apto_p_send_di" bpmnElement="f_g_apto_p_send">
+        <omgdi:waypoint x="4685" y="867" />
+        <omgdi:waypoint x="4785" y="867" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="4726" y="842" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_recv_p_open_di" bpmnElement="f_p_recv_p_open">
+        <omgdi:waypoint x="3285" y="867" />
+        <omgdi:waypoint x="3385" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_kan_p_val_di" bpmnElement="f_p_kan_p_val">
+        <omgdi:waypoint x="4285" y="867" />
+        <omgdi:waypoint x="4385" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_send_p_conf_di" bpmnElement="f_p_send_p_conf">
+        <omgdi:waypoint x="4885" y="867" />
+        <omgdi:waypoint x="4985" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_conf_ag_notif_di" bpmnElement="f_p_conf_ag_notif">
+        <omgdi:waypoint x="5085" y="867" />
+        <omgdi:waypoint x="5110" y="867" />
+        <omgdi:waypoint x="5110" y="870" />
+        <omgdi:waypoint x="5135" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05z7abf_di" bpmnElement="Flow_05z7abf">
+        <omgdi:waypoint x="5160" y="845" />
+        <omgdi:waypoint x="5160" y="490" />
+        <omgdi:waypoint x="5235" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aj5k2s_di" bpmnElement="Flow_0aj5k2s">
+        <omgdi:waypoint x="5385" y="490" />
+        <omgdi:waypoint x="5800" y="490" />
+        <omgdi:waypoint x="5809" y="843" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y61r8q_di" bpmnElement="Flow_0y61r8q">
+        <omgdi:waypoint x="5185" y="870" />
+        <omgdi:waypoint x="5213" y="870" />
+        <omgdi:waypoint x="5213" y="864" />
+        <omgdi:waypoint x="5240" y="864" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_dash_p_plan_di" bpmnElement="f_p_dash_p_plan">
+        <omgdi:waypoint x="5340" y="864" />
+        <omgdi:waypoint x="5463" y="864" />
+        <omgdi:waypoint x="5463" y="867" />
+        <omgdi:waypoint x="5785" y="867" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_p_plan_p_end_di" bpmnElement="f_p_plan_p_end">
+        <omgdi:waypoint x="5960" y="864" />
+        <omgdi:waypoint x="6117" y="864" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ffwgh4_di" bpmnElement="Flow_0ffwgh4">
+        <omgdi:waypoint x="5834" y="866" />
+        <omgdi:waypoint x="5860" y="866" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g4o3o8_di" bpmnElement="Flow_0g4o3o8">
+        <omgdi:waypoint x="288" y="160" />
+        <omgdi:waypoint x="345" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02msssv_di" bpmnElement="Flow_02msssv">
+        <omgdi:waypoint x="495" y="160" />
+        <omgdi:waypoint x="555" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14xgcay_di" bpmnElement="Flow_14xgcay">
+        <omgdi:waypoint x="705" y="160" />
+        <omgdi:waypoint x="789" y="160" />
+        <omgdi:waypoint x="789" y="323" />
+        <omgdi:waypoint x="872" y="323" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
